@@ -1,21 +1,28 @@
 /**
  * 認證狀態管理 Store
- * 使用 Pinia 管理登入狀態和使用者資訊
+ * 
+ * 功能：
+ * 1. 管理登入狀態
+ * 2. 儲存使用者資訊（從 /api/users/me 取得）
+ * 3. 提供權限檢查方法
  */
+
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { UserInfo, LoginRequest, ApiResponse } from '@/types/auth'
+import type { LoginRequest, ApiResponse } from '@/types/auth'
+import type { UserInfo } from '@/types/user'
 import { authService } from '@/services/auth.service'
+import { userService } from '@/services/user.service'
 import { useRouter } from 'vue-router'
 import type { AxiosError } from 'axios'
 
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
 
-  // === State ===
+  // ==================== State ====================
 
   /**
-   * 使用者資訊
+   * 使用者資訊（從 /api/users/me 取得）
    */
   const userInfo = ref<UserInfo | null>(null)
 
@@ -29,51 +36,87 @@ export const useAuthStore = defineStore('auth', () => {
    */
   const errorMessage = ref<string | null>(null)
 
-  // === Getters ===
+  // ==================== Getters ====================
 
   /**
    * 是否已登入
+   * 
+   * 判斷條件：
+   * 1. localStorage 中有 accessToken
+   * 2. userInfo 不為 null（已呼叫 /api/users/me 取得資訊）
    */
   const isAuthenticated = computed(() => {
     return !!localStorage.getItem('accessToken') && !!userInfo.value
   })
 
   /**
-   * 使用者角色
+   * 使用者角色清單
    */
   const userRoles = computed(() => userInfo.value?.roles || [])
 
   /**
-   * 使用者權限
+   * 使用者權限清單
    */
   const userPermissions = computed(() => userInfo.value?.permissions || [])
 
-  // === Actions ===
+  /**
+   * 使用者名稱（用於顯示在 Container）
+   */
+  const userName = computed(() => userInfo.value?.userName || '')
+
+  // ==================== Actions ====================
 
   /**
    * 登入
+   * 
+   * 流程：
+   * 1. 呼叫 /api/auth/login 取得 Token
+   * 2. 儲存 Token 到 localStorage
+   * 3. 呼叫 /api/users/me 取得使用者資訊
+   * 4. 儲存使用者資訊到 Store
+   * 
+   * @param loginData 登入資料（帳號、密碼）
+   * @returns 是否登入成功
    */
   async function login(loginData: LoginRequest): Promise<boolean> {
     loading.value = true
     errorMessage.value = null
 
     try {
-      const response = await authService.login(loginData)
+      // 步驟 1: 呼叫登入 API
+      const loginResponse = await authService.login(loginData)
 
-      if (response.success && response.data) {
-        // 儲存 Token 到 localStorage
-        localStorage.setItem('accessToken', response.data.accessToken)
-        localStorage.setItem('refreshToken', response.data.refreshToken)
-
-        // 儲存使用者資訊到 Store
-        userInfo.value = response.data.userInfo
-
-        // 登入成功
-        return true
-      } else {
-        errorMessage.value = response.message || '登入失敗'
+      if (!loginResponse.success || !loginResponse.data) {
+        errorMessage.value = loginResponse.message || '登入失敗'
         return false
       }
+
+      // 步驟 2: 儲存 Token 到 localStorage
+      localStorage.setItem('accessToken', loginResponse.data.accessToken)
+      localStorage.setItem('refreshToken', loginResponse.data.refreshToken)
+
+      // 步驟 3: 呼叫 /api/users/me 取得使用者資訊
+      const userInfoResponse = await userService.getCurrentUserInfo()
+
+      if (!userInfoResponse.success || !userInfoResponse.data) {
+        // 如果無法取得使用者資訊，清除 Token 並返回失敗
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+        errorMessage.value = '無法取得使用者資訊'
+        return false
+      }
+
+      // 步驟 4: 儲存使用者資訊到 Store
+      userInfo.value = {
+        userId: userInfoResponse.data.userId,
+        userName: userInfoResponse.data.userName,
+        email: userInfoResponse.data.email,
+        permissions: userInfoResponse.data.permissions,
+        roles: userInfoResponse.data.roles,
+      }
+
+      // 登入成功
+      return true
     } catch (err) {
       console.error('登入錯誤:', err)
 
@@ -88,6 +131,10 @@ export const useAuthStore = defineStore('auth', () => {
         errorMessage.value = '登入失敗，請稍後再試'
       }
 
+      // 清除可能已儲存的 Token
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
+
       return false
     } finally {
       loading.value = false
@@ -96,6 +143,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   /**
    * 登出
+   * 
+   * 流程：
+   * 1. 呼叫 /api/auth/logout 撤銷 Refresh Token
+   * 2. 清除 localStorage 中的 Token
+   * 3. 清除 userInfo
+   * 4. 跳轉到登入頁
    */
   async function logout(): Promise<void> {
     try {
@@ -105,6 +158,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
     } catch (err) {
       console.error('登出錯誤:', err)
+      // 即使登出 API 失敗，仍然清除本地資料
     } finally {
       // 清除本地資料
       localStorage.removeItem('accessToken')
@@ -117,21 +171,47 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   /**
-   * 從 localStorage 恢復使用者資訊
-   * （頁面重新整理時使用）
+   * 從 Token 恢復使用者資訊
+   * 
+   * 用途：頁面重新整理時，如果 localStorage 中有 Token，
+   * 則呼叫 /api/users/me 重新取得使用者資訊
    */
-  function restoreUserInfo(): void {
+  async function restoreUserInfo(): Promise<void> {
     const accessToken = localStorage.getItem('accessToken')
 
-    if (accessToken) {
-      // 這裡可以呼叫一個「取得當前使用者資訊」的 API
-      // 或者從 Token 中解析（需要安裝 jwt-decode）
-      // 暫時先不實作，等後端提供對應 API
+    if (!accessToken) {
+      return
+    }
+
+    try {
+      const userInfoResponse = await userService.getCurrentUserInfo()
+
+      if (userInfoResponse.success && userInfoResponse.data) {
+        userInfo.value = {
+          userId: userInfoResponse.data.userId,
+          userName: userInfoResponse.data.userName,
+          email: userInfoResponse.data.email,
+          permissions: userInfoResponse.data.permissions,
+          roles: userInfoResponse.data.roles,
+        }
+      } else {
+        // 如果無法取得使用者資訊，清除 Token
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+      }
+    } catch (err) {
+      console.error('恢復使用者資訊錯誤:', err)
+      // 如果 API 呼叫失敗，清除 Token
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
     }
   }
 
   /**
    * 檢查是否有特定權限
+   * 
+   * @param permission 權限代號（例如：'overview', 'settings.accounts'）
+   * @returns true 表示有權限，false 表示無權限
    */
   function hasPermission(permission: string): boolean {
     return userPermissions.value.includes(permission)
@@ -139,10 +219,15 @@ export const useAuthStore = defineStore('auth', () => {
 
   /**
    * 檢查是否有特定角色
+   * 
+   * @param role 角色名稱（例如：'ADMIN', 'USER'）
+   * @returns true 表示有角色，false 表示無角色
    */
   function hasRole(role: string): boolean {
     return userRoles.value.includes(role)
   }
+
+  // ==================== Return ====================
 
   return {
     // State
@@ -154,6 +239,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     userRoles,
     userPermissions,
+    userName,
 
     // Actions
     login,

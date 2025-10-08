@@ -1,40 +1,59 @@
 /**
- * 認證相關的 API 服務
- * 負責與後端 API 溝通
+ * 認證服務層
+ * 
+ * 負責處理所有認證相關的 API 請求
  */
-import axios from '@/utils/axios'
-import type { LoginRequest, LoginResponse, RefreshTokenRequest, ApiResponse } from '@/types/auth'
+
+import apiClient from '@/utils/axios'
+import type {
+  LoginRequest,
+  LoginResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+  ApiResponse,
+} from '@/types/auth'
 
 /**
  * 認證服務
  */
 export const authService = {
   /**
-   * 登入
-   * @param data 登入請求資料（帳號、密碼）
-   * @returns 登入回應（包含 Token 和使用者資訊）
+   * 使用者登入
+   * POST /api/auth/login
+   * 
+   * @param loginData 登入資料（帳號、密碼）
+   * @returns 登入回應（僅包含 Token，不包含 userInfo）
    */
-  async login(data: LoginRequest): Promise<ApiResponse<LoginResponse>> {
-    const response = await axios.post<ApiResponse<LoginResponse>>('/auth/login', data)
+  async login(loginData: LoginRequest): Promise<ApiResponse<LoginResponse>> {
+    const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/login', loginData)
     return response.data
   },
 
   /**
-   * 刷新 Token
-   * @param data Refresh Token
+   * 刷新 Access Token
+   * POST /api/auth/refresh
+   * 
+   * @param refreshToken Refresh Token
    * @returns 新的 Token
    */
-  async refreshToken(data: RefreshTokenRequest): Promise<ApiResponse<LoginResponse>> {
-    const response = await axios.post<ApiResponse<LoginResponse>>('/auth/refresh', data)
+  async refreshToken(
+    refreshTokenData: RefreshTokenRequest,
+  ): Promise<ApiResponse<RefreshTokenResponse>> {
+    const response = await apiClient.post<ApiResponse<RefreshTokenResponse>>(
+      '/auth/refresh',
+      refreshTokenData,
+    )
     return response.data
   },
 
   /**
    * 登出
-   * @param refreshToken Refresh Token
+   * POST /api/auth/logout
+   * 
+   * @param refreshToken Refresh Token（用於撤銷）
    */
   async logout(refreshToken: string): Promise<ApiResponse<null>> {
-    const response = await axios.post<ApiResponse<null>>('/auth/logout', { refreshToken })
+    const response = await apiClient.post<ApiResponse<null>>('/auth/logout', { refreshToken })
     return response.data
   },
 }

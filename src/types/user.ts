@@ -1,0 +1,18 @@
+/**
+ * 使用者相關型別定義
+ */
+
+/**
+ * 使用者資訊
+ *
+ * 用途：
+ * 1. API 回應：GET /api/users/me
+ * 2. Store 狀態：authStore.userInfo
+ */
+export interface UserInfo {
+  userId: string // 使用者 ID
+  userName: string // 使用者名稱
+  email: string // Email
+  permissions: string[] // 功能權限代號清單
+  roles: string[] // 角色清單
+}

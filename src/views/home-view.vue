@@ -1,90 +1,80 @@
-<script setup lang="ts">
-/**
- * 首頁（暫時）
- * 用於測試登入功能
- */
-import { useAuthStore } from '@/stores/auth.store'
-
-const authStore = useAuthStore()
-
-/**
- * 處理登出
- */
-async function handleLogout() {
-  await authStore.logout()
-}
-</script>
-
 <template>
-  <div class="min-h-screen bg-gray-100">
-    <nav class="bg-white shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-          <div class="flex items-center">
-            <h1 class="text-xl font-bold text-gray-900">Cloud Admin</h1>
-          </div>
-          <div class="flex items-center space-x-4">
-            <span class="text-gray-700"> 歡迎，{{ authStore.userInfo?.name }} </span>
-            <button
-              @click="handleLogout"
-              class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              登出
-            </button>
-          </div>
-        </div>
+  <!--
+    主頁佈局
+
+    結構（正確版本）：
+    ┌─────────┬──────────────────────────┐
+    │         │   PageHeader (只在右側)   │
+    │         ├──────────────────────────┤
+    │ Sidebar │                          │
+    │ (全高)  │     右側內容區域          │
+    │ (完整)  │   (router-view)          │
+    │         │                          │
+    └─────────┴──────────────────────────┘
+
+    功能：
+    1. Sidebar: 左側功能選單（從頂部到底部完整顯示，根據 isCollapsed 狀態收合/展開）
+    2. PageHeader: 右側區域的上方固定區塊（收合按鈕、返回總覽按鈕、時間、使用者名稱）
+    3. router-view: 右側內容區域（動態顯示子路由）
+
+    布局說明：
+    - Sidebar 在左側，從頂部到底部完整顯示（不會被 PageHeader 覆蓋）
+    - PageHeader 和內容區域在右側，並排在 Sidebar 旁邊
+
+    動畫說明：
+    - 使用 CSS transition（非 Vue transition）實現流暢的並行動畫
+    - Sidebar 收合時：寬度從 240px → 0px
+    - 右側內容同時展開：自動佔據剩餘空間
+    - 動畫時間：300ms，緩動函數：ease-in-out
+    - 視覺效果：Sidebar 和右側內容同時動畫，不會卡頓
+  -->
+  <div class="flex h-screen bg-gray-50">
+    <!-- 左側：Sidebar（使用 CSS transition 實現流暢的收合/展開動畫） -->
+    <div
+      class="flex-shrink-0 overflow-hidden transition-all duration-300 ease-in-out"
+      :class="menuStore.isCollapsed ? 'w-0' : 'w-60'"
+    >
+      <!-- 整合 Sidebar 元件（固定寬度 240px = w-60） -->
+      <div class="w-60">
+        <Sidebar />
       </div>
-    </nav>
+    </div>
 
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div class="px-4 py-6 sm:px-0">
-        <div class="bg-white rounded-lg shadow p-6">
-          <h2 class="text-2xl font-bold text-gray-900 mb-4">登入成功！</h2>
+    <!-- 右側：PageHeader + 內容區域（垂直佈局，會自動跟著展開） -->
+    <div class="flex flex-1 flex-col overflow-hidden transition-all duration-300 ease-in-out">
+      <!-- 右側上方：PageHeader（固定在右側區域上方） -->
+      <PageHeader />
 
-          <div class="space-y-4">
-            <div>
-              <p class="text-sm text-gray-600">帳號</p>
-              <p class="text-lg font-medium">{{ authStore.userInfo?.loginId }}</p>
-            </div>
-
-            <div>
-              <p class="text-sm text-gray-600">姓名</p>
-              <p class="text-lg font-medium">{{ authStore.userInfo?.name }}</p>
-            </div>
-
-            <div>
-              <p class="text-sm text-gray-600">Email</p>
-              <p class="text-lg font-medium">{{ authStore.userInfo?.email }}</p>
-            </div>
-
-            <div>
-              <p class="text-sm text-gray-600">角色</p>
-              <div class="flex flex-wrap gap-2 mt-1">
-                <span
-                  v-for="role in authStore.userRoles"
-                  :key="role"
-                  class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium"
-                >
-                  {{ role }}
-                </span>
-              </div>
-            </div>
-
-            <div>
-              <p class="text-sm text-gray-600">權限</p>
-              <div class="flex flex-wrap gap-2 mt-1">
-                <span
-                  v-for="permission in authStore.userPermissions"
-                  :key="permission"
-                  class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium"
-                >
-                  {{ permission }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
+      <!-- 右側下方：內容區域（子路由） -->
+      <main class="flex-1 overflow-auto bg-gray-50 p-6">
+        <!-- 子路由內容會顯示在這裡 -->
+        <router-view />
+      </main>
+    </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import PageHeader from '@/components/layout/page-header.vue'
+import Sidebar from '@/components/sidebar/main-sidebar.vue'
+import { useMenuStore } from '@/stores/menu.store'
+import { useAuthStore } from '@/stores/auth.store'
+
+// ==================== Composables ====================
+
+const menuStore = useMenuStore()
+const authStore = useAuthStore()
+
+// ==================== Lifecycle ====================
+
+/**
+ * 元件掛載時：
+ * 如果 localStorage 有 Token 但沒有 userInfo，則嘗試恢復使用者資訊
+ */
+onMounted(async () => {
+  if (!authStore.isAuthenticated && localStorage.getItem('accessToken')) {
+    await authStore.restoreUserInfo()
+  }
+})
+</script>

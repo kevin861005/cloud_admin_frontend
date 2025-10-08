@@ -1,5 +1,5 @@
 /**
- * 認證相關的 TypeScript 型別定義
+ * 認證相關型別定義
  */
 
 /**
@@ -11,36 +11,13 @@ export interface LoginRequest {
 }
 
 /**
- * 登入回應
+ * 登入回應（調整後：不包含 userInfo）
  */
 export interface LoginResponse {
   accessToken: string
   refreshToken: string
   tokenType: string
   expiresIn: number
-  userInfo: UserInfo
-}
-
-/**
- * 使用者資訊
- */
-export interface UserInfo {
-  loginId: string
-  name: string
-  email: string
-  roles: string[]
-  permissions: string[]
-}
-
-/**
- * API 統一回應格式
- * 使用泛型 T，不提供預設值，避免使用 any
- */
-export interface ApiResponse<T> {
-  success: boolean
-  message: string
-  code?: string
-  data: T | null
 }
 
 /**
@@ -51,24 +28,21 @@ export interface RefreshTokenRequest {
 }
 
 /**
- * API 錯誤回應
+ * Refresh Token 回應
  */
-export interface ApiErrorResponse {
-  success: false
-  message: string
-  code: string
-  data: null
+export interface RefreshTokenResponse {
+  accessToken: string
+  refreshToken: string
+  tokenType: string
+  expiresIn: number
 }
 
 /**
- * Axios 錯誤型別
+ * API 統一回應格式
  */
-export interface ApiError {
-  response?: {
-    data: ApiErrorResponse
-    status: number
-    statusText: string
-  }
+export interface ApiResponse<T> {
+  success: boolean
   message: string
   code?: string
+  data: T | null
 }
