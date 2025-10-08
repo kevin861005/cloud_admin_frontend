@@ -252,7 +252,7 @@ onMounted(() => {
  */
 .sidebar-header {
   /* 內距：上下 8px，左 8px（符合 Figma 規範 */
-  padding: 8px 0px 8px 8px;
+  padding: 8px 8px 8px 8px;
   /* 寬度：填滿容器 */
   width: 100%;
 }
@@ -292,8 +292,8 @@ onMounted(() => {
   flex-direction: column;
   /* 項目之間的間距：4px */
   gap: 4px;
-  /* 內距：只有左側 8px（符合 Figma 規範）*/
-  padding: 0px 0px 0px 8px;
+  /* 內距：只有左右側 8px（符合 Figma 規範）*/
+  padding: 0px 8px 0px 8px;
 }
 
 /**

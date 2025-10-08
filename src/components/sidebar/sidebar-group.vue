@@ -156,8 +156,8 @@ function handleChildClick(key: string) {
   /* 佈局：水平排列，垂直置中 */
   display: flex;
   align-items: center;
-  /* 內距：左 8px，右 0px（符合 Figma 規範）*/
-  padding: 0px 0px 0px 8px;
+  /* 內距：左 8px，右 8px（符合 Figma 規範）*/
+  padding: 0px 8px 0px 8px;
   /* 間距：ICON、文字、箭頭之間 8px */
   gap: 8px;
   /* 圓角：6px */
@@ -178,12 +178,6 @@ function handleChildClick(key: string) {
   background-color: #f1f5f9;
 }
 
-/**
- * 展開狀態（可選，如果需要不同樣式）
- */
-.menu-group-header-expanded {
-  /* 這裡可以加上展開時的特殊樣式（目前暫時不需要） */
-}
 
 /**
  * 群組 ICON 圖示
@@ -236,8 +230,8 @@ function handleChildClick(key: string) {
   border-left: 1px solid #e2e8f0;
   /* 左外距：15px（符合 Figma 規範）*/
   margin-left: 15px;
-  /* 左內距：1px（符合 Figma 規範）*/
-  padding-left: 1px;
+  /* 左內距：8px（符合 Figma 規範）*/
+  padding-left: 8px;
 }
 
 /**

@@ -93,8 +93,8 @@ function handleClick() {
   /* 佈局：水平排列，垂直置中 */
   display: flex;
   align-items: center;
-  /* 內距：左 8px，右 0px（符合 Figma 規範，主選單項目）*/
-  padding: 0px 0px 0px 8px;
+  /* 內距：左 8px，右 8px（符合 Figma 規範，主選單項目）*/
+  padding: 0px 8px 0px 8px;
   /* 間距：ICON 和文字之間 8px */
   gap: 8px;
   /* 圓角：6px */
