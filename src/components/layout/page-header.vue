@@ -47,8 +47,19 @@
 
     <!-- 右側：即時時間 + 使用者名稱 -->
     <div class="flex items-center gap-6 text-sm text-gray-600">
-      <!-- 即時時間（格式：YYYY.MM.DD HH:mm:ss） -->
-      <div class="font-mono">{{ currentTime }}</div>
+      <!--
+        即時時間（格式：YYYY.MM.DD HH:mm:ss）
+        使用 Inter 字型（Medium 500）
+
+        Figma 規範：
+        - color: #000
+        - font-family: Inter
+        - font-size: 14px
+        - font-weight: 500
+        - line-height: 20px (142.857%)
+        - letter-spacing: -0.15px
+      -->
+      <div class="header-time">{{ currentTime }}</div>
 
       <!-- 使用者名稱 -->
       <div class="font-medium text-gray-800">{{ userName }}</div>

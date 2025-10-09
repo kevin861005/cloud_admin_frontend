@@ -178,7 +178,6 @@ function handleChildClick(key: string) {
   background-color: #f1f5f9;
 }
 
-
 /**
  * 群組 ICON 圖示
  */
@@ -254,14 +253,14 @@ function handleChildClick(key: string) {
   /* 字體顏色：#64748B（slate-500） */
   color: #64748b;
   /* 字體：Inter Medium（符合 Figma 規範）*/
-  font-family: 'Noto Sans TC', sans-serif;
+  font-family: 'Inter', sans-serif;
   /* 字體大小：12px */
   font-size: 12px;
   /* 字體樣式：正常 */
   font-style: normal;
   /* 字體粗細：500（Medium） */
   font-weight: 500;
-  /* 行高：16px */
+  /* 行高：16px（133.333%） */
   line-height: 16px;
 }
 </style>

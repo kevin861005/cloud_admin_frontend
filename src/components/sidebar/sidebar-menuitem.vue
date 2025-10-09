@@ -171,10 +171,16 @@ function handleClick() {
  * 子選單文字（設定群組內的項目，例如：帳號管理、權限設定）
  */
 .menu-item-label-child {
+  /* 字體顏色：#1E293B */
+  color: #1e293b;
   /* 字體：Inter（符合 Figma 規範）*/
-  font-family: 'Noto Sans TC', sans-serif;
+  font-family: 'Inter', sans-serif;
+  /* 字體大小：14px */
+  font-size: 14px;
   /* 字體粗細：400（Regular） */
   font-weight: 400;
+  /* 行高：20px（142.857%） */
+  line-height: 20px;
   /* 字母間距：-0.15px */
   letter-spacing: -0.15px;
 }

@@ -21,14 +21,22 @@ Vue 3 + TypeScript + Tailwind CSS 的後台管理系統前端
 ```
 src/
 ├── assets/              # 靜態資源
-│   ├── fonts/          # 字體檔案（可選）
+│   ├── fonts/          # 字體檔案
+│   │   ├── NotoSansTC-Regular.ttf    # Noto Sans TC 正常體 (400)
+│   │   ├── NotoSansTC-Medium.ttf     # Noto Sans TC 中等體 (500)
+│   │   ├── NotoSansTC-Bold.ttf       # Noto Sans TC 粗體 (700)
+│   │   └── Inter-VariableFont_opsz,wght.ttf  # Inter 可變字型 (100-900)
 │   ├── icons/          # 圖示資源
 │   │   └── menu/       # 選單 ICON（SVG）
 │   └── style/          # 樣式檔案目錄
-│       └── main.css    # Tailwind CSS 入口
+│       └── main.css    # Tailwind CSS 入口 + 自訂字體樣式
 ├── components/         # 可重用元件
+│   ├── common/         # 共用元件
+│   │   └── page-title.vue   # 頁面標題元件（可重用）
 │   ├── layout/         # 佈局元件
-│   │   └── page-header.vue      # 頁面頂部區塊（收合按鈕、返回總覽、時間、使用者名稱）
+│   │   └── page-header.vue  # 頁面頂部區塊（收合按鈕、返回總覽、時間、使用者名稱）
+│   ├── overview/       # 總覽頁面專用元件
+│   │   └── section-card-container.vue  # 卡片容器元件（支援水平滾動）
 │   └── sidebar/        # 左側選單元件
 │       ├── main-sidebar.vue     # 選單主容器（含路由跳轉邏輯）
 │       ├── sidebar-menuitem.vue # 選單項目
@@ -157,6 +165,195 @@ import './assets/style/main.css'
 - 未登入自動跳轉至 `/login`
 - 已登入無法訪問登入頁
 - `base` 設定為 `/cloudadmin/`（與後端 context-path 一致）
+
+### 5. 字體配置 (`src/assets/style/main.css`)
+
+專案使用兩種字體：
+
+- **Noto Sans TC**：主要用於中文介面（標題、一般文字）
+- **Inter**：用於數字、英文、時間顯示
+
+**字體檔案位置：**
+
+```
+src/assets/fonts/
+├── NotoSansTC-Regular.ttf              # 正常體 (400)
+├── NotoSansTC-Medium.ttf               # 中等體 (500)
+├── NotoSansTC-Bold.ttf                 # 粗體 (700)
+└── Inter-VariableFont_opsz,wght.ttf    # Variable Font (100-900)
+```
+
+**main.css 字體定義：**
+
+```css
+/* Tailwind CSS 基本樣式 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 自訂字體定義 */
+@layer base {
+  /* Noto Sans TC - Regular (400) */
+  @font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url('@/assets/fonts/NotoSansTC-Regular.ttf') format('truetype');
+  }
+
+  /* Noto Sans TC - Medium (500) */
+  @font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url('@/assets/fonts/NotoSansTC-Medium.ttf') format('truetype');
+  }
+
+  /* Noto Sans TC - Bold (700) */
+  @font-face {
+    font-family: 'Noto Sans TC';
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url('@/assets/fonts/NotoSansTC-Bold.ttf') format('truetype');
+  }
+
+  /* Inter Variable Font (支援所有字重 100-900) */
+  @font-face {
+    font-family: 'Inter';
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+    src: url('@/assets/fonts/Inter-VariableFont_opsz,wght.ttf') format('truetype-variations');
+  }
+}
+
+/* 自訂元件樣式 */
+@layer components {
+  /* 頁面主標題樣式 */
+  .page-title-main {
+    color: #1e293b;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 30px;
+    letter-spacing: -0.2px;
+  }
+
+  /* 頁面副標題樣式 */
+  .page-title-subtitle {
+    color: #64748b;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: 0.2px;
+  }
+
+  /* Header 時間顯示樣式 */
+  .header-time {
+    color: #000;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: -0.15px;
+  }
+}
+```
+
+**字體使用範例：**
+
+| 區域        | 字體                 | 字重          | CSS 類別               |
+| ----------- | -------------------- | ------------- | ---------------------- |
+| 頁面主標題  | Noto Sans TC         | 700 (Bold)    | `.page-title-main`     |
+| 頁面副標題  | Noto Sans TC         | 400 (Regular) | `.page-title-subtitle` |
+| Header 時間 | Inter                | 500 (Medium)  | `.header-time`         |
+| 選單文字    | Inter / Noto Sans TC | 400           | 依內容類型             |
+
+---
+
+## 🎨 可重用元件
+
+### 1. PageTitle 元件
+
+**路徑**: `src/components/common/page-title.vue`
+
+**用途**: 統一的頁面標題元件，包含主標題和副標題
+
+**使用範例**:
+
+```vue
+<template>
+  <PageTitle title="總覽" subtitle="關鍵指標和客戶活動狀況" />
+</template>
+
+<script setup lang="ts">
+import PageTitle from '@/components/common/page-title.vue'
+</script>
+```
+
+### 2. Section-Card Container 元件
+
+**路徑**: `src/components/overview/section-card-container.vue`
+
+**用途**: 卡片容器元件，提供統一的佈局和水平滾動功能
+
+**特色功能**:
+
+- ✅ Flex 橫向佈局，卡片間距 20px
+- ✅ 支援水平滾動（內容超出容器寬度時）
+- ✅ **滑鼠滾輪自動轉換為水平滾動**
+- ✅ 滾動條隱藏（視覺更簡潔）
+- ✅ 響應式設計
+
+**滾動方式**:
+| 方式 | 說明 |
+|------|------|
+| 🖱️ 滑鼠拖拉 | 按住左鍵拖拉卡片 |
+| 🖱️ 滑鼠滾輪 | 上下滾動 → 卡片左右移動 |
+| 👆 觸控板 | 兩指左右滑動 |
+
+**使用範例**:
+
+```vue
+<template>
+  <section-card-container>
+    <div class="flex-shrink-0 min-w-[360px] bg-white rounded-lg shadow-md p-6">卡片 1</div>
+    <div class="flex-shrink-0 min-w-[360px] bg-white rounded-lg shadow-md p-6">卡片 2</div>
+    <div class="flex-shrink-0 min-w-[360px] bg-white rounded-lg shadow-md p-6">卡片 3</div>
+  </section-card-container>
+</template>
+
+<script setup lang="ts">
+import SectionCardContainer from '@/components/overview/section-card-container.vue'
+</script>
+```
+
+**重要提醒**:
+
+- 每個卡片**必須**加上 `flex-shrink-0` class（防止被壓縮）
+- 每個卡片建議設定 `min-w-[360px]` 或其他固定最小寬度
+- 所有樣式應該在 template 的 class 中定義，避免在 `<style scoped>` 中設定寬度相關屬性
+
+**技術實作**:
+
+```typescript
+// 監聽滑鼠滾輪事件，轉換為水平滾動
+const handleWheel = (event: WheelEvent) => {
+  // 檢查是否需要滾動
+  const canScroll = containerRef.value.scrollWidth > containerRef.value.clientWidth
+  if (!canScroll) return
+
+  // 阻止預設的垂直滾動
+  event.preventDefault()
+
+  // 將垂直滾動轉換為水平滾動
+  containerRef.value.scrollLeft += event.deltaY
+}
+```
 
 ---
 
@@ -435,6 +632,43 @@ VITE_API_BASE_URL=/cloudadmin/api
 - ✅ 提交前執行 `npm run lint`
 - ✅ 遵循專案 ESLint 規則
 
+### Section-Card Container 使用規範
+
+使用 `section-card-container` 時，請遵循以下規範：
+
+1. **卡片必須防止壓縮**
+
+   ```vue
+   <!-- ✅ 正確：加上 flex-shrink-0 -->
+   <div class="flex-shrink-0 min-w-[360px] ...">卡片內容</div>
+
+   <!-- ❌ 錯誤：沒有 flex-shrink-0，卡片會被壓縮 -->
+   <div class="min-w-[360px] ...">卡片內容</div>
+   ```
+
+2. **寬度設定在 template，不要在 style**
+
+   ```vue
+   <!-- ✅ 正確：所有樣式都在 template 中 -->
+   <template>
+     <div class="flex-shrink-0 min-w-[360px] bg-white ...">卡片</div>
+   </template>
+
+   <!-- ❌ 錯誤：在 style 中設定寬度會造成衝突 -->
+   <template>
+     <div class="card">卡片</div>
+   </template>
+   <style scoped>
+   .card {
+     @apply min-w-[360px]; /* 會覆蓋 template 的設定 */
+   }
+   </style>
+   ```
+
+3. **適當的卡片數量**
+   - 至少 3-4 張卡片才能觸發滾動效果
+   - 建議每張卡片最小寬度 320-400px
+
 ---
 
 ## 🐛 常見問題
@@ -554,6 +788,55 @@ VITE_API_BASE_URL=/cloudadmin/api
 2. 在 `home-view.vue` 或路由守衛中同步選單狀態
 3. 使用 `watch` 監聽 `$route` 變化並更新選單
 
+### Q11: 字體無法正常顯示或顯示為預設字體
+
+**原因**: 字體檔案缺失或路徑錯誤
+
+**解決方案**:
+
+1. 確認字體檔案都在 `src/assets/fonts/` 目錄
+   ```
+   src/assets/fonts/
+   ├── NotoSansTC-Regular.ttf
+   ├── NotoSansTC-Medium.ttf
+   ├── NotoSansTC-Bold.ttf
+   └── Inter-VariableFont_opsz,wght.ttf
+   ```
+2. 確認 `main.css` 正確引入字體檔案
+3. 清除瀏覽器快取並重新載入
+4. 檢查 Browser Console 是否有 404 錯誤（字體檔案載入失敗）
+5. 確認字體檔案格式正確（.ttf）
+
+### Q12: Section-Card 容器無法滾動
+
+**原因**: 卡片缺少 `flex-shrink-0` 或內容寬度不夠
+
+**解決方案**:
+
+1. 確認每個卡片都有 `flex-shrink-0` class
+2. 確認每個卡片有設定最小寬度（如 `min-w-[360px]`）
+3. 確認有足夠數量的卡片（至少 3-4 張）
+4. 縮小瀏覽器視窗寬度測試
+5. 在 Console 執行測試：
+   ```javascript
+   const container = document.querySelector('.section-card-container')
+   console.log('容器寬度:', container.clientWidth)
+   console.log('內容寬度:', container.scrollWidth)
+   console.log('需要滾動:', container.scrollWidth > container.clientWidth)
+   ```
+
+### Q13: 滑鼠滾輪無法左右滾動
+
+**原因**: 事件監聽器未正確添加或被其他元素攔截
+
+**解決方案**:
+
+1. 確認使用了最新版的 `section-card-container.vue`
+2. 檢查 Console 是否有 JavaScript 錯誤
+3. 確認滑鼠游標在卡片區域內
+4. 嘗試在不同瀏覽器測試
+5. 使用拖拉方式確認滾動功能是否正常
+
 ---
 
 ## 🧪 測試帳號
@@ -574,24 +857,29 @@ VITE_API_BASE_URL=/cloudadmin/api
 
 ## 📂 相關檔案位置
 
-| 檔案            | 路徑                                          | 說明                           |
-| --------------- | --------------------------------------------- | ------------------------------ |
-| Vite 配置       | `vite.config.ts`                              | 構建工具配置                   |
-| TypeScript 配置 | `tsconfig.app.json`                           | TS 編譯選項                    |
-| Tailwind 配置   | `tailwind.config.js`                          | 樣式工具配置                   |
-| PostCSS 配置    | `postcss.config.js`                           | CSS 後處理器                   |
-| ESLint 配置     | `eslint.config.js`                            | 程式碼檢查規則                 |
-| 路由配置        | `src/router/index.ts`                         | 前端路由                       |
-| API 配置        | `src/utils/axios.ts`                          | HTTP 客戶端                    |
-| 認證 Store      | `src/stores/auth.store.ts`                    | 登入狀態管理                   |
-| 選單 Store      | `src/stores/menu.store.ts`                    | 選單狀態管理                   |
-| 選單配置        | `src/config/menu.config.ts`                   | 選單項目配置                   |
-| 認證服務        | `src/services/auth.service.ts`                | 認證 API                       |
-| 使用者服務      | `src/services/user.service.ts`                | 使用者權限 API                 |
-| 頁面頂部區塊    | `src/components/layout/page-header.vue`       | PageHeader 元件                |
-| 選單主容器      | `src/components/sidebar/main-sidebar.vue`     | Sidebar 元件（含路由跳轉邏輯） |
-| 選單項目        | `src/components/sidebar/sidebar-menuitem.vue` | 選單項目元件                   |
-| 群組選單        | `src/components/sidebar/sidebar-group.vue`    | 群組選單元件                   |
+| 檔案            | 路徑                                                 | 說明                            |
+| --------------- | ---------------------------------------------------- | ------------------------------- |
+| Vite 配置       | `vite.config.ts`                                     | 構建工具配置                    |
+| TypeScript 配置 | `tsconfig.app.json`                                  | TS 編譯選項                     |
+| Tailwind 配置   | `tailwind.config.js`                                 | 樣式工具配置                    |
+| PostCSS 配置    | `postcss.config.js`                                  | CSS 後處理器                    |
+| ESLint 配置     | `eslint.config.js`                                   | 程式碼檢查規則                  |
+| 字體樣式配置    | `src/assets/style/main.css`                          | Tailwind + 自訂字體樣式         |
+| Noto Sans TC    | `src/assets/fonts/NotoSansTC-*.ttf`                  | 中文字型（Regular/Medium/Bold） |
+| Inter 字型      | `src/assets/fonts/Inter-VariableFont_*.ttf`          | 可變字型（100-900）             |
+| 路由配置        | `src/router/index.ts`                                | 前端路由                        |
+| API 配置        | `src/utils/axios.ts`                                 | HTTP 客戶端                     |
+| 認證 Store      | `src/stores/auth.store.ts`                           | 登入狀態管理                    |
+| 選單 Store      | `src/stores/menu.store.ts`                           | 選單狀態管理                    |
+| 選單配置        | `src/config/menu.config.ts`                          | 選單項目配置                    |
+| 認證服務        | `src/services/auth.service.ts`                       | 認證 API                        |
+| 使用者服務      | `src/services/user.service.ts`                       | 使用者權限 API                  |
+| 頁面標題元件    | `src/components/common/page-title.vue`               | 可重用的頁面標題元件            |
+| 卡片容器元件    | `src/components/overview/section-card-container.vue` | 支援水平滾動的卡片容器          |
+| 頁面頂部區塊    | `src/components/layout/page-header.vue`              | PageHeader 元件                 |
+| 選單主容器      | `src/components/sidebar/main-sidebar.vue`            | Sidebar 元件（含路由跳轉邏輯）  |
+| 選單項目        | `src/components/sidebar/sidebar-menuitem.vue`        | 選單項目元件                    |
+| 群組選單        | `src/components/sidebar/sidebar-group.vue`           | 群組選單元件                    |
 
 ---
 
@@ -636,6 +924,18 @@ VITE_API_BASE_URL=/cloudadmin/api
 - [ ] 測試不同權限使用者的選單顯示
 - [ ] 測試選單點擊後的路由跳轉
 
+### 使用 Section-Card Container 時
+
+- [ ] 引入 `section-card-container.vue` 元件
+- [ ] 每個卡片都加上 `flex-shrink-0` class
+- [ ] 每個卡片設定適當的最小寬度（如 `min-w-[360px]`）
+- [ ] 所有樣式都在 template 的 class 中定義
+- [ ] 不要在 `<style scoped>` 中設定寬度相關屬性
+- [ ] 測試滑鼠拖拉滾動
+- [ ] 測試滑鼠滾輪滾動
+- [ ] 測試觸控板滾動
+- [ ] 測試不同螢幕寬度的響應式效果
+
 ### 提交程式碼前
 
 - [ ] 執行 `npm run lint` 檢查程式碼
@@ -657,4 +957,14 @@ Private Project
 
 ---
 
-**最後更新**: 2025-10-08
+**最後更新**: 2025-10-09
+
+**本次更新內容**:
+
+- ✅ 新增 Section-Card Container 元件說明（支援滑鼠滾輪水平滾動）
+- ✅ 更新專案結構（加入 components/overview/ 目錄）
+- ✅ 新增可重用元件章節，詳細說明 PageTitle 和 Section-Card Container
+- ✅ 新增 Section-Card Container 使用規範
+- ✅ 更新常見問題（Q12, Q13）
+- ✅ 更新開發檢查清單
+- ✅ 更新相關檔案位置表格
