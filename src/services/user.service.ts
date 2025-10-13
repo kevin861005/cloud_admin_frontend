@@ -5,7 +5,7 @@
  */
 
 import apiClient from '@/utils/axios'
-import type { ApiResponse } from '@/types/auth'
+import type { ApiResponse } from '@/types/common'
 import type { UserInfo } from '@/types/user'
 
 /**

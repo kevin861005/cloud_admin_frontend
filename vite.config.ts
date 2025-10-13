@@ -41,11 +41,12 @@ export default defineConfig({
 
   // 開發伺服器配置
   server: {
+    host: true, // 允許透過 localhost 與 192.168.3.28 存取
     port: 5173,
     proxy: {
       // API 請求代理到後端
       '/cloudadmin/api': {
-        target: 'http://localhost:8080',
+        target: 'http://192.168.3.28:8080',
         changeOrigin: true,
         secure: false,
       },

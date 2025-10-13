@@ -43,7 +43,7 @@
     <!-- 右側：PageHeader + 內容區域（垂直佈局，會自動跟著展開） -->
     <div class="flex flex-1 flex-col min-w-0">
       <PageHeader class="sticky top-0 z-30" />
-      <main class="flex-1 overflow-auto bg-gray-50 p-6">
+      <main class="flex-1 overflow-auto bg-gray-50 px-10 pt-10">
         <router-view />
       </main>
     </div>

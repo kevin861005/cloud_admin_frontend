@@ -36,13 +36,3 @@ export interface RefreshTokenResponse {
   tokenType: string
   expiresIn: number
 }
-
-/**
- * API 統一回應格式
- */
-export interface ApiResponse<T> {
-  success: boolean
-  message: string
-  code?: string
-  data: T | null
-}

@@ -146,11 +146,6 @@ onUnmounted(() => {
   overflow-y: hidden;
 }
 
-/* 當使用者按下滑鼠拖拉時，改變游標樣式 */
-.section-card-container:active {
-  cursor: grabbing;
-}
-
 /*
   跨瀏覽器隱藏滾動條
   使用標準 CSS，不依賴任何插件

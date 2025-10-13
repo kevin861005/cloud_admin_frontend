@@ -33,7 +33,7 @@
     - line-height: 22px (157.143%)
     - letter-spacing: 0.2px
   -->
-  <div class="mb-10">
+  <div>
     <!-- 主標題（使用自定義 CSS 類別 page-title-main） -->
     <h1 class="page-title-main">
       {{ title }}

@@ -26,7 +26,7 @@
         class="flex h-8 w-8 items-center justify-center rounded hover:bg-gray-100 transition-colors"
         :title="menuStore.isCollapsed ? '展開選單' : '收合選單'"
       >
-        <img src="@/assets/icons/menu/menu-toggle.svg" alt="選單" class="h-4 w-4" />
+        <img src="@/assets/icons/common/menu-toggle.svg" alt="選單" class="h-4 w-4" />
       </button>
 
       <!-- 中間：「返回總覽」按鈕（只在非總覽頁面顯示） -->
@@ -37,7 +37,7 @@
           class="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
         >
           <!-- 左箭頭 ICON（16x16px SVG） -->
-          <img src="@/assets/icons/menu/back-arrow.svg" alt="返回" class="h-4 w-4" />
+          <img src="@/assets/icons/common/back-arrow.svg" alt="返回" class="h-4 w-4" />
           <!-- 文字 -->
           <span class="text-sm">返回總覽</span>
         </button>

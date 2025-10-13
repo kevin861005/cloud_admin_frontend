@@ -47,16 +47,20 @@ src/
 │   └── index.ts        # 路由定義（已啟用所有功能路由）
 ├── services/           # API 服務層
 │   ├── auth.service.ts # 認證 API
-│   └── user.service.ts # 使用者權限 API
+│   ├── user.service.ts # 使用者權限 API
+│   └── overview.service.ts # 總覽頁面 API
 ├── stores/             # Pinia 狀態管理
 │   ├── auth.store.ts   # 認證狀態管理
 │   └── menu.store.ts   # 選單狀態管理
 ├── types/              # TypeScript 型別定義
+│   ├── common.ts         # 通用型別（ApiResponse）
 │   ├── auth.ts         # 認證相關型別
 │   ├── menu.ts         # 選單相關型別
-│   └── user.ts         # 使用者權限型別
+│   ├── user.ts         # 使用者權限型別
+│   └── overview.ts         # 總覽頁面相關型別
 ├── utils/              # 工具函數
-│   └── axios.ts        # Axios 配置與攔截器
+│   ├── axios.ts        # Axios 配置與攔截器
+│   └── time.ts        # 時間格式化工具函數
 ├── views/              # 頁面元件
 │   ├── login-view.vue       # 登入頁面
 │   ├── home-view.vue        # 首頁（含 PageHeader + Sidebar + 內容區域）
@@ -525,9 +529,27 @@ npm run deploy
 
 ## 🔧 TypeScript 型別定義
 
-### 認證相關型別 (`src/types/auth.ts`)
+### 通用型別 (`src/types/common.ts`)
+
+這個檔案存放整個專案共用的基礎型別。
 
 ```typescript
+/**
+ * API 統一回應格式 (泛型)
+ */
+export interface ApiResponse<T> {
+  success: boolean
+  message: string
+  code?: string
+  data: T | null
+  /** 伺服器回應時間戳記（ISO 8601 格式，UTC 時區）
+   * 範例：2025-10-13T06:30:45.123Z
+   */
+  timestamp: string
+}
+
+### 認證相關型別 (`src/types/auth.ts`)
+
 // 登入請求
 interface LoginRequest {
   loginId: string
@@ -542,13 +564,6 @@ interface LoginResponse {
   expiresIn: number
 }
 
-// API 統一回應格式
-interface ApiResponse<T> {
-  success: boolean
-  message: string
-  code?: string
-  data: T | null
-}
 ```
 
 ### 選單相關型別 (`src/types/menu.ts`)
@@ -580,6 +595,30 @@ interface UserInfoResponse {
   roles: string[] // 角色清單
 }
 ```
+
+---
+
+## 🛠️ 工具函數
+
+### 時間格式化工具 (`src/utils/time.ts`)
+
+提供多種時間格式化函數，用於顯示後端回傳的時間戳記。
+
+```typescript
+export function formatTimestamp(isoString: string): string
+export function formatRelativeTime(isoString: string): string
+export function formatShortDateTime(isoString: string): string
+export function formatTimeOnly(isoString: string): string
+```
+
+**使用範例：**
+
+| 方法                  | 輸入                       | 輸出（假設 UTC+8）    |
+| --------------------- | -------------------------- | --------------------- |
+| `formatTimeOnly`      | `2025-10-13T06:30:45.123Z` | `14:30`               |
+| `formatShortDateTime` | `2025-10-13T06:30:45.123Z` | `10/13 14:30`         |
+| `formatTimestamp`     | `2025-10-13T06:30:45.123Z` | `2025/10/13 14:30:45` |
+| `formatRelativeTime`  | `2025-10-13T06:27:45.123Z` | `3 分鐘前`            |
 
 ---
 
@@ -880,6 +919,14 @@ VITE_API_BASE_URL=/cloudadmin/api
 | 選單主容器      | `src/components/sidebar/main-sidebar.vue`            | Sidebar 元件（含路由跳轉邏輯）  |
 | 選單項目        | `src/components/sidebar/sidebar-menuitem.vue`        | 選單項目元件                    |
 | 群組選單        | `src/components/sidebar/sidebar-group.vue`           | 群組選單元件                    |
+| 時間工具        | `src/utils/time.ts`                                  | 時間格式化工具函數              |
+| 通用型別        | `src/types/common.ts`                                | ApiResponse、PageResponse 等    |
+| 總覽頁面型別    | `src/types/overview.ts`                              | 總覽頁面相關型別                |
+| 總覽服務        | `src/services/overview.service.ts`                   | 總覽頁面 API                    |
+| 選單 ICON       | `src/assets/icons/menu/`                             | 選單圖示資源                    |
+| 總覽頁面 ICON   | `src/assets/icons/overview/`                         | 總覽頁面圖示資源                |
+| 客戶成長卡片    | `src/components/overview/customer-growth-card.vue`   | 月度成長卡片元件                |
+| 客戶統計卡片    | `src/components/overview/customer-stats-card.vue`    | 客戶統計卡片元件                |
 
 ---
 
@@ -957,14 +1004,12 @@ Private Project
 
 ---
 
-**最後更新**: 2025-10-09
+**最後更新**: 2025-10-13
 
 **本次更新內容**:
 
-- ✅ 新增 Section-Card Container 元件說明（支援滑鼠滾輪水平滾動）
-- ✅ 更新專案結構（加入 components/overview/ 目錄）
-- ✅ 新增可重用元件章節，詳細說明 PageTitle 和 Section-Card Container
-- ✅ 新增 Section-Card Container 使用規範
-- ✅ 更新常見問題（Q12, Q13）
-- ✅ 更新開發檢查清單
-- ✅ 更新相關檔案位置表格
+- ✅ 更新 `ApiResponse` 型別定義，加入 `timestamp` 欄位
+- ✅ 新增 `src/types/common.ts` 通用型別說明
+- ✅ 新增 `src/types/overview.ts` 總覽頁面型別
+- ✅ 新增 `src/utils/time.ts` 時間格式化工具函數
+- ✅ 完成月度成長卡片以及異常警示卡片

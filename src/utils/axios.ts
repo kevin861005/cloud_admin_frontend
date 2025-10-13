@@ -1,6 +1,6 @@
 /**
  * Axios 配置與攔截器
- * 
+ *
  * 功能：
  * 1. 設定 Base URL
  * 2. 自動附加 JWT Token
@@ -9,7 +9,8 @@
  */
 
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
-import type { ApiResponse, RefreshTokenRequest, RefreshTokenResponse } from '@/types/auth'
+import type { ApiResponse } from '@/types/common'
+import type { RefreshTokenRequest, RefreshTokenResponse } from '@/types/auth'
 
 /**
  * 建立 Axios 實例

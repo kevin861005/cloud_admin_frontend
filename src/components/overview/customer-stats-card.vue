@@ -7,7 +7,7 @@
     - flex: 1 0 0 (使用 flex-1)
   -->
   <div
-    class="flex-shrink-0 min-w-[360px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5 flex-1"
+    class="flex-shrink-0 min-w-[386.67px] min-h-[272px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5"
   >
     <!--
       Contents-Text: 文字內容區域
@@ -30,9 +30,9 @@
             - 尺寸: 32x32px
             - padding: 8px 8px 0 8px
           -->
-          <div class="flex flex-col items-start w-8 h-8 pt-2 px-2">
+          <div class="flex flex-col items-start w-8 h-8 rounded-md">
             <img
-              src="@/assets/icons/menu/customer-stats.svg"
+              src="@/assets/icons/card/customer-stats.svg"
               alt="客戶統計"
               class="w-full h-full"
             />
@@ -204,8 +204,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { getMockCustomerStats } from '@/services/dashboard.service'
-import type { CustomerStats } from '@/types/dashboard'
+import { getMockCustomerStats } from '@/services/overview.service'
+import type { CustomerStats } from '@/types/overview'
 
 /**
  * 客戶統計資料

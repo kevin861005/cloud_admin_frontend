@@ -21,26 +21,11 @@
       <!-- 卡片 1: 客戶統計（已完成） -->
       <CustomerStatsCard />
 
-      <!-- 卡片 2: 月度成長（待實作） -->
-      <div
-        class="flex-shrink-0 min-w-[360px] bg-white rounded-lg shadow-md p-6 h-48 flex items-center justify-center text-gray-500"
-      >
-        卡片 2 - 月度成長
-      </div>
+      <!-- 卡片 2: 月度成長（已完成） -->
+      <CustomerGrowthCard />
 
-      <!-- 卡片 3: 異常警示（待實作） -->
-      <div
-        class="flex-shrink-0 min-w-[360px] bg-white rounded-lg shadow-md p-6 h-48 flex items-center justify-center text-gray-500"
-      >
-        卡片 3 - 異常警示
-      </div>
-
-      <!-- 卡片 4: 預留（待確認） -->
-      <div
-        class="flex-shrink-0 min-w-[360px] bg-white rounded-lg shadow-md p-6 h-48 flex items-center justify-center text-gray-500"
-      >
-        卡片 4
-      </div>
+      <!-- 卡片 3: 異常警示（已完成） -->
+      <AlertListCard />
     </section-card-container>
   </div>
 </template>
@@ -50,6 +35,8 @@ import { onMounted } from 'vue'
 import PageTitle from '@/components/common/page-title.vue'
 import SectionCardContainer from '@/components/overview/section-card-container.vue'
 import CustomerStatsCard from '@/components/overview/customer-stats-card.vue'
+import CustomerGrowthCard from '@/components/overview/customer-growth-card.vue'
+import AlertListCard from '@/components/overview/alert-list-card.vue'
 
 // ==================== Lifecycle ====================
 
