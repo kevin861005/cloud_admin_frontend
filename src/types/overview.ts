@@ -35,15 +35,11 @@ export interface CustomerGrowthData {
 }
 
 /**
- * 警示類型（保留彈性，未來可擴充）
+ * 警示類型（）
  */
 export type AlertType =
   | 'RUNTIME_ERROR' // 運行異常
   | 'CREATE_FAILED' // 建立失敗
-// 未來可新增其他類型，例如：
-// | 'CONNECTION_LOST'  // 連線中斷
-// | 'DATA_SYNC_ERROR'  // 資料同步失敗
-// | 'LICENSE_EXPIRED'  // 授權過期
 
 /**
  * 警示項目
@@ -62,3 +58,36 @@ export interface AlertListData {
   alerts: AlertItem[] // 警示列表
   totalCount: number // 總筆數
 }
+
+/**
+ * 需關注客戶單筆資料
+ */
+export interface AttentionCustomer {
+  id: string // 客戶 ID
+  customerName: string // 客戶名稱
+  lastUsedTime: string // 最後使用時間（相對時間，例如：4天前）
+  salesPerson: string // 負責業務
+}
+
+/**
+ * 需關注客戶列表回應（data 部分）
+ */
+export interface AttentionCustomersData {
+  customers: AttentionCustomer[] // 需關注客戶列表
+  totalCount: number // 總筆數
+}
+
+export interface ModuleUsageDataPoint {
+  label: string
+  master: number
+  ggf: number
+  hr: number
+  esg: number
+}
+
+export interface ModuleUsageData {
+  weekly: ModuleUsageDataPoint[]
+  monthly: ModuleUsageDataPoint[]
+}
+
+export type ChartViewType = 'weekly' | 'monthly'

@@ -13,6 +13,7 @@ Vue 3 + TypeScript + Tailwind CSS 的後台管理系統前端
 - **狀態管理**: Pinia 3.0.3
 - **路由**: Vue Router 4.5.1
 - **HTTP 客戶端**: Axios 1.12.2
+- **圖表**: Chart.js 4.x
 
 ---
 
@@ -22,57 +23,55 @@ Vue 3 + TypeScript + Tailwind CSS 的後台管理系統前端
 src/
 ├── assets/              # 靜態資源
 │   ├── fonts/          # 字體檔案
-│   │   ├── NotoSansTC-Regular.ttf    # Noto Sans TC 正常體 (400)
-│   │   ├── NotoSansTC-Medium.ttf     # Noto Sans TC 中等體 (500)
-│   │   ├── NotoSansTC-Bold.ttf       # Noto Sans TC 粗體 (700)
-│   │   └── Inter-VariableFont_opsz,wght.ttf  # Inter 可變字型 (100-900)
 │   ├── icons/          # 圖示資源
-│   │   └── menu/       # 選單 ICON（SVG）
+│   │   ├── menu/       # 選單 ICON（SVG）
+│   │   └── overview/   # 總覽頁面 ICON（SVG）
 │   └── style/          # 樣式檔案目錄
 │       └── main.css    # Tailwind CSS 入口 + 自訂字體樣式
 ├── components/         # 可重用元件
 │   ├── common/         # 共用元件
-│   │   └── page-title.vue   # 頁面標題元件（可重用）
+│   │   └── page-title.vue   # 頁面標題元件
 │   ├── layout/         # 佈局元件
-│   │   └── page-header.vue  # 頁面頂部區塊（收合按鈕、返回總覽、時間、使用者名稱）
+│   │   └── page-header.vue  # 頁面頂部區塊
 │   ├── overview/       # 總覽頁面專用元件
-│   │   └── section-card-container.vue  # 卡片容器元件（支援水平滾動）
+│   │   ├── section-card-container.vue      # 統計卡片容器（支援水平滾動）
+│   │   ├── section-chart-container.vue     # 圖表區域容器（支援水平滾動）
+│   │   ├── customer-stats-card.vue         # 客戶統計卡片
+│   │   ├── customer-growth-card.vue        # 月度成長卡片
+│   │   ├── alert-list-card.vue             # 異常警示卡片
+│   │   ├── attention-customers-card.vue    # 需關注客戶卡片
+│   │   └── module-usage-chart-card.vue     # 模組使用量圖表卡片
 │   └── sidebar/        # 左側選單元件
-│       ├── main-sidebar.vue     # 選單主容器（含路由跳轉邏輯）
+│       ├── main-sidebar.vue     # 選單主容器
 │       ├── sidebar-menuitem.vue # 選單項目
 │       └── sidebar-group.vue    # 群組選單
 ├── config/             # 配置檔案
 │   └── menu.config.ts  # 選單項目配置
 ├── router/             # 路由配置
-│   └── index.ts        # 路由定義（已啟用所有功能路由）
+│   └── index.ts        # 路由定義
 ├── services/           # API 服務層
-│   ├── auth.service.ts # 認證 API
-│   ├── user.service.ts # 使用者權限 API
-│   └── overview.service.ts # 總覽頁面 API
+│   ├── auth.service.ts     # 認證 API
+│   ├── user.service.ts     # 使用者權限 API
+│   └── overview.service.ts # 總覽頁面 API（含模組使用量）
 ├── stores/             # Pinia 狀態管理
 │   ├── auth.store.ts   # 認證狀態管理
 │   └── menu.store.ts   # 選單狀態管理
 ├── types/              # TypeScript 型別定義
-│   ├── common.ts         # 通用型別（ApiResponse）
+│   ├── common.ts       # 通用型別（ApiResponse）
 │   ├── auth.ts         # 認證相關型別
 │   ├── menu.ts         # 選單相關型別
 │   ├── user.ts         # 使用者權限型別
-│   └── overview.ts         # 總覽頁面相關型別
+│   └── overview.ts     # 總覽頁面相關型別（含模組使用量）
 ├── utils/              # 工具函數
 │   ├── axios.ts        # Axios 配置與攔截器
-│   └── time.ts        # 時間格式化工具函數
+│   └── time.ts         # 時間格式化工具函數
 ├── views/              # 頁面元件
 │   ├── login-view.vue       # 登入頁面
-│   ├── home-view.vue        # 首頁（含 PageHeader + Sidebar + 內容區域）
+│   ├── home-view.vue        # 首頁
 │   ├── overview-view.vue    # 總覽頁面
 │   ├── customers-view.vue   # 客戶管理頁面
 │   ├── environment-view.vue # 環境管理頁面
 │   └── settings/            # 設定相關頁面
-│       ├── accounts-view.vue    # 帳號管理
-│       ├── roles-view.vue       # 權限設定
-│       ├── modules-view.vue     # 模組設定
-│       ├── industries-view.vue  # 產業別設定
-│       └── dealers-view.vue     # 經銷商設定
 ├── App.vue
 └── main.ts
 ```
@@ -896,37 +895,13 @@ VITE_API_BASE_URL=/cloudadmin/api
 
 ## 📂 相關檔案位置
 
-| 檔案            | 路徑                                                 | 說明                            |
-| --------------- | ---------------------------------------------------- | ------------------------------- |
-| Vite 配置       | `vite.config.ts`                                     | 構建工具配置                    |
-| TypeScript 配置 | `tsconfig.app.json`                                  | TS 編譯選項                     |
-| Tailwind 配置   | `tailwind.config.js`                                 | 樣式工具配置                    |
-| PostCSS 配置    | `postcss.config.js`                                  | CSS 後處理器                    |
-| ESLint 配置     | `eslint.config.js`                                   | 程式碼檢查規則                  |
-| 字體樣式配置    | `src/assets/style/main.css`                          | Tailwind + 自訂字體樣式         |
-| Noto Sans TC    | `src/assets/fonts/NotoSansTC-*.ttf`                  | 中文字型（Regular/Medium/Bold） |
-| Inter 字型      | `src/assets/fonts/Inter-VariableFont_*.ttf`          | 可變字型（100-900）             |
-| 路由配置        | `src/router/index.ts`                                | 前端路由                        |
-| API 配置        | `src/utils/axios.ts`                                 | HTTP 客戶端                     |
-| 認證 Store      | `src/stores/auth.store.ts`                           | 登入狀態管理                    |
-| 選單 Store      | `src/stores/menu.store.ts`                           | 選單狀態管理                    |
-| 選單配置        | `src/config/menu.config.ts`                          | 選單項目配置                    |
-| 認證服務        | `src/services/auth.service.ts`                       | 認證 API                        |
-| 使用者服務      | `src/services/user.service.ts`                       | 使用者權限 API                  |
-| 頁面標題元件    | `src/components/common/page-title.vue`               | 可重用的頁面標題元件            |
-| 卡片容器元件    | `src/components/overview/section-card-container.vue` | 支援水平滾動的卡片容器          |
-| 頁面頂部區塊    | `src/components/layout/page-header.vue`              | PageHeader 元件                 |
-| 選單主容器      | `src/components/sidebar/main-sidebar.vue`            | Sidebar 元件（含路由跳轉邏輯）  |
-| 選單項目        | `src/components/sidebar/sidebar-menuitem.vue`        | 選單項目元件                    |
-| 群組選單        | `src/components/sidebar/sidebar-group.vue`           | 群組選單元件                    |
-| 時間工具        | `src/utils/time.ts`                                  | 時間格式化工具函數              |
-| 通用型別        | `src/types/common.ts`                                | ApiResponse、PageResponse 等    |
-| 總覽頁面型別    | `src/types/overview.ts`                              | 總覽頁面相關型別                |
-| 總覽服務        | `src/services/overview.service.ts`                   | 總覽頁面 API                    |
-| 選單 ICON       | `src/assets/icons/menu/`                             | 選單圖示資源                    |
-| 總覽頁面 ICON   | `src/assets/icons/overview/`                         | 總覽頁面圖示資源                |
-| 客戶成長卡片    | `src/components/overview/customer-growth-card.vue`   | 月度成長卡片元件                |
-| 客戶統計卡片    | `src/components/overview/customer-stats-card.vue`    | 客戶統計卡片元件                |
+| 檔案           | 路徑                                                  | 說明                            |
+| -------------- | ----------------------------------------------------- | ------------------------------- |
+| 統計卡片容器   | `src/components/overview/section-card-container.vue`  | 包含前三張統計卡片              |
+| 圖表區域容器   | `src/components/overview/section-chart-container.vue` | 包含需關注客戶 + 模組使用量圖表 |
+| 模組使用量圖表 | `src/components/overview/module-usage-chart-card.vue` | Chart.js 圖表元件               |
+| 總覽服務       | `src/services/overview.service.ts`                    | 總覽頁面 API（含模組使用量）    |
+| 總覽型別       | `src/types/overview.ts`                               | 總覽頁面相關型別定義            |
 
 ---
 
@@ -1004,12 +979,15 @@ Private Project
 
 ---
 
-**最後更新**: 2025-10-13
+**最後更新**: 2025-10-14
 
 **本次更新內容**:
 
-- ✅ 更新 `ApiResponse` 型別定義，加入 `timestamp` 欄位
-- ✅ 新增 `src/types/common.ts` 通用型別說明
-- ✅ 新增 `src/types/overview.ts` 總覽頁面型別
-- ✅ 新增 `src/utils/time.ts` 時間格式化工具函數
-- ✅ 完成月度成長卡片以及異常警示卡片
+- ✅ 統一兩個 container 元件的樣式規範（padding、對齊、間距）
+- ✅ 完成模組使用量圖表卡片（Chart.js 堆疊長條圖）
+- ✅ 新增模組使用量相關型別定義（ModuleUsageData、ChartViewType）
+- ✅ 新增模組使用量 API 和 Mock Data（overview.service.ts）
+- ✅ 整合模組使用量圖表到 section-chart-container
+- ✅ 支援週報/月報切換功能（Toggle Switch）
+- ✅ 圖表卡片支援響應式寬度調整（flex-1 + min-w-[600px]）
+- ✅ 新增 Chart.js 相關說明和常見問題

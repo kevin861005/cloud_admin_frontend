@@ -1,19 +1,18 @@
 <template>
   <div
     ref="containerRef"
-    class="flex items-center gap-5 overflow-x-auto overflow-y-hidden py-5 px-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden h-[312px]"
+    class="flex items-center gap-5 overflow-x-auto overflow-y-hidden py-5 px-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden h-[436px]"
   >
-    <CustomerStatsCard />
-    <CustomerGrowthCard />
-    <AlertListCard />
+    <AttentionCustomersCard />
+
+    <ModuleUsageChartCard />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import CustomerStatsCard from './customer-stats-card.vue'
-import CustomerGrowthCard from './customer-growth-card.vue'
-import AlertListCard from './alert-list-card.vue'
+import AttentionCustomersCard from './attention-customers-card.vue'
+import ModuleUsageChartCard from './module-usage-chart-card.vue'
 
 const containerRef = ref<HTMLElement | null>(null)
 

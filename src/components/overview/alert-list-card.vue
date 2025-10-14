@@ -7,7 +7,7 @@
     - flex: 1 0 0 (使用 flex-1)
   -->
   <div
-    class="flex-shrink-0 min-w-[360px] min-h-[272px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5"
+    class="flex-shrink-0 w-[386.67px] h-[272px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5"
   >
     <!--
       Contents-Text: 文字內容區域
@@ -67,14 +67,16 @@
       <!--
         Item-Text Section: 異常警示列表
         - gap: 8px (使用 space-y-2)
+        - 只顯示前 3 筆資料
       -->
       <div class="flex flex-col gap-2">
         <!--
           Alert Item: 單一警示項目
           - 每個項目包含：類型標籤、日期時間、客戶名稱
+          - 使用 slice(0, 3) 限制只顯示前 3 筆
         -->
         <div
-          v-for="alert in alertData.alerts"
+          v-for="alert in alertData.alerts.slice(0, 3)"
           :key="alert.id"
           class="flex justify-between items-center"
         >
@@ -140,6 +142,7 @@
       - height: 24px
       - justify-content: space-between
       - align-items: center
+      - 當總筆數 > 3 時才顯示「更多」按鈕
     -->
     <div class="flex justify-between items-center h-6">
       <!--
@@ -148,16 +151,16 @@
         - height: 24px
         - gap: 8px (左側文字與時間之間的間距)
       -->
-      <div class="flex items-center h-6">
+      <div class="flex items-center gap-2 h-6">
         <span
           class="text-sm text-slate-500"
-          style="font-family: 'Noto Sans TC', sans-serif; font-weight: 500"
+          style="font-family: 'Noto Sans TC', sans-serif; font-weight: 400"
         >
           更新時間：
         </span>
         <span
           class="text-sm text-slate-500"
-          style="font-family: 'Noto Sans TC', sans-serif; font-weight: 500"
+          style="font-family: 'Noto Sans TC', sans-serif; font-weight: 400"
         >
           {{ updateTime }}
         </span>
@@ -172,8 +175,10 @@
         - padding: 4px 8px
         - background: #0000000D
         - border: 1px solid #0000001A
+        - 只在 totalCount > 3 時顯示
       -->
       <button
+        v-if="alertData.totalCount > 3"
         class="inline-flex items-center justify-center h-6 px-2 rounded border text-xs cursor-pointer hover:bg-opacity-80 transition-colors"
         style="
           background-color: #0000000d;
