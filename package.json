@@ -19,7 +19,6 @@
     "copy-to-backend": "rm -rf ../src/main/resources/static/* && cp -r dist/* ../src/main/resources/static/"
   },
   "dependencies": {
-    "@heroicons/vue": "^2.2.0",
     "axios": "^1.12.2",
     "chart.js": "^4.5.1",
     "pinia": "^3.0.3",

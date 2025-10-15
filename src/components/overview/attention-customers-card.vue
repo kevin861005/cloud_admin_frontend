@@ -2,18 +2,19 @@
   <!--
     需關注客戶卡片 (Card-Dashboard)
 
-    尺寸規格：
+    尺寸規格:
     - Card-Dashboard: 387x396px (含 padding 24px)
     - Contents-Text: 339x296px
     - Card-top: 339x24px
     - Frame1: 339x248px (固定高度)
     - Pagination: 339x32px
 
-    功能：
-    1. 顯示需關注的客戶列表（4-7天內使用的客戶）
-    2. 支援前端分頁（每頁 6 筆）
+    功能:
+    1. 顯示需關注的客戶列表(4-7天內使用的客戶)
+    2. 支援前端分頁(每頁 6 筆)
     3. 客戶名稱過長時顯示 tooltip
     4. 顯示最後使用時間和負責業務
+    5. 支援使用時間和負責業務的排序功能
   -->
   <div
     class="relative flex-shrink-0 w-[387px] h-[396px] bg-white 24px rounded-lg shadow-md p-6 flex flex-col"
@@ -50,7 +51,7 @@
           class="flex items-center h-5 gap-5 pb-3 mb-3"
           style="border-bottom: 1px solid #0000001a"
         >
-          <!-- 第一個表頭: 147x20px -->
+          <!-- 第一個表頭: 147x20px (不可排序) -->
           <div
             class="flex items-center w-[147px] h-5 gap-1 text-sm font-medium leading-5 text-gray-600"
             style="font-family: 'Noto Sans TC', sans-serif"
@@ -58,28 +59,122 @@
             客戶
           </div>
 
-          <!-- 第二個表頭: 76x20px -->
+          <!-- 第二個表頭: 76x20px (可排序) -->
           <div
-            class="flex items-center w-[76px] h-5 gap-1 text-sm font-medium leading-5 text-gray-600"
+            class="flex items-center w-[76px] h-5 gap-1 text-sm font-medium leading-5 text-gray-600 cursor-pointer select-none hover:text-gray-800 transition-colors"
             style="font-family: 'Noto Sans TC', sans-serif"
+            @click="handleSort('lastUsedTime')"
           >
             使用時間
-            <!-- 排序箭頭: 16x16px -->
-            <ArrowsUpDownIcon class="w-4 h-4 text-gray-500" />
+            <!-- 排序圖示: 16x16px -->
+            <span class="text-gray-400">
+              <!-- 無排序狀態 -->
+              <svg
+                v-if="sortState.key !== 'lastUsedTime'"
+                class="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+                />
+              </svg>
+              <!-- 升冪排序 -->
+              <svg
+                v-else-if="sortState.order === 'asc'"
+                class="h-4 w-4 text-blue-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 15l7-7 7 7"
+                />
+              </svg>
+              <!-- 降冪排序 -->
+              <svg
+                v-else
+                class="h-4 w-4 text-blue-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </span>
           </div>
 
-          <!-- 第三個表頭: 76x20px -->
+          <!-- 第三個表頭: 76x20px (可排序) -->
           <div
-            class="flex items-center w-[76px] h-5 gap-1 text-sm font-medium leading-5 text-gray-600"
+            class="flex items-center w-[76px] h-5 gap-1 text-sm font-medium leading-5 text-gray-600 cursor-pointer select-none hover:text-gray-800 transition-colors"
             style="font-family: 'Noto Sans TC', sans-serif"
+            @click="handleSort('salesPerson')"
           >
             負責業務
-            <!-- 排序箭頭: 16x16px -->
-            <ArrowsUpDownIcon class="w-4 h-4 text-gray-500" />
+            <!-- 排序圖示: 16x16px -->
+            <span class="text-gray-400">
+              <!-- 無排序狀態 -->
+              <svg
+                v-if="sortState.key !== 'salesPerson'"
+                class="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+                />
+              </svg>
+              <!-- 升冪排序 -->
+              <svg
+                v-else-if="sortState.order === 'asc'"
+                class="h-4 w-4 text-blue-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 15l7-7 7 7"
+                />
+              </svg>
+              <!-- 降冪排序 -->
+              <svg
+                v-else
+                class="h-4 w-4 text-blue-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </span>
           </div>
         </div>
 
-        <!-- 客戶列表區域 (固定高度，即使資料不足 6 筆) -->
+        <!-- 客戶列表區域 (固定高度,即使資料不足 6 筆) -->
         <div class="flex-1 min-h-0">
           <!-- 資料載入中 -->
           <div v-if="isLoading" class="flex items-center justify-center h-full">
@@ -127,7 +222,7 @@
             <p class="mt-2 text-sm text-gray-500">目前沒有需要關注的客戶</p>
           </div>
 
-          <!-- 客戶列表（每頁最多 6 筆，間距 12px）-->
+          <!-- 客戶列表(每頁最多 6 筆,間距 12px)-->
           <!-- 整個列表容器下方有 border -->
           <div v-else class="space-y-3 pb-3" style="border-bottom: 1px solid #0000001a">
             <div
@@ -227,20 +322,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, reactive } from 'vue'
 import { getMockAttentionCustomers } from '@/services/overview.service'
 import type { AttentionCustomer } from '@/types/overview'
-import { ArrowsUpDownIcon } from '@heroicons/vue/24/outline'
 
 // ==================== 狀態管理 ====================
 
-/** 所有需關注客戶資料（一次載入全部） */
+/** 所有需關注客戶資料(一次載入全部) */
 const allCustomers = ref<AttentionCustomer[]>([])
 
 /** 總筆數 */
 const totalCount = ref(0)
 
-/** 當前頁碼（從 1 開始） */
+/** 當前頁碼(從 1 開始) */
 const currentPage = ref(1)
 
 /** 每頁顯示筆數 */
@@ -252,6 +346,24 @@ const isLoading = ref(false)
 /** 錯誤訊息 */
 const errorMessage = ref('')
 
+// ===== 排序狀態 =====
+/**
+ * 排序狀態型別定義
+ */
+interface SortState {
+  key: string | null // 當前排序的欄位
+  order: 'asc' | 'desc' | null // 排序方向: asc(升冪) | desc(降冪) | null(無排序)
+}
+
+/**
+ * 排序狀態
+ * 參考 table-content.vue 的實作
+ */
+const sortState = reactive<SortState>({
+  key: null,
+  order: null,
+})
+
 // ==================== 計算屬性 ====================
 
 /**
@@ -262,15 +374,84 @@ const totalPages = computed(() => {
 })
 
 /**
- * 計算當前頁要顯示的資料（前端分頁）
+ * 已排序的客戶資料
+ * 根據 sortState 進行前端排序
+ */
+const sortedCustomers = computed(() => {
+  // 如果沒有排序,直接返回原始資料
+  if (!sortState.key || !sortState.order) {
+    return allCustomers.value
+  }
+
+  // 複製陣列以避免修改原始資料
+  const sorted = [...allCustomers.value]
+
+  // 根據排序欄位和方向進行排序
+  sorted.sort((a, b) => {
+    const aValue = a[sortState.key as keyof AttentionCustomer]
+    const bValue = b[sortState.key as keyof AttentionCustomer]
+
+    // 字串比較
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      const comparison = aValue.localeCompare(bValue, 'zh-TW')
+      return sortState.order === 'asc' ? comparison : -comparison
+    }
+
+    // 數字比較(如果未來有數字欄位)
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return sortState.order === 'asc' ? aValue - bValue : bValue - aValue
+    }
+
+    return 0
+  })
+
+  return sorted
+})
+
+/**
+ * 計算當前頁要顯示的資料(前端分頁)
+ * 使用已排序的資料進行分頁
  */
 const paginatedCustomers = computed(() => {
   const startIndex = (currentPage.value - 1) * PAGE_SIZE
   const endIndex = startIndex + PAGE_SIZE
-  return allCustomers.value.slice(startIndex, endIndex)
+  return sortedCustomers.value.slice(startIndex, endIndex)
 })
 
 // ==================== 方法 ====================
+
+/**
+ * 處理排序
+ * 參考 table-content.vue 的實作邏輯
+ *
+ * 邏輯:
+ * 1. 如果點擊的是不同欄位,則切換到該欄位並設為升冪
+ * 2. 如果點擊的是相同欄位:
+ *    - 升冪 → 降冪
+ *    - 降冪 → 無排序
+ *    - 無排序 → 升冪
+ */
+function handleSort(key: string) {
+  if (sortState.key !== key) {
+    // 切換到新欄位,預設升冪
+    sortState.key = key
+    sortState.order = 'asc'
+  } else {
+    // 同一欄位,切換排序方向
+    if (sortState.order === 'asc') {
+      sortState.order = 'desc'
+    } else if (sortState.order === 'desc') {
+      // 降冪後取消排序
+      sortState.key = null
+      sortState.order = null
+    } else {
+      sortState.order = 'asc'
+    }
+  }
+
+  // 排序後重置到第一頁
+  currentPage.value = 1
+}
 
 /**
  * 載入需關注客戶資料
@@ -280,7 +461,7 @@ async function loadAttentionCustomers() {
     isLoading.value = true
     errorMessage.value = ''
 
-    // TODO: 等後端 API 完成後，改用真實 API
+    // TODO: 等後端 API 完成後,改用真實 API
     // const data = await getAttentionCustomers()
 
     // 目前使用 Mock Data
@@ -289,13 +470,13 @@ async function loadAttentionCustomers() {
     allCustomers.value = data.customers
     totalCount.value = data.totalCount
 
-    // 如果當前頁超過總頁數，重置到第一頁
+    // 如果當前頁超過總頁數,重置到第一頁
     if (currentPage.value > totalPages.value) {
       currentPage.value = 1
     }
   } catch (error) {
     console.error('載入需關注客戶失敗:', error)
-    errorMessage.value = error instanceof Error ? error.message : '載入失敗，請稍後再試'
+    errorMessage.value = error instanceof Error ? error.message : '載入失敗,請稍後再試'
   } finally {
     isLoading.value = false
   }
@@ -330,5 +511,5 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 使用 Tailwind CSS 和 inline styles，無需額外樣式 */
+/* 使用 Tailwind CSS 和 inline styles,無需額外樣式 */
 </style>

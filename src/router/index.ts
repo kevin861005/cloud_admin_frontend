@@ -1,6 +1,6 @@
 /**
  * Vue Router 配置
- * 
+ *
  * 路由結構：
  * - /login: 登入頁
  * - /: 主頁佈局（包含 Container + Sidebar）
@@ -169,11 +169,24 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+
+  /**
+   * Table 元件測試頁面
+   */
+  {
+    path: '/table-test',
+    name: 'table-test',
+    component: () => import('@/views/table-test-view.vue'),
+    meta: {
+      title: 'Table 元件測試',
+      requiresAuth: false, // 測試時可設為 false
+    },
+  },
 ]
 
 /**
  * 建立 Router 實例
- * 
+ *
  * 重要：base 必須設定為 '/cloudadmin/' 以匹配後端的 context-path
  * import.meta.env.BASE_URL 會自動讀取 vite.config.ts 中的 base 設定
  */
@@ -184,18 +197,14 @@ const router = createRouter({
 
 /**
  * 全域路由守衛
- * 
+ *
  * 功能：
  * 1. 設定頁面標題
  * 2. 檢查是否需要登入
  * 3. 已登入時不允許訪問登入頁
  */
 router.beforeEach(
-  async (
-    to: RouteLocationNormalized,
-    from: RouteLocationNormalized,
-    next: NavigationGuardNext,
-  ) => {
+  async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
     const authStore = useAuthStore()
 
     // 設定頁面標題
