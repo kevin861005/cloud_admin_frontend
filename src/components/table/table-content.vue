@@ -5,6 +5,20 @@
       <!-- 表格標題列 -->
       <thead>
         <tr class="border-b border-gray-200 bg-gray-50">
+          <!-- Checkbox 欄位（階段三新增） -->
+          <th v-if="showCheckbox" class="w-12 px-6 py-3">
+            <div class="flex items-center justify-center">
+              <input
+                type="checkbox"
+                :checked="isAllSelected"
+                :indeterminate="isIndeterminate"
+                class="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                @change="handleToggleAll"
+              />
+            </div>
+          </th>
+
+          <!-- 原始欄位 -->
           <th
             v-for="column in columns"
             :key="column.key"
@@ -82,7 +96,10 @@
       <tbody>
         <!-- 載入狀態 -->
         <tr v-if="loading">
-          <td :colspan="columns.length" class="px-6 py-12 text-center">
+          <td
+            :colspan="showCheckbox ? columns.length + 1 : columns.length"
+            class="px-6 py-12 text-center"
+          >
             <div class="flex items-center justify-center gap-2 text-gray-500">
               <svg
                 class="h-5 w-5 animate-spin"
@@ -111,7 +128,10 @@
 
         <!-- 無資料狀態 -->
         <tr v-else-if="data.length === 0">
-          <td :colspan="columns.length" class="px-6 py-12 text-center text-gray-500">
+          <td
+            :colspan="showCheckbox ? columns.length + 1 : columns.length"
+            class="px-6 py-12 text-center text-gray-500"
+          >
             {{ emptyText }}
           </td>
         </tr>
@@ -121,8 +141,24 @@
           v-else
           v-for="(row, rowIndex) in data"
           :key="rowIndex"
-          class="border-b border-gray-200 transition-colors hover:bg-gray-50"
+          :class="[
+            'border-b border-gray-200 transition-colors',
+            isRowSelected(row) ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50',
+          ]"
         >
+          <!-- Checkbox 欄位（階段三新增） -->
+          <td v-if="showCheckbox" class="px-6 py-4">
+            <div class="flex items-center justify-center">
+              <input
+                type="checkbox"
+                :checked="isRowSelected(row)"
+                class="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                @change="handleToggleRow(row)"
+              />
+            </div>
+          </td>
+
+          <!-- 原始資料欄位 -->
           <td
             v-for="column in columns"
             :key="column.key"
@@ -183,6 +219,7 @@
               <div class="flex items-center justify-center gap-3">
                 <!-- 編輯按鈕 -->
                 <button
+                  v-if="showEditButton"
                   class="text-gray-600 transition-colors hover:text-blue-600"
                   title="編輯"
                   @click="handleEdit(row)"
@@ -232,12 +269,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
-// import type { ColumnConfig, SortState, SortOrder } from '@/types/table'
+import { reactive, onMounted, watch } from 'vue'
 import type { ColumnConfig, SortState } from '@/types/table'
 
 /**
- * Table 表格內容元件
+ * Table 表格內容元件（階段三：整合選取功能）
  *
  * 功能：
  * 1. 顯示表格標題列（含排序圖示）
@@ -245,11 +281,15 @@ import type { ColumnConfig, SortState } from '@/types/table'
  * 3. 支援多種自訂渲染方式（badge、link、actions、slot）
  * 4. 前端排序功能（點擊欄位標題）
  * 5. 載入狀態和空資料狀態
+ * 6. Checkbox 選取功能（單選、全選）
+ * 7. 選中行的視覺回饋（藍色背景）
  *
  * 事件：
  * - sort-change: 排序改變時觸發，回傳 { key: string, order: 'asc' | 'desc' }
  * - row-edit: 點擊編輯按鈕時觸發，回傳該列資料
  * - row-view: 點擊查看按鈕時觸發，回傳該列資料
+ * - toggle-all: 全選/取消全選時觸發
+ * - toggle-row: 單行選取/取消選取時觸發，回傳該列資料
  */
 
 // ===== Props 定義 =====
@@ -258,11 +298,24 @@ interface Props<T = Record<string, unknown>> {
   data: T[] // 表格資料（已經是當前頁的資料）
   loading?: boolean // 載入狀態
   emptyText?: string // 無資料時的提示文字
+  // ===== 選取功能（階段三）=====
+  showCheckbox?: boolean // 是否顯示 Checkbox（預設 false）
+  showEditButton?: boolean // 是否顯示編輯按鈕（預設 true)
+  selectedIds?: (string | number)[] // 已選擇的項目 ID（預設 []）
+  rowKey?: string // 資料的唯一識別欄位（預設 'id'）
+  isAllSelected?: boolean // 當前頁是否全選（預設 false）
+  isIndeterminate?: boolean // 是否為半選狀態（預設 false）
 }
 
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
   emptyText: '暫無資料',
+  showCheckbox: false,
+  showEditButton: true,
+  selectedIds: () => [],
+  rowKey: 'id',
+  isAllSelected: false,
+  isIndeterminate: false,
 })
 
 // ===== Emits 定義 =====
@@ -270,6 +323,8 @@ const emit = defineEmits<{
   'sort-change': [sortState: SortState] // 排序改變事件
   'row-edit': [row: Record<string, unknown>] // 編輯按鈕點擊事件
   'row-view': [row: Record<string, unknown>] // 查看按鈕點擊事件
+  'toggle-all': [] // 全選/取消全選事件
+  'toggle-row': [row: Record<string, unknown>] // 單行選取/取消選取事件
 }>()
 
 // ===== 排序狀態 =====
@@ -294,6 +349,15 @@ const getBadgeColor = (column: ColumnConfig, row: Record<string, unknown>) => {
   const key = String(value)
 
   return column.badgeConfig.colorMap[key] || null
+}
+
+/**
+ * 判斷該行是否被選中
+ */
+const isRowSelected = (row: Record<string, unknown>): boolean => {
+  if (!props.showCheckbox) return false
+  const id = row[props.rowKey] as string | number
+  return props.selectedIds?.includes(id) || false
 }
 
 // ===== 事件處理 =====
@@ -341,4 +405,45 @@ const handleEdit = (row: Record<string, unknown>) => {
 const handleView = (row: Record<string, unknown>) => {
   emit('row-view', row)
 }
+
+/**
+ * 處理全選/取消全選
+ */
+const handleToggleAll = () => {
+  emit('toggle-all')
+}
+
+/**
+ * 處理單行選取/取消選取
+ */
+const handleToggleRow = (row: Record<string, unknown>) => {
+  emit('toggle-row', row)
+}
+
+// ===== Checkbox 半選狀態處理 =====
+
+/**
+ * 在元件掛載後和 props 變化時，更新 checkbox 的半選狀態
+ * 原因：indeterminate 是 DOM 屬性，不能透過 Vue 的屬性綁定設定
+ */
+const updateCheckboxIndeterminate = () => {
+  if (!props.showCheckbox) return
+
+  // 找到全選 checkbox
+  const checkbox = document.querySelector('thead input[type="checkbox"]') as HTMLInputElement
+  if (checkbox) {
+    checkbox.indeterminate = props.isIndeterminate
+  }
+}
+
+onMounted(() => {
+  updateCheckboxIndeterminate()
+})
+
+watch(
+  () => props.isIndeterminate,
+  () => {
+    updateCheckboxIndeterminate()
+  },
+)
 </script>

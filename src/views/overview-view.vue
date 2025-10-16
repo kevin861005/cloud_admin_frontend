@@ -26,6 +26,18 @@
 
     <!-- Section-Chart 容器（內部已包含需關注客戶卡片） -->
     <SectionChartContainer />
+
+    <!-- 客戶列表區域 -->
+    <div class="mt-6">
+      <customer-table
+        :show-filters="true"
+        :show-search="true"
+        :show-add-button="false"
+        :show-checkbox="false"
+        :show-edit-button="false"
+        @row-view="handleView"
+      />
+    </div>
   </div>
 </template>
 
@@ -34,6 +46,7 @@ import { onMounted } from 'vue'
 import PageTitle from '@/components/common/page-title.vue'
 import SectionCardContainer from '@/components/overview/section-card-container.vue'
 import SectionChartContainer from '@/components/overview/section-chart-container.vue'
+import CustomerTable from '@/components/business/customer-table.vue'
 
 /**
  * 總覽頁面主元件
@@ -48,6 +61,12 @@ import SectionChartContainer from '@/components/overview/section-chart-container
  * - 父元件只管理容器，不管理個別卡片
  * - 簡化引入，提高可維護性
  */
+
+const handleView = (row: Record<string, unknown>) => {
+  // 安全的型別轉換
+  const customer = row as unknown as { id: number; name: string }
+  console.log('查看客戶:', customer)
+}
 
 // ==================== Lifecycle ====================
 

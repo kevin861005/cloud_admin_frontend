@@ -6,7 +6,13 @@
       :total-count="filteredTotalCount"
       :show-add-button="showAddButton"
       :add-button-text="addButtonText"
+      :show-checkbox="showCheckbox"
+      :show-edit-button="showEditButton"
+      :selected-count="selectedIds?.length || 0"
+      :batch-actions="batchActions"
       @add-click="emit('add-click')"
+      @batch-action="handleBatchAction"
+      @cancel-selection="handleCancelSelection"
     />
 
     <!-- 篩選器 + 搜尋框區域 -->
@@ -37,11 +43,19 @@
     <table-content
       :columns="columns"
       :data="paginatedData"
+      :show-edit-button="showEditButton"
       :loading="loading"
       :empty-text="emptyText"
+      :show-checkbox="showCheckbox"
+      :selected-ids="selectedIds || []"
+      :row-key="rowKey"
+      :is-all-selected="isCurrentPageAllSelected"
+      :is-indeterminate="isIndeterminate"
       @sort-change="handleSortChange"
       @row-edit="emit('row-edit', $event)"
       @row-view="emit('row-view', $event)"
+      @toggle-all="handleToggleAll"
+      @toggle-row="handleToggleRow"
     />
 
     <!-- 分頁控制 -->
@@ -66,10 +80,16 @@ import TableFilters from './table-filters.vue'
 import TableSearch from './table-search.vue'
 import TableContent from './table-content.vue'
 import TablePagination from './table-pagination.vue'
-import type { ColumnConfig, FilterConfig, FilterValues, SortState } from '@/types/table'
+import type {
+  ColumnConfig,
+  FilterConfig,
+  FilterValues,
+  SortState,
+  BatchActionConfig,
+} from '@/types/table'
 
 /**
- * Data Table 主容器元件（階段二：整合篩選與搜尋）
+ * Data Table 主容器元件（階段三：整合選取功能）
  *
  * 資料流程：
  * 原始資料 (props.data)
@@ -87,6 +107,7 @@ import type { ColumnConfig, FilterConfig, FilterValues, SortState } from '@/type
  * 互動邏輯：
  * - 改變篩選器 → 清空搜尋框 + 立即重新篩選 + 回到第一頁
  * - 輸入搜尋 → 保留篩選器條件 + 立即搜尋 + 回到第一頁
+ * - 選取功能 → 支援跨頁選取 + 全選當前頁 + 批量操作
  */
 
 // ===== Props 定義 =====
@@ -99,11 +120,17 @@ interface Props {
   showSearch?: boolean // 是否顯示搜尋框（階段二新增）
   searchPlaceholder?: string // 搜尋框提示文字（階段二新增）
   showAddButton?: boolean // 是否顯示新增按鈕
+  showEditButton?: boolean // 是否顯示編輯按鈕
   addButtonText?: string // 新增按鈕文字
   loading?: boolean // 載入狀態
   emptyText?: string // 無資料提示文字
   pageSize?: number // 每頁顯示筆數
   pageSizeOptions?: number[] // 筆數選項
+  // ===== 選取功能（階段三）=====
+  showCheckbox?: boolean // 是否顯示勾選框（預設 false）
+  selectedIds?: (string | number)[] // 已選擇的項目 ID（v-model）
+  rowKey?: string // 資料的唯一識別欄位（預設 'id'）
+  batchActions?: BatchActionConfig[] // 批次操作按鈕配置
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -111,11 +138,17 @@ const props = withDefaults(defineProps<Props>(), {
   showSearch: false,
   searchPlaceholder: '搜尋...',
   showAddButton: false,
+  showEditButton: true,
   addButtonText: '新增',
   loading: false,
   emptyText: '暫無資料',
   pageSize: 10,
   pageSizeOptions: () => [10, 20, 50, 100],
+  // 選取功能預設值
+  showCheckbox: false,
+  selectedIds: () => [],
+  rowKey: 'id',
+  batchActions: () => [],
 })
 
 // ===== Emits 定義 =====
@@ -123,6 +156,8 @@ const emit = defineEmits<{
   'add-click': [] // 新增按鈕點擊事件
   'row-edit': [row: Record<string, unknown>] // 編輯按鈕點擊事件
   'row-view': [row: Record<string, unknown>] // 查看按鈕點擊事件
+  'update:selectedIds': [ids: (string | number)[]] // 選取變更事件（v-model）
+  'batch-action': [actionKey: string, selectedRows: Record<string, unknown>[]] // 批量操作事件
 }>()
 
 // ===== 內部狀態 =====
@@ -299,6 +334,40 @@ const endIndex = computed(() => {
   return Math.min(end, filteredTotalCount.value)
 })
 
+// ===== 選取功能計算屬性（階段三）=====
+
+/**
+ * 當前頁是否全選
+ * 邏輯：當前頁所有項目的 ID 都在 selectedIds 中
+ */
+const isCurrentPageAllSelected = computed(() => {
+  if (!props.showCheckbox || paginatedData.value.length === 0) {
+    return false
+  }
+
+  return paginatedData.value.every((row) => {
+    const id = row[props.rowKey] as string | number
+    return props.selectedIds?.includes(id)
+  })
+})
+
+/**
+ * 是否為半選狀態（部分選中）
+ * 邏輯：當前頁有部分項目被選中，但不是全部
+ */
+const isIndeterminate = computed(() => {
+  if (!props.showCheckbox || paginatedData.value.length === 0) {
+    return false
+  }
+
+  const selectedCount = paginatedData.value.filter((row) => {
+    const id = row[props.rowKey] as string | number
+    return props.selectedIds?.includes(id)
+  }).length
+
+  return selectedCount > 0 && selectedCount < paginatedData.value.length
+})
+
 // ===== 監聽器 =====
 
 /**
@@ -387,5 +456,86 @@ const handlePageChange = (page: number) => {
 const handlePageSizeChange = (size: number) => {
   currentPageSize.value = size
   currentPage.value = 0 // 回到第一頁（從 0 開始）
+}
+
+// ===== 選取功能事件處理（階段三）=====
+
+/**
+ * 處理全選/取消全選當前頁
+ * 邏輯：
+ * 1. 如果當前頁全選，則取消選中當前頁所有項目
+ * 2. 如果當前頁未全選，則選中當前頁所有項目
+ * 3. 跨頁選取狀態會保留
+ */
+const handleToggleAll = () => {
+  if (!props.selectedIds) return
+
+  const currentPageIds = paginatedData.value.map((row) => row[props.rowKey] as string | number)
+
+  let newSelectedIds: (string | number)[]
+
+  if (isCurrentPageAllSelected.value) {
+    // 取消選中當前頁所有項目
+    newSelectedIds = props.selectedIds.filter((id) => !currentPageIds.includes(id))
+  } else {
+    // 選中當前頁所有項目
+    // 先移除當前頁已選中的項目，避免重複
+    const otherPageIds = props.selectedIds.filter((id) => !currentPageIds.includes(id))
+    newSelectedIds = [...otherPageIds, ...currentPageIds]
+  }
+
+  emit('update:selectedIds', newSelectedIds)
+}
+
+/**
+ * 處理單行選取/取消選取
+ * 邏輯：
+ * 1. 如果該行已選中，則取消選中
+ * 2. 如果該行未選中，則選中
+ * 3. 跨頁選取狀態會保留
+ */
+const handleToggleRow = (row: Record<string, unknown>) => {
+  if (!props.selectedIds) return
+
+  const id = row[props.rowKey] as string | number
+  const isSelected = props.selectedIds.includes(id)
+
+  let newSelectedIds: (string | number)[]
+
+  if (isSelected) {
+    // 取消選中
+    newSelectedIds = props.selectedIds.filter((selectedId) => selectedId !== id)
+  } else {
+    // 選中
+    newSelectedIds = [...props.selectedIds, id]
+  }
+
+  emit('update:selectedIds', newSelectedIds)
+}
+
+/**
+ * 處理取消所有選擇
+ * 邏輯：清空所有選取狀態（包含跨頁）
+ */
+const handleCancelSelection = () => {
+  emit('update:selectedIds', [])
+}
+
+/**
+ * 處理批量操作
+ * 邏輯：
+ * 1. 根據 selectedIds 從完整資料中找到對應的行資料
+ * 2. 發出 batch-action 事件，傳遞操作 key 和選中的行資料
+ */
+const handleBatchAction = (actionKey: string) => {
+  if (!props.selectedIds || props.selectedIds.length === 0) return
+
+  // 從完整資料中找到選中的行
+  const selectedRows = props.data.filter((row) => {
+    const id = row[props.rowKey] as string | number
+    return props.selectedIds?.includes(id)
+  })
+
+  emit('batch-action', actionKey, selectedRows)
 }
 </script>

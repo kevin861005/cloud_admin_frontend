@@ -1,0 +1,322 @@
+<template>
+  <data-table
+    title="客戶列表"
+    :total-count="customers.length"
+    :columns="columns"
+    :data="customers"
+    :filters="filters"
+    :show-search="showSearch"
+    search-placeholder="搜尋客戶名稱、模組、產業..."
+    :show-add-button="showAddButton"
+    add-button-text="新增客戶"
+    :loading="isLoading"
+    :show-checkbox="showCheckbox"
+    :show-edit-button="showEditButton"
+    v-model:selected-ids="selectedIds"
+    row-key="id"
+    :batch-actions="batchActions"
+    @add-click="handleAdd"
+    @row-edit="handleEdit"
+    @row-view="handleView"
+    @batch-action="handleBatchAction"
+  >
+    <!-- 如果需要自訂欄位內容，可以在這裡加入 slot -->
+  </data-table>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import DataTable from '@/components/table/data-table.vue'
+import { getMockCustomers } from '@/services/customer.service'
+import type { Customer } from '@/types/customer'
+import type { ColumnConfig, FilterConfig, BatchActionConfig } from '@/types/table'
+
+/**
+ * CustomerTable 業務元件
+ *
+ * 功能：
+ * - 封裝客戶列表表格的所有邏輯
+ * - 自動載入客戶資料
+ * - 統一的欄位配置和篩選器配置
+ * - 透過 props 控制顯示哪些功能
+ * - 透過 emit 將事件傳遞給父元件處理
+ *
+ * 使用場景：
+ * - 首頁（/overview）：簡單版（不需要選取功能）
+ * - 客戶管理（/customers）：完整版（需要選取功能和批量操作）
+ */
+
+// ===== Props 定義 =====
+interface Props {
+  /** 是否顯示篩選器（預設：true） */
+  showFilters?: boolean
+
+  /** 是否顯示搜尋框（預設：true） */
+  showSearch?: boolean
+
+  /** 是否顯示新增按鈕（預設：false） */
+  showAddButton?: boolean
+
+  /** 是否顯示選取功能（預設：false） */
+  showCheckbox?: boolean
+
+  /** 是否顯示編輯按鈕（預設：true） */
+  showEditButton?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  showFilters: true,
+  showSearch: true,
+  showAddButton: false,
+  showCheckbox: false,
+  showEditButton: true,
+})
+
+// ===== Emits 定義 =====
+const emit = defineEmits<{
+  'add-click': [] // 新增按鈕點擊事件
+  'row-edit': [row: Record<string, unknown>] // 編輯按鈕點擊事件
+  'row-view': [row: Record<string, unknown>] // 查看按鈕點擊事件
+  'batch-action': [actionKey: string, selectedRows: Record<string, unknown>[]] // 批量操作事件
+}>()
+
+// ===== 狀態管理 =====
+
+/**
+ * 載入狀態
+ */
+const isLoading = ref(false)
+
+/**
+ * 客戶列表資料
+ */
+const customers = ref<Customer[]>([])
+
+/**
+ * 選取的客戶 ID
+ */
+const selectedIds = ref<(string | number)[]>([])
+
+// ===== 欄位配置 =====
+
+/**
+ * 表格欄位配置
+ * 根據 showEditButton 決定操作欄位的顯示
+ */
+const columns = ref<ColumnConfig[]>([
+  {
+    key: 'name',
+    label: '客戶名稱',
+    width: '180px',
+    sortable: true,
+  },
+  {
+    key: 'status',
+    label: '使用狀態',
+    width: '120px',
+    align: 'center',
+    sortable: true,
+    customRender: 'badge',
+    badgeConfig: {
+      colorMap: {
+        活躍: {
+          bg: 'bg-green-100',
+          text: 'text-green-700',
+        },
+        低活躍: {
+          bg: 'bg-yellow-100',
+          text: 'text-yellow-700',
+        },
+        未使用: {
+          bg: 'bg-gray-100',
+          text: 'text-gray-700',
+        },
+      },
+    },
+  },
+  {
+    key: 'lastUsed',
+    label: '最後使用',
+    width: '150px',
+    sortable: true,
+  },
+  {
+    key: 'module',
+    label: '使用模組',
+    width: '120px',
+    sortable: true,
+  },
+  {
+    key: 'sales',
+    label: '業務窗口',
+    width: '120px',
+    sortable: true,
+  },
+  {
+    key: 'industry',
+    label: '產業別',
+    width: '120px',
+  },
+  {
+    key: 'link',
+    label: '網站連結',
+    width: '200px',
+    customRender: 'link',
+    linkConfig: {
+      target: '_blank',
+      showIcon: false,
+    },
+  },
+  {
+    key: 'actions',
+    label: '操作',
+    width: '100px',
+    align: 'center',
+    customRender: 'actions',
+  },
+])
+
+// ===== 篩選器配置 =====
+
+/**
+ * 篩選器配置
+ */
+const filters: FilterConfig[] = [
+  {
+    key: 'status',
+    label: '狀態:',
+    options: [
+      { label: '全部', value: 'all' },
+      { label: '活躍', value: '活躍' },
+      { label: '低活躍', value: '低活躍' },
+      { label: '未使用', value: '未使用' },
+    ],
+    defaultValue: 'all',
+  },
+  {
+    key: 'module',
+    label: '模組:',
+    options: [
+      { label: '全部', value: 'all' },
+      { label: 'Master', value: 'Master' },
+      { label: 'GGF', value: 'GGF' },
+    ],
+    defaultValue: 'all',
+  },
+  {
+    key: 'sales',
+    label: '業務:',
+    options: [
+      { label: '全部', value: 'all' },
+      { label: '周經理', value: '周經理' },
+      { label: '林經理', value: '林經理' },
+      { label: '陳經理', value: '陳經理' },
+    ],
+    defaultValue: 'all',
+  },
+]
+
+// ===== 批量操作配置 =====
+
+/**
+ * 批量操作按鈕配置
+ * 只在 showCheckbox 為 true 時有效
+ */
+const batchActions: BatchActionConfig[] = [
+  {
+    key: 'delete',
+    label: '環境刪除',
+    type: 'danger',
+    confirmMessage: '確定要刪除選中的項目嗎？此操作無法復原。',
+  },
+]
+
+// ===== 載入資料 =====
+
+/**
+ * 載入客戶列表
+ * 從 API 取得所有客戶資料
+ *
+ * 開發階段：使用 getMockCustomers() 回傳模擬資料
+ * 正式環境：使用 getAllCustomers() 呼叫後端 API
+ */
+const loadCustomers = async () => {
+  isLoading.value = true
+  try {
+    // TODO: 等後端 API 完成後，切換為 getAllCustomers()
+    // const data = await getAllCustomers()
+
+    // 開發階段：使用 Mock 資料
+    const data = getMockCustomers()
+    customers.value = data
+  } catch (error) {
+    console.error('載入客戶列表錯誤:', error)
+    // TODO: 顯示錯誤訊息給使用者
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// ===== 事件處理 =====
+
+/**
+ * 處理新增按鈕點擊
+ * 發出 add-click 事件，由父元件處理
+ */
+const handleAdd = () => {
+  emit('add-click')
+}
+
+/**
+ * 處理編輯按鈕點擊
+ * 發出 row-edit 事件，由父元件處理
+ *
+ * 注意：這裡不做型別斷言，讓父元件自行處理型別轉換
+ */
+const handleEdit = (row: Record<string, unknown>) => {
+  emit('row-edit', row)
+}
+
+/**
+ * 處理查看按鈕點擊
+ * 發出 row-view 事件，由父元件處理
+ */
+const handleView = (row: Record<string, unknown>) => {
+  emit('row-view', row)
+}
+
+/**
+ * 處理批量操作
+ * 發出 batch-action 事件，由父元件處理
+ */
+const handleBatchAction = (actionKey: string, selectedRows: Record<string, unknown>[]) => {
+  emit('batch-action', actionKey, selectedRows)
+}
+
+// ===== 初始化 =====
+
+/**
+ * 元件掛載時自動載入資料
+ */
+onMounted(() => {
+  loadCustomers()
+})
+
+/**
+ * 對外暴露方法（供父元件呼叫）
+ */
+defineExpose({
+  /**
+   * 重新載入資料
+   * 用於新增、編輯、刪除後刷新列表
+   */
+  refresh: loadCustomers,
+
+  /**
+   * 清空選取狀態
+   */
+  clearSelection: () => {
+    selectedIds.value = []
+  },
+})
+</script>
