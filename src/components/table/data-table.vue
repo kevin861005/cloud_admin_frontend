@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-lg border border-gray-200 bg-white shadow-sm">
+  <div :class="['bg-white', showBorder ? 'rounded-lg border border-gray-200 shadow-sm' : '']">
     <!-- 標題區 -->
     <table-header
       :title="title"
@@ -121,6 +121,7 @@ interface Props {
   searchPlaceholder?: string // 搜尋框提示文字（階段二新增）
   showAddButton?: boolean // 是否顯示新增按鈕
   showEditButton?: boolean // 是否顯示編輯按鈕
+  showBorder?: boolean // 是否顯示外層邊框（預設 true）
   addButtonText?: string // 新增按鈕文字
   loading?: boolean // 載入狀態
   emptyText?: string // 無資料提示文字
@@ -139,6 +140,7 @@ const props = withDefaults(defineProps<Props>(), {
   searchPlaceholder: '搜尋...',
   showAddButton: false,
   showEditButton: true,
+  showBorder: true, // 預設顯示邊框
   addButtonText: '新增',
   loading: false,
   emptyText: '暫無資料',

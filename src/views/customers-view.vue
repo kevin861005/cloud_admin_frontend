@@ -1,14 +1,20 @@
 <template>
-  <!-- 頁面容器 -->
-  <div class="page-container">
-    <!-- 頁面標題 -->
-    <h1 class="page-title">客戶管理</h1>
+  <div class="space-y-6">
+    <!-- 頁面標題（使用可重用的 PageTitle 元件） -->
+    <PageTitle title="客戶管理" subtitle="業績表現、客戶資料、活躍度狀態" />
 
-    <!-- 說明文字 -->
-    <p class="page-description">管理所有客戶資料，包含新增、編輯、查看和批量操作功能。</p>
+    <CardContainer>
+      <!-- 總客戶數卡片 -->
+      <TotalCustomerCard />
 
-    <!-- 客戶列表 -->
-    <div class="page-content">
+      <!-- 活躍客戶卡片 -->
+      <ActiveCustomerCard />
+
+      <!-- 需關注客戶卡片 -->
+      <AttentionCustomerCard />
+    </CardContainer>
+
+    <TableContainer>
       <customer-table
         ref="customerTableRef"
         :show-filters="true"
@@ -16,19 +22,35 @@
         :show-add-button="true"
         :show-checkbox="true"
         :show-edit-button="true"
+        :show-border="false"
         @add-click="handleAdd"
         @row-edit="handleEdit"
         @row-view="handleView"
         @batch-action="handleBatchAction"
       />
-    </div>
+    </TableContainer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 // import { useRouter } from 'vue-router'
+import PageTitle from '@/components/common/page-title.vue'
+import CardContainer from '@/components/common/card-container.vue'
+import TableContainer from '@/components/common/table-container.vue'
+
+// 客戶列表表格元件
 import CustomerTable from '@/components/business/customer-table.vue'
+
+// 總客戶數卡片元件
+import TotalCustomerCard from '@/components/customer/total-customer-card.vue'
+
+// 活躍客戶卡片元件
+import ActiveCustomerCard from '@/components/customer/active-customer-card.vue'
+
+// 需關注客戶卡片元件
+import AttentionCustomerCard from '@/components/customer/attention-customer-card.vue'
+
 // import { batchDeleteCustomers } from '@/services/customer.service'
 
 /**
@@ -46,11 +68,21 @@ import CustomerTable from '@/components/business/customer-table.vue'
 
 // const router = useRouter()
 
+const containerRef = ref<HTMLElement | null>(null)
+
 /**
  * CustomerTable 元件引用
  * 用於呼叫元件暴露的方法（如 refresh）
  */
 const customerTableRef = ref<InstanceType<typeof CustomerTable> | null>(null)
+
+const handleWheel = (event: WheelEvent) => {
+  if (!containerRef.value) return
+  const canScroll = containerRef.value.scrollWidth > containerRef.value.clientWidth
+  if (!canScroll) return
+  event.preventDefault()
+  containerRef.value.scrollLeft += event.deltaY
+}
 
 /**
  * 處理新增客戶
@@ -130,59 +162,19 @@ const handleBatchAction = async (actionKey: string, selectedRows: Record<string,
       alert('批量刪除失敗，請稍後再試。')
     }
   }
+
+  onMounted(() => {
+    if (containerRef.value) {
+      containerRef.value.addEventListener('wheel', handleWheel, { passive: false })
+    }
+  })
+
+  onUnmounted(() => {
+    if (containerRef.value) {
+      containerRef.value.removeEventListener('wheel', handleWheel)
+    }
+  })
 }
 </script>
 
-<style scoped>
-/**
- * 頁面容器
- */
-.page-container {
-  /* 內距：上下左右各 24px */
-  padding: 24px;
-  /* 背景色：淡灰色 */
-  background-color: #f8fafc;
-  /* 最小高度：填滿整個內容區域 */
-  min-height: 100%;
-}
-
-/**
- * 頁面標題
- */
-.page-title {
-  /* 字體大小：24px */
-  font-size: 24px;
-  /* 字體粗細：粗體 */
-  font-weight: 700;
-  /* 字體顏色：深色 */
-  color: #1e293b;
-  /* 下方間距：16px */
-  margin-bottom: 16px;
-}
-
-/**
- * 說明文字
- */
-.page-description {
-  /* 字體大小：14px */
-  font-size: 14px;
-  /* 字體顏色：中灰色 */
-  color: #64748b;
-  /* 下方間距：24px */
-  margin-bottom: 24px;
-}
-
-/**
- * 頁面內容區域
- */
-.page-content {
-  /* 背景色：白色 */
-  background-color: #ffffff;
-  /* 圓角：8px */
-  border-radius: 8px;
-  /* 內距：24px（減少內距，因為 DataTable 內部已有 padding） */
-  padding: 24px;
-  /* 陰影 */
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-}
-</style>
+<style scoped></style>

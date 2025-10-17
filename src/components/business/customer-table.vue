@@ -12,6 +12,7 @@
     :loading="isLoading"
     :show-checkbox="showCheckbox"
     :show-edit-button="showEditButton"
+    :show-border="showBorder"
     v-model:selected-ids="selectedIds"
     row-key="id"
     :batch-actions="batchActions"
@@ -25,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, toRefs } from 'vue'
 import DataTable from '@/components/table/data-table.vue'
 import { getMockCustomers } from '@/services/customer.service'
 import type { Customer } from '@/types/customer'
@@ -48,9 +49,6 @@ import type { ColumnConfig, FilterConfig, BatchActionConfig } from '@/types/tabl
 
 // ===== Props 定義 =====
 interface Props {
-  /** 是否顯示篩選器（預設：true） */
-  showFilters?: boolean
-
   /** 是否顯示搜尋框（預設：true） */
   showSearch?: boolean
 
@@ -62,15 +60,20 @@ interface Props {
 
   /** 是否顯示編輯按鈕（預設：true） */
   showEditButton?: boolean
+
+  /** 是否顯示外層邊框（預設：true） */
+  showBorder?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  showFilters: true,
   showSearch: true,
   showAddButton: false,
   showCheckbox: false,
   showEditButton: true,
+  showBorder: true,
 })
+
+const { showSearch, showAddButton, showCheckbox, showEditButton, showBorder } = toRefs(props)
 
 // ===== Emits 定義 =====
 const emit = defineEmits<{

@@ -49,7 +49,7 @@ const routes: RouteRecordRaw[] = [
     name: 'Home',
     component: () => import('@/views/home-view.vue'),
     meta: {
-      requiresAuth: false,
+      requiresAuth: true,
     },
     children: [
       /**
@@ -68,7 +68,7 @@ const routes: RouteRecordRaw[] = [
         name: 'Overview',
         component: () => import('@/views/overview-view.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           title: '總覽',
         },
       },
@@ -81,7 +81,7 @@ const routes: RouteRecordRaw[] = [
         name: 'Customers',
         component: () => import('@/views/customers-view.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           title: '客戶管理',
         },
       },
@@ -94,7 +94,7 @@ const routes: RouteRecordRaw[] = [
         name: 'Environment',
         component: () => import('@/views/environment-view.vue'),
         meta: {
-          requiresAuth: false,
+          requiresAuth: true,
           title: '環境管理',
         },
       },
@@ -113,7 +113,7 @@ const routes: RouteRecordRaw[] = [
             name: 'SettingsAccounts',
             component: () => import('@/views/settings/accounts-view.vue'),
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
               title: '帳號管理',
             },
           },
@@ -125,7 +125,7 @@ const routes: RouteRecordRaw[] = [
             name: 'SettingsRoles',
             component: () => import('@/views/settings/roles-view.vue'),
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
               title: '權限設定',
             },
           },
@@ -137,7 +137,7 @@ const routes: RouteRecordRaw[] = [
             name: 'SettingsModules',
             component: () => import('@/views/settings/modules-view.vue'),
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
               title: '模組設定',
             },
           },
@@ -149,7 +149,7 @@ const routes: RouteRecordRaw[] = [
             name: 'SettingsIndustries',
             component: () => import('@/views/settings/industries-view.vue'),
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
               title: '產業別設定',
             },
           },
@@ -161,7 +161,7 @@ const routes: RouteRecordRaw[] = [
             name: 'SettingsDealers',
             component: () => import('@/views/settings/dealers-view.vue'),
             meta: {
-              requiresAuth: false,
+              requiresAuth: true,
               title: '經銷商設定',
             },
           },

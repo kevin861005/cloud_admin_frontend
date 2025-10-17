@@ -16,9 +16,7 @@
     4. 顯示最後使用時間和負責業務
     5. 支援使用時間和負責業務的排序功能
   -->
-  <div
-    class="relative flex-shrink-0 w-[387px] h-[396px] bg-white 24px rounded-lg shadow-md p-6 flex flex-col"
-  >
+  <div class="flex-shrink-0 h-[396px] bg-white 24px rounded-lg shadow-md p-6 flex flex-col">
     <!-- Contents-Text: 339x296px, gap: 24px -->
     <div class="flex flex-col h-full">
       <!-- Card-top: 339x24px -->

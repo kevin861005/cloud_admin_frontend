@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="relative flex-1 h-[396px] bg-white rounded-lg shadow-md p-6 flex flex-col min-w-[600px]"
-  >
+  <div class="relative flex-1 h-[396px] bg-white rounded-lg shadow-md p-6 flex flex-col">
     <!-- Header -->
     <div class="flex items-center justify-between h-[46px] px-6 -mx-6 -mt-6 mb-6">
       <h3

@@ -6,9 +6,7 @@
     - gap: 20px (使用 space-y-5)
     - flex: 1 0 0 (使用 flex-1)
   -->
-  <div
-    class="flex-shrink-0 w-[386.67px] h-[272px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5"
-  >
+  <div class="flex-shrink-0 h-[272px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5">
     <!--
       Contents-Text: 文字內容區域
       - gap: 48px (使用 space-y-12)
