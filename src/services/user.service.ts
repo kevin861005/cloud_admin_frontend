@@ -6,7 +6,7 @@
 
 import apiClient from '@/utils/axios'
 import type { ApiResponse } from '@/types/common'
-import type { UserInfo } from '@/types/user'
+import type { UserInfo, UserListItem } from '@/types/user'
 
 /**
  * 使用者服務
@@ -25,6 +25,25 @@ export const userService = {
    */
   async getCurrentUserInfo(): Promise<ApiResponse<UserInfo>> {
     const response = await apiClient.get<ApiResponse<UserInfo>>('/users/me')
+    return response.data
+  },
+
+  /**
+   * 取得所有帳號列表
+   * GET /api/users
+   *
+   * 用途：
+   * 1. 帳號管理頁面的表格資料
+   * 2. 後端回傳全部資料（不分頁）
+   * 3. 前端在瀏覽器端進行搜尋、篩選、排序、分頁
+   *
+   * 權限要求：
+   * - 需要 settings.accounts 權限（僅系統管理員可存取）
+   *
+   * @returns 帳號列表（包含 loginId, name, email, roles, status, createdAt, updatedAt）
+   */
+  async getAllUsers(): Promise<ApiResponse<UserListItem[]>> {
+    const response = await apiClient.get<ApiResponse<UserListItem[]>>('/users')
     return response.data
   },
 }

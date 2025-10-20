@@ -1,67 +1,44 @@
 <template>
-  <!-- 頁面容器 -->
-  <div class="page-container">
-    <!-- 頁面標題 -->
-    <h1 class="page-title">帳號管理</h1>
-    
-    <!-- 說明文字 -->
-    <p class="page-description">
-      這是帳號管理頁面，目前為測試版本。
-    </p>
-    
-    <!-- 功能區塊（暫時空白，未來實作） -->
-    <div class="page-content">
-      <div class="content-placeholder">
-        <p class="text-slate-400">頁面內容開發中...</p>
-      </div>
-    </div>
+  <div class="space-y-6">
+    <!-- 頁面標題（使用可重用的 PageTitle 元件） -->
+    <PageTitle title="帳號管理" subtitle="設定使用人員權限" />
+
+    <TableContainer>
+      <AccountManagementTable @row-view="handleViewUser" @add="handleAdd" />
+    </TableContainer>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+import PageTitle from '@/components/common/page-title.vue'
+import TableContainer from '@/components/common/table-container.vue'
+import AccountManagementTable from '@/components/account/account-management-table.vue'
+
+/**
+ * 處理查看按鈕點擊
+ * @param row 帳號資料
+ */
+const handleViewUser = (row: Record<string, unknown>) => {
+  console.log('查看帳號:', row)
+  // TODO: 實作查看詳情功能
+  // 方案 1: 顯示彈窗
+  // 方案 2: 跳轉到詳情頁面
+}
+
 /**
  * 帳號管理頁面
- * 
- * TODO: 未來實作功能
- * - 帳號列表顯示
- * - 新增/編輯/刪除帳號
- * - 帳號狀態管理
  */
+const router = useRouter()
+
+/**
+ * 處理新增帳號
+ * 跳轉到新增帳號頁面
+ */
+const handleAdd = () => {
+  console.log('跳轉到新增帳號頁面')
+  router.push('/settings/accounts/create')
+}
 </script>
 
-<style scoped>
-.page-container {
-  padding: 24px;
-  background-color: #f8fafc;
-  min-height: 100%;
-}
-
-.page-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 16px;
-}
-
-.page-description {
-  font-size: 14px;
-  color: #64748b;
-  margin-bottom: 24px;
-}
-
-.page-content {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 32px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-}
-
-.content-placeholder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-  border: 2px dashed #e2e8f0;
-  border-radius: 8px;
-}
-</style>
+<style scoped></style>

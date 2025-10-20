@@ -40,7 +40,7 @@ import CardContainer from '@/components/common/card-container.vue'
 import TableContainer from '@/components/common/table-container.vue'
 
 // 客戶列表表格元件
-import CustomerTable from '@/components/business/customer-table.vue'
+import CustomerTable from '@/components/customer/customer-table.vue'
 
 // 總客戶數卡片元件
 import TotalCustomerCard from '@/components/customer/total-customer-card.vue'

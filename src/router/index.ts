@@ -118,6 +118,18 @@ const routes: RouteRecordRaw[] = [
             },
           },
           /**
+           * 帳號管理 - 新增帳號
+           */
+          {
+            path: '/settings/accounts/create',
+            name: 'AccountCreate',
+            component: () => import('@/views/settings/account-create-view.vue'),
+            meta: {
+              requiresAuth: true, //
+              requiredPermissions: ['settings.accounts'],
+            },
+          },
+          /**
            * 權限設定
            */
           {

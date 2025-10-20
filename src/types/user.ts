@@ -16,3 +16,15 @@ export interface UserInfo {
   permissions: string[] // 功能權限代號清單
   roles: string[] // 角色清單
 }
+
+export interface UserListItem {
+  // 新增（列表用）
+  loginId: string
+  name: string
+  email: string
+  roles: string[]
+  status: string
+  statusCode: string
+  createdAt: string
+  updatedAt: string
+}

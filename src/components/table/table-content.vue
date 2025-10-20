@@ -22,9 +22,16 @@
           <th
             v-for="column in columns"
             :key="column.key"
-            :style="{ width: column.width }"
+            :style="{
+              width: column.width,
+              fontFamily: 'Noto Sans TC, sans-serif',
+              fontSize: '14px',
+              fontWeight: '500',
+              lineHeight: '20px',
+              letterSpacing: '0%',
+            }"
             :class="[
-              'px-6 py-3 text-xs font-medium uppercase tracking-wider text-gray-500',
+              'px-6 py-3 text-sm font-medium text-gray-500',
               column.align === 'center' && 'text-center',
               column.align === 'right' && 'text-right',
               column.sortable && 'cursor-pointer select-none hover:bg-gray-100',
@@ -162,8 +169,15 @@
           <td
             v-for="column in columns"
             :key="column.key"
+            :style="{
+              fontFamily: 'Noto Sans TC, sans-serif',
+              fontSize: '14px',
+              fontWeight: '400',
+              lineHeight: '22px',
+              letterSpacing: '0.2px',
+            }"
             :class="[
-              'px-6 py-4 text-sm',
+              'px-6 py-4',
               column.align === 'center' && 'text-center',
               column.align === 'right' && 'text-right',
             ]"
@@ -176,12 +190,9 @@
             <!-- Badge 標籤顯示（用於狀態） -->
             <template v-else-if="column.customRender === 'badge'">
               <span
-                v-if="getBadgeColor(column, row)"
-                :class="[
-                  'inline-flex rounded-full px-3 py-1 text-xs font-medium',
-                  getBadgeColor(column, row)?.bg,
-                  getBadgeColor(column, row)?.text,
-                ]"
+                v-if="getBadgeStyle(column, row)"
+                class="inline-flex items-center justify-center"
+                :style="getBadgeStyleObject(column, row)"
               >
                 {{ row[column.key] }}
               </span>
@@ -216,7 +227,14 @@
 
             <!-- Actions 操作按鈕 -->
             <template v-else-if="column.customRender === 'actions'">
-              <div class="flex items-center justify-center gap-3">
+              <div
+                :class="[
+                  'flex items-center gap-3',
+                  column.align === 'center' && 'justify-center',
+                  column.align === 'right' && 'justify-end',
+                  !column.align && 'justify-center',
+                ]"
+              >
                 <!-- 編輯按鈕 -->
                 <button
                   v-if="showEditButton"
@@ -336,19 +354,67 @@ const sortState = reactive<SortState>({
 // ===== Helper 函數 =====
 
 /**
- * 取得 Badge 的顏色配置
- * 解決 TypeScript 'unknown' 類型無法作為索引的問題
+ * 取得 Badge 的樣式類型
  */
-const getBadgeColor = (column: ColumnConfig, row: Record<string, unknown>) => {
+const getBadgeStyle = (column: ColumnConfig, row: Record<string, unknown>): string | null => {
   if (!column.badgeConfig || !column.badgeConfig.colorMap) {
     return null
   }
 
   const value = row[column.key]
-  // 將 value 轉換為 string，因為 colorMap 的 key 是 string
   const key = String(value)
+  const config = column.badgeConfig.colorMap[key]
 
-  return column.badgeConfig.colorMap[key] || null
+  return config ? config.style : null
+}
+
+/**
+ * 取得 Badge 的完整 style 物件
+ */
+const getBadgeStyleObject = (column: ColumnConfig, row: Record<string, unknown>) => {
+  const styleType = getBadgeStyle(column, row)
+
+  const baseStyle = {
+    width: '54px',
+    height: '24px',
+    paddingTop: '4px',
+    paddingRight: '4px',
+    paddingBottom: '4px',
+    paddingLeft: '4px',
+    gap: '8px',
+    borderRadius: '4px',
+    borderWidth: '1px',
+    fontFamily: 'Noto Sans TC, sans-serif',
+    fontWeight: '700',
+    fontSize: '12px',
+    lineHeight: '16px',
+    letterSpacing: '0.2px',
+  }
+
+  switch (styleType) {
+    case 'success':
+      return {
+        ...baseStyle,
+        backgroundColor: '#27BD720D',
+        borderColor: 'rgba(39, 189, 114, 0.1)',
+        color: '#27BD72',
+      }
+    case 'error':
+      return {
+        ...baseStyle,
+        backgroundColor: '#FD58580D',
+        borderColor: 'rgba(253, 88, 88, 0.1)',
+        color: '#FD5858',
+      }
+    case 'default':
+    default:
+      return {
+        ...baseStyle,
+        backgroundColor: '#0000000D',
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        color: 'rgba(0, 0, 0, 0.8)',
+      }
+  }
 }
 
 /**

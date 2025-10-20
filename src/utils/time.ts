@@ -103,3 +103,28 @@ export function formatTimeOnly(isoString: string): string {
 
   return `${hours}:${minutes}`
 }
+
+/**
+ * 格式化為日期（YYYY.MM.DD 格式，用於表格顯示）
+ *
+ * @param dateString 日期字串（支援多種格式，例如：'2025-10-20 14:43:21' 或 ISO 8601）
+ * @returns 格式化後的日期字串（YYYY.MM.DD 格式）
+ *
+ * @example
+ * formatDateDot('2025-10-20 14:43:21')
+ * // 輸出：
+ * // "2025.10.20"
+ *
+ * formatDateDot('2025-07-25 14:43:21')
+ * // 輸出：
+ * // "2025.07.25"
+ */
+export function formatDateDot(dateString: string): string {
+  const date = new Date(dateString)
+
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}.${month}.${day}`
+}

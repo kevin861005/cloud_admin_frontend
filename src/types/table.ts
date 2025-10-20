@@ -19,6 +19,11 @@ export type CustomRenderType = 'badge' | 'link' | 'actions' | 'slot'
 export type SortOrder = 'asc' | 'desc' | null
 
 /**
+ * Badge 樣式類型
+ */
+export type BadgeStyleType = 'default' | 'success' | 'error'
+
+/**
  * 標籤顏色配置（用於狀態標籤）
  */
 export interface BadgeConfig {
@@ -29,8 +34,7 @@ export interface BadgeConfig {
  * 標籤顏色樣式
  */
 export interface BadgeColorConfig {
-  bg: string // 背景色（Tailwind class，例如：'bg-green-100'）
-  text: string // 文字色（Tailwind class，例如：'text-green-700'）
+  style: BadgeStyleType
 }
 
 /**

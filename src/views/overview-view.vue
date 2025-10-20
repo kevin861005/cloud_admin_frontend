@@ -72,7 +72,7 @@ import AttentionCustomersCard from '@/components/overview/attention-customers-ca
 import ModuleUsageChartCard from '@/components/overview/module-usage-chart-card.vue'
 
 // 引入客戶列表表格元件
-import CustomerTable from '@/components/business/customer-table.vue'
+import CustomerTable from '@/components/customer/customer-table.vue'
 
 const handleView = (row: Record<string, unknown>) => {
   // 安全的型別轉換

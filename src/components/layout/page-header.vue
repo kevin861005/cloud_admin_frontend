@@ -30,7 +30,7 @@
       </button>
 
       <!-- 中間：「返回總覽」按鈕（只在非總覽頁面顯示） -->
-      <div v-if="!isOverviewPage">
+      <div v-if="!isOverviewPage && !isSubPage">
         <!-- 在非總覽頁面時，顯示「返回總覽」按鈕（箭頭 ICON + 文字） -->
         <button
           @click="handleBackToOverview"
@@ -104,6 +104,13 @@ let timerInterval: number | null = null
  */
 const isOverviewPage = computed(() => {
   return route.name === 'Overview' || route.path === '/overview' || route.path === '/'
+})
+
+/**透過其他功能進到的畫面(該畫面不包含在左側功能選單)
+ *
+ */
+const isSubPage = computed(() => {
+  return route.name === 'AccountCreate' || route.path === '/settings/accounts/create'
 })
 
 /**

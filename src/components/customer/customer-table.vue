@@ -123,16 +123,13 @@ const columns = ref<ColumnConfig[]>([
     badgeConfig: {
       colorMap: {
         活躍: {
-          bg: 'bg-green-100',
-          text: 'text-green-700',
+          style: 'success',
         },
         低活躍: {
-          bg: 'bg-yellow-100',
-          text: 'text-yellow-700',
+          style: 'error',
         },
         未使用: {
-          bg: 'bg-gray-100',
-          text: 'text-gray-700',
+          style: 'default',
         },
       },
     },

@@ -29,6 +29,8 @@
           class="flex-1"
         />
 
+        <div v-else class="flex-1"></div>
+
         <!-- 搜尋框 -->
         <table-search
           v-if="showSearch"
@@ -56,7 +58,12 @@
       @row-view="emit('row-view', $event)"
       @toggle-all="handleToggleAll"
       @toggle-row="handleToggleRow"
-    />
+    >
+      <!-- 將所有 slot 傳遞到 table-content -->
+      <template v-for="(_, name) in $slots" #[name]="slotProps">
+        <slot :name="name" v-bind="slotProps" />
+      </template>
+    </table-content>
 
     <!-- 分頁控制 -->
     <table-pagination
