@@ -1,6 +1,6 @@
 <template>
   <!-- 分頁控制區域 -->
-  <div class="flex items-center justify-between border-t border-gray-200 bg-white px-6 py-4">
+  <div class="flex items-center justify-between border-gray-200 bg-white px-6 py-4">
     <!-- 左側：顯示資料筆數資訊 -->
     <div class="text-sm text-gray-700">
       顯示 {{ startIndex + 1 }}-{{ endIndex }} 筆，共 {{ totalElements }} 筆記錄

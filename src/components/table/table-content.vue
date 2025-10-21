@@ -4,7 +4,7 @@
     <table class="w-full border-collapse bg-white">
       <!-- 表格標題列 -->
       <thead>
-        <tr class="border-b border-gray-200 bg-gray-50">
+        <tr class="border-b border-gray-200">
           <!-- Checkbox 欄位（階段三新增） -->
           <th v-if="showCheckbox" class="w-12 px-6 py-3">
             <div class="flex items-center justify-center">
@@ -149,7 +149,7 @@
           v-for="(row, rowIndex) in data"
           :key="rowIndex"
           :class="[
-            'border-b border-gray-200 transition-colors',
+            'last:border-b last:border-gray-200 transition-colors',
             isRowSelected(row) ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50',
           ]"
         >

@@ -40,7 +40,7 @@
   -->
   <div
     ref="containerRef"
-    class="w-full mx-auto px-10 py-5 overflow-x-auto overflow-y-visible [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    class="w-full mx-auto py-5 overflow-x-auto overflow-y-visible [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     :style="{ height: `${props.height}px` }"
   >
     <!-- 可選的白色卡片背景 -->

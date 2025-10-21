@@ -49,7 +49,7 @@ const routes: RouteRecordRaw[] = [
     name: 'Home',
     component: () => import('@/views/home-view.vue'),
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
     },
     children: [
       /**
@@ -68,7 +68,7 @@ const routes: RouteRecordRaw[] = [
         name: 'Overview',
         component: () => import('@/views/overview-view.vue'),
         meta: {
-          requiresAuth: true,
+          requiresAuth: false,
           title: '總覽',
         },
       },
@@ -81,7 +81,7 @@ const routes: RouteRecordRaw[] = [
         name: 'Customers',
         component: () => import('@/views/customers-view.vue'),
         meta: {
-          requiresAuth: true,
+          requiresAuth: false,
           title: '客戶管理',
         },
       },

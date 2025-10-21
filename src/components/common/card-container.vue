@@ -52,7 +52,7 @@
   -->
   <div
     ref="containerRef"
-    class="flex items-center gap-5 overflow-x-auto overflow-y-hidden py-5 px-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    class="flex items-center gap-5 overflow-x-auto overflow-y-hidden py-5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     :style="{ height: `${props.height}px` }"
   >
     <!-- 使用 slot 讓外部可以插入任意數量的卡片 -->
@@ -191,7 +191,7 @@ const calculateCardWidth = () => {
 
     // 開發環境下輸出除錯資訊
     if (import.meta.env.DEV) {
-      console.log('📊 卡片寬度計算（自訂比例模式）:')
+      console.log(' 卡片寬度計算（自訂比例模式）:')
       console.log('- 容器寬度:', containerWidth, 'px')
       console.log('- 可用寬度:', availableWidth, 'px')
       console.log('- 比例設定:', ratios)
@@ -214,7 +214,7 @@ const calculateCardWidth = () => {
 
     // 開發環境下輸出除錯資訊
     if (import.meta.env.DEV) {
-      console.log('📊 卡片寬度計算（平均分配模式）:')
+      console.log(' 卡片寬度計算（平均分配模式）:')
       console.log('- 容器寬度:', containerWidth, 'px')
       console.log('- 可用寬度:', availableWidth, 'px')
       console.log('- 卡片數量:', cardCount)
@@ -228,7 +228,7 @@ const calculateCardWidth = () => {
       props.widthRatios.length !== cardCount
     ) {
       console.warn(
-        `⚠️ widthRatios 長度 (${props.widthRatios.length}) 與卡片數量 (${cardCount}) 不一致，已自動改用平均分配模式`,
+        ` widthRatios 長度 (${props.widthRatios.length}) 與卡片數量 (${cardCount}) 不一致，已自動改用平均分配模式`,
       )
     }
   }

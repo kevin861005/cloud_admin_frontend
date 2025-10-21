@@ -1,6 +1,6 @@
-<template>
+<!-- <template>
   <div :class="['bg-white', showBorder ? 'rounded-lg border border-gray-200 shadow-sm' : '']">
-    <!-- 標題區 -->
+
     <table-header
       :title="title"
       :total-count="filteredTotalCount"
@@ -15,13 +15,12 @@
       @cancel-selection="handleCancelSelection"
     />
 
-    <!-- 篩選器 + 搜尋框區域 -->
+
     <div
       v-if="filters.length > 0 || showSearch"
       class="border-b border-gray-200 bg-gray-50 px-6 py-4"
     >
       <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <!-- 篩選器 -->
         <table-filters
           v-if="filters.length > 0"
           v-model="filterValues"
@@ -31,7 +30,6 @@
 
         <div v-else class="flex-1"></div>
 
-        <!-- 搜尋框 -->
         <table-search
           v-if="showSearch"
           v-model="searchKeyword"
@@ -41,7 +39,6 @@
       </div>
     </div>
 
-    <!-- 表格內容 -->
     <table-content
       :columns="columns"
       :data="paginatedData"
@@ -59,13 +56,92 @@
       @toggle-all="handleToggleAll"
       @toggle-row="handleToggleRow"
     >
-      <!-- 將所有 slot 傳遞到 table-content -->
       <template v-for="(_, name) in $slots" #[name]="slotProps">
         <slot :name="name" v-bind="slotProps" />
       </template>
     </table-content>
 
-    <!-- 分頁控制 -->
+    <table-pagination
+      :current-page="currentPage"
+      :page-size="currentPageSize"
+      :total-pages="totalPages"
+      :total-elements="filteredTotalCount"
+      :start-index="startIndex"
+      :end-index="endIndex"
+      :page-size-options="pageSizeOptions"
+      @page-change="handlePageChange"
+      @page-size-change="handlePageSizeChange"
+    />
+  </div>
+</template> -->
+<template>
+  <!-- DataTable：兩大區塊，TABLE（含 TOP + TABLE） + Pagination；區塊間距 20px -->
+  <div class="flex flex-col gap-5">
+
+    <!-- TABLE 區（TOP + TABLE 本體），內部區塊間距 20px -->
+    <section class="flex flex-col gap-5">
+
+      <!-- TOP 區：左側 Header，右側 Filters + Search -->
+      <div class="flex h-9 w-full items-center justify-between">
+        <!-- 左：標題 + 總數/批次操作（保持你原本的綁定） -->
+        <table-header
+          :title="title"
+          :total-count="totalCount"
+          :show-add-button="showAddButton"
+          :add-button-text="addButtonText"
+          :show-checkbox="showCheckbox"
+          :selected-count="selectedIds.length"
+          :batch-actions="batchActions"
+          @add-click="$emit('add-click')"
+          @batch-action="handleBatchAction"
+          @cancel-selection="handleCancelSelection"
+        />
+
+        <!-- 右：篩選 + 搜尋（保持你原本的綁定） -->
+        <div class="flex flex-wrap items-center gap-3">
+          <table-filters
+            v-if="filters && filters.length"
+            v-model="filterValues"
+            :filters="filters"
+          />
+          <table-search
+            v-if="showSearch"
+            v-model="searchKeyword"
+            :placeholder="searchPlaceholder"
+          />
+        </div>
+      </div>
+
+      <!-- TABLE 本體（標題列 + 內容列），保持你原本的 props/slots/emit -->
+      <table-content
+        :columns="columns"
+        :data="paginatedData"
+        :loading="loading"
+        :empty-text="emptyText"
+        :show-checkbox="showCheckbox"
+        :show-edit-button="showEditButton"
+        :selected-ids="selectedIds"
+        :row-key="rowKey"
+        :is-all-selected="isCurrentPageAllSelected"
+        :is-indeterminate="isIndeterminate"
+        @sort-change="handleSortChange"
+        @row-edit="emit('row-edit', $event)"
+        @row-view="emit('row-view', $event)"
+        @toggle-all="handleToggleAll"
+        @toggle-row="handleToggleRow"
+      >
+        <!-- 透明轉發所有自訂 slots（保持你原本已有的寫法） -->
+        <template
+          v-for="(_, slotName) in $slots"
+          :key="slotName"
+          v-slot:[slotName]="slotProps"
+        >
+          <slot :name="slotName" v-bind="slotProps" />
+        </template>
+      </table-content>
+    </section>
+
+    <!-- Pagination 區（獨立在 TABLE 區下方），與上方保持 20px 間距 -->
     <table-pagination
       :current-page="currentPage"
       :page-size="currentPageSize"

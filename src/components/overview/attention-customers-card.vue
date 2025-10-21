@@ -16,14 +16,11 @@
     4. 顯示最後使用時間和負責業務
     5. 支援使用時間和負責業務的排序功能
   -->
-  <div class="flex-shrink-0 h-[396px] bg-white 24px rounded-lg shadow-md p-6 flex flex-col">
-    <!-- Contents-Text: 339x296px, gap: 24px -->
+
+  <!-- <div class="flex-shrink-0 h-[396px] bg-white 24px rounded-lg shadow-md p-6 flex flex-col">
     <div class="flex flex-col h-full">
-      <!-- Card-top: 339x24px -->
       <div class="flex items-center h-6 mb-6">
-        <!-- Title: 116x24px, gap: 12px -->
         <div class="flex items-center gap-3">
-          <!-- Text: 需關注客戶 (80x22px) -->
           <h3
             class="text-base font-bold leading-[22px] text-black"
             style="font-family: 'Noto Sans TC', sans-serif"
@@ -31,7 +28,6 @@
             需關注客戶
           </h3>
 
-          <!-- Button-small: 24x24px -->
           <span
             class="inline-flex items-center justify-center min-w-[24px] h-6 px-2 py-1 text-xs font-medium leading-4 rounded"
             style="background: #398ff90d; border: 1px solid #398ff91a; color: #398ff9"
@@ -41,15 +37,11 @@
         </div>
       </div>
 
-      <!-- Frame1: 339x248px (固定高度), gap: 12px -->
       <div class="flex flex-col h-[248px]">
-        <!-- Frame1-Title (表頭): 339x20px, gap: 20px -->
-        <!-- 表頭下方有 border -->
         <div
           class="flex items-center h-5 gap-5 pb-3 mb-3"
           style="border-bottom: 1px solid #0000001a"
         >
-          <!-- 第一個表頭: 147x20px (不可排序) -->
           <div
             class="flex items-center w-[147px] h-5 gap-1 text-sm font-medium leading-5 text-gray-600"
             style="font-family: 'Noto Sans TC', sans-serif"
@@ -57,16 +49,14 @@
             客戶
           </div>
 
-          <!-- 第二個表頭: 76x20px (可排序) -->
           <div
             class="flex items-center w-[76px] h-5 gap-1 text-sm font-medium leading-5 text-gray-600 cursor-pointer select-none hover:text-gray-800 transition-colors"
             style="font-family: 'Noto Sans TC', sans-serif"
             @click="handleSort('lastUsedTime')"
           >
             使用時間
-            <!-- 排序圖示: 16x16px -->
+
             <span class="text-gray-400">
-              <!-- 無排序狀態 -->
               <svg
                 v-if="sortState.key !== 'lastUsedTime'"
                 class="h-4 w-4"
@@ -81,7 +71,7 @@
                   d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
                 />
               </svg>
-              <!-- 升冪排序 -->
+
               <svg
                 v-else-if="sortState.order === 'asc'"
                 class="h-4 w-4 text-blue-500"
@@ -96,7 +86,7 @@
                   d="M5 15l7-7 7 7"
                 />
               </svg>
-              <!-- 降冪排序 -->
+
               <svg
                 v-else
                 class="h-4 w-4 text-blue-500"
@@ -114,16 +104,13 @@
             </span>
           </div>
 
-          <!-- 第三個表頭: 76x20px (可排序) -->
           <div
             class="flex items-center w-[76px] h-5 gap-1 text-sm font-medium leading-5 text-gray-600 cursor-pointer select-none hover:text-gray-800 transition-colors"
             style="font-family: 'Noto Sans TC', sans-serif"
             @click="handleSort('salesPerson')"
           >
             負責業務
-            <!-- 排序圖示: 16x16px -->
             <span class="text-gray-400">
-              <!-- 無排序狀態 -->
               <svg
                 v-if="sortState.key !== 'salesPerson'"
                 class="h-4 w-4"
@@ -138,7 +125,6 @@
                   d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
                 />
               </svg>
-              <!-- 升冪排序 -->
               <svg
                 v-else-if="sortState.order === 'asc'"
                 class="h-4 w-4 text-blue-500"
@@ -153,7 +139,6 @@
                   d="M5 15l7-7 7 7"
                 />
               </svg>
-              <!-- 降冪排序 -->
               <svg
                 v-else
                 class="h-4 w-4 text-blue-500"
@@ -172,16 +157,13 @@
           </div>
         </div>
 
-        <!-- 客戶列表區域 (固定高度,即使資料不足 6 筆) -->
         <div class="flex-1 min-h-0">
-          <!-- 資料載入中 -->
           <div v-if="isLoading" class="flex items-center justify-center h-full">
             <div
               class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"
             ></div>
           </div>
 
-          <!-- 錯誤訊息 -->
           <div v-else-if="errorMessage" class="flex flex-col items-center justify-center h-full">
             <svg
               class="w-12 h-12 text-red-400"
@@ -199,7 +181,6 @@
             <p class="mt-2 text-sm text-red-600">{{ errorMessage }}</p>
           </div>
 
-          <!-- 無資料 -->
           <div
             v-else-if="paginatedCustomers.length === 0"
             class="flex flex-col items-center justify-center h-full"
@@ -220,25 +201,20 @@
             <p class="mt-2 text-sm text-gray-500">目前沒有需要關注的客戶</p>
           </div>
 
-          <!-- 客戶列表(每頁最多 6 筆,間距 12px)-->
-          <!-- 整個列表容器下方有 border -->
           <div v-else class="space-y-3 pb-3" style="border-bottom: 1px solid #0000001a">
             <div
               v-for="customer in paginatedCustomers"
               :key="customer.id"
               class="flex items-center gap-5 py-1 hover:bg-gray-50 transition-colors"
             >
-              <!-- 客戶名稱: 147px -->
               <div class="w-[147px] text-sm text-gray-900 truncate" :title="customer.customerName">
                 {{ customer.customerName }}
               </div>
 
-              <!-- 使用時間: 76px -->
               <div class="w-[76px] text-sm text-gray-600">
                 {{ customer.lastUsedTime }}
               </div>
 
-              <!-- 負責業務: 76px -->
               <div class="w-[76px] text-sm text-gray-600">
                 {{ customer.salesPerson }}
               </div>
@@ -247,12 +223,10 @@
         </div>
       </div>
 
-      <!-- Pagination: 339x32px (固定在底部) -->
       <div
         v-if="!isLoading && !errorMessage && totalPages > 1"
         class="flex items-center justify-between h-8 mt-auto pt-6"
       >
-        <!-- Pagination-Text: 86x24px -->
         <div
           class="text-sm font-medium leading-5 text-gray-600"
           style="font-family: 'Noto Sans TC', sans-serif"
@@ -260,9 +234,7 @@
           第{{ currentPage }}頁，共{{ totalPages }}頁
         </div>
 
-        <!-- Pagination-Container: 84x32px, gap: 8px -->
         <div class="flex gap-2">
-          <!-- 上一頁按鈕: 38x32px -->
           <button
             @click="previousPage"
             :disabled="currentPage === 1"
@@ -288,7 +260,6 @@
             </svg>
           </button>
 
-          <!-- 下一頁按鈕: 38x32px -->
           <button
             @click="nextPage"
             :disabled="currentPage === totalPages"
@@ -316,6 +287,25 @@
         </div>
       </div>
     </div>
+  </div> -->
+
+  <div class="rounded-xl bg-white shadow-sm p-4 text-sm">
+    <data-table
+      title="需關注客戶"
+      :total-count="rows.length"
+
+      :columns="columns"
+      :data="rows"
+
+      :filters="[]"
+      :show-search="false"
+      :show-add-button="false"
+      :show-checkbox="false"
+      :show-edit-button="false"
+      :show-border="false"
+
+      empty-text="目前沒有需關注的客戶"
+    />
   </div>
 </template>
 
@@ -323,6 +313,27 @@
 import { ref, computed, onMounted, reactive } from 'vue'
 import { getMockAttentionCustomers } from '@/services/overview.service'
 import type { AttentionCustomer } from '@/types/overview'
+import DataTable from '@/components/table/data-table.vue'
+
+interface Row extends Record<string, unknown> {
+  name: string
+  lastUsed: string
+  owner: string
+}
+
+const props = defineProps<{
+  data: Row[]
+  loading?: boolean
+}>()
+
+const rows = computed(() => props.data ?? [])
+
+// 卡片只顯示三欄，保持可排序（與設計稿相符）
+const columns = [
+  { key: 'name',     label: '客戶',     sortable: true },
+  { key: 'lastUsed', label: '使用時間', sortable: true },
+  { key: 'owner',    label: '負責業務', sortable: true },
+]
 
 // ==================== 狀態管理 ====================
 

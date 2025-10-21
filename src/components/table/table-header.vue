@@ -4,26 +4,24 @@
     <!-- 原始標題列（無選取時顯示） -->
     <div
       v-if="!showCheckbox || selectedCount === 0"
-      class="flex items-center justify-between px-6 py-4"
+      class="flex items-center justify-between"
     >
       <!-- 左側：標題 + 總數 -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-3">
         <h2 class="text-xl font-bold text-gray-900">{{ title }}</h2>
-        <span
-          class="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-blue-100 px-2 text-sm font-medium text-blue-700"
-        >
+        <span class="flex h-6 items-center justify-center rounded bg-[#398FF90D] border border-[#398FF91A] px-2 text-sm font-medium text-[#398FF9]">
           {{ totalCount }}
         </span>
       </div>
 
       <!-- 右側：新增按鈕 -->
-      <button
+      <!-- <button
         v-if="showAddButton"
         class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         @click="handleAddClick"
       >
         {{ addButtonText }}
-      </button>
+      </button> -->
     </div>
 
     <!-- 選取狀態列（有選取時顯示） -->
@@ -115,9 +113,9 @@ const emit = defineEmits<{
 /**
  * 處理新增按鈕點擊
  */
-const handleAddClick = () => {
-  emit('add-click')
-}
+// const handleAddClick = () => {
+//   emit('add-click')
+// }
 
 /**
  * 處理批量操作按鈕點擊
