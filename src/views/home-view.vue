@@ -28,7 +28,7 @@
     - 動畫時間：300ms，緩動函數：ease-in-out
     - 視覺效果：Sidebar 和右側內容同時動畫，不會卡頓
   -->
-  <div class="flex h-screen bg-gray-50">
+  <div class="flex min-h-screen bg-gray-50">
     <!-- 左側：Sidebar（使用 CSS transition 實現流暢的收合/展開動畫） -->
     <div
       class="flex-shrink-0 overflow-hidden transition-all duration-300 ease-in-out border-r border-r-[rgba(0,0,0,0.08)]"
@@ -43,6 +43,9 @@
     <!-- 右側：PageHeader + 內容區域（垂直佈局，會自動跟著展開） -->
     <div class="flex flex-1 flex-col min-w-0">
       <PageHeader class="sticky top-0 z-30" />
+
+      <SuccessToast />
+
       <main class="flex-1 overflow-auto bg-gray-50 px-10 pt-10">
         <router-view />
       </main>
@@ -54,6 +57,7 @@
 import { onMounted } from 'vue'
 import PageHeader from '@/components/layout/page-header.vue'
 import Sidebar from '@/components/sidebar/main-sidebar.vue'
+import SuccessToast from '@/components/common/success-toast.vue'
 import { useMenuStore } from '@/stores/menu.store'
 import { useAuthStore } from '@/stores/auth.store'
 

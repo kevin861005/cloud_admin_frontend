@@ -28,3 +28,19 @@ export interface UserListItem {
   createdAt: string
   updatedAt: string
 }
+
+/**
+ * 新增使用者請求
+ */
+export interface CreateUserRequest {
+  /** 登入帳號 */
+  loginId: string
+  /** 密碼 */
+  password: string
+  /** 姓名 */
+  name: string
+  /** Email */
+  email: string
+  /** 角色 ID 列表 */
+  roleIds: number[]
+}

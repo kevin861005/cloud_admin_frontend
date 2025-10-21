@@ -6,7 +6,7 @@
 
 import apiClient from '@/utils/axios'
 import type { ApiResponse } from '@/types/common'
-import type { UserInfo, UserListItem } from '@/types/user'
+import type { UserInfo, UserListItem, CreateUserRequest } from '@/types/user'
 
 /**
  * 使用者服務
@@ -46,4 +46,16 @@ export const userService = {
     const response = await apiClient.get<ApiResponse<UserListItem[]>>('/users')
     return response.data
   },
+}
+
+/**
+ * 新增使用者
+ * POST /api/users
+ *
+ * @param userData - 新增使用者資料
+ * @returns Promise<ApiResponse<void>>
+ */
+export async function createUser(userData: CreateUserRequest): Promise<ApiResponse<void>> {
+  const response = await apiClient.post<ApiResponse<void>>('/users', userData)
+  return response.data
 }

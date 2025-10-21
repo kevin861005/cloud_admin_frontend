@@ -24,3 +24,13 @@ export interface ApiResponse<T> {
    */
   timestamp: string
 }
+
+/**
+ * 欄位錯誤資訊
+ */
+export interface FieldError {
+  /** 欄位名稱 */
+  field: string
+  /** 錯誤訊息 */
+  message: string
+}
