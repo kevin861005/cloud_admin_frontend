@@ -2,26 +2,16 @@
   <!-- 標題區域 -->
   <div class="bg-white">
     <!-- 原始標題列（無選取時顯示） -->
-    <div
-      v-if="!showCheckbox || selectedCount === 0"
-      class="flex items-center justify-between"
-    >
+    <div v-if="!showCheckbox || selectedCount === 0" class="flex items-center justify-between">
       <!-- 左側：標題 + 總數 -->
       <div class="flex items-center gap-3">
         <h2 class="text-xl font-bold text-gray-900">{{ title }}</h2>
-        <span class="flex h-6 items-center justify-center rounded bg-[#398FF90D] border border-[#398FF91A] px-2 text-sm font-medium text-[#398FF9]">
+        <span
+          class="flex h-6 items-center justify-center rounded bg-[#398FF90D] border border-[#398FF91A] px-2 text-sm font-medium text-[#398FF9]"
+        >
           {{ totalCount }}
         </span>
       </div>
-
-      <!-- 右側：新增按鈕 -->
-      <!-- <button
-        v-if="showAddButton"
-        class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        @click="handleAddClick"
-      >
-        {{ addButtonText }}
-      </button> -->
     </div>
 
     <!-- 選取狀態列（有選取時顯示） -->
@@ -85,8 +75,6 @@ import type { BatchActionConfig } from '@/types/table'
 interface Props {
   title: string // 標題文字（例如：「客戶列表」）
   totalCount: number // 總資料數（例如：16）
-  showAddButton?: boolean // 是否顯示「新增」按鈕（預設 false）
-  addButtonText?: string // 新增按鈕文字（預設：「新增」）
   // ===== 選取功能（階段三）=====
   showCheckbox?: boolean // 是否顯示選取功能（預設 false）
   selectedCount?: number // 已選擇的項目數量（預設 0）
@@ -94,8 +82,6 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  showAddButton: false,
-  addButtonText: '新增',
   showCheckbox: false,
   selectedCount: 0,
   batchActions: () => [],
@@ -103,19 +89,11 @@ withDefaults(defineProps<Props>(), {
 
 // ===== Emits 定義 =====
 const emit = defineEmits<{
-  'add-click': [] // 新增按鈕點擊事件
   'batch-action': [actionKey: string] // 批量操作按鈕點擊事件
   'cancel-selection': [] // 取消選擇連結點擊事件
 }>()
 
 // ===== 事件處理 =====
-
-/**
- * 處理新增按鈕點擊
- */
-// const handleAddClick = () => {
-//   emit('add-click')
-// }
 
 /**
  * 處理批量操作按鈕點擊

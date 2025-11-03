@@ -62,7 +62,7 @@
 import { onMounted } from 'vue'
 import PageTitle from '@/components/common/page-title.vue'
 import CardContainer from '@/components/common/card-container.vue'
-import TableContainer from '@/components/common/table-container.vue'
+import TableContainer from '@/components/table/table-container.vue'
 
 // 引入卡片元件
 import CustomerStatsCard from '@/components/overview/customer-stats-card.vue'

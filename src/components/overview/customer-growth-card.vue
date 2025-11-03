@@ -29,7 +29,11 @@
             - padding: 8px 8px 0 8px
           -->
           <div class="flex flex-col items-start w-8 h-8 rounded-md">
-            <img src="@/assets/icons/card/growth-up.svg" alt="月度成長" class="w-full h-full" />
+            <img
+              src="@/assets/icons/card/card-d-growth-filled.svg"
+              alt="月度成長"
+              class="w-full h-full"
+            />
           </div>
 
           <!--

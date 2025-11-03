@@ -19,25 +19,6 @@ export type CustomRenderType = 'badge' | 'link' | 'actions' | 'slot'
 export type SortOrder = 'asc' | 'desc' | null
 
 /**
- * Badge 樣式類型
- */
-export type BadgeStyleType = 'default' | 'success' | 'error'
-
-/**
- * 標籤顏色配置（用於狀態標籤）
- */
-export interface BadgeConfig {
-  colorMap: Record<string, BadgeColorConfig>
-}
-
-/**
- * 標籤顏色樣式
- */
-export interface BadgeColorConfig {
-  style: BadgeStyleType
-}
-
-/**
  * 連結配置
  */
 export interface LinkConfig {
@@ -57,7 +38,6 @@ export interface ColumnConfig {
 
   // 自訂渲染相關
   customRender?: CustomRenderType // 自訂渲染類型
-  badgeConfig?: BadgeConfig // 標籤顏色配置（customRender='badge' 時使用）
   linkConfig?: LinkConfig // 連結配置（customRender='link' 時使用）
   slotName?: string // 自訂 slot 名稱（customRender='slot' 時使用）
 }

@@ -61,7 +61,12 @@
         </FormSection>
 
         <!-- 3. 按鈕群組 -->
-        <FormButtonGroup :disabled="isSubmitting" @cancel="handleCancel" @confirm="handleConfirm" />
+        <FormButtonGroup
+          confirm-text="送出"
+          :disabled="isSubmitting"
+          @cancel="handleCancel"
+          @confirm="handleConfirm"
+        />
       </div>
 
       <!-- 右側：空白區域 -->

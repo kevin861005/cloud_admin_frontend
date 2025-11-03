@@ -30,7 +30,7 @@
           -->
           <div class="flex flex-col items-start w-8 h-8 rounded-md">
             <img
-              src="@/assets/icons/card/customer-stats.svg"
+              src="@/assets/icons/card/card-d-customer-filled.svg"
               alt="客戶統計"
               class="w-full h-full"
             />

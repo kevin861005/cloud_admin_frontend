@@ -8,7 +8,7 @@
     </TableContainer>
 
     <!-- 使用者詳細資料 Drawer -->
-    <Drawer :is-open="isDrawerOpen" @close="closeDrawer"> </Drawer>
+    <UserDetailDrawer :is-open="isDrawerOpen" :login-id="selectedLoginId" @close="closeDrawer" />
   </div>
 </template>
 
@@ -16,14 +16,13 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import PageTitle from '@/components/common/page-title.vue'
-import TableContainer from '@/components/common/table-container.vue'
-import Drawer from '@/components/common/drawer.vue'
+import TableContainer from '@/components/table/table-container.vue'
+import UserDetailDrawer from '@/components/account/user-detail-drawer.vue'
 import AccountManagementTable from '@/components/account/account-management-table.vue'
-import type { UserListItem } from '@/types/user'
 
 // ===== Drawer 狀態 =====
 const isDrawerOpen = ref(false)
-const selectedUser = ref<UserListItem | null>(null)
+const selectedLoginId = ref<string | null>(null)
 
 /**
  * 處理查看按鈕點擊
@@ -31,7 +30,7 @@ const selectedUser = ref<UserListItem | null>(null)
  */
 const handleViewUser = (user: Record<string, unknown>) => {
   console.log('查看使用者:', user)
-  selectedUser.value = user as unknown as UserListItem
+  selectedLoginId.value = user.loginId as string
   isDrawerOpen.value = true
 }
 
@@ -42,7 +41,7 @@ const closeDrawer = () => {
   isDrawerOpen.value = false
   // 延遲清空資料,等動畫結束
   setTimeout(() => {
-    selectedUser.value = null
+    selectedLoginId.value = null
   }, 300)
 }
 

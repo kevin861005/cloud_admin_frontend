@@ -21,12 +21,16 @@
     @row-view="handleView"
     @batch-action="handleBatchAction"
   >
-    <!-- 如果需要自訂欄位內容，可以在這裡加入 slot -->
+    <!-- 自訂狀態欄位：使用 Badge 元件 -->
+    <template #statusDisplay="{ row }">
+      <Badge :text="getStatusText(row)" :type="getStatusType(row)" />
+    </template>
   </data-table>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, toRefs } from 'vue'
+import Badge from '@/components/common/badge.vue'
 import DataTable from '@/components/table/data-table.vue'
 import { getMockCustomers } from '@/services/customer.service'
 import type { Customer } from '@/types/customer'
@@ -103,6 +107,23 @@ const selectedIds = ref<(string | number)[]>([])
 // ===== 欄位配置 =====
 
 /**
+ * 取得狀態 Badge 類型
+ */
+const getStatusType = (row: Record<string, unknown>): 'success' | 'error' | 'default' => {
+  const status = row.status as string
+  if (status === '活躍') return 'success'
+  if (status === '低活躍') return 'error'
+  return 'default'
+}
+
+/**
+ * 取得狀態顯示文字
+ */
+const getStatusText = (row: Record<string, unknown>): string => {
+  return row.status as string
+}
+
+/**
  * 表格欄位配置
  * 根據 showEditButton 決定操作欄位的顯示
  */
@@ -114,25 +135,13 @@ const columns = ref<ColumnConfig[]>([
     sortable: true,
   },
   {
-    key: 'status',
+    key: 'statusDisplay',
     label: '使用狀態',
     width: '120px',
     align: 'center',
     sortable: true,
-    customRender: 'badge',
-    badgeConfig: {
-      colorMap: {
-        活躍: {
-          style: 'success',
-        },
-        低活躍: {
-          style: 'error',
-        },
-        未使用: {
-          style: 'default',
-        },
-      },
-    },
+    customRender: 'slot',
+    slotName: 'statusDisplay',
   },
   {
     key: 'lastUsed',

@@ -6,7 +6,7 @@
 
 import apiClient from '@/utils/axios'
 import type { ApiResponse } from '@/types/common'
-import type { UserInfo, UserListItem, CreateUserRequest } from '@/types/user'
+import type { UserInfo, UserListItem, CreateUserRequest, UserDetailInfo } from '@/types/user'
 
 /**
  * 使用者服務
@@ -44,6 +44,25 @@ export const userService = {
    */
   async getAllUsers(): Promise<ApiResponse<UserListItem[]>> {
     const response = await apiClient.get<ApiResponse<UserListItem[]>>('/users')
+    return response.data
+  },
+
+  /**
+   * 取得使用者詳細資訊
+   * GET /api/users/{loginId}/detail
+   *
+   * 用途：
+   * 1. Drawer 顯示使用者完整資訊
+   * 2. 包含建立者、更新者、完整權限清單
+   *
+   * 權限要求：
+   * - 需要 settings.accounts 權限
+   *
+   * @param loginId - 使用者登入帳號
+   * @returns 使用者詳細資訊
+   */
+  async getUserDetail(loginId: string): Promise<ApiResponse<UserDetailInfo>> {
+    const response = await apiClient.get<ApiResponse<UserDetailInfo>>(`/users/${loginId}/detail`)
     return response.data
   },
 }

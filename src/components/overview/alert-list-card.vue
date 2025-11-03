@@ -28,7 +28,11 @@
             - 尺寸: 32x32px
           -->
           <div class="flex flex-col items-start w-8 h-8 rounded-md">
-            <img src="@/assets/icons/card/alert-warning.svg" alt="異常警示" class="w-full h-full" />
+            <img
+              src="@/assets/icons/card/card-d-warning-filled.svg"
+              alt="異常警示"
+              class="w-full h-full"
+            />
           </div>
 
           <!--

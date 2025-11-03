@@ -16,7 +16,7 @@
       :value="modelValue"
       :placeholder="placeholder"
       :disabled="disabled"
-      class="h-9 rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 w-[280px]"
+      class="h-9 rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 disabled:bg-gray-100 disabled:text-gray-500 w-[280px] focus:outline-none"
       style="font-family: 'Noto Sans TC', sans-serif"
       @input="handleInput"
     />

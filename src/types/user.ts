@@ -23,8 +23,7 @@ export interface UserListItem {
   name: string
   email: string
   roles: string[]
-  status: string
-  statusCode: string
+  statusCode: 'ACTIVE' | 'INACTIVE'
   createdAt: string
   updatedAt: string
 }
@@ -43,4 +42,23 @@ export interface CreateUserRequest {
   email: string
   /** 角色 ID 列表 */
   roleIds: number[]
+}
+
+/**
+ * 使用者詳細資訊
+ * 用於 Drawer 顯示
+ */
+export interface UserDetailInfo {
+  userId: string // 使用者 ID（登入帳號）
+  userName: string // 使用者名稱
+  password: string // 密碼
+  email: string // Email
+  statusCode: 'ACTIVE' | 'INACTIVE' // 狀態碼
+  permissions: string[] // 功能權限代號清單
+  roleIds: number[] // 角色 ID 清單
+  roles: string[] // 角色名稱清單
+  createdBy: { id: string; name: string } | null // 建立者
+  updatedBy: { id: string; name: string } | null // 更新者
+  createdAt: string // 建立時間
+  updatedAt: string | null // 更新時間
 }

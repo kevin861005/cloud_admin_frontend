@@ -1,6 +1,6 @@
 /**
  * 選單配置檔案
- * 
+ *
  * 這裡定義了所有的選單項目結構
  * 前端會根據使用者的權限清單動態過濾這些選單項目
  */
@@ -9,7 +9,7 @@ import type { MenuItem } from '@/types/menu'
 
 /**
  * 完整的選單配置
- * 
+ *
  * 注意事項：
  * 1. ICON 檔名不含路徑和副檔名，例如 'overview' 對應 /src/assets/icons/menu/overview.svg
  * 2. requiredPermissions 是權限代號陣列，只要使用者擁有其中任一權限即可顯示該項目
@@ -22,21 +22,21 @@ export const menuConfig: MenuItem[] = [
     key: 'overview',
     label: '總覽',
     type: 'item',
-    icon: 'overview',
+    icon: 'menu-dashboard',
     requiredPermissions: ['overview'],
   },
   {
     key: 'customers',
     label: '客戶管理',
     type: 'item',
-    icon: 'customers',
+    icon: 'menu-customer',
     requiredPermissions: ['customers'],
   },
   {
     key: 'environment',
     label: '環境管理',
     type: 'item',
-    icon: 'environment',
+    icon: 'menu-environment',
     requiredPermissions: ['environment'],
   },
 
@@ -45,7 +45,7 @@ export const menuConfig: MenuItem[] = [
     key: 'settings',
     label: '設定',
     type: 'group',
-    icon: 'settings',
+    icon: 'menu-setting',
     // 只要有 settings 權限就顯示整個群組
     requiredPermissions: ['settings'],
     // 預設收合
@@ -56,7 +56,7 @@ export const menuConfig: MenuItem[] = [
         key: 'settings.accounts',
         label: '帳號管理',
         type: 'item',
-        icon: 'account',
+        icon: 'menu-account',
         requiredPermissions: ['settings.accounts'],
       },
       // 設定檔（分隔線，不可點擊，不需要權限）

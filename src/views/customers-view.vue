@@ -37,7 +37,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 // import { useRouter } from 'vue-router'
 import PageTitle from '@/components/common/page-title.vue'
 import CardContainer from '@/components/common/card-container.vue'
-import TableContainer from '@/components/common/table-container.vue'
+import TableContainer from '@/components/table/table-container.vue'
 
 // 客戶列表表格元件
 import CustomerTable from '@/components/customer/customer-table.vue'

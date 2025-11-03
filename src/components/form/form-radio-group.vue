@@ -9,22 +9,21 @@
       <span v-if="required" class="text-red-500">*</span>
     </label>
 
-    <!-- Checkbox 選項 -->
+    <!-- Radio 選項群組 -->
     <div class="flex flex-wrap gap-3">
       <label
         v-for="(option, index) in options"
         :key="option.value"
-        class="flex h-9 items-center gap-1 rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-sm font-medium leading-5"
-        :class="{ 'border-blue-500 bg-blue-50': isChecked(option.value) }"
+        class="flex h-9 cursor-pointer items-center gap-1 rounded border bg-slate-500/5 px-3 py-2 text-sm font-medium leading-5"
         style="font-family: 'Noto Sans TC', sans-serif; letter-spacing: 0%"
       >
         <input
-          :ref="index === 0 ? 'firstCheckboxRef' : undefined"
-          type="checkbox"
+          :ref="index === 0 ? 'firstRadioRef' : undefined"
+          type="radio"
+          :name="fieldId"
           :value="option.value"
           :checked="isChecked(option.value)"
-          class="h-4 w-4 rounded border border-black/20 bg-white text-blue-600"
-          style="border-radius: 4px"
+          class="h-4 w-4 border border-black/20 bg-white text-blue-600"
           @change="handleChange(option.value)"
         />
         <span class="text-gray-900">{{ option.label }}</span>
@@ -51,60 +50,88 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+
 /**
- * Checkbox 群組元件
+ * FormRadioGroup 元件
+ * 單選按鈕群組，用於表單中的單選欄位
+ * 樣式與 FormCheckboxGroup 保持一致
  */
 
-interface CheckboxOption {
-  label: string
-  value: string | number
-}
-
 interface Props {
+  /**
+   * 欄位標籤
+   */
   label: string
-  modelValue: Array<string | number>
-  options: CheckboxOption[]
+
+  /**
+   * 雙向綁定的值
+   */
+  modelValue: string | number | null
+
+  /**
+   * 選項列表
+   */
+  options: Array<{ label: string; value: string | number }>
+
+  /**
+   * 是否必填
+   */
   required?: boolean
+
+  /**
+   * 錯誤訊息
+   */
   errorMessage?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   required: false,
+  errorMessage: '',
 })
 
 const emit = defineEmits<{
-  'update:modelValue': [value: Array<string | number>]
+  /**
+   * 值變更事件
+   */
+  'update:modelValue': [value: string | number]
 }>()
 
-const isChecked = (value: string | number) => {
-  return props.modelValue.includes(value)
-}
-
-const handleChange = (value: string | number) => {
-  const newValue = [...props.modelValue]
-  const index = newValue.indexOf(value)
-
-  if (index > -1) {
-    newValue.splice(index, 1)
-  } else {
-    newValue.push(value)
-  }
-
-  emit('update:modelValue', newValue)
-}
-
-const firstCheckboxRef = ref<HTMLInputElement | null>(null)
+/**
+ * 產生唯一的欄位 ID
+ */
+const fieldId = computed(() => {
+  return `radio-group-${Math.random().toString(36).substring(2, 9)}`
+})
 
 /**
- * Focus 到第一個 checkbox
- * 供父元件呼叫
+ * 第一個 radio input 元素的 ref（用於 focus）
  */
-const focus = () => {
-  firstCheckboxRef.value?.focus()
+const firstRadioRef = ref<HTMLInputElement | null>(null)
+
+/**
+ * 檢查選項是否被選中
+ */
+const isChecked = (value: string | number) => {
+  return props.modelValue === value
 }
 
-// ===== Expose =====
+/**
+ * 處理選項變更
+ */
+const handleChange = (value: string | number) => {
+  emit('update:modelValue', value)
+}
+
+/**
+ * 提供給父元件呼叫的 focus 方法
+ * 聚焦到第一個 radio button
+ */
+const focus = () => {
+  firstRadioRef.value?.focus()
+}
+
+// 暴露 focus 方法給父元件
 defineExpose({
   focus,
 })

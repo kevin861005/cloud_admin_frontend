@@ -49,17 +49,15 @@
       @row-view="handleView"
       @add-click="handleAdd"
     >
+      <!-- 自訂狀態欄位：使用 Badge 元件 -->
+      <template #statusDisplay="{ row }">
+        <Badge :text="getStatusText(row)" :type="getStatusType(row)" />
+      </template>
+
       <!-- 自訂權限欄位：多個 badge 並排顯示 -->
       <template #rolesDisplay="{ row }">
         <div class="flex flex-wrap gap-2">
-          <span
-            v-for="(role, index) in row.roles"
-            :key="index"
-            class="inline-flex items-center rounded border border-gray-200 bg-slate-100 px-3 py-1 text-xs font-bold leading-4 tracking-wide text-gray-700"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
-            {{ role }}
-          </span>
+          <Badge v-for="(role, index) in row.roles" :key="index" :text="role" type="default" />
         </div>
       </template>
     </data-table>
@@ -95,6 +93,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import Badge from '@/components/common/badge.vue'
 import DataTable from '@/components/table/data-table.vue'
 import { userService } from '@/services/user.service'
 import { useAuthStore } from '@/stores/auth.store'
@@ -155,6 +154,20 @@ const hasPermission = computed(() => {
   return permissions.includes('settings.accounts')
 })
 
+/**
+ * 取得狀態 Badge 類型（型別安全）
+ */
+const getStatusType = (row: Record<string, unknown>): 'success' | 'default' => {
+  return row.statusCode === 'ACTIVE' ? 'success' : 'default'
+}
+
+/**
+ * 取得狀態文字（型別安全）
+ */
+const getStatusText = (row: Record<string, unknown>): string => {
+  return row.statusCode === 'ACTIVE' ? '啟用' : '停用'
+}
+
 // ===== 欄位配置 =====
 
 /**
@@ -173,7 +186,7 @@ const columns = ref<ColumnConfig[]>([
     label: '姓名',
     width: '120px',
     align: 'left',
-    sortable: false,
+    sortable: true,
   },
   {
     key: 'loginId',
@@ -183,31 +196,22 @@ const columns = ref<ColumnConfig[]>([
     sortable: false,
   },
   {
-    key: 'status',
-    label: '使用狀態',
-    width: '160px',
-    align: 'center',
-    sortable: true,
-    customRender: 'badge',
-    badgeConfig: {
-      colorMap: {
-        啟用: {
-          style: 'success',
-        },
-        停用: {
-          style: 'default',
-        },
-      },
-    },
-  },
-  {
     key: 'rolesDisplay',
     label: '權限',
     width: '200px',
-    align: 'left',
+    align: 'center',
     sortable: false,
     customRender: 'slot', // 使用 slot 來顯示多個 badge
     slotName: 'rolesDisplay',
+  },
+  {
+    key: 'statusDisplay',
+    label: '狀態',
+    width: '160px',
+    align: 'center',
+    sortable: true,
+    customRender: 'slot',
+    slotName: 'statusDisplay',
   },
   {
     key: 'createdAtFormatted',
@@ -249,6 +253,8 @@ const loadUsers = async () => {
 
   try {
     const response = await userService.getAllUsers()
+
+    console.log('getAllUsers response:' + JSON.stringify(response))
 
     if (response.success && response.data) {
       // 格式化資料：格式化建立日期為 YYYY.MM.DD

@@ -17,16 +17,20 @@
         v-if="isOpen"
         class="fixed right-0 top-0 bottom-0 z-[70] flex w-[355px] flex-col bg-white shadow-lg"
       >
-        <!-- 關閉按鈕 -->
-        <button
-          class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-gray-100"
-          @click="handleClose"
-          aria-label="關閉"
-        >
-          <img src="@/assets/icons/common/close-icon.svg" alt="關閉" class="h-6 w-6" />
-        </button>
+        <!-- CloseSection: 固定高度 40px，關閉按鈕固定在最右側 -->
+        <div class="flex h-[40px] items-center justify-end">
+          <IconFrame
+            :size="40"
+            :icon-size="16"
+            :icon="closeIcon"
+            icon-alt="關閉"
+            bg-color="bg-transparent"
+            hover-bg-color="hover:bg-gray-100"
+            @click="handleClose"
+          />
+        </div>
 
-        <!-- 內容區域 -->
+        <!-- Contents: 內容區域，佔據剩餘空間 -->
         <div class="flex-1 overflow-y-auto">
           <slot />
         </div>
@@ -37,27 +41,54 @@
 
 <script setup lang="ts">
 import { watch, onMounted, onUnmounted } from 'vue'
+import closeIcon from '@/assets/icons/common/close-icon.svg'
+import IconFrame from '@/components/common/icon-frame.vue'
 
+/**
+ * Drawer 元件的 Props
+ */
 interface Props {
+  /**
+   * 控制 Drawer 開關狀態
+   */
   isOpen: boolean
 }
 
 const props = defineProps<Props>()
 
+/**
+ * Drawer 元件的 Emits
+ */
 const emit = defineEmits<{
+  /**
+   * 當 Drawer 需要關閉時觸發
+   */
   close: []
 }>()
 
+/**
+ * 處理關閉 Drawer
+ * 會觸發 close 事件通知父元件
+ */
 const handleClose = () => {
   emit('close')
 }
 
+/**
+ * 處理 ESC 鍵關閉
+ * 當 Drawer 開啟時，按下 ESC 鍵會關閉 Drawer
+ */
 const handleEscKey = (event: KeyboardEvent) => {
   if (event.key === 'Escape' && props.isOpen) {
     handleClose()
   }
 }
 
+/**
+ * 監聽 isOpen 狀態變化
+ * 當 Drawer 開啟時，禁止 body 滾動
+ * 當 Drawer 關閉時，恢復 body 滾動
+ */
 watch(
   () => props.isOpen,
   (isOpen) => {
@@ -69,10 +100,16 @@ watch(
   },
 )
 
+/**
+ * 元件掛載時註冊 ESC 鍵監聽
+ */
 onMounted(() => {
   document.addEventListener('keydown', handleEscKey)
 })
 
+/**
+ * 元件卸載時移除 ESC 鍵監聽並恢復 body 滾動
+ */
 onUnmounted(() => {
   document.removeEventListener('keydown', handleEscKey)
   document.body.style.overflow = ''
@@ -80,6 +117,9 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/**
+ * 背景遮罩的淡入淡出動畫
+ */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;
@@ -90,6 +130,9 @@ onUnmounted(() => {
   opacity: 0;
 }
 
+/**
+ * Drawer 滑入滑出動畫
+ */
 .slide-enter-active,
 .slide-leave-active {
   transition: transform 0.3s ease;

@@ -128,3 +128,37 @@ export function formatDateDot(dateString: string): string {
 
   return `${year}.${month}.${day}`
 }
+
+/**
+ * 格式化為日期時間（含上午/下午，用於 Drawer 顯示）
+ *
+ * @param dateString 日期字串（格式：'yyyy-MM-dd HH:mm:ss'）
+ * @returns 格式化後的日期時間字串（YYYY.MM.DD上午/下午HH:MM 格式）
+ *
+ * @example
+ * formatDateTimeWithPeriod('2025-12-12 10:20:30')
+ * // 輸出：
+ * // "2025.12.12上午10:20"
+ *
+ * formatDateTimeWithPeriod('2025-12-12 14:20:30')
+ * // 輸出：
+ * // "2025.12.12下午02:20"
+ */
+export function formatDateTimeWithPeriod(dateString: string): string {
+  const date = new Date(dateString)
+
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = date.getHours()
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+
+  // 判斷上午/下午
+  const period = hours < 12 ? '上午' : '下午'
+
+  // 轉換為 12 小時制
+  const hours12 = hours % 12 || 12
+  const hoursStr = String(hours12).padStart(2, '0')
+
+  return `${year}.${month}.${day}${period}${hoursStr}:${minutes}`
+}

@@ -187,18 +187,6 @@
               <span class="text-gray-900">{{ row[column.key] }}</span>
             </template>
 
-            <!-- Badge 標籤顯示（用於狀態） -->
-            <template v-else-if="column.customRender === 'badge'">
-              <span
-                v-if="getBadgeStyle(column, row)"
-                class="inline-flex items-center justify-center"
-                :style="getBadgeStyleObject(column, row)"
-              >
-                {{ row[column.key] }}
-              </span>
-              <span v-else class="text-gray-900">{{ row[column.key] }}</span>
-            </template>
-
             <!-- Link 連結顯示 -->
             <template v-else-if="column.customRender === 'link'">
               <a
@@ -277,7 +265,17 @@
 
             <!-- Slot 自訂內容（階段二） -->
             <template v-else-if="column.customRender === 'slot' && column.slotName">
-              <slot :name="column.slotName" :row="row" :column="column"></slot>
+              <div
+                :class="[
+                  'flex',
+                  column.align === 'center' && 'justify-center',
+                  column.align === 'right' && 'justify-end',
+                  column.align === 'left' && 'justify-start',
+                  !column.align && 'justify-start',
+                ]"
+              >
+                <slot :name="column.slotName" :row="row" :column="column"></slot>
+              </div>
             </template>
           </td>
         </tr>
@@ -352,70 +350,6 @@ const sortState = reactive<SortState>({
 })
 
 // ===== Helper 函數 =====
-
-/**
- * 取得 Badge 的樣式類型
- */
-const getBadgeStyle = (column: ColumnConfig, row: Record<string, unknown>): string | null => {
-  if (!column.badgeConfig || !column.badgeConfig.colorMap) {
-    return null
-  }
-
-  const value = row[column.key]
-  const key = String(value)
-  const config = column.badgeConfig.colorMap[key]
-
-  return config ? config.style : null
-}
-
-/**
- * 取得 Badge 的完整 style 物件
- */
-const getBadgeStyleObject = (column: ColumnConfig, row: Record<string, unknown>) => {
-  const styleType = getBadgeStyle(column, row)
-
-  const baseStyle = {
-    width: '54px',
-    height: '24px',
-    paddingTop: '4px',
-    paddingRight: '4px',
-    paddingBottom: '4px',
-    paddingLeft: '4px',
-    gap: '8px',
-    borderRadius: '4px',
-    borderWidth: '1px',
-    fontFamily: 'Noto Sans TC, sans-serif',
-    fontWeight: '700',
-    fontSize: '12px',
-    lineHeight: '16px',
-    letterSpacing: '0.2px',
-  }
-
-  switch (styleType) {
-    case 'success':
-      return {
-        ...baseStyle,
-        backgroundColor: '#27BD720D',
-        borderColor: 'rgba(39, 189, 114, 0.1)',
-        color: '#27BD72',
-      }
-    case 'error':
-      return {
-        ...baseStyle,
-        backgroundColor: '#FD58580D',
-        borderColor: 'rgba(253, 88, 88, 0.1)',
-        color: '#FD5858',
-      }
-    case 'default':
-    default:
-      return {
-        ...baseStyle,
-        backgroundColor: '#0000000D',
-        borderColor: 'rgba(0, 0, 0, 0.1)',
-        color: 'rgba(0, 0, 0, 0.8)',
-      }
-  }
-}
 
 /**
  * 判斷該行是否被選中
