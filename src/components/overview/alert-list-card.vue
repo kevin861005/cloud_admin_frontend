@@ -198,7 +198,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getMockRecentAlerts } from '@/services/overview.service'
+import { overviewService } from '@/services/overview.service'
 import type { AlertListData, AlertType } from '@/types/overview'
 
 /**
@@ -271,7 +271,7 @@ const handleMoreClick = () => {
  */
 onMounted(() => {
   // 目前使用 Mock Data
-  alertData.value = getMockRecentAlerts()
+  alertData.value = overviewService.getMockRecentAlerts()
 
   // 設定更新時間為當前時間（模擬 API 回應的 timestamp）
   updateTime.value = formatUpdateTime(new Date().toISOString())

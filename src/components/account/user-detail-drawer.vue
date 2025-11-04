@@ -190,7 +190,7 @@ import FormRadioGroup from '@/components/form/form-radio-group.vue'
 import FormButtonGroup from '@/components/form/form-button-group.vue'
 import editIcon from '@/assets/icons/common/cm-edit.svg'
 import { userService } from '@/services/user.service'
-import { getRoleOptions } from '@/services/role.service'
+import { roleService } from '@/services/role.service'
 import { formatDateDot, formatDateTimeWithPeriod } from '@/utils/time'
 import type { UserDetailInfo, UpdateUserRequest } from '@/types/user'
 import type { FieldError } from '@/types/common'
@@ -397,7 +397,7 @@ const loadUserDetail = async () => {
  */
 const loadRoleOptions = async () => {
   try {
-    const response = await getRoleOptions()
+    const response = await roleService.getRoleOptions()
 
     if (response.success && response.data) {
       roleOptions.value = response.data

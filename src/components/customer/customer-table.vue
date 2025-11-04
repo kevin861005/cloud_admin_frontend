@@ -32,7 +32,7 @@
 import { ref, onMounted, toRefs } from 'vue'
 import Badge from '@/components/common/badge.vue'
 import DataTable from '@/components/table/data-table.vue'
-import { getMockCustomers } from '@/services/customer.service'
+import { customerService } from '@/services/customer.service'
 import type { Customer } from '@/types/customer'
 import type { ColumnConfig, FilterConfig, BatchActionConfig } from '@/types/table'
 
@@ -256,8 +256,7 @@ const loadCustomers = async () => {
     // const data = await getAllCustomers()
 
     // 開發階段：使用 Mock 資料
-    const data = getMockCustomers()
-    customers.value = data
+    customers.value = await customerService.getMockCustomers()
   } catch (error) {
     console.error('載入客戶列表錯誤:', error)
     // TODO: 顯示錯誤訊息給使用者

@@ -17,7 +17,7 @@
     5. 支援使用時間和負責業務的排序功能
   -->
 
-  <!-- <div class="flex-shrink-0 h-[396px] bg-white 24px rounded-lg shadow-md p-6 flex flex-col">
+  <div class="flex-shrink-0 h-[396px] bg-white 24px rounded-lg shadow-md p-6 flex flex-col">
     <div class="flex flex-col h-full">
       <div class="flex items-center h-6 mb-6">
         <div class="flex items-center gap-3">
@@ -287,53 +287,29 @@
         </div>
       </div>
     </div>
-  </div> -->
+  </div>
 
-  <div class="rounded-xl bg-white shadow-sm p-4 text-sm">
+  <!-- <div class="rounded-xl bg-white shadow-sm p-4 text-sm">
     <data-table
       title="需關注客戶"
       :total-count="rows.length"
-
       :columns="columns"
       :data="rows"
-
       :filters="[]"
       :show-search="false"
       :show-add-button="false"
       :show-checkbox="false"
       :show-edit-button="false"
       :show-border="false"
-
       empty-text="目前沒有需關注的客戶"
     />
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, reactive } from 'vue'
-import { getMockAttentionCustomers } from '@/services/overview.service'
+import { overviewService } from '@/services/overview.service'
 import type { AttentionCustomer } from '@/types/overview'
-import DataTable from '@/components/table/data-table.vue'
-
-interface Row extends Record<string, unknown> {
-  name: string
-  lastUsed: string
-  owner: string
-}
-
-const props = defineProps<{
-  data: Row[]
-  loading?: boolean
-}>()
-
-const rows = computed(() => props.data ?? [])
-
-// 卡片只顯示三欄，保持可排序（與設計稿相符）
-const columns = [
-  { key: 'name',     label: '客戶',     sortable: true },
-  { key: 'lastUsed', label: '使用時間', sortable: true },
-  { key: 'owner',    label: '負責業務', sortable: true },
-]
 
 // ==================== 狀態管理 ====================
 
@@ -474,7 +450,7 @@ async function loadAttentionCustomers() {
     // const data = await getAttentionCustomers()
 
     // 目前使用 Mock Data
-    const data = getMockAttentionCustomers()
+    const data = overviewService.getMockAttentionCustomers()
 
     allCustomers.value = data.customers
     totalCount.value = data.totalCount

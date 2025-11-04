@@ -202,7 +202,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { getMockCustomerStats } from '@/services/overview.service'
+import { overviewService } from '@/services/overview.service'
 import type { CustomerStats } from '@/types/overview'
 
 /**
@@ -252,7 +252,7 @@ const normalizedPercentages = computed(() => {
  */
 onMounted(() => {
   // 目前使用 Mock Data
-  stats.value = getMockCustomerStats()
+  stats.value = overviewService.getMockCustomerStats()
 
   // TODO: 等後端 API 完成後，改為以下程式碼：
   // try {

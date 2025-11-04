@@ -83,8 +83,8 @@ import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'
 import FormCheckboxGroup from '@/components/form/form-checkbox-group.vue'
 import FormButtonGroup from '@/components/form/form-button-group.vue'
-import { getRoleOptions } from '@/services/role.service'
-import { createUser } from '@/services/user.service'
+import { roleService } from '@/services/role.service'
+import { userService } from '@/services/user.service'
 import type { CreateUserRequest } from '@/types/user'
 import type { FieldError } from '@/types/common'
 
@@ -137,7 +137,7 @@ const roleOptions = ref<Array<{ label: string; value: number }>>([])
  */
 const loadRoleOptions = async () => {
   try {
-    const response = await getRoleOptions()
+    const response = await roleService.getRoleOptions()
 
     if (response.success && response.data) {
       roleOptions.value = response.data
@@ -276,7 +276,7 @@ const handleConfirm = async () => {
     }
 
     // 呼叫 API
-    const response = await createUser(requestData)
+    const response = await userService.createUser(requestData)
 
     if (response.success) {
       // 成功:返回列表頁面

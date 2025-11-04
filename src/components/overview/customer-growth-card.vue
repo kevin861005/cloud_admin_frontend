@@ -104,7 +104,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getMockCustomerGrowthData } from '@/services/overview.service'
+import { overviewService } from '@/services/overview.service'
 import type { CustomerGrowthData } from '@/types/overview'
 
 /**
@@ -135,7 +135,7 @@ const formatGrowthRate = (rate: number): string => {
  */
 onMounted(() => {
   // 目前使用 Mock Data
-  stats.value = getMockCustomerGrowthData()
+  stats.value = overviewService.getMockCustomerGrowthData()
 
   // TODO: 等後端 API 完成後，改為以下程式碼：
   // try {

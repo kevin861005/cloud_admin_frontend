@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, onUnmounted } from 'vue'
 import { Chart, registerables } from 'chart.js'
-import { getMockModuleUsageData } from '@/services/overview.service'
+import { overviewService } from '@/services/overview.service'
 import type { ModuleUsageData, ChartViewType } from '@/types/overview'
 
 Chart.register(...registerables)
@@ -54,7 +54,7 @@ Chart.register(...registerables)
 const chartRef = ref<HTMLCanvasElement | null>(null)
 let chartInstance: Chart | null = null
 const currentView = ref<ChartViewType>('weekly')
-const chartData = ref<ModuleUsageData>(getMockModuleUsageData())
+const chartData = ref<ModuleUsageData>(overviewService.getMockModuleUsageData())
 
 function createChart() {
   if (!chartRef.value) return
