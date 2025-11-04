@@ -185,7 +185,6 @@ const handleFieldErrors = (fieldErrors: FieldError[]) => {
   const fieldRefMap: Record<string, typeof loginIdInputRef> = {
     loginId: loginIdInputRef,
     password: passwordInputRef,
-    roleIds: rolesCheckboxRef,
     name: nameInputRef,
     email: emailInputRef,
   }
@@ -193,7 +192,6 @@ const handleFieldErrors = (fieldErrors: FieldError[]) => {
   console.log('Ref 對應表:', {
     loginId: loginIdInputRef.value,
     password: passwordInputRef.value,
-    roleIds: rolesCheckboxRef.value,
     name: nameInputRef.value,
     email: emailInputRef.value,
   })
@@ -221,7 +219,7 @@ const handleFieldErrors = (fieldErrors: FieldError[]) => {
   console.log('有錯誤的欄位:', Array.from(fieldsWithErrors))
 
   // 根據畫面上的欄位順序,找到第一個有錯誤的欄位並 focus
-  const fieldOrder = ['loginId', 'password', 'roleIds', 'name', 'email']
+  const fieldOrder = ['loginId', 'password', 'name', 'email']
 
   for (const field of fieldOrder) {
     if (fieldsWithErrors.has(field)) {

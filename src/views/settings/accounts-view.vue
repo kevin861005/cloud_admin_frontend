@@ -4,11 +4,16 @@
     <PageTitle title="帳號管理" subtitle="設定使用人員權限" />
 
     <TableContainer>
-      <AccountManagementTable @row-view="handleViewUser" @add="handleAdd" />
+      <AccountManagementTable ref="tableRef" @row-view="handleViewUser" @add="handleAdd" />
     </TableContainer>
 
     <!-- 使用者詳細資料 Drawer -->
-    <UserDetailDrawer :is-open="isDrawerOpen" :login-id="selectedLoginId" @close="closeDrawer" />
+    <UserDetailDrawer
+      :is-open="isDrawerOpen"
+      :login-id="selectedLoginId"
+      @close="closeDrawer"
+      @updated="handleUserUpdated"
+    />
   </div>
 </template>
 
@@ -23,6 +28,11 @@ import AccountManagementTable from '@/components/account/account-management-tabl
 // ===== Drawer 狀態 =====
 const isDrawerOpen = ref(false)
 const selectedLoginId = ref<string | null>(null)
+
+/**
+ * 表格元件的 ref（用於呼叫 refresh 方法）
+ */
+const tableRef = ref<{ refresh: () => Promise<void> } | null>(null)
 
 /**
  * 處理查看按鈕點擊
@@ -43,6 +53,16 @@ const closeDrawer = () => {
   setTimeout(() => {
     selectedLoginId.value = null
   }, 300)
+}
+
+/**
+ * 處理使用者資料更新成功
+ * 當 Drawer 更新成功後,重新載入表格資料
+ */
+const handleUserUpdated = () => {
+  console.log('使用者資料已更新,重新載入表格')
+  // 呼叫表格的 refresh 方法
+  tableRef.value?.refresh()
 }
 
 /**

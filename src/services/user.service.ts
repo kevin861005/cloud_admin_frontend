@@ -6,7 +6,13 @@
 
 import apiClient from '@/utils/axios'
 import type { ApiResponse } from '@/types/common'
-import type { UserInfo, UserListItem, CreateUserRequest, UserDetailInfo } from '@/types/user'
+import type {
+  UserInfo,
+  UserListItem,
+  CreateUserRequest,
+  UserDetailInfo,
+  UpdateUserRequest,
+} from '@/types/user'
 
 /**
  * 使用者服務
@@ -64,6 +70,19 @@ export const userService = {
   async getUserDetail(loginId: string): Promise<ApiResponse<UserDetailInfo>> {
     const response = await apiClient.get<ApiResponse<UserDetailInfo>>(`/users/${loginId}/detail`)
     return response.data
+  },
+
+  /**
+   * 更新使用者資料
+   */
+  async updateUser(loginId: string, data: UpdateUserRequest): Promise<ApiResponse<UserDetailInfo>> {
+    try {
+      const response = await apiClient.put<ApiResponse<UserDetailInfo>>(`/users/${loginId}`, data)
+      return response.data
+    } catch (error) {
+      console.error('更新使用者資料失敗:', error)
+      throw error
+    }
   },
 }
 

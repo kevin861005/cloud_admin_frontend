@@ -1,59 +1,104 @@
 <template>
-  <Transition name="fade">
-    <div
-      v-if="isVisible"
-      class="fixed left-1/2 -translate-x-1/2 z-50 flex items-center gap-2"
-      :style="{
-        top: toastTopPosition,
-        width: '141px',
-        padding: '12px 24px 12px 20px',
-        borderRadius: '20px',
-        boxShadow:
-          '0px 4px 4px -4px rgba(12, 12, 13, 0.05), 0px 16px 32px -4px rgba(12, 12, 13, 0.1)',
-        background: 'white',
-      }"
+  <Teleport to="body">
+    <!-- 將原本 name="fade" 改為 Tailwind 過場 class -->
+    <Transition
+      enter-active-class="transition-opacity duration-300 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-300 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
     >
-      <!-- 左側 ICON -->
-      <img
-        src="@/assets/icons/common/success-icon.svg"
-        alt="success"
-        style="width: 20px; height: 20px; border-radius: 25px; padding: 2px"
-      />
-
-      <!-- 文字 -->
-      <span
-        style="
-          font-family: 'Noto Sans TC';
-          font-weight: 400;
-          font-size: 16px;
-          line-height: 140%;
-          letter-spacing: 10%;
-          color: #222222;
-        "
+      <div
+        v-if="isVisible"
+        class="fixed z-50 flex items-center justify-center gap-2 py-3 bg-white rounded-[20px] shadow-toast"
+        :style="{
+          top: toastTopPosition,
+          left: toastLeftPosition,
+          transform: 'translateX(-50%)',
+          width: widthValue,
+        }"
       >
-        {{ message }}
-      </span>
-    </div>
-  </Transition>
+        <!-- 左側 ICON -->
+        <img
+          src="@/assets/icons/common/success-icon.svg"
+          alt="success"
+          class="w-5 h-5 rounded-full p-0.5"
+        />
+
+        <!-- 文字 -->
+        <span
+          class="text-base font-normal leading-[140%] tracking-wide text-[#222222]"
+          style="font-family: 'Noto Sans TC'"
+        >
+          {{ message }}
+        </span>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useMenuStore } from '@/stores/menu.store'
 
 /**
  * 成功訊息 Toast 元件
  *
  * 使用方式:
  * router.push('/path?success=新增成功')
+ *
+ * 特點:
+ * - 使用 Teleport 掛載到 body
+ * - 相對於內容區域置中（考慮 Sidebar 寬度）
+ * - 可自訂寬度
  */
 
+// ========== Props 定義 ==========
+interface Props {
+  width?: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  width: '141px',
+})
+
+// ========== Stores ==========
+const menuStore = useMenuStore()
+
+// ========== State ==========
 const route = useRoute()
 const isVisible = ref(false)
 const message = ref('')
 const pageHeaderHeight = ref(0)
 
 let hideTimer: ReturnType<typeof setTimeout> | null = null
+
+// ========== Computed ==========
+/**
+ * 計算 Toast 的寬度值
+ */
+const widthValue = computed(() => {
+  return props.width
+})
+
+/**
+ * 計算 Toast 的 left 位置
+ * 考慮 Sidebar 寬度，讓 Toast 在內容區域置中
+ */
+const toastLeftPosition = computed(() => {
+  // Sidebar 寬度：展開時 255px，收合時 0px
+  const sidebarWidth = menuStore.isCollapsed ? 0 : 255
+
+  // 內容區域寬度 = 視窗寬度 - Sidebar 寬度
+  const contentWidth = window.innerWidth - sidebarWidth
+
+  // Toast 應該在：Sidebar 寬度 + (內容區域寬度 / 2)
+  const leftPosition = sidebarWidth + contentWidth / 2
+
+  return `${leftPosition}px`
+})
 
 /**
  * 計算 Toast 的 top 位置
@@ -63,6 +108,7 @@ const toastTopPosition = computed(() => {
   return `${pageHeaderHeight.value + 20}px`
 })
 
+// ========== Methods ==========
 /**
  * 取得 PageHeader 的高度
  */
@@ -77,7 +123,6 @@ const updatePageHeaderHeight = () => {
  * 顯示 Toast 訊息
  */
 const showToast = (msg: string) => {
-  // 清除之前的計時器
   if (hideTimer) {
     clearTimeout(hideTimer)
   }
@@ -85,12 +130,13 @@ const showToast = (msg: string) => {
   message.value = msg
   isVisible.value = true
 
-  // 3 秒後自動隱藏
+  // 測試用
   hideTimer = setTimeout(() => {
     isVisible.value = false
-  }, 3000)
+  }, 100000000000)
 }
 
+// ========== Watchers ==========
 /**
  * 監聽路由變化,檢查是否有 success query
  */
@@ -104,26 +150,17 @@ watch(
   { immediate: true },
 )
 
+// ========== Lifecycle ==========
 /**
  * 元件掛載時取得 PageHeader 高度
  */
 onMounted(() => {
   updatePageHeaderHeight()
 
-  // 監聽視窗大小變化,重新計算 PageHeader 高度
+  // 監聽視窗大小變化和 Sidebar 狀態變化
   window.addEventListener('resize', updatePageHeaderHeight)
 })
 </script>
 
-<style scoped>
-/* 淡入淡出動畫 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>
+<!-- 原本的 .fade* CSS 已移除，因為改用 Tailwind 的過場 class -->
+<style scoped></style>

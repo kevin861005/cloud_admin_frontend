@@ -62,3 +62,17 @@ export interface UserDetailInfo {
   createdAt: string // 建立時間
   updatedAt: string | null // 更新時間
 }
+
+/**
+ * 更新使用者請求
+ */
+export interface UpdateUserRequest {
+  /** 使用者姓名 */
+  name: string
+  /** Email */
+  email: string
+  /** 角色 ID 列表 */
+  roleIds: number[]
+  /** 使用狀態 */
+  statusCode: 'ACTIVE' | 'INACTIVE'
+}
