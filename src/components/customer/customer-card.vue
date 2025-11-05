@@ -1,35 +1,3 @@
-<script setup lang="ts">
-/**
- * 客戶統計卡片元件
- * 用於總覽頁面顯示各項客戶統計資訊
- */
-
-/**
- * Props 定義
- */
-interface Props {
-  /** 卡片標題 */
-  title: string
-  /** ICON 路徑（如 '@/assets/icons/card/growth-up.svg'） */
-  icon: string
-  /** 主要數值 */
-  value: number
-  /** 數值單位（如「間」） */
-  unit: string
-  /** 底部副內容（如「+12%相較上個月」） */
-  subtitle: string
-  /** 卡片高度（選填，預設 176px） */
-  height?: number
-}
-
-/**
- * 接收 Props，設定預設值
- */
-const props = withDefaults(defineProps<Props>(), {
-  height: 176,
-})
-</script>
-
 <template>
   <div
     class="flex-shrink-0 w-full min-w-[320px] rounded-xl bg-white p-6 shadow-[1px_3px_4px_0px_rgba(0,0,0,0.1)]"
@@ -81,6 +49,36 @@ const props = withDefaults(defineProps<Props>(), {
   </div>
 </template>
 
-<style scoped>
-/* 本元件完全使用 Tailwind utility classes，無需自定義樣式 */
-</style>
+<script setup lang="ts">
+/**
+ * 客戶統計卡片元件
+ * 用於總覽頁面顯示各項客戶統計資訊
+ */
+
+/**
+ * Props 定義
+ */
+interface Props {
+  /** 卡片標題 */
+  title: string
+  /** ICON 路徑（如 '@/assets/icons/card/growth-up.svg'） */
+  icon: string
+  /** 主要數值 */
+  value: number
+  /** 數值單位（如「間」） */
+  unit: string
+  /** 底部副內容（如「+12%相較上個月」） */
+  subtitle: string
+  /** 卡片高度（選填，預設 176px） */
+  height?: number
+}
+
+/**
+ * 接收 Props，設定預設值
+ */
+const props = withDefaults(defineProps<Props>(), {
+  height: 176,
+})
+</script>
+
+<style scoped></style>

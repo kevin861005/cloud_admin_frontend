@@ -18,16 +18,14 @@
         class="fixed right-0 top-0 bottom-0 z-[70] flex w-[355px] flex-col bg-white shadow-lg"
       >
         <!-- CloseSection: 固定高度 40px，關閉按鈕固定在最右側 -->
-        <div class="flex h-[40px] items-center justify-end">
-          <IconFrame
-            :size="40"
-            :icon-size="16"
-            :icon="closeIcon"
-            icon-alt="關閉"
-            bg-color="bg-transparent"
-            hover-bg-color="hover:bg-gray-100"
+        <div class="flex items-center justify-end h-10">
+          <button
+            type="button"
+            class="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors hover:bg-gray-100"
             @click="handleClose"
-          />
+          >
+            <img :src="closeIcon" alt="關閉" class="w-4 h-4" />
+          </button>
         </div>
 
         <!-- Contents: 內容區域，佔據剩餘空間 -->
@@ -42,7 +40,6 @@
 <script setup lang="ts">
 import { watch, onMounted, onUnmounted } from 'vue'
 import closeIcon from '@/assets/icons/common/close-icon.svg'
-import IconFrame from '@/components/common/icon-frame.vue'
 
 /**
  * Drawer 元件的 Props

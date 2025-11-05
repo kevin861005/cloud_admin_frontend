@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import CustomerCard from './customer-card.vue'
-import AttentionCustomerIcon from '@/assets/icons/card/attention-customer.svg'
+import AttentionCustomerIcon from '@/assets/icons/card/card-c-user-warning.svg'
 </script>
 
 <style scoped></style>

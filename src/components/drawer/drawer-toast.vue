@@ -15,7 +15,7 @@
       style="gap: 8px"
     >
       <!-- Icon -->
-      <IconFrame :show-frame="false" :icon-size="20" :icon="iconSrc" :icon-alt="iconAlt" />
+      <img :src="iconSrc" :alt="iconAlt" class="w-5 h-5" />
 
       <!-- Message -->
       <span
@@ -36,7 +36,6 @@
 
 <script setup lang="ts">
 import { computed, watch } from 'vue'
-import IconFrame from '@/components/common/icon-frame.vue'
 import successIcon from '@/assets/icons/common/success-icon.svg'
 import failedIcon from '@/assets/icons/common/failed-icon.svg'
 

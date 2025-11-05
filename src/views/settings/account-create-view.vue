@@ -1,10 +1,10 @@
 <template>
-  <div class="space-y-6">
+  <div>
     <!-- 頁面標題 -->
-    <PageTitle title="新增帳號" subtitle="帳號名稱新增後無法變更" />
+    <PageTitle title="新增帳號" />
 
     <!-- 主要容器 -->
-    <div class="flex gap-3 rounded-xl bg-white p-6 shadow-md">
+    <div class="flex gap-3 rounded-xl bg-white px-10 pb-10 shadow-md">
       <!-- 左側：填寫資料區域 -->
       <div class="flex flex-col w-[560px]" style="gap: 12px">
         <!-- 1. 帳號資訊區塊 -->

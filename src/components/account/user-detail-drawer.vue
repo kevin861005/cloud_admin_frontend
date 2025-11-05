@@ -52,11 +52,10 @@
         <InfoSection title="帳號資訊">
           <!-- 編輯按鈕 -->
           <template #action>
-            <IconFrame
-              :show-frame="false"
-              :icon-size="16"
-              :icon="editIcon"
-              icon-alt="編輯"
+            <img
+              src="@/assets/icons/common/cm-edit.svg"
+              alt="編輯"
+              class="w-4 h-4 cursor-pointer"
               @click="handleEdit"
             />
           </template>
@@ -182,13 +181,11 @@ import DrawerToast from '@/components/drawer/drawer-toast.vue'
 import InfoSection from '@/components/drawer/info-section.vue'
 import InfoField from '@/components/drawer/info-field.vue'
 import Badge from '@/components/common/badge.vue'
-import IconFrame from '@/components/common/icon-frame.vue'
 import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'
 import FormCheckboxGroup from '@/components/form/form-checkbox-group.vue'
 import FormRadioGroup from '@/components/form/form-radio-group.vue'
 import FormButtonGroup from '@/components/form/form-button-group.vue'
-import editIcon from '@/assets/icons/common/cm-edit.svg'
 import { userService } from '@/services/user.service'
 import { roleService } from '@/services/role.service'
 import { formatDateDot, formatDateTimeWithPeriod } from '@/utils/time'

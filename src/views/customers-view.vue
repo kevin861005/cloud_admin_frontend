@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div>
     <!-- 頁面標題（使用可重用的 PageTitle 元件） -->
     <PageTitle title="客戶管理" subtitle="業績表現、客戶資料、活躍度狀態" />
 

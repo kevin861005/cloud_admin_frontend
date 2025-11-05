@@ -46,7 +46,7 @@
 
       <SuccessToast />
 
-      <main class="flex-1 overflow-auto bg-gray-50 px-10 pt-10">
+      <main class="flex-1 overflow-auto bg-gray-50">
         <router-view />
       </main>
     </div>

@@ -41,18 +41,10 @@
       <Card1 />  佔 34%
       <Card2 />  佔 66%
     </card-container>
-
-    特性：
-    ✅ 自動計算寬度（平均或按比例）
-    ✅ 自訂容器高度
-    ✅ 響應式設計（視窗大小改變自動調整）
-    ✅ 動態支援（卡片新增/移除自動重新計算）
-    ✅ 水平滾動（當卡片總寬度超過容器時）
-    ✅ 滑鼠滾輪支援（上下滾動轉為左右滾動）
   -->
   <div
     ref="containerRef"
-    class="flex items-center gap-5 overflow-x-auto overflow-y-hidden py-5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    class="flex items-center gap-5 overflow-x-auto overflow-y-hidden px-10 pb-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     :style="{ height: `${props.height}px` }"
   >
     <!-- 使用 slot 讓外部可以插入任意數量的卡片 -->
