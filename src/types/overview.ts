@@ -91,3 +91,74 @@ export interface ModuleUsageData {
 }
 
 export type ChartViewType = 'weekly' | 'monthly'
+
+/**
+ * CardList 元件相關型別定義
+ * 用於 @/types/overview.ts
+ */
+
+/**
+ * CardList 欄位配置
+ */
+export interface CardListColumn {
+  /** 欄位 key（對應資料物件的屬性名稱） */
+  key: string
+
+  /** 欄位顯示標籤 */
+  label: string
+
+  /** Flex 比例（預設 1，表示平均分配） */
+  flex?: number
+
+  /** 是否可排序（預設 false） */
+  sortable?: boolean
+
+  /** 是否顯示 tooltip（預設 false） */
+  showTooltip?: boolean
+
+  /** 文字對齊方式（預設 left） */
+  align?: 'left' | 'center' | 'right'
+}
+
+/**
+ * 排序狀態
+ */
+export interface CardListSortState {
+  /** 當前排序的欄位 key */
+  key: string | null
+
+  /** 排序方向: asc(升冪) | desc(降冪) | null(無排序) */
+  order: 'asc' | 'desc' | null
+}
+
+/**
+ * CardList Props
+ */
+export interface CardListProps<T = unknown> {
+  /** 卡片標題 */
+  title: string
+
+  /** 資料陣列 */
+  data: T[]
+
+  /** 欄位定義 */
+  columns: CardListColumn[]
+
+  /** 每頁顯示筆數（預設 6） */
+  pageSize?: number
+
+  /** 卡片高度（預設 '396px'） */
+  height?: string
+
+  /** 載入狀態（預設 false） */
+  loading?: boolean
+
+  /** 錯誤訊息 */
+  error?: string
+
+  /** 空資料標題 */
+  emptyTitle?: string
+
+  /** 空資料描述 */
+  emptyDescription?: string
+}

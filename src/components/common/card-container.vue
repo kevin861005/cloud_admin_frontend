@@ -101,7 +101,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   widthRatios: () => [],
-  height: 312, // 預設高度 312px (272px 卡片 + 40px padding)
+  height: 296,
 })
 
 const containerRef = ref<HTMLElement | null>(null)

@@ -5,7 +5,7 @@
     <div v-if="!showCheckbox || selectedCount === 0" class="flex items-center justify-between">
       <!-- 左側：標題 + 總數 -->
       <div class="flex items-center gap-3">
-        <h2 class="text-xl font-bold text-gray-900">{{ title }}</h2>
+        <h2 class="text-base font-bold text-gray-700">{{ title }}</h2>
         <span
           class="flex h-6 items-center justify-center rounded bg-[#398FF90D] border border-[#398FF91A] px-2 text-sm font-medium text-[#398FF9]"
         >

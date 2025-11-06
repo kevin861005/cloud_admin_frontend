@@ -36,6 +36,13 @@ export interface ColumnConfig {
   align?: ColumnAlign // 對齊方式（預設 'left'）
   sortable?: boolean // 是否可排序（預設 false）
 
+  /**
+   * 實際用來排序的欄位 key
+   * 當 customRender 為 'slot' 時，可能顯示的 key 和實際資料的 key 不同
+   * 例如：key: 'statusDisplay', sortKey: 'statusCode'
+   */
+  sortKey?: string
+
   // 自訂渲染相關
   customRender?: CustomRenderType // 自訂渲染類型
   linkConfig?: LinkConfig // 連結配置（customRender='link' 時使用）

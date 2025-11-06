@@ -183,7 +183,8 @@ export const overviewService = {
         },
         {
           id: 'cust_002',
-          customerName: '字太多用tiphover測試顯示效果',
+          customerName:
+            '字太多用tiphover測試顯示效果字太多用tiphover測試顯示效果字太多用tiphover測試顯示效果',
           lastUsedTime: '4天前',
           salesPerson: '周經理',
         },

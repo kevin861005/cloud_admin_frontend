@@ -118,6 +118,7 @@ import type {
  * - 改變篩選器 → 清空搜尋框 + 立即重新篩選 + 回到第一頁
  * - 輸入搜尋 → 保留篩選器條件 + 立即搜尋 + 回到第一頁
  * - 選取功能 → 支援跨頁選取 + 全選當前頁 + 批量操作
+ * - 排序功能 → 支援字串/數字/布林值排序 + 支援 sortKey
  */
 
 // ===== Props 定義 =====
@@ -279,28 +280,56 @@ const filteredData = computed(() => {
  * 邏輯：
  * 1. 如果沒有排序條件，直接返回篩選後的資料
  * 2. 根據排序欄位和方向進行排序
+ * 3. 支援字串、數字、布林值的排序
+ * 4. 正確處理 null 和 undefined
  */
 const sortedData = computed(() => {
+  // 如果沒有排序條件，直接返回篩選後的資料
   if (!sortState.value.key || !sortState.value.order) {
     return filteredData.value
   }
 
   const { key, order } = sortState.value
 
-  return [...filteredData.value].sort((a, b) => {
+  // 複製陣列以避免修改原始資料
+  const sorted = [...filteredData.value]
+
+  // 執行排序
+  sorted.sort((a, b) => {
     const aValue = a[key]
     const bValue = b[key]
 
-    // 處理 null 或 undefined
+    // 處理 null 或 undefined（將其排到最後）
     if (aValue == null && bValue == null) return 0
     if (aValue == null) return 1
     if (bValue == null) return -1
 
-    // 比較值
-    if (aValue < bValue) return order === 'asc' ? -1 : 1
-    if (aValue > bValue) return order === 'asc' ? 1 : -1
-    return 0
+    // 字串比較（使用 localeCompare 支援中文排序）
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      const comparison = aValue.localeCompare(bValue, 'zh-TW')
+      return order === 'asc' ? comparison : -comparison
+    }
+
+    // 數字比較
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return order === 'asc' ? aValue - bValue : bValue - aValue
+    }
+
+    // 布林值比較
+    if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+      const aNum = aValue ? 1 : 0
+      const bNum = bValue ? 1 : 0
+      return order === 'asc' ? aNum - bNum : bNum - aNum
+    }
+
+    // 預設：轉為字串後比較
+    const aStr = String(aValue)
+    const bStr = String(bValue)
+    const comparison = aStr.localeCompare(bStr, 'zh-TW')
+    return order === 'asc' ? comparison : -comparison
   })
+
+  return sorted
 })
 
 /**
@@ -443,10 +472,14 @@ watch(filteredTotalCount, (newTotal) => {
  * 邏輯：
  * 1. 更新排序狀態
  * 2. 回到第一頁（從 0 開始）
+ * 3. 輸出 debug 訊息
  */
 const handleSortChange = (newSortState: SortState) => {
   sortState.value = newSortState
   currentPage.value = 0 // 回到第一頁（從 0 開始）
+
+  console.log('排序狀態更新:', sortState.value)
+  console.log('排序後資料筆數:', sortedData.value.length)
 }
 
 /**

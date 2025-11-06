@@ -6,12 +6,12 @@
     - gap: 20px (使用 space-y-5)
     - flex: 1 0 0 (使用 flex-1)
   -->
-  <div class="flex-shrink-0 h-[272px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5">
+  <div class="flex-shrink-0 h-[256px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5">
     <!--
       Contents-Text: 文字內容區域
       - gap: 48px (使用 space-y-12)
     -->
-    <div class="flex flex-col gap-12">
+    <div class="flex flex-col gap-8">
       <!--
         Card-Top: 頂部區域 (標題 + 總數)
         - justify-content: space-between
@@ -43,12 +43,7 @@
             - font-weight: 700
             - line-height: 22px
           -->
-          <span
-            class="text-black text-base font-bold leading-[22px]"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
-            客戶統計
-          </span>
+          <span class="text-base font-bold text-gray-700"> 客戶統計 </span>
         </div>
 
         <!--
@@ -59,10 +54,7 @@
           - line-height: 30px
           - letter-spacing: -0.2px
         -->
-        <span
-          class="text-black text-2xl font-bold leading-[30px] tracking-[-0.2px]"
-          style="font-family: 'Noto Sans TC', sans-serif"
-        >
+        <span class="text-2xl font-bold tracking-[-0.2px] text-gray-800">
           {{ stats.totalCustomers }}間
         </span>
       </div>
@@ -74,39 +66,24 @@
       <div class="flex flex-col gap-2">
         <!-- 活躍客戶 -->
         <div class="flex justify-between items-center">
-          <span class="text-sm text-slate-600" style="font-family: 'Noto Sans TC', sans-serif">
-            活躍
-          </span>
-          <span
-            class="text-sm text-black font-medium"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
+          <span class="text-sm font-medium text-gray-700"> 活躍 </span>
+          <span class="text-sm font-medium text-gray-700 text-right">
             {{ stats.activeCount }}間（{{ stats.activePercentage }}%）
           </span>
         </div>
 
         <!-- 低活躍客戶 -->
         <div class="flex justify-between items-center">
-          <span class="text-sm text-slate-600" style="font-family: 'Noto Sans TC', sans-serif">
-            低活躍
-          </span>
-          <span
-            class="text-sm text-black font-medium"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
+          <span class="text-sm font-medium text-gray-700"> 低活躍 </span>
+          <span class="text-sm font-medium text-gray-700 text-right">
             {{ stats.lowActiveCount }}間（{{ stats.lowActivePercentage }}%）
           </span>
         </div>
 
         <!-- 未使用客戶 -->
         <div class="flex justify-between items-center">
-          <span class="text-sm text-slate-600" style="font-family: 'Noto Sans TC', sans-serif">
-            未使用
-          </span>
-          <span
-            class="text-sm text-black font-medium"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
+          <span class="text-sm font-medium text-gray-700"> 未使用 </span>
+          <span class="text-sm font-medium text-gray-700 text-right">
             {{ stats.inactiveCount }}間（{{ stats.inactivePercentage }}%）
           </span>
         </div>
@@ -126,31 +103,28 @@
 
         使用 normalizedPercentages 確保三個區段加總為 100%
       -->
-      <div class="flex h-2 rounded-full overflow-hidden" style="background-color: #dce5ef">
+      <div class="flex h-2 rounded-full overflow-hidden bg-slate-200">
         <!-- 3天內使用 (#334155 - slate-700) -->
         <div
-          class="h-full"
+          class="h-full bg-slate-700"
           :style="{
             width: `${normalizedPercentages.active}%`,
-            backgroundColor: '#334155',
           }"
         ></div>
 
         <!-- 4-7天內使用 (#64748B - slate-500) -->
         <div
-          class="h-full"
+          class="h-full bg-slate-500"
           :style="{
             width: `${normalizedPercentages.lowActive}%`,
-            backgroundColor: '#64748B',
           }"
         ></div>
 
         <!-- 7天以上未使用 (#94A3B8 - slate-400) -->
         <div
-          class="h-full"
+          class="h-full bg-slate-400"
           :style="{
             width: `${normalizedPercentages.inactive}%`,
-            backgroundColor: '#94A3B8',
           }"
         ></div>
       </div>
@@ -164,36 +138,21 @@
         <!-- Chart-note: 3天內使用 -->
         <div class="flex items-center gap-1 h-4">
           <!-- Container: 圓點 -->
-          <div class="w-2 h-2 rounded-full" style="background-color: #334155"></div>
+          <div class="w-2 h-2 rounded-full bg-slate-700"></div>
           <!-- Text: 標籤文字 -->
-          <span
-            class="text-xs leading-4 tracking-[0.024px]"
-            style="color: #64748b; font-family: 'Noto Sans TC', sans-serif"
-          >
-            3天內使用
-          </span>
+          <span class="text-xs tracking-[0.2px] text-gray-600"> 3天內使用 </span>
         </div>
 
         <!-- Chart-note: 4-7天內使用 -->
         <div class="flex items-center gap-1 h-4">
-          <div class="w-2 h-2 rounded-full" style="background-color: #64748b"></div>
-          <span
-            class="text-xs leading-4 tracking-[0.024px]"
-            style="color: #64748b; font-family: 'Noto Sans TC', sans-serif"
-          >
-            4-7天內使用
-          </span>
+          <div class="w-2 h-2 rounded-full bg-slate-500"></div>
+          <span class="text-xs tracking-[0.2px] text-gray-600"> 4-7天內使用 </span>
         </div>
 
         <!-- Chart-note: 7天以上未使用 -->
         <div class="flex items-center gap-1 h-4">
-          <div class="w-2 h-2 rounded-full" style="background-color: #94a3b8"></div>
-          <span
-            class="text-xs leading-4 tracking-[0.024px]"
-            style="color: #64748b; font-family: 'Noto Sans TC', sans-serif"
-          >
-            7天以上未使用
-          </span>
+          <div class="w-2 h-2 rounded-full bg-slate-400"></div>
+          <span class="text-xs tracking-[0.2px] text-gray-600"> 7天以上未使用 </span>
         </div>
       </div>
     </div>

@@ -3,11 +3,10 @@
     :class="[
       'inline-flex items-center justify-center',
       'min-w-[54px] h-6 py-1 px-3 rounded border',
-      'text-xs font-bold leading-4 tracking-[0.2px]',
+      'text-xs font-bold tracking-[0.2px]',
       'whitespace-nowrap',
     ]"
     :style="colorStyles"
-    style="font-family: 'Noto Sans TC', sans-serif"
   >
     {{ text }}
   </span>

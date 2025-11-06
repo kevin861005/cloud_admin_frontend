@@ -1,35 +1,12 @@
 <template>
   <div>
     <!-- 權限檢查：如果沒有 settings.accounts 權限，顯示無權限提示 -->
-    <div
+    <EmptyState
       v-if="!hasPermission"
-      class="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-12 shadow-sm"
-    >
-      <div class="text-center">
-        <svg
-          class="mx-auto h-16 w-16 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-          />
-        </svg>
-        <h3
-          class="mt-4 text-lg font-semibold text-gray-900"
-          style="font-family: 'Noto Sans TC', sans-serif"
-        >
-          無權限存取
-        </h3>
-        <p class="mt-2 text-sm text-gray-500" style="font-family: 'Noto Sans TC', sans-serif">
-          您沒有權限查看帳號管理功能
-        </p>
-      </div>
-    </div>
+      type="no-permission"
+      title="無權限存取"
+      description="您沒有權限查看帳號管理功能"
+    />
 
     <!-- 表格元件:有權限時顯示 -->
     <data-table
@@ -63,37 +40,21 @@
     </data-table>
 
     <!-- 錯誤訊息顯示 -->
-    <div
+    <Alert
       v-if="errorMessage && hasPermission"
-      class="mt-4 rounded-lg border border-red-200 bg-red-50 p-4"
-    >
-      <div class="flex items-start">
-        <svg class="h-5 w-5 flex-shrink-0 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-          <path
-            fill-rule="evenodd"
-            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-            clip-rule="evenodd"
-          />
-        </svg>
-        <div class="ml-3">
-          <h3
-            class="text-sm font-medium text-red-800"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
-            載入失敗
-          </h3>
-          <p class="mt-1 text-sm text-red-700" style="font-family: 'Noto Sans TC', sans-serif">
-            {{ errorMessage }}
-          </p>
-        </div>
-      </div>
-    </div>
+      type="error"
+      title="載入失敗"
+      :description="errorMessage"
+      class="mt-4"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import Badge from '@/components/common/badge.vue'
+import EmptyState from '@/components/common/empty-state.vue'
+import Alert from '@/components/common/alert.vue'
 import DataTable from '@/components/table/data-table.vue'
 import { userService } from '@/services/user.service'
 import { useAuthStore } from '@/stores/auth.store'

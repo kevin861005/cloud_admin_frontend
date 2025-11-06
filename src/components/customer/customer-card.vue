@@ -8,10 +8,7 @@
       <!-- 頂部區域：標題 + ICON -->
       <div class="flex items-center justify-between">
         <!-- 標題 -->
-        <h3
-          class="text-base font-bold leading-[22px] text-black"
-          style="font-family: 'Noto Sans TC', sans-serif"
-        >
+        <h3 class="text-base font-bold text-gray-700">
           {{ props.title }}
         </h3>
 
@@ -23,25 +20,16 @@
       <div class="flex flex-col gap-3">
         <!-- 主要數值 + 單位 -->
         <div class="flex items-baseline gap-1">
-          <span
-            class="text-2xl font-bold leading-[30px] tracking-[-0.2px] text-black"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
+          <span class="text-2xl font-bold tracking-[-0.2px] text-gray-800">
             {{ props.value }}
           </span>
-          <span
-            class="text-2xl font-bold leading-[30px] tracking-[-0.2px] text-black"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
+          <span class="text-2xl font-bold tracking-[-0.2px] text-gray-800">
             {{ props.unit }}
           </span>
         </div>
 
         <!-- 副內容 -->
-        <p
-          class="text-sm font-medium leading-5 text-slate-500"
-          style="font-family: 'Noto Sans TC', sans-serif"
-        >
+        <p class="text-sm font-medium text-gray-400">
           {{ props.subtitle }}
         </p>
       </div>

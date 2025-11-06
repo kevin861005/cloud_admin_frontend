@@ -2,7 +2,7 @@
   <!-- 分頁控制區域 -->
   <div class="flex items-center justify-between border-gray-200 bg-white px-6 py-4">
     <!-- 左側：顯示資料筆數資訊 -->
-    <div class="text-sm text-gray-700">
+    <div class="text-sm font-medium text-gray-500">
       顯示 {{ startIndex + 1 }}-{{ endIndex }} 筆，共 {{ totalElements }} 筆記錄
     </div>
 
@@ -23,7 +23,7 @@
       </button>
 
       <!-- 頁碼資訊 -->
-      <span class="text-sm text-gray-700">
+      <span class="text-sm font-medium text-gray-500">
         第 {{ currentPage + 1 }} 頁，共 {{ totalPages }} 頁
       </span>
 
@@ -44,10 +44,10 @@
 
     <!-- 右側：每頁顯示筆數選擇 -->
     <div class="flex items-center gap-2">
-      <span class="text-sm text-gray-700">顯示筆數:</span>
+      <span class="text-sm font-medium text-gray-500">顯示筆數:</span>
       <select
         :value="pageSize"
-        class="rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        class="rounded border border-gray-300 bg-white px-3 py-1 text-sm font-normal text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         @change="handlePageSizeChange"
       >
         <option v-for="size in pageSizeOptions" :key="size" :value="size">

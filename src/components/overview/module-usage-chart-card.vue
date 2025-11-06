@@ -1,13 +1,8 @@
 <template>
   <div class="relative flex-1 h-[396px] bg-white rounded-lg shadow-md p-6 flex flex-col">
     <!-- Header -->
-    <div class="flex items-center justify-between h-[46px] px-6 -mx-6 -mt-6 mb-6">
-      <h3
-        class="text-base font-bold leading-[22px]"
-        style="font-family: 'Noto Sans TC', sans-serif"
-      >
-        模組使用量
-      </h3>
+    <div class="flex items-center justify-between h-[32px] px-6 mb-6">
+      <h3 class="text-base font-bold text-gray-700">模組使用量</h3>
 
       <!-- Toggle Switch -->
       <div class="flex items-center gap-2">

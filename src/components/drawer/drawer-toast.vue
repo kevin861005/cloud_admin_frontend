@@ -18,16 +18,7 @@
       <img :src="iconSrc" :alt="iconAlt" class="w-5 h-5" />
 
       <!-- Message -->
-      <span
-        class="font-medium"
-        :class="textColorClass"
-        style="
-          font-family: 'Noto Sans TC', sans-serif;
-          font-size: 14px;
-          line-height: 20px;
-          letter-spacing: 0%;
-        "
-      >
+      <span class="text-sm font-medium" :class="textColorClass">
         {{ message }}
       </span>
     </div>

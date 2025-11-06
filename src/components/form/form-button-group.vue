@@ -11,8 +11,7 @@
     <!-- 取消按鈕 -->
     <button
       type="button"
-      class="h-9 rounded border border-slate-900/10 bg-slate-900/5 px-5 py-2 text-sm font-bold leading-5 text-slate-900"
-      style="font-family: 'Noto Sans TC', sans-serif; letter-spacing: 0%"
+      class="h-9 rounded border border-slate-900/10 bg-slate-900/5 px-5 py-2 text-sm font-bold text-slate-900"
       @click="handleCancel"
     >
       {{ cancelText }}
@@ -22,8 +21,7 @@
     <button
       type="button"
       :disabled="disabled"
-      class="h-9 rounded bg-blue-500 px-5 py-2 text-sm font-bold leading-5 text-white"
-      style="font-family: 'Noto Sans TC', sans-serif; letter-spacing: 0%"
+      class="h-9 rounded bg-blue-500 px-5 py-2 text-sm font-bold text-white"
       @click="handleConfirm"
     >
       {{ confirmText }}

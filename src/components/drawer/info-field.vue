@@ -1,10 +1,7 @@
 <template>
   <div class="flex items-center">
     <!-- 左側：標題框（最大寬度 80px） -->
-    <div
-      class="w-[80px] text-left text-sm font-normal leading-5 tracking-[0.2px] text-gray-600"
-      style="font-family: 'Noto Sans TC', sans-serif"
-    >
+    <div class="w-[80px] text-left text-sm font-normal tracking-[0.2px] text-gray-600">
       {{ label }}
     </div>
 
@@ -12,10 +9,7 @@
     <div class="w-3" />
 
     <!-- 右側：內容區（佔據剩餘空間） -->
-    <div
-      class="flex-1 text-right text-sm font-medium leading-5 text-gray-500"
-      style="font-family: 'Noto Sans TC', sans-serif"
-    >
+    <div class="flex-1 text-right text-sm font-medium text-gray-500">
       <!-- 如果有傳入 value，顯示文字 -->
       <span v-if="value !== undefined">{{ value }}</span>
 

@@ -1,10 +1,9 @@
 <template>
   <!-- 群組選單容器 -->
-  <div class="menu-group">
+  <div class="flex flex-col">
     <!-- 群組標題（可點擊展開/收合） -->
     <div
-      class="menu-group-header"
-      :class="{ 'menu-group-header-expanded': isExpanded }"
+      class="h-8 flex items-center px-2 gap-2 rounded-md cursor-pointer bg-white transition-colors duration-150 hover:bg-slate-100"
       @click="handleToggle"
     >
       <!-- ICON 圖示 -->
@@ -12,19 +11,28 @@
         v-if="item.icon"
         :src="getIconPath(item.icon)"
         :alt="item.label"
-        class="menu-group-icon"
+        class="w-4 h-4 flex-shrink-0"
       />
 
       <!-- 群組標題文字 -->
-      <span class="menu-group-label">{{ item.label }}</span>
+      <span
+        class="flex-1 text-slate-800 text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis"
+      >
+        {{ item.label }}
+      </span>
     </div>
 
     <!-- 子選單列表（展開時顯示） -->
-    <div v-if="isExpanded" class="menu-group-children">
+    <div
+      v-if="isExpanded"
+      class="flex flex-col gap-1 mt-1 border-l border-slate-200 ml-[15px] pl-2"
+    >
       <template v-for="child in filteredChildren" :key="child.key">
         <!-- 分隔線（設定檔） -->
-        <div v-if="child.type === 'divider'" class="menu-divider">
-          <span class="menu-divider-label">{{ child.label }}</span>
+        <div v-if="child.type === 'divider'" class="h-6 flex items-center pl-2">
+          <span class="text-slate-500 text-xs font-medium">
+            {{ child.label }}
+          </span>
         </div>
 
         <!-- 子選單項目 -->
@@ -137,130 +145,4 @@ function handleChildClick(key: string) {
 }
 </script>
 
-<style scoped>
-/**
- * 群組選單容器
- */
-.menu-group {
-  /* 佈局：垂直排列 */
-  display: flex;
-  flex-direction: column;
-}
-
-/**
- * 群組標題（可點擊展開/收合）
- */
-.menu-group-header {
-  /* 尺寸：高度 32px（符合 Figma 規範）*/
-  height: 32px;
-  /* 佈局：水平排列，垂直置中 */
-  display: flex;
-  align-items: center;
-  /* 內距：左 8px，右 8px（符合 Figma 規範）*/
-  padding: 0px 8px 0px 8px;
-  /* 間距：ICON、文字、箭頭之間 8px */
-  gap: 8px;
-  /* 圓角：6px */
-  border-radius: 6px;
-  /* 游標：指標 */
-  cursor: pointer;
-  /* 背景色：預設白色 */
-  background-color: #ffffff;
-  /* 轉場效果：背景色變化 0.15s */
-  transition: background-color 0.15s ease;
-}
-
-/**
- * Hover 狀態：背景色變化
- */
-.menu-group-header:hover {
-  /* 背景色：#F1F5F9 */
-  background-color: #f1f5f9;
-}
-
-/**
- * 群組 ICON 圖示
- */
-.menu-group-icon {
-  /* 尺寸：16x16px */
-  width: 16px;
-  height: 16px;
-  /* 防止圖片縮放變形 */
-  flex-shrink: 0;
-}
-
-/**
- * 群組標題文字
- */
-.menu-group-label {
-  /* 自動填滿剩餘空間 */
-  flex: 1;
-  /* 字體顏色：#1E293B */
-  color: #1e293b;
-  /* 字體：Noto Sans TC */
-  font-family: 'Noto Sans TC', sans-serif;
-  /* 字體大小：14px */
-  font-size: 14px;
-  /* 字體樣式：正常 */
-  font-style: normal;
-  /* 字體粗細：500（Medium） */
-  font-weight: 500;
-  /* 行高：20px */
-  line-height: 20px;
-  /* 文字不換行 */
-  white-space: nowrap;
-  /* 超出時省略 */
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/**
- * 子選單列表容器
- */
-.menu-group-children {
-  /* 佈局：垂直排列 */
-  display: flex;
-  flex-direction: column;
-  /* 項目之間的間距：4px */
-  gap: 4px;
-  /* 上外距：4px */
-  margin-top: 4px;
-  /* 左側邊框：整個子選單容器統一的 border */
-  border-left: 1px solid #e2e8f0;
-  /* 左外距：15px（符合 Figma 規範）*/
-  margin-left: 15px;
-  /* 左內距：8px（符合 Figma 規範）*/
-  padding-left: 8px;
-}
-
-/**
- * 分隔線容器（設定檔）
- */
-.menu-divider {
-  /* 高度：24px（符合 Figma 規範） */
-  height: 24px;
-  /* 佈局：垂直置中 */
-  display: flex;
-  align-items: center;
-  /* 內距：只有左側 8px（符合 Figma 規範）*/
-  padding-left: 8px;
-}
-
-/**
- * 分隔線文字（設定檔）
- */
-.menu-divider-label {
-  /* 字體顏色：#64748B（slate-500） */
-  color: #64748b;
-  /* 字體：Inter Medium（符合 Figma 規範）*/
-  font-family: 'Inter', sans-serif;
-  /* 字體大小：12px */
-  font-size: 12px;
-  /* 字體樣式：正常 */
-  font-style: normal;
-  /* 字體粗細：500（Medium） */
-  font-weight: 500;
-  /* 行高：16px（133.333%） */
-  line-height: 16px;
-}
-</style>
+<style scoped></style>

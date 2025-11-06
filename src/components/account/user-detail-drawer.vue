@@ -6,36 +6,13 @@
         <div
           class="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent mx-auto"
         ></div>
-        <p class="text-sm text-gray-500" style="font-family: 'Noto Sans TC', sans-serif">
-          載入中...
-        </p>
+        <p class="text-sm text-gray-500">載入中...</p>
       </div>
     </div>
 
     <!-- 錯誤狀態 -->
     <div v-else-if="error" class="px-5 py-6">
-      <div class="rounded-lg border border-red-200 bg-red-50 p-4">
-        <div class="flex items-start">
-          <svg class="h-5 w-5 flex-shrink-0 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <div class="ml-3">
-            <h3
-              class="text-sm font-medium text-red-800"
-              style="font-family: 'Noto Sans TC', sans-serif"
-            >
-              載入失敗
-            </h3>
-            <p class="mt-1 text-sm text-red-700" style="font-family: 'Noto Sans TC', sans-serif">
-              {{ error }}
-            </p>
-          </div>
-        </div>
-      </div>
+      <Alert type="error" title="載入失敗" :description="error" />
     </div>
 
     <!-- 資料顯示或編輯 -->
@@ -44,7 +21,7 @@
       <DrawerHeader :title="userDetail.userName" :subtitle="userDetail.userId" />
 
       <!-- 分隔線 -->
-      <div class="w-[315px] border-t" style="border-color: #e4e6ea"></div>
+      <Divider />
 
       <!-- 顯示模式 -->
       <template v-if="!isEditMode">
@@ -151,7 +128,7 @@
       </template>
 
       <!-- 分隔線 -->
-      <div class="w-[315px] border-t" style="border-color: #e4e6ea"></div>
+      <Divider />
 
       <!-- 異動資訊區塊（始終顯示） -->
       <InfoSection title="異動資訊">
@@ -181,6 +158,8 @@ import DrawerToast from '@/components/drawer/drawer-toast.vue'
 import InfoSection from '@/components/drawer/info-section.vue'
 import InfoField from '@/components/drawer/info-field.vue'
 import Badge from '@/components/common/badge.vue'
+import Alert from '@/components/common/alert.vue'
+import Divider from '@/components/common/divider.vue'
 import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'
 import FormCheckboxGroup from '@/components/form/form-checkbox-group.vue'
@@ -619,7 +598,7 @@ const handleConfirmEdit = async () => {
     // 呼叫更新 API
     const response = await userService.updateUser(props.loginId, requestData)
 
-    console.log('✅ API 回應 (try 區塊):', response)
+    console.log('updateUser API 回應:', response)
 
     if (response.success && response.data) {
       // 更新成功
@@ -634,7 +613,7 @@ const handleConfirmEdit = async () => {
       // 發出 updated 事件通知父元件
       emit('updated')
     } else {
-      console.log('❌ API 失敗 (try 區塊):', {
+      console.log('API 失敗 (try 區塊):', {
         hasData: !!response.data,
         isArray: Array.isArray(response.data),
         data: response.data,
@@ -642,11 +621,11 @@ const handleConfirmEdit = async () => {
 
       // 更新失敗
       if (response.data && isFieldErrorArray(response.data)) {
-        console.log('✅ 進入欄位錯誤處理 (try 區塊)')
+        console.log('進入欄位錯誤處理 (try 區塊)')
         // 有 data：顯示欄位錯誤，不顯示 toast
         handleFieldErrors(response.data)
       } else {
-        console.log('❌ 進入 toast 顯示 (try 區塊)')
+        console.log('進入 toast 顯示 (try 區塊)')
         // 沒有 data：顯示 toast
         showToast('error', response.message || '儲存失敗，請重新嘗試')
 
@@ -658,13 +637,13 @@ const handleConfirmEdit = async () => {
       }
     }
   } catch (err: unknown) {
-    console.error('❌ 進入 catch 區塊:', err)
+    console.error('進入 catch 區塊:', err)
 
     // 使用 axios 的型別守衛
     if (isAxiosError(err)) {
       const errorResponse = err.response?.data
 
-      console.log('🔍 Axios 錯誤回應:', {
+      console.log('Axios 錯誤回應:', {
         errorResponse,
         hasData: !!errorResponse?.data,
         isArray: Array.isArray(errorResponse?.data),
@@ -673,11 +652,11 @@ const handleConfirmEdit = async () => {
 
       // 優先檢查是否有 data（欄位錯誤）
       if (errorResponse?.data && isFieldErrorArray(errorResponse.data)) {
-        console.log('✅ 進入欄位錯誤處理 (catch 區塊)')
+        console.log('進入欄位錯誤處理 (catch 區塊)')
         // 有 data：顯示欄位錯誤，不顯示 toast
         handleFieldErrors(errorResponse.data)
       } else {
-        console.log('❌ 進入 toast 顯示 (catch 區塊)')
+        console.log('進入 toast 顯示 (catch 區塊)')
         // 沒有 data：顯示 toast
         const errorMessage = errorResponse?.message || '儲存失敗，請重新嘗試'
         showToast('error', errorMessage)
@@ -689,7 +668,7 @@ const handleConfirmEdit = async () => {
         }
       }
     } else {
-      console.log('❌ 非 Axios 錯誤')
+      console.log('非 Axios 錯誤')
       // 非 Axios 錯誤
       showToast('error', '儲存失敗，請重新嘗試')
     }

@@ -1,19 +1,12 @@
 <template>
   <div class="flex flex-col gap-1">
     <!-- 主標題 -->
-    <h2
-      class="text-xl font-bold leading-7 tracking-[-0.002em] text-gray-800"
-      style="font-family: 'Noto Sans TC', sans-serif"
-    >
+    <h2 class="text-xl font-bold tracking-[-0.2px] text-gray-800">
       {{ title }}
     </h2>
 
     <!-- 副標題（可選） -->
-    <p
-      v-if="subtitle"
-      class="text-sm font-normal leading-5 tracking-[0.2px] text-gray-600"
-      style="font-family: 'Noto Sans TC', sans-serif"
-    >
+    <p v-if="subtitle" class="text-sm font-normal tracking-[0.2px] text-gray-600">
       {{ subtitle }}
     </p>
   </div>

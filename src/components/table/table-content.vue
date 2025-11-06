@@ -22,21 +22,14 @@
           <th
             v-for="column in columns"
             :key="column.key"
-            :style="{
-              width: column.width,
-              fontFamily: 'Noto Sans TC, sans-serif',
-              fontSize: '14px',
-              fontWeight: '500',
-              lineHeight: '20px',
-              letterSpacing: '0%',
-            }"
+            :style="{ width: column.width }"
             :class="[
-              'px-6 py-3 text-sm font-medium text-gray-500',
+              'px-6 py-3 text-sm font-medium leading-5 tracking-normal text-gray-500',
               column.align === 'center' && 'text-center',
               column.align === 'right' && 'text-right',
               column.sortable && 'cursor-pointer select-none hover:bg-gray-100',
             ]"
-            @click="column.sortable ? handleSort(column.key) : undefined"
+            @click="column.sortable ? handleSort(column.key, column.sortKey) : undefined"
           >
             <div
               :class="[
@@ -50,7 +43,7 @@
               <span v-if="column.sortable" class="text-gray-400">
                 <!-- 無排序狀態 -->
                 <svg
-                  v-if="sortState.key !== column.key"
+                  v-if="sortState.key !== (column.sortKey || column.key)"
                   class="h-4 w-4"
                   fill="none"
                   stroke="currentColor"
@@ -103,182 +96,150 @@
       <tbody>
         <!-- 載入狀態 -->
         <tr v-if="loading">
-          <td
-            :colspan="showCheckbox ? columns.length + 1 : columns.length"
-            class="px-6 py-12 text-center"
-          >
-            <div class="flex items-center justify-center gap-2 text-gray-500">
-              <svg
-                class="h-5 w-5 animate-spin"
-                fill="none"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                ></circle>
-                <path
-                  class="opacity-75"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  fill="currentColor"
-                ></path>
-              </svg>
-              <span>載入中...</span>
-            </div>
+          <td :colspan="showCheckbox ? columns.length + 1 : columns.length" class="px-6 py-12">
+            <Loading message="載入資料中..." />
           </td>
         </tr>
 
         <!-- 無資料狀態 -->
         <tr v-else-if="data.length === 0">
-          <td
-            :colspan="showCheckbox ? columns.length + 1 : columns.length"
-            class="px-6 py-12 text-center text-gray-500"
-          >
-            {{ emptyText }}
+          <td :colspan="showCheckbox ? columns.length + 1 : columns.length" class="px-6 py-12">
+            <EmptyState type="no-data" title="暫無資料" :description="emptyText" />
           </td>
         </tr>
 
         <!-- 資料列 -->
-        <tr
-          v-else
-          v-for="(row, rowIndex) in data"
-          :key="rowIndex"
-          :class="[
-            'last:border-b last:border-gray-200 transition-colors',
-            isRowSelected(row) ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50',
-          ]"
-        >
-          <!-- Checkbox 欄位（階段三新增） -->
-          <td v-if="showCheckbox" class="px-6 py-4">
-            <div class="flex items-center justify-center">
-              <input
-                type="checkbox"
-                :checked="isRowSelected(row)"
-                class="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                @change="handleToggleRow(row)"
-              />
-            </div>
-          </td>
-
-          <!-- 原始資料欄位 -->
-          <td
-            v-for="column in columns"
-            :key="column.key"
-            :style="{
-              fontFamily: 'Noto Sans TC, sans-serif',
-              fontSize: '14px',
-              fontWeight: '400',
-              lineHeight: '22px',
-              letterSpacing: '0.2px',
-            }"
+        <template v-else>
+          <tr
+            v-for="(row, rowIndex) in data"
+            :key="rowIndex"
             :class="[
-              'px-6 py-4',
-              column.align === 'center' && 'text-center',
-              column.align === 'right' && 'text-right',
+              'last:border-b last:border-gray-200 transition-colors',
+              isRowSelected(row) ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50',
             ]"
           >
-            <!-- 標準顯示 -->
-            <template v-if="!column.customRender">
-              <span class="text-gray-900">{{ row[column.key] }}</span>
-            </template>
+            <!-- Checkbox 欄位（階段三新增） -->
+            <td v-if="showCheckbox" class="px-6 py-4">
+              <div class="flex items-center justify-center">
+                <input
+                  type="checkbox"
+                  :checked="isRowSelected(row)"
+                  class="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                  @change="handleToggleRow(row)"
+                />
+              </div>
+            </td>
 
-            <!-- Link 連結顯示 -->
-            <template v-else-if="column.customRender === 'link'">
-              <a
-                :href="`https://${String(row[column.key])}`"
-                :target="column.linkConfig?.target || '_blank'"
-                class="text-blue-600 underline hover:text-blue-800"
-              >
-                {{ row[column.key] }}
-                <!-- 外部連結圖示 -->
-                <svg
-                  v-if="column.linkConfig?.showIcon"
-                  class="ml-1 inline h-3 w-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </a>
-            </template>
+            <!-- 原始資料欄位 -->
+            <td
+              v-for="column in columns"
+              :key="column.key"
+              :class="[
+                'px-6 py-4 text-sm font-normal leading-[22px] tracking-[0.2px]',
+                column.align === 'center' && 'text-center',
+                column.align === 'right' && 'text-right',
+              ]"
+            >
+              <!-- 標準顯示 -->
+              <template v-if="!column.customRender">
+                <span class="text-sm font-normal tracking-[0.2px] text-gray-800">{{
+                  row[column.key]
+                }}</span>
+              </template>
 
-            <!-- Actions 操作按鈕 -->
-            <template v-else-if="column.customRender === 'actions'">
-              <div
-                :class="[
-                  'flex items-center gap-3',
-                  column.align === 'center' && 'justify-center',
-                  column.align === 'right' && 'justify-end',
-                  !column.align && 'justify-center',
-                ]"
-              >
-                <!-- 編輯按鈕 -->
-                <button
-                  v-if="showEditButton"
-                  class="text-gray-600 transition-colors hover:text-blue-600"
-                  title="編輯"
-                  @click="handleEdit(row)"
+              <!-- Link 連結顯示 -->
+              <template v-else-if="column.customRender === 'link'">
+                <a
+                  :href="`https://${String(row[column.key])}`"
+                  :target="column.linkConfig?.target || '_blank'"
+                  class="text-blue-600 underline hover:text-blue-800"
                 >
-                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {{ row[column.key] }}
+                  <!-- 外部連結圖示 -->
+                  <svg
+                    v-if="column.linkConfig?.showIcon"
+                    class="ml-1 inline h-3 w-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                     />
                   </svg>
-                </button>
-                <!-- 查看按鈕 -->
-                <button
-                  class="text-gray-600 transition-colors hover:text-green-600"
-                  title="查看"
-                  @click="handleView(row)"
-                >
-                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </template>
+                </a>
+              </template>
 
-            <!-- Slot 自訂內容（階段二） -->
-            <template v-else-if="column.customRender === 'slot' && column.slotName">
-              <div
-                :class="[
-                  'flex',
-                  column.align === 'center' && 'justify-center',
-                  column.align === 'right' && 'justify-end',
-                  column.align === 'left' && 'justify-start',
-                  !column.align && 'justify-start',
-                ]"
-              >
-                <slot :name="column.slotName" :row="row" :column="column"></slot>
-              </div>
-            </template>
-          </td>
-        </tr>
+              <!-- Actions 操作按鈕 -->
+              <template v-else-if="column.customRender === 'actions'">
+                <div
+                  :class="[
+                    'flex items-center gap-3',
+                    column.align === 'center' && 'justify-center',
+                    column.align === 'right' && 'justify-end',
+                    !column.align && 'justify-center',
+                  ]"
+                >
+                  <!-- 編輯按鈕 -->
+                  <button
+                    v-if="showEditButton"
+                    class="text-gray-600 transition-colors hover:text-blue-600"
+                    title="編輯"
+                    @click="handleEdit(row)"
+                  >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                  </button>
+                  <!-- 查看按鈕 -->
+                  <button
+                    class="text-gray-600 transition-colors hover:text-green-600"
+                    title="查看"
+                    @click="handleView(row)"
+                  >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </template>
+
+              <!-- Slot 自訂內容（階段二） -->
+              <template v-else-if="column.customRender === 'slot' && column.slotName">
+                <div
+                  :class="[
+                    'flex',
+                    column.align === 'center' && 'justify-center',
+                    column.align === 'right' && 'justify-end',
+                    column.align === 'left' && 'justify-start',
+                    !column.align && 'justify-start',
+                  ]"
+                >
+                  <slot :name="column.slotName" :row="row" :column="column"></slot>
+                </div>
+              </template>
+            </td>
+          </tr>
+        </template>
       </tbody>
     </table>
   </div>
@@ -286,6 +247,8 @@
 
 <script setup lang="ts">
 import { reactive, onMounted, watch } from 'vue'
+import Loading from '@/components/common/loading.vue'
+import EmptyState from '@/components/common/empty-state.vue'
 import type { ColumnConfig, SortState } from '@/types/table'
 
 /**
@@ -364,17 +327,15 @@ const isRowSelected = (row: Record<string, unknown>): boolean => {
 
 /**
  * 處理排序
- * 邏輯：
- * 1. 如果點擊的是不同欄位，則切換到該欄位並設為升冪
- * 2. 如果點擊的是相同欄位：
- *    - 升冪 → 降冪
- *    - 降冪 → 無排序
- *    - 無排序 → 升冪
+ * 支援 sortKey：當欄位有 sortKey 時，使用 sortKey 進行排序
  */
-const handleSort = (key: string) => {
-  if (sortState.key !== key) {
+const handleSort = (key: string, sortKey?: string) => {
+  // 使用 sortKey（如果有提供）或 key 作為排序依據
+  const actualSortKey = sortKey || key
+
+  if (sortState.key !== actualSortKey) {
     // 切換到新欄位，預設升冪
-    sortState.key = key
+    sortState.key = actualSortKey
     sortState.order = 'asc'
   } else {
     // 同一欄位，切換排序方向

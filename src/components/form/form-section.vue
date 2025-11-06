@@ -1,10 +1,7 @@
 <template>
   <div class="flex flex-col" :style="{ width: `${width}px`, gap: `${gap}px` }">
     <!-- 區塊標題 -->
-    <h3
-      class="text-sm font-bold leading-5 text-gray-900"
-      style="font-family: 'Noto Sans TC', sans-serif; letter-spacing: 0%"
-    >
+    <h3 class="text-sm font-bold text-gray-900">
       {{ title }}
     </h3>
 

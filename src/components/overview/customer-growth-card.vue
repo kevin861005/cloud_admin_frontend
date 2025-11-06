@@ -6,12 +6,12 @@
     - gap: 20px (使用 space-y-5)
     - flex: 1 0 0 (使用 flex-1)
   -->
-  <div class="flex-shrink-0 h-[272px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5">
+  <div class="flex-shrink-0 h-[256px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5">
     <!--
       Contents-Text: 文字內容區域
       - gap: 48px (使用 space-y-12)
     -->
-    <div class="flex flex-col gap-12">
+    <div class="flex flex-col gap-8">
       <!--
         Card-Top: 頂部區域 (標題 + 總數)
         - justify-content: space-between
@@ -43,12 +43,7 @@
             - font-weight: 700
             - line-height: 22px
           -->
-          <span
-            class="text-black text-base font-bold leading-[22px]"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
-            月度成長
-          </span>
+          <span class="text-base font-bold text-gray-700"> 月度成長 </span>
         </div>
 
         <!--
@@ -59,10 +54,7 @@
           - line-height: 30px
           - letter-spacing: -0.2px
         -->
-        <span
-          class="text-black text-2xl font-bold leading-[30px] tracking-[-0.2px]"
-          style="font-family: 'Noto Sans TC', sans-serif"
-        >
+        <span class="text-2xl font-bold tracking-[-0.2px] text-gray-800">
           {{ formatGrowthRate(stats.growthRate) }}%
         </span>
       </div>
@@ -74,28 +66,14 @@
       <div class="flex flex-col gap-2">
         <!-- 當月客戶數 -->
         <div class="flex justify-between items-center">
-          <span class="text-sm text-slate-600" style="font-family: 'Noto Sans TC', sans-serif">
-            當月客戶數
-          </span>
-          <span
-            class="text-sm text-black font-medium"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
-            {{ stats.currentMonthCount }}間
-          </span>
+          <span class="text-sm text-slate-600"> 當月客戶數 </span>
+          <span class="text-sm text-black font-medium"> {{ stats.currentMonthCount }}間 </span>
         </div>
 
         <!-- 上月客戶數 -->
         <div class="flex justify-between items-center">
-          <span class="text-sm text-slate-600" style="font-family: 'Noto Sans TC', sans-serif">
-            上月客戶數
-          </span>
-          <span
-            class="text-sm text-black font-medium"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
-            {{ stats.lastMonthCount }}間
-          </span>
+          <span class="text-sm text-slate-600"> 上月客戶數 </span>
+          <span class="text-sm text-black font-medium"> {{ stats.lastMonthCount }}間 </span>
         </div>
       </div>
     </div>

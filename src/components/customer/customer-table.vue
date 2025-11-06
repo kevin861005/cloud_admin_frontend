@@ -1,6 +1,6 @@
 <template>
   <data-table
-    title="客戶列表"
+    title="列表"
     :total-count="customers.length"
     :columns="columns"
     :data="customers"
@@ -142,6 +142,7 @@ const columns = ref<ColumnConfig[]>([
     sortable: true,
     customRender: 'slot',
     slotName: 'statusDisplay',
+    sortKey: 'status',
   },
   {
     key: 'lastUsed',

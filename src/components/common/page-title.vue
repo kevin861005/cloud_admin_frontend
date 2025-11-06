@@ -15,32 +15,18 @@
     Props：
     - title: 主標題文字（必填）
     - subtitle: 副標題文字（選填）
-
-    字體樣式規範（來自 Figma）：
-    主標題：
-    - color: #1E293B
-    - font-family: "Noto Sans TC"
-    - font-size: 24px
-    - font-weight: 700
-    - line-height: 30px (125%)
-    - letter-spacing: -0.2px
-
-    副標題：
-    - color: #64748B
-    - font-family: "Noto Sans TC"
-    - font-size: 14px
-    - font-weight: 400
-    - line-height: 22px (157.143%)
-    - letter-spacing: 0.2px
   -->
   <div class="pt-10 pb-10 pl-10">
     <!-- 主標題（使用自定義 CSS 類別 page-title-main） -->
-    <h1 class="page-title-main">
+    <h1 class="page-title-main text-2xl font-bold tracking-[-0.2px] text-gray-800">
       {{ title }}
     </h1>
 
     <!-- 副標題（使用自定義 CSS 類別 page-title-subtitle） -->
-    <p v-if="subtitle" class="page-title-subtitle mt-2">
+    <p
+      v-if="subtitle"
+      class="page-title-subtitle mt-2 text-sm font-normal tracking-[0.2px] text-gray-600"
+    >
       {{ subtitle }}
     </p>
   </div>

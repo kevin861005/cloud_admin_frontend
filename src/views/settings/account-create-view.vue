@@ -37,7 +37,7 @@
         </FormSection>
 
         <!-- 分隔線 -->
-        <div style="width: 560px; height: 0px; border: 1px solid #e5ecff; opacity: 1"></div>
+        <Divider />
 
         <!-- 2. 個人資訊區塊 -->
         <FormSection title="個人資訊">
@@ -79,6 +79,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import PageTitle from '@/components/common/page-title.vue'
+import Divider from '@/components/common/divider.vue'
 import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'
 import FormCheckboxGroup from '@/components/form/form-checkbox-group.vue'

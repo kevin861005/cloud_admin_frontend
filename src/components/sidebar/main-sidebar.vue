@@ -1,22 +1,18 @@
 <template>
   <!-- 左側選單容器 -->
-  <div class="sidebar">
+  <div class="w-64 flex flex-col items-start bg-white min-h-[684px] border-r border-black/[0.08]">
     <!-- 選單標題：功能選單 -->
-    <div class="sidebar-header">
-      <h2 class="sidebar-title">功能選單</h2>
+    <div class="w-full p-2">
+      <h2 class="text-xs font-bold tracking-[0.2px] text-slate-800/70 m-0 px-2">功能選單</h2>
     </div>
 
     <!-- 選單項目列表 -->
-    <nav class="sidebar-nav">
+    <nav class="w-full flex flex-col gap-1 px-2">
       <!-- Loading 狀態 -->
-      <div v-if="isLoading" class="sidebar-loading">
-        <p class="text-sm text-slate-500">載入選單中...</p>
-      </div>
+      <Loading v-if="isLoading" message="載入選單中..." />
 
       <!-- 錯誤狀態 -->
-      <div v-else-if="error" class="sidebar-error">
-        <p class="text-sm text-red-600">{{ error }}</p>
-      </div>
+      <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
       <!-- 選單項目 -->
       <template v-else>
@@ -52,17 +48,19 @@
  */
 
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router' // 新增：引入路由
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.store'
 import { useMenuStore } from '@/stores/menu.store'
 import { userService } from '@/services/user.service'
 import { menuConfig } from '@/config/menu.config'
+import Loading from '@/components/common/loading.vue'
+import Alert from '@/components/common/alert.vue'
 import SidebarMenuItem from './sidebar-menuitem.vue'
 import SidebarGroup from './sidebar-group.vue'
 import type { MenuItem } from '@/types/menu'
 
 // ==================== Router ====================
-const router = useRouter() // 新增：取得路由實例
+const router = useRouter()
 
 // ==================== Stores ====================
 const authStore = useAuthStore()
@@ -228,87 +226,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-/**
- * 左側選單容器
- */
-.sidebar {
-  /* 尺寸：固定寬度 256px */
-  width: 256px;
-  /* 佈局：垂直排列 */
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  /* 背景色：白色 */
-  background-color: #ffffff;
-  /* 高度：自適應內容，最小高度 684px */
-  min-height: 684px;
-  /* 邊框：右側淡灰色邊框（符合 Figma 規範：rgba(0, 0, 0, 0.08) */
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-/**
- * 選單標題區域
- */
-.sidebar-header {
-  /* 內距：上下 8px，左 8px（符合 Figma 規範 */
-  padding: 8px 8px 8px 8px;
-  /* 寬度：填滿容器 */
-  width: 100%;
-}
-
-/**
- * 選單標題文字：功能選單
- */
-.sidebar-title {
-  /* 字體顏色：#1E293B 加上 70% 不透明度（B2 = 70%） */
-  color: rgba(30, 41, 59, 0.7);
-  /* 字體：Noto Sans TC Bold（符合 Figma 規範 */
-  font-family: 'Noto Sans TC', sans-serif;
-  /* 字體大小：12px（符合 Figma 規範）*/
-  font-size: 12px;
-  /* 字體樣式：正常 */
-  font-style: normal;
-  /* 字體粗細：700（Bold，符合 Figma 規範）*/
-  font-weight: 700;
-  /* 行高：16px（符合 Figma 規範）*/
-  line-height: 16px;
-  /* 字間距：0.2px（符合 Figma 規範）*/
-  letter-spacing: 0.2px;
-  /* 移除預設 margin */
-  margin: 0;
-  /* 內距：左右 8px（符合 Figma 規範） */
-  padding: 0px 8px;
-}
-
-/**
- * 選單導航區域
- */
-.sidebar-nav {
-  /* 寬度：填滿容器 */
-  width: 100%;
-  /* 佈局：垂直排列 */
-  display: flex;
-  flex-direction: column;
-  /* 項目之間的間距：4px */
-  gap: 4px;
-  /* 內距：只有左右側 8px（符合 Figma 規範）*/
-  padding: 0px 8px 0px 8px;
-}
-
-/**
- * Loading 狀態
- */
-.sidebar-loading {
-  padding: 20px;
-  text-align: center;
-}
-
-/**
- * 錯誤狀態
- */
-.sidebar-error {
-  padding: 20px;
-  text-align: center;
-}
-</style>
+<style scoped></style>

@@ -27,10 +27,7 @@
         />
 
         <!-- 文字 -->
-        <span
-          class="text-base font-normal leading-[140%] tracking-wide text-[#222222]"
-          style="font-family: 'Noto Sans TC'"
-        >
+        <span class="text-base font-normal leading-[140%] tracking-wide text-[#222222]">
           {{ message }}
         </span>
       </div>

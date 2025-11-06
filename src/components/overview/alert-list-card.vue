@@ -6,12 +6,12 @@
     - gap: 20px (使用 space-y-5)
     - flex: 1 0 0 (使用 flex-1)
   -->
-  <div class="flex-shrink-0 h-[272px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5">
+  <div class="flex-shrink-0 h-[256px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5">
     <!--
       Contents-Text: 文字內容區域
       - gap: 48px (使用 space-y-12)
     -->
-    <div class="flex flex-col gap-12">
+    <div class="flex flex-col gap-8">
       <!--
         Card-Top: 頂部區域 (標題 + 總數)
         - justify-content: space-between
@@ -42,12 +42,7 @@
             - font-weight: 700
             - line-height: 22px
           -->
-          <span
-            class="text-black text-base font-bold leading-[22px]"
-            style="font-family: 'Noto Sans TC', sans-serif"
-          >
-            異常警示
-          </span>
+          <span class="text-base font-bold text-gray-700"> 異常警示 </span>
         </div>
 
         <!--
@@ -58,10 +53,7 @@
           - line-height: 30px
           - letter-spacing: -0.2px
         -->
-        <span
-          class="text-black text-2xl font-bold leading-[30px] tracking-[-0.2px]"
-          style="font-family: 'Noto Sans TC', sans-serif"
-        >
+        <span class="text-2xl font-bold tracking-[-0.2px] text-gray-800">
           {{ alertData.totalCount }}筆
         </span>
       </div>
@@ -94,12 +86,11 @@
               - 根據類型顯示不同顏色
             -->
             <span
-              class="inline-flex items-center justify-center h-6 px-3 rounded border text-xs font-medium whitespace-nowrap"
+              class="inline-flex items-center justify-center h-6 px-3 rounded border text-xs font-bold tracking-[0.2px] whitespace-nowrap"
               :style="{
                 backgroundColor: getAlertStyle(alert.type).bgColor,
                 borderColor: getAlertStyle(alert.type).borderColor,
                 color: getAlertStyle(alert.type).textColor,
-                fontFamily: 'Noto Sans TC, sans-serif',
               }"
             >
               {{ getAlertStyle(alert.type).label }}
@@ -112,10 +103,7 @@
               - font-weight: 400
               - color: #000000
             -->
-            <span
-              class="text-sm text-black"
-              style="font-family: 'Inter', sans-serif; font-weight: 400"
-            >
+            <span class="text-sm font-medium text-right text-gray-700">
               {{ alert.occurredAt }}
             </span>
           </div>
@@ -129,10 +117,7 @@
             - color: #000000
             - text-align: right
           -->
-          <span
-            class="text-sm text-black text-right"
-            style="font-family: 'Noto Sans TC', sans-serif; font-weight: 400"
-          >
+          <span class="text-sm font-medium text-gray-700">
             {{ alert.customerName }}
           </span>
         </div>
@@ -154,16 +139,8 @@
         - gap: 8px (左側文字與時間之間的間距)
       -->
       <div class="flex items-center gap-2 h-6">
-        <span
-          class="text-sm text-slate-500"
-          style="font-family: 'Noto Sans TC', sans-serif; font-weight: 400"
-        >
-          更新時間：
-        </span>
-        <span
-          class="text-sm text-slate-500"
-          style="font-family: 'Noto Sans TC', sans-serif; font-weight: 400"
-        >
+        <span class="text-sm font-medium text-gray-600"> 更新時間： </span>
+        <span class="text-sm font-medium text-gray-600">
           {{ updateTime }}
         </span>
       </div>
@@ -181,13 +158,7 @@
       -->
       <button
         v-if="alertData.totalCount > 3"
-        class="inline-flex items-center justify-center h-6 px-2 rounded border text-xs cursor-pointer hover:bg-opacity-80 transition-colors"
-        style="
-          background-color: #0000000d;
-          border-color: #0000001a;
-          font-family: 'Noto Sans TC', sans-serif;
-          font-weight: 400;
-        "
+        class="inline-flex items-center justify-center h-6 px-2 py-1 rounded border border-gray-200 text-xs font-bold tracking-[0.2px] text-gray-700 bg-gray-100 bd- cursor-pointer hover:bg-opacity-80 transition-colors"
         @click="handleMoreClick"
       >
         更多
@@ -230,9 +201,9 @@ const getAlertStyle = (type: AlertType) => {
     },
     RUNTIME_ERROR: {
       label: '運行異常',
-      bgColor: '#0000000D',
-      borderColor: '#0000001A',
-      textColor: '#000000',
+      bgColor: '#F3F4F6',
+      borderColor: '#E4E6EA',
+      textColor: '#6B7280',
     },
   }
 

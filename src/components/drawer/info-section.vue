@@ -3,10 +3,7 @@
     <!-- Title 區域：固定高度 40px -->
     <div class="flex h-[40px] items-center justify-between">
       <!-- 左側：標題文字 -->
-      <h3
-        class="text-sm font-bold leading-5 text-gray-600"
-        style="font-family: 'Noto Sans TC', sans-serif"
-      >
+      <h3 class="text-sm font-bold text-gray-600">
         {{ title }}
       </h3>
 
