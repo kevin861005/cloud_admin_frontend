@@ -1,113 +1,3 @@
-<script setup lang="ts">
-/**
- * 登入頁面
- *
- * 功能：
- * 1. 使用者輸入帳號密碼
- * 2. 表單驗證
- * 3. 呼叫登入 API
- * 4. 顯示 Loading 狀態
- * 5. 錯誤處理
- * 6. 登入成功後跳轉到首頁
- */
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth.store'
-
-// === Composables ===
-const router = useRouter()
-const authStore = useAuthStore()
-
-// === State ===
-
-/**
- * 表單資料
- */
-const form = ref({
-  loginId: '',
-  password: '',
-})
-
-/**
- * 表單驗證錯誤
- */
-const formErrors = ref({
-  loginId: '',
-  password: '',
-})
-
-/**
- * 是否顯示密碼
- */
-const showPassword = ref(false)
-
-// === Computed ===
-
-/**
- * 表單是否有效
- */
-const isFormValid = computed(() => {
-  return form.value.loginId.trim() !== '' && form.value.password.trim() !== ''
-})
-
-// === Methods ===
-
-/**
- * 驗證表單
- */
-function validateForm(): boolean {
-  let isValid = true
-
-  // 重置錯誤訊息
-  formErrors.value = {
-    loginId: '',
-    password: '',
-  }
-
-  // 驗證帳號
-  if (!form.value.loginId.trim()) {
-    formErrors.value.loginId = '請輸入帳號'
-    isValid = false
-  }
-
-  // 驗證密碼
-  if (!form.value.password.trim()) {
-    formErrors.value.password = '請輸入密碼'
-    isValid = false
-  }
-
-  return isValid
-}
-
-/**
- * 處理登入
- */
-async function handleLogin(): Promise<void> {
-  // 驗證表單
-  if (!validateForm()) {
-    return
-  }
-
-  // 呼叫登入 API
-  const success = await authStore.login({
-    loginId: form.value.loginId,
-    password: form.value.password,
-  })
-
-  // 登入成功，跳轉到首頁
-  if (success) {
-    router.push('/')
-  }
-}
-
-/**
- * 切換密碼顯示/隱藏
- */
-function togglePasswordVisibility(): void {
-  showPassword.value = !showPassword.value
-}
-</script>
-
 <template>
   <div
     class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4"
@@ -142,7 +32,7 @@ function togglePasswordVisibility(): void {
             v-model="form.loginId"
             type="text"
             autocomplete="username"
-            :disabled="authStore.loading"
+            :disabled="isLoading || isSubmitting"
             :class="[
               'w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors',
               formErrors.loginId ? 'border-red-500' : 'border-gray-300',
@@ -164,7 +54,7 @@ function togglePasswordVisibility(): void {
               v-model="form.password"
               :type="showPassword ? 'text' : 'password'"
               autocomplete="current-password"
-              :disabled="authStore.loading"
+              :disabled="isLoading || isSubmitting"
               :class="[
                 'w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors pr-12',
                 formErrors.password ? 'border-red-500' : 'border-gray-300',
@@ -175,7 +65,7 @@ function togglePasswordVisibility(): void {
             <button
               type="button"
               @click="togglePasswordVisibility"
-              :disabled="authStore.loading"
+              :disabled="isLoading || isSubmitting"
               class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
             >
               <svg
@@ -236,16 +126,16 @@ function togglePasswordVisibility(): void {
         <!-- 登入按鈕 -->
         <button
           type="submit"
-          :disabled="!isFormValid || authStore.loading"
+          :disabled="!isFormValid || isLoading || isSubmitting"
           :class="[
             'w-full py-3 px-4 rounded-lg font-medium text-white transition-colors',
-            isFormValid && !authStore.loading
+            isFormValid && !isLoading && !isSubmitting
               ? 'bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300'
               : 'bg-gray-300 cursor-not-allowed',
           ]"
         >
           <!-- Loading 狀態 -->
-          <span v-if="authStore.loading" class="flex items-center justify-center">
+          <span v-if="isLoading || isSubmitting" class="flex items-center justify-center">
             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
               <circle
                 class="opacity-25"
@@ -272,9 +162,239 @@ function togglePasswordVisibility(): void {
       <div class="mt-6 text-center">
         <a href="#" class="text-sm text-indigo-600 hover:text-indigo-700"> 忘記密碼？ </a>
       </div>
+
+      <!-- 除錯資訊 (開發階段使用，生產環境請移除) -->
+      <div v-if="true" class="mt-6 p-4 bg-gray-100 rounded-lg text-xs font-mono space-y-1">
+        <div class="font-bold text-gray-700 mb-2">🔍 除錯資訊</div>
+        <div>
+          <span class="text-gray-600">isAuthenticated:</span> {{ authStore.isAuthenticated }}
+        </div>
+        <div><span class="text-gray-600">isLoading:</span> {{ isLoading }}</div>
+        <div><span class="text-gray-600">isSubmitting:</span> {{ isSubmitting }}</div>
+        <div>
+          <span class="text-gray-600">userName:</span>
+          {{ authStore.userInfo?.userName || 'null' }}
+        </div>
+        <div><span class="text-gray-600">當前路由:</span> {{ router.currentRoute.value.path }}</div>
+        <div><span class="text-gray-600">hasToken:</span> {{ hasToken }}</div>
+      </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+/**
+ * 登入頁面
+ *
+ * 功能：
+ * 1. 使用者輸入帳號密碼
+ * 2. 表單驗證
+ * 3. 呼叫登入 API
+ * 4. 顯示 Loading 狀態
+ * 5. 錯誤處理
+ * 6. 登入成功後跳轉到首頁
+ */
+import { ref, computed, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth.store'
+
+// === Composables ===
+const router = useRouter()
+const authStore = useAuthStore()
+
+// === State ===
+
+/**
+ * 表單資料
+ */
+const form = ref({
+  loginId: '',
+  password: '',
+})
+
+/**
+ * 表單驗證錯誤
+ */
+const formErrors = ref({
+  loginId: '',
+  password: '',
+})
+
+/**
+ * 是否顯示密碼
+ */
+const showPassword = ref(false)
+
+/**
+ * 防止重複提交
+ */
+const isSubmitting = ref(false)
+
+// === Computed ===
+
+/**
+ * 表單是否有效
+ */
+const isFormValid = computed(() => {
+  return form.value.loginId.trim() !== '' && form.value.password.trim() !== ''
+})
+
+/**
+ * 是否正在載入（兼容 loading 和 isLoading）
+ */
+const isLoading = computed(() => {
+  // 使用 in 操作符安全地檢查屬性是否存在
+  const hasIsLoading = 'isLoading' in authStore
+  const hasLoading = 'loading' in authStore
+
+  if (hasIsLoading) {
+    return Boolean((authStore as unknown as Record<string, unknown>).isLoading)
+  }
+
+  if (hasLoading) {
+    return Boolean((authStore as unknown as Record<string, unknown>).loading)
+  }
+
+  return false
+})
+
+/**
+ * 檢查是否有 Token（供 template 使用）
+ */
+const hasToken = computed(() => {
+  return !!localStorage.getItem('accessToken')
+})
+
+// === Methods ===
+
+/**
+ * 驗證表單
+ */
+function validateForm(): boolean {
+  let isValid = true
+
+  // 重置錯誤訊息
+  formErrors.value = {
+    loginId: '',
+    password: '',
+  }
+
+  // 驗證帳號
+  if (!form.value.loginId.trim()) {
+    formErrors.value.loginId = '請輸入帳號'
+    isValid = false
+  }
+
+  // 驗證密碼
+  if (!form.value.password.trim()) {
+    formErrors.value.password = '請輸入密碼'
+    isValid = false
+  }
+
+  return isValid
+}
+
+/**
+ * 處理登入
+ */
+async function handleLogin(): Promise<void> {
+  console.log('╔════════════════════════════════════════╗')
+  console.log('║     登入流程開始 - login-view.vue     ║')
+  console.log('╚════════════════════════════════════════╝')
+  console.log('1. handleLogin 函數被呼叫')
+  console.log('   帳號:', form.value.loginId)
+  console.log('   密碼長度:', form.value.password.length)
+
+  // 防止重複提交
+  if (isSubmitting.value) {
+    console.log('⚠️  登入進行中，忽略重複提交')
+    return
+  }
+
+  // 驗證表單
+  console.log('2. 開始表單驗證')
+  if (!validateForm()) {
+    console.log('❌ 表單驗證失敗')
+    console.log('   錯誤:', formErrors.value)
+    return
+  }
+  console.log('✅ 表單驗證通過')
+
+  try {
+    isSubmitting.value = true
+    console.log('3. 設置 isSubmitting = true')
+
+    // 呼叫登入 API
+    console.log('4. 準備呼叫 authStore.login')
+    console.log('   傳入參數:', {
+      loginId: form.value.loginId,
+      password: '******',
+    })
+
+    const success = await authStore.login({
+      loginId: form.value.loginId,
+      password: form.value.password,
+    })
+
+    console.log('5. authStore.login 執行完成')
+    console.log('   ├─ 返回值 success:', success)
+    console.log('   ├─ authStore.isAuthenticated:', authStore.isAuthenticated)
+    console.log('   ├─ authStore.userInfo:', authStore.userInfo)
+    console.log('   └─ localStorage Token:', !!localStorage.getItem('accessToken'))
+
+    // 登入成功，跳轉到首頁
+    if (success) {
+      console.log('6. ✅ 登入成功分支')
+      console.log('7. 等待 nextTick 確保狀態更新')
+
+      await nextTick()
+
+      console.log('8. nextTick 完成，再次確認狀態:')
+      console.log('   ├─ isAuthenticated:', authStore.isAuthenticated)
+      console.log('   ├─ userInfo:', authStore.userInfo)
+      console.log('   └─ 當前路由:', router.currentRoute.value.path)
+
+      console.log('9. 準備執行路由跳轉')
+      console.log('   目標路由: /overview')
+
+      // 使用 replace 避免返回到登入頁
+      const result = await router.replace('/overview')
+
+      console.log('10. 路由跳轉完成')
+      console.log('    ├─ 跳轉結果:', result)
+      console.log('    ├─ 新路由路徑:', router.currentRoute.value.path)
+      console.log('    └─ 新路由名稱:', router.currentRoute.value.name)
+
+      console.log('╔════════════════════════════════════════╗')
+      console.log('║         ✅ 登入流程成功完成            ║')
+      console.log('╚════════════════════════════════════════╝')
+    } else {
+      console.log('6. ❌ 登入失敗分支')
+      console.log('   錯誤訊息:', authStore.errorMessage)
+      console.log('╔════════════════════════════════════════╗')
+      console.log('║         ❌ 登入流程失敗                ║')
+      console.log('╚════════════════════════════════════════╝')
+    }
+  } catch (error) {
+    console.error('╔════════════════════════════════════════╗')
+    console.error('║      ⚠️  handleLogin 捕獲錯誤         ║')
+    console.error('╚════════════════════════════════════════╝')
+    console.error('錯誤詳情:', error)
+    console.error('錯誤堆疊:', (error as Error).stack)
+  } finally {
+    isSubmitting.value = false
+    console.log('11. 清理: isSubmitting = false')
+    console.log('═══════════════════════════════════════════')
+  }
+}
+
+/**
+ * 切換密碼顯示/隱藏
+ */
+function togglePasswordVisibility(): void {
+  showPassword.value = !showPassword.value
+}
+</script>
 
 <style scoped>
 /* 如果需要額外的樣式可以在這裡加 */

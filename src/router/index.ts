@@ -181,19 +181,6 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-
-  /**
-   * Table 元件測試頁面
-   */
-  {
-    path: '/table-test',
-    name: 'table-test',
-    component: () => import('@/views/table-test-view.vue'),
-    meta: {
-      title: 'Table 元件測試',
-      requiresAuth: false, // 測試時可設為 false
-    },
-  },
 ]
 
 /**
