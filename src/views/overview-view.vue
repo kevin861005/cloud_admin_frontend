@@ -37,14 +37,22 @@
         @row-view="handleView"
       />
     </TableContainer>
+
+    <!-- 客戶詳細資訊 Drawer -->
+    <CustomerDetailDrawer
+      :is-open="isDrawerOpen"
+      :customer-id="selectedCustomerId"
+      @close="handleCloseDrawer"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import PageTitle from '@/components/common/page-title.vue'
 import CardContainer from '@/components/common/card-container.vue'
 import TableContainer from '@/components/table/table-container.vue'
+import CustomerDetailDrawer from '@/components/customer/customer-detail-drawer.vue'
 
 // 引入卡片元件
 import CustomerStatsCard from '@/components/overview/customer-stats-card.vue'
@@ -56,12 +64,6 @@ import ModuleUsageChartCard from '@/components/overview/module-usage-chart-card.
 // 引入客戶列表表格元件
 import CustomerTable from '@/components/customer/customer-table.vue'
 
-const handleView = (row: Record<string, unknown>) => {
-  // 安全的型別轉換
-  const customer = row as unknown as { id: number; name: string }
-  console.log('查看客戶:', customer)
-}
-
 /**
  * 總覽頁面主元件
  *
@@ -69,13 +71,55 @@ const handleView = (row: Record<string, unknown>) => {
  * 1. PageTitle - 頁面標題
  * 2. SectionCardContainer - 包含 3 張統計卡片（客戶統計、月度成長、異常警示）
  * 3. SectionChartContainer - 包含需關注客戶和模組使用量圖表
- * 4.SectionCustomerListTableContainer - 包含客戶列表表格
+ * 4. SectionCustomerListTableContainer - 包含客戶列表表格
+ * 5. CustomerDetailDrawer - 客戶詳細資訊抽屜
  *
  * 設計理念：
  * - 採用「直接包含子元件」模式
  * - 父元件只管理容器，不管理個別卡片
  * - 簡化引入，提高可維護性
  */
+
+// ==================== 狀態管理 ====================
+
+/**
+ * Drawer 開啟狀態
+ */
+const isDrawerOpen = ref(false)
+
+/**
+ * 選中的客戶 ID
+ */
+const selectedCustomerId = ref<number | null>(null)
+
+// ==================== 事件處理 ====================
+
+/**
+ * 處理查看客戶詳情
+ * 當表格中的查看按鈕被點擊時觸發
+ *
+ * @param row - 表格行資料
+ */
+const handleView = (row: Record<string, unknown>) => {
+  // 安全的型別轉換
+  const customer = row as unknown as { id: number; name: string }
+  console.log('查看客戶:', customer)
+
+  // 設定選中的客戶 ID 並開啟 Drawer
+  selectedCustomerId.value = customer.id
+  isDrawerOpen.value = true
+}
+
+/**
+ * 處理關閉 Drawer
+ */
+const handleCloseDrawer = () => {
+  isDrawerOpen.value = false
+  // 延遲清空 customerId，避免 Drawer 關閉動畫時資料消失
+  setTimeout(() => {
+    selectedCustomerId.value = null
+  }, 300)
+}
 
 // ==================== Lifecycle ====================
 

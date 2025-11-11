@@ -1,59 +1,34 @@
 <template>
   <!-- 搜尋框容器 -->
   <div class="relative flex items-center">
-    <!-- 搜尋圖示 -->
-    <svg
-      class="pointer-events-none absolute left-3 h-5 w-5 text-gray-400"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-      />
-    </svg>
-
     <!-- 搜尋輸入框 -->
     <input
       v-model="localValue"
       type="text"
       :placeholder="placeholder"
-      class="w-full rounded-md border-gray-300 py-2 pl-10 pr-10 text-sm shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      class="h-8 w-full rounded-md border border-gray-300 py-1 px-3 text-sm font-normal placeholder:text-gray-400 focus:outline-none"
       @input="handleInput"
     />
 
-    <!-- 清除按鈕（有內容時才顯示）-->
-    <button
-      v-if="localValue"
-      type="button"
-      class="absolute right-3 text-gray-400 transition-colors hover:text-gray-600"
-      title="清除搜尋"
-      @click="handleClear"
-    >
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
-    </button>
+    <!-- 搜尋圖示（右側） -->
+    <img
+      :src="searchIcon"
+      alt="搜尋"
+      class="pointer-events-none absolute right-3 h-5 w-5 text-gray-400"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import searchIcon from '@/assets/icons/table/search.svg'
 
 /**
  * Table 搜尋框元件
  *
  * 功能：
  * 1. 即時搜尋（debounce 500ms）
- * 2. 顯示搜尋圖示和清除按鈕
+ * 2. 搜尋圖示顯示在右側
  * 3. 支援 v-model 雙向綁定
  *
  * 使用範例：
@@ -124,25 +99,5 @@ const handleInput = () => {
   debounceTimer = setTimeout(() => {
     emit('update:modelValue', localValue.value.trim())
   }, 500)
-}
-
-/**
- * 處理清除按鈕點擊
- * 邏輯：
- * 1. 清空本地值
- * 2. 清除定時器
- * 3. 立即觸發 update:modelValue（傳空字串）
- */
-const handleClear = () => {
-  localValue.value = ''
-
-  // 清除定時器
-  if (debounceTimer) {
-    clearTimeout(debounceTimer)
-    debounceTimer = null
-  }
-
-  // 立即清空搜尋
-  emit('update:modelValue', '')
 }
 </script>

@@ -1,11 +1,7 @@
 <template>
-  <!-- DataTable：兩大區塊，TABLE（含 TOP + TABLE） + Pagination；區塊間距 20px -->
   <div class="flex flex-col gap-5">
-    <!-- TABLE 區（TOP + TABLE 本體），內部區塊間距 20px -->
     <section class="flex flex-col gap-5">
-      <!-- TOP 區：左側 Header，右側 Filters + Search -->
       <div class="flex h-9 w-full items-center justify-between px-1">
-        <!-- 左：標題 + 總數/批次操作（保持你原本的綁定） -->
         <table-header
           :title="title"
           :total-count="totalCount"
@@ -16,9 +12,7 @@
           @cancel-selection="handleCancelSelection"
         />
 
-        <!-- 右：篩選 + 搜尋 + 按鈕（整體置右） -->
         <div class="flex items-center gap-5">
-          <!-- 篩選 + 搜尋 -->
           <div class="flex items-center gap-3">
             <table-filters
               v-if="filters && filters.length"
@@ -32,7 +26,6 @@
             />
           </div>
 
-          <!-- 操作按鈕 -->
           <table-buttons
             :show-add-button="showAddButton"
             :add-button-text="addButtonText"
@@ -41,7 +34,16 @@
         </div>
       </div>
 
-      <!-- TABLE 本體（標題列 + 內容列），保持你原本的 props/slots/emit -->
+      <!-- 選取狀態列（條件顯示） -->
+      <table-selection-bar
+        :show-checkbox="showCheckbox"
+        :selected-count="selectedIds.length"
+        :item-name="itemName"
+        :batch-actions="batchActions"
+        @batch-action="handleBatchAction"
+        @cancel-selection="handleCancelSelection"
+      />
+
       <table-content
         :columns="columns"
         :data="paginatedData"
@@ -59,14 +61,12 @@
         @toggle-all="handleToggleAll"
         @toggle-row="handleToggleRow"
       >
-        <!-- 透明轉發所有自訂 slots（保持你原本已有的寫法） -->
         <template v-for="(_, slotName) in $slots" :key="slotName" v-slot:[slotName]="slotProps">
           <slot :name="slotName" v-bind="slotProps" />
         </template>
       </table-content>
     </section>
 
-    <!-- Pagination 區（獨立在 TABLE 區下方），與上方保持 20px 間距 -->
     <table-pagination
       :current-page="currentPage"
       :page-size="currentPageSize"
@@ -89,6 +89,7 @@ import TableSearch from './table-search.vue'
 import TableContent from './table-content.vue'
 import TablePagination from './table-pagination.vue'
 import TableButtons from './table-buttons.vue'
+import TableSelectionBar from './table-selection-bar.vue'
 
 import type {
   ColumnConfig,
@@ -97,29 +98,6 @@ import type {
   SortState,
   BatchActionConfig,
 } from '@/types/table'
-
-/**
- * Data Table 主容器元件（階段三：整合選取功能）
- *
- * 資料流程：
- * 原始資料 (props.data)
- *   ↓
- * 篩選器過濾 (filteredByFilters)
- *   ↓
- * 搜尋框過濾 (filteredData)
- *   ↓
- * 排序處理 (sortedData)
- *   ↓
- * 分頁處理 (paginatedData)
- *   ↓
- * 最終顯示
- *
- * 互動邏輯：
- * - 改變篩選器 → 清空搜尋框 + 立即重新篩選 + 回到第一頁
- * - 輸入搜尋 → 保留篩選器條件 + 立即搜尋 + 回到第一頁
- * - 選取功能 → 支援跨頁選取 + 全選當前頁 + 批量操作
- * - 排序功能 → 支援字串/數字/布林值排序 + 支援 sortKey
- */
 
 // ===== Props 定義 =====
 interface Props {
@@ -138,7 +116,7 @@ interface Props {
   emptyText?: string // 無資料提示文字
   pageSize?: number // 每頁顯示筆數
   pageSizeOptions?: number[] // 筆數選項
-  // ===== 選取功能（階段三）=====
+  itemName?: string // 項目名稱（用於選取狀態列），預設為「項目」
   showCheckbox?: boolean // 是否顯示勾選框（預設 false）
   selectedIds?: (string | number)[] // 已選擇的項目 ID（v-model）
   rowKey?: string // 資料的唯一識別欄位（預設 'id'）

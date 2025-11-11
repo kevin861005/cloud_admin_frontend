@@ -87,8 +87,7 @@ export type FilterValues = Record<string, string | number>
 export interface BatchActionConfig {
   key: string // 操作識別碼
   label: string // 按鈕文字
-  icon?: string // 圖示（可選）
-  type?: 'primary' | 'danger' | 'default' // 按鈕類型（預設 'default'）
+  type?: 'notify' | 'delete'
   confirmMessage?: string // 確認訊息（設定後會顯示確認對話框）
 }
 

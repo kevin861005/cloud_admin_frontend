@@ -1,10 +1,10 @@
 <template>
   <!-- 篩選器容器 -->
-  <div v-if="filters.length > 0" class="flex flex-wrap items-center gap-4">
+  <div v-if="filters.length > 0" class="flex flex-wrap items-center gap-2">
     <!-- 遍歷每個篩選器 -->
     <div v-for="filter in filters" :key="filter.key" class="flex items-center gap-2">
       <!-- 篩選器標籤 -->
-      <label class="text-sm font-medium text-gray-700">
+      <label class="text-sm font-normal text-gray-700">
         {{ filter.label }}
       </label>
 
@@ -12,7 +12,7 @@
       <select
         :value="modelValue[filter.key] ?? getDefaultValue(filter)"
         @change="handleFilterChange(filter.key, ($event.target as HTMLSelectElement).value)"
-        class="rounded-md border-gray-300 px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        class="h-8 py-1 px-3 border rounded-md border-gray-300 text-sm font-normal text-gray-700 focus:outline-none"
       >
         <option v-for="option in filter.options" :key="option.value" :value="option.value">
           {{ option.label }}

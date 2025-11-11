@@ -1,59 +1,62 @@
 <template>
   <!-- 分頁控制區域 -->
-  <div class="flex items-center justify-between border-gray-200 bg-white px-6 py-4">
+  <div class="flex items-center justify-between border-gray-200 bg-white px-1">
     <!-- 左側：顯示資料筆數資訊 -->
     <div class="text-sm font-medium text-gray-500">
       顯示 {{ startIndex + 1 }}-{{ endIndex }} 筆，共 {{ totalElements }} 筆記錄
     </div>
 
-    <!-- 中間：頁碼控制 -->
-    <div class="flex items-center gap-4">
-      <!-- 上一頁按鈕 -->
-      <button
-        :disabled="currentPage === 0"
-        :class="[
-          'rounded px-3 py-1 text-sm transition-colors',
-          currentPage === 0
-            ? 'cursor-not-allowed bg-gray-100 text-gray-400'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-        ]"
-        @click="handlePreviousPage"
-      >
-        &lt;
-      </button>
+    <!-- 右側：頁碼控制 + 每頁顯示筆數選擇 -->
+    <div class="flex items-center gap-[41px]">
+      <!-- 頁碼控制 -->
+      <div class="flex items-center gap-4">
+        <!-- 上一頁按鈕 -->
+        <button
+          :disabled="currentPage === 0"
+          :class="[
+            'rounded px-3 py-1 text-sm transition-colors',
+            currentPage === 0
+              ? 'cursor-not-allowed bg-gray-100 text-gray-400'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
+          ]"
+          @click="handlePreviousPage"
+        >
+          &lt;
+        </button>
 
-      <!-- 頁碼資訊 -->
-      <span class="text-sm font-medium text-gray-500">
-        第 {{ currentPage + 1 }} 頁，共 {{ totalPages }} 頁
-      </span>
+        <!-- 頁碼資訊 -->
+        <span class="text-sm font-medium text-gray-500">
+          第 {{ currentPage + 1 }} 頁，共 {{ totalPages }} 頁
+        </span>
 
-      <!-- 下一頁按鈕 -->
-      <button
-        :disabled="currentPage >= totalPages - 1"
-        :class="[
-          'rounded px-3 py-1 text-sm transition-colors',
-          currentPage >= totalPages - 1
-            ? 'cursor-not-allowed bg-gray-100 text-gray-400'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-        ]"
-        @click="handleNextPage"
-      >
-        &gt;
-      </button>
-    </div>
+        <!-- 下一頁按鈕 -->
+        <button
+          :disabled="currentPage >= totalPages - 1"
+          :class="[
+            'rounded px-3 py-1 text-sm transition-colors',
+            currentPage >= totalPages - 1
+              ? 'cursor-not-allowed bg-gray-100 text-gray-400'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
+          ]"
+          @click="handleNextPage"
+        >
+          &gt;
+        </button>
+      </div>
 
-    <!-- 右側：每頁顯示筆數選擇 -->
-    <div class="flex items-center gap-2">
-      <span class="text-sm font-medium text-gray-500">顯示筆數:</span>
-      <select
-        :value="pageSize"
-        class="rounded border border-gray-300 bg-white px-3 py-1 text-sm font-normal text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        @change="handlePageSizeChange"
-      >
-        <option v-for="size in pageSizeOptions" :key="size" :value="size">
-          {{ size }}
-        </option>
-      </select>
+      <!-- 每頁顯示筆數選擇 -->
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-medium text-gray-500">顯示筆數:</span>
+        <select
+          :value="pageSize"
+          class="rounded border border-gray-300 bg-white px-3 py-1 text-sm font-normal text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          @change="handlePageSizeChange"
+        >
+          <option v-for="size in pageSizeOptions" :key="size" :value="size">
+            {{ size }}
+          </option>
+        </select>
+      </div>
     </div>
   </div>
 </template>

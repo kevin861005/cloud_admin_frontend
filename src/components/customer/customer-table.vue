@@ -1,21 +1,21 @@
 <template>
   <data-table
-    title="列表"
     :total-count="customers.length"
     :columns="columns"
     :data="customers"
     :filters="filters"
     :show-search="showSearch"
-    search-placeholder="搜尋客戶名稱、模組、產業..."
     :show-add-button="showAddButton"
-    add-button-text="新增客戶"
     :loading="isLoading"
     :show-checkbox="showCheckbox"
     :show-edit-button="showEditButton"
     :show-border="showBorder"
-    v-model:selected-ids="selectedIds"
-    row-key="id"
     :batch-actions="batchActions"
+    title="列表"
+    item-name="客戶"
+    add-button-text="新增客戶"
+    row-key="id"
+    v-model:selected-ids="selectedIds"
     @add-click="handleAdd"
     @row-edit="handleEdit"
     @row-view="handleView"
@@ -33,7 +33,7 @@ import { ref, onMounted, toRefs } from 'vue'
 import Badge from '@/components/common/badge.vue'
 import DataTable from '@/components/table/data-table.vue'
 import { customerService } from '@/services/customer.service'
-import type { Customer } from '@/types/customer'
+import type { CustomerListItem } from '@/types/customer'
 import type { ColumnConfig, FilterConfig, BatchActionConfig } from '@/types/table'
 
 /**
@@ -97,7 +97,7 @@ const isLoading = ref(false)
 /**
  * 客戶列表資料
  */
-const customers = ref<Customer[]>([])
+const customers = ref<CustomerListItem[]>([])
 
 /**
  * 選取的客戶 ID
@@ -111,8 +111,8 @@ const selectedIds = ref<(string | number)[]>([])
  */
 const getStatusType = (row: Record<string, unknown>): 'success' | 'error' | 'default' => {
   const status = row.status as string
-  if (status === '活躍') return 'success'
-  if (status === '低活躍') return 'error'
+  if (status === 'ACTIVE') return 'success'
+  if (status === 'INACTIVE') return 'error'
   return 'default'
 }
 
@@ -120,7 +120,16 @@ const getStatusType = (row: Record<string, unknown>): 'success' | 'error' | 'def
  * 取得狀態顯示文字
  */
 const getStatusText = (row: Record<string, unknown>): string => {
-  return row.status as string
+  switch (row.status) {
+    case 'ACTIVE':
+      return '活躍'
+    case 'INACTIVE':
+      return '低活躍'
+    case 'UNUSED':
+      return '未使用'
+    default:
+      return '-'
+  }
 }
 
 /**
@@ -130,13 +139,13 @@ const getStatusText = (row: Record<string, unknown>): string => {
 const columns = ref<ColumnConfig[]>([
   {
     key: 'name',
-    label: '客戶名稱',
+    label: '客戶',
     width: '180px',
     sortable: true,
   },
   {
     key: 'statusDisplay',
-    label: '使用狀態',
+    label: '狀態',
     width: '120px',
     align: 'center',
     sortable: true,
@@ -146,30 +155,31 @@ const columns = ref<ColumnConfig[]>([
   },
   {
     key: 'lastUsed',
-    label: '最後使用',
+    label: '使用時間',
     width: '150px',
     sortable: true,
   },
   {
     key: 'module',
-    label: '使用模組',
+    label: '模組',
     width: '120px',
     sortable: true,
   },
   {
     key: 'sales',
-    label: '業務窗口',
+    label: '負責業務',
     width: '120px',
     sortable: true,
   },
   {
     key: 'industry',
-    label: '產業別',
+    label: '產業',
     width: '120px',
+    sortable: true,
   },
   {
     key: 'link',
-    label: '網站連結',
+    label: '前台連結',
     width: '200px',
     customRender: 'link',
     linkConfig: {
@@ -197,9 +207,9 @@ const filters: FilterConfig[] = [
     label: '狀態:',
     options: [
       { label: '全部', value: 'all' },
-      { label: '活躍', value: '活躍' },
-      { label: '低活躍', value: '低活躍' },
-      { label: '未使用', value: '未使用' },
+      { label: '活躍', value: 'ACTIVE' },
+      { label: '低活躍', value: 'INACTIVE' },
+      { label: '未使用', value: 'UNUSED' },
     ],
     defaultValue: 'all',
   },
@@ -234,9 +244,15 @@ const filters: FilterConfig[] = [
  */
 const batchActions: BatchActionConfig[] = [
   {
+    key: 'notify',
+    label: '通知寄送狀態',
+    type: 'notify',
+    confirmMessage: '通知',
+  },
+  {
     key: 'delete',
     label: '環境刪除',
-    type: 'danger',
+    type: 'delete',
     confirmMessage: '確定要刪除選中的項目嗎？此操作無法復原。',
   },
 ]

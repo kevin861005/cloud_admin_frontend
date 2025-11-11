@@ -11,7 +11,7 @@
     <!-- 表格元件:有權限時顯示 -->
     <data-table
       v-else
-      title="帳號列表"
+      title="列表"
       :total-count="users.length"
       :columns="columns"
       :data="users"

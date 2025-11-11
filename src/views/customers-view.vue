@@ -19,16 +19,21 @@
         ref="customerTableRef"
         :show-filters="true"
         :show-search="true"
-        :show-add-button="true"
+        :show-add-button="false"
         :show-checkbox="true"
-        :show-edit-button="true"
+        :show-edit-button="false"
         :show-border="false"
-        @add-click="handleAdd"
-        @row-edit="handleEdit"
         @row-view="handleView"
         @batch-action="handleBatchAction"
       />
     </TableContainer>
+
+    <!-- 客戶詳細資訊 Drawer -->
+    <CustomerDetailDrawer
+      :is-open="isDrawerOpen"
+      :customer-id="selectedCustomerId"
+      @close="handleCloseDrawer"
+    />
   </div>
 </template>
 
@@ -37,6 +42,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import PageTitle from '@/components/common/page-title.vue'
 import CardContainer from '@/components/common/card-container.vue'
 import TableContainer from '@/components/table/table-container.vue'
+import CustomerDetailDrawer from '@/components/customer/customer-detail-drawer.vue'
 
 // 客戶列表表格元件
 import CustomerTable from '@/components/customer/customer-table.vue'
@@ -70,6 +76,16 @@ import AttentionCustomerCard from '@/components/customer/attention-customer-card
 const containerRef = ref<HTMLElement | null>(null)
 
 /**
+ * Drawer 開啟狀態
+ */
+const isDrawerOpen = ref(false)
+
+/**
+ * 選中的客戶 ID
+ */
+const selectedCustomerId = ref<number | null>(null)
+
+/**
  * CustomerTable 元件引用
  * 用於呼叫元件暴露的方法（如 refresh）
  */
@@ -84,46 +100,28 @@ const handleWheel = (event: WheelEvent) => {
 }
 
 /**
- * 處理新增客戶
- * 跳轉到新增客戶頁面
- */
-const handleAdd = () => {
-  console.log('新增客戶')
-  // TODO: 確認新增客戶的路由路徑
-  // router.push('/customers/create')
-  alert('新增客戶功能開發中...')
-}
-
-/**
- * 處理編輯客戶
- * 跳轉到編輯客戶頁面
- */
-const handleEdit = (row: Record<string, unknown>) => {
-  // 安全的型別轉換：先轉為 unknown，再轉為目標型別
-  const customer = row as unknown as { id: number; name: string }
-
-  console.log('編輯客戶:', customer)
-
-  // TODO: 確認編輯客戶的路由路徑
-  // router.push(`/customers/${customer.id}/edit`)
-
-  alert(`編輯客戶功能開發中...\n客戶：${customer.name}（ID: ${customer.id}）`)
-}
-
-/**
  * 處理查看客戶
  * 跳轉到客戶詳情頁
  */
 const handleView = (row: Record<string, unknown>) => {
-  // 安全的型別轉換：先轉為 unknown，再轉為目標型別
+  // 安全的型別轉換
   const customer = row as unknown as { id: number; name: string }
-
   console.log('查看客戶:', customer)
 
-  // TODO: 確認客戶詳情的路由路徑
-  // router.push(`/customers/${customer.id}`)
+  // 設定選中的客戶 ID 並開啟 Drawer
+  selectedCustomerId.value = customer.id
+  isDrawerOpen.value = true
+}
 
-  alert(`查看客戶功能開發中...\n客戶：${customer.name}（ID: ${customer.id}）`)
+/**
+ * 處理關閉 Drawer
+ */
+const handleCloseDrawer = () => {
+  isDrawerOpen.value = false
+  // 延遲清空 customerId，避免 Drawer 關閉動畫時資料消失
+  setTimeout(() => {
+    selectedCustomerId.value = null
+  }, 300)
 }
 
 /**

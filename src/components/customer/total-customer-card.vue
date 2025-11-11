@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import CustomerCard from './customer-card.vue'
+import CustomerCard from '../common/card.vue'
 import TotalCustomerIcon from '@/assets/icons/card/card-c-user-total.svg'
 </script>
 
