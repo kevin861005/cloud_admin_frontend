@@ -58,8 +58,8 @@ export const useAuthStore = defineStore('auth', () => {
     // 診斷日誌（生產環境可移除）
     console.log('[Auth Store] isAuthenticated 計算:')
     console.log('  hasToken:', hasToken.value)
-    console.log('  userInfo:', userInfo.value ? '✅' : '❌')
-    console.log('  結果:', authenticated ? '✅ 已認證' : '❌ 未認證')
+    console.log('  userInfo:', userInfo.value ? userInfo.value : 'userInfo is null')
+    console.log('  結果:', authenticated ? '已認證' : '未認證')
 
     return authenticated
   })
@@ -106,11 +106,11 @@ export const useAuthStore = defineStore('auth', () => {
 
       if (!loginResponse.success || !loginResponse.data) {
         errorMessage.value = loginResponse.message || '登入失敗'
-        console.log('❌ 登入 API 失敗:', errorMessage.value)
+        console.log('登入 API 失敗:', errorMessage.value)
         return false
       }
 
-      console.log('✅ 登入 API 成功')
+      console.log('登入 API 成功')
 
       // 步驟 2: 儲存 Token 到 localStorage 並更新響應式狀態
       console.log('2. 儲存 Token')
@@ -122,7 +122,7 @@ export const useAuthStore = defineStore('auth', () => {
       // ✨ 關鍵：更新響應式狀態
       hasToken.value = true
 
-      console.log('✅ Token 儲存完成')
+      console.log('   Token 儲存完成')
       console.log('   accessToken:', accessToken.substring(0, 20) + '...')
       console.log('   hasToken.value:', hasToken.value)
 
@@ -132,7 +132,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       if (!userInfoResponse.success || !userInfoResponse.data) {
         // 如果無法取得使用者資訊，清除 Token 並返回失敗
-        console.log('❌ 無法取得使用者資訊')
+        console.log(' 無法取得使用者資訊')
         localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
         hasToken.value = false
@@ -140,7 +140,7 @@ export const useAuthStore = defineStore('auth', () => {
         return false
       }
 
-      console.log('✅ 取得使用者資訊成功')
+      console.log(' 取得使用者資訊成功')
 
       // 步驟 4: 儲存使用者資訊到 Store
       console.log('4. 儲存使用者資訊到 Store')
@@ -152,14 +152,14 @@ export const useAuthStore = defineStore('auth', () => {
         roles: userInfoResponse.data.roles,
       }
 
-      console.log('✅ 使用者資訊儲存完成')
+      console.log('   使用者資訊儲存完成')
       console.log('   userName:', userInfo.value.userName)
       console.log('   permissions:', userInfo.value.permissions.length, '個權限')
 
       // 驗證最終狀態
       console.log('=== 最終狀態驗證 ===')
       console.log('  hasToken.value:', hasToken.value)
-      console.log('  userInfo.value:', userInfo.value ? '✅' : '❌')
+      console.log('  userInfo.value:', userInfo.value ? userInfo.value : 'userInfo is null')
       console.log('  isAuthenticated.value:', isAuthenticated.value)
       console.log('=== Auth Store: 登入完成 ===')
 
@@ -250,13 +250,13 @@ export const useAuthStore = defineStore('auth', () => {
           permissions: userInfoResponse.data.permissions,
           roles: userInfoResponse.data.roles,
         }
-        console.log('✅ 恢復使用者資訊成功:', userInfo.value.userName)
+        console.log(' 恢復使用者資訊成功:', userInfo.value.userName)
       } else {
         // 如果無法取得使用者資訊，清除 Token
         localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
         hasToken.value = false
-        console.log('❌ 恢復使用者資訊失敗')
+        console.log(' 恢復使用者資訊失敗')
       }
     } catch (err) {
       console.error('恢復使用者資訊錯誤:', err)
