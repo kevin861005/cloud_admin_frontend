@@ -56,7 +56,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import PageHeader from '@/components/layout/page-header.vue'
-import Sidebar from '@/components/sidebar/main-sidebar.vue'
+import Sidebar from '@/components/sidebar/sidebar-main.vue'
 import SuccessToast from '@/components/common/success-toast.vue'
 import { useMenuStore } from '@/stores/menu.store'
 import { useAuthStore } from '@/stores/auth.store'

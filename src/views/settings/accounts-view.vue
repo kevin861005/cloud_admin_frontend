@@ -22,8 +22,8 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import PageTitle from '@/components/common/page-title.vue'
 import TableContainer from '@/components/table/table-container.vue'
-import UserDetailDrawer from '@/components/account/user-detail-drawer.vue'
-import AccountManagementTable from '@/components/account/account-management-table.vue'
+import UserDetailDrawer from '@/components/account/drawer-user-detail.vue'
+import AccountManagementTable from '@/components/account/table-account-management.vue'
 
 // ===== Drawer 狀態 =====
 const isDrawerOpen = ref(false)

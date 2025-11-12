@@ -1,4 +1,3 @@
-<!-- src/components/drawer/drawer-toast.vue -->
 <template>
   <Transition
     enter-active-class="transition-all duration-300 ease-out"
@@ -10,8 +9,8 @@
   >
     <div
       v-if="isVisible"
-      class="absolute left-5 right-5 bottom-5 flex h-12 items-center justify-center rounded border px-4"
-      :class="toastClasses"
+      class="absolute left-5 right-5 flex h-12 items-center justify-center rounded border px-4"
+      :class="[toastClasses, positionClass]"
       style="gap: 8px"
     >
       <!-- Icon -->
@@ -56,10 +55,18 @@ interface Props {
    * @default 3000
    */
   duration?: number
+
+  /**
+   * 是否有底部按鈕
+   * 當有按鈕時，Toast 會浮動在按鈕上方
+   * @default false
+   */
+  hasButton?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   duration: 3000,
+  hasButton: false,
 })
 
 const emit = defineEmits<{
@@ -101,6 +108,15 @@ const toastClasses = computed(() => {
  */
 const textColorClass = computed(() => {
   return props.type === 'success' ? 'text-[#111827]' : 'text-[#FD5858]'
+})
+
+/**
+ * Toast 位置 class
+ * 當有按鈕時，Toast 會浮動在按鈕上方（bottom-[96px]）
+ * 沒有按鈕時，Toast 在底部（bottom-5）
+ */
+const positionClass = computed(() => {
+  return props.hasButton ? 'bottom-[96px]' : 'bottom-5'
 })
 
 // ===== 自動關閉邏輯 =====

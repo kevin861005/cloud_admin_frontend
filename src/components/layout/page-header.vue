@@ -6,7 +6,8 @@
     1. 左側：選單收合/展開按鈕
     2. 中間：
        - 總覽頁面：不顯示任何內容
-       - 其他頁面：顯示「返回總覽」按鈕（箭頭 ICON + 文字）
+       - 子頁面（如 /environment/delete-records）：顯示「返回上一頁」按鈕
+       - 主功能頁面（左側選單中的頁面）：顯示「返回總覽」按鈕
     3. 右側：即時時間 + 使用者名稱
 
     樣式參考 Figma：
@@ -29,20 +30,18 @@
         <img src="@/assets/icons/common/menu-toggle.svg" alt="選單" class="h-4 w-4" />
       </button>
 
-      <!-- 中間：「返回總覽」按鈕（只在非總覽頁面顯示） -->
-      <div v-if="!isOverviewPage && !isSubPage">
-        <!-- 在非總覽頁面時，顯示「返回總覽」按鈕（箭頭 ICON + 文字） -->
+      <!-- 中間：返回按鈕（根據路由層級顯示不同文字） -->
+      <div v-if="showBackButton">
         <button
-          @click="handleBackToOverview"
+          @click="handleBack"
           class="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
         >
           <!-- 左箭頭 ICON（16x16px SVG） -->
           <img src="@/assets/icons/common/back-arrow.svg" alt="返回" class="h-4 w-4" />
-          <!-- 文字 -->
-          <span class="text-sm">返回總覽</span>
+          <!-- 文字：根據路由層級動態顯示 -->
+          <span class="text-sm">{{ backButtonText }}</span>
         </button>
       </div>
-      <!-- 總覽頁面時，不顯示任何內容 -->
     </div>
 
     <!-- 右側：即時時間 + 使用者名稱 -->
@@ -73,6 +72,22 @@ const route = useRoute()
 const menuStore = useMenuStore()
 const authStore = useAuthStore()
 
+// ==================== Constants ====================
+
+/**
+ * 主功能頁面路徑列表
+ * 這些是左側選單中的頁面，點擊返回按鈕應該回到總覽
+ */
+const MAIN_FEATURE_PATHS = [
+  '/customers',
+  '/environment',
+  '/settings/accounts',
+  '/settings/roles',
+  '/settings/modules',
+  '/settings/industries',
+  '/settings/dealers',
+]
+
 // ==================== State ====================
 
 /**
@@ -89,21 +104,41 @@ let timerInterval: number | null = null
 
 /**
  * 是否為總覽頁面
- *
- * 判斷規則：
- * - route.name === 'Overview'
- * - route.path === '/overview'
- * - route.path === '/'
  */
 const isOverviewPage = computed(() => {
   return route.name === 'Overview' || route.path === '/overview' || route.path === '/'
 })
 
-/**透過其他功能進到的畫面(該畫面不包含在左側功能選單)
- *
+/**
+ * 是否為新增帳號頁面
  */
-const isSubPage = computed(() => {
+const isAccountCreatePage = computed(() => {
   return route.name === 'AccountCreate' || route.path === '/settings/accounts/create'
+})
+
+/**
+ * 是否為主功能頁面
+ * 主功能頁面：在左側選單中的頁面
+ */
+const isMainFeaturePage = computed(() => {
+  return MAIN_FEATURE_PATHS.includes(route.path)
+})
+
+/**
+ * 是否顯示返回按鈕
+ * 只有總覽頁面不顯示
+ */
+const showBackButton = computed(() => {
+  return !isOverviewPage.value && !isAccountCreatePage.value
+})
+
+/**
+ * 返回按鈕文字
+ * - 主功能頁面：「返回總覽」
+ * - 子頁面：「返回上一頁」
+ */
+const backButtonText = computed(() => {
+  return isMainFeaturePage.value ? '返回總覽' : '返回上一頁'
 })
 
 /**
@@ -147,12 +182,30 @@ function handleToggleMenu() {
 }
 
 /**
- * 處理返回總覽
- *
- * 點擊「返回總覽」按鈕時，導航到總覽頁面
+ * 處理返回邏輯
+ * - 主功能頁面：返回總覽頁面
+ * - 子頁面：返回父路徑
  */
-function handleBackToOverview() {
-  router.push({ name: 'Overview' })
+function handleBack() {
+  if (isMainFeaturePage.value) {
+    // 主功能頁面：返回總覽
+    router.push({ name: 'Overview' })
+  } else {
+    // 子頁面：返回父路徑
+    const parentPath = getParentPath(route.path)
+    router.push(parentPath)
+  }
+}
+
+/**
+ * 取得父路徑
+ * 例如：/environment/delete-records → /environment
+ *      /settings/accounts/create → /settings/accounts
+ */
+function getParentPath(path: string): string {
+  const segments = path.split('/').filter(Boolean) // 移除空字串
+  segments.pop() // 移除最後一段
+  return '/' + segments.join('/')
 }
 
 // ==================== Lifecycle ====================

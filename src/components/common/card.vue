@@ -28,10 +28,23 @@
           </span>
         </div>
 
-        <!-- 副內容 -->
-        <p class="text-sm font-medium text-gray-400">
-          {{ props.subtitle }}
-        </p>
+        <!-- 副內容 + 按鈕 -->
+        <div class="flex items-center justify-between">
+          <!-- 副內容 -->
+          <p class="text-sm font-medium text-gray-400">
+            {{ props.subtitle }}
+          </p>
+
+          <!-- 按鈕（選填） -->
+          <button
+            v-if="props.buttonText"
+            class="rounded px-2 text-sm font-normal tracking-[0.2px]"
+            style="color: #4b5563"
+            @click="emit('button-click')"
+          >
+            {{ props.buttonText }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -59,6 +72,8 @@ interface Props {
   subtitle: string
   /** 卡片高度（選填，預設 176px） */
   height?: number
+  /** 按鈕文字（選填，未提供則不顯示按鈕） */
+  buttonText?: string
 }
 
 /**
@@ -67,6 +82,14 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   height: 176,
 })
+
+/**
+ * Emits 定義
+ */
+const emit = defineEmits<{
+  /** 按鈕點擊事件 */
+  'button-click': []
+}>()
 </script>
 
 <style scoped></style>

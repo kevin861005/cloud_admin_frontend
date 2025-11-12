@@ -1,13 +1,13 @@
 /**
- * 客戶相關型別定義
+ * 環境相關型別定義
  *
- * 檔案位置：src/types/customer.ts
+ * 檔案位置：src/types/environment.ts
  */
 
 /**
- * 客戶狀態
+ * 環境狀態
  */
-export type CustomerStatus = 'ACTIVE' | 'INACTIVE' | 'UNUSED'
+export type EnvironmentStatus = 'PENDING' | 'NOTIFIED' | 'TO_BE_DELETED'
 
 /**
  * 使用模組
@@ -15,38 +15,35 @@ export type CustomerStatus = 'ACTIVE' | 'INACTIVE' | 'UNUSED'
 export type CustomerModule = 'Master' | 'GGF'
 
 /**
- * 客戶列表資料
+ * 環境列表資料
  */
-export interface CustomerListItem {
-  /** 客戶 ID */
+export interface EnvironmentListItem {
+  /** 環境 ID */
   id: number
 
   /** 客戶名稱 */
-  name: string
+  customerName: string
 
   /** 使用狀態 */
-  status: CustomerStatus
+  status: EnvironmentStatus
 
-  /** 最後使用時間（格式：YYYY-MM-DD） */
-  lastUsed: string
+  /** 申請日 */
+  appliedDate: string
 
-  /** 使用模組 */
-  module: CustomerModule
+  /** 通知日 */
+  notifiedDate: string
 
-  /** 業務窗口 */
-  sales: string
+  /** 預定刪除日 */
+  schedulatedDeleteDate: string
 
-  /** 產業別 */
-  industry: string
-
-  /** 網站連結（不含 https://） */
-  link: string
+  /** 申請人 */
+  applicant: string
 }
 
-export interface CustomerDetailInfo {
+export interface EnvironmentDetailInfo {
   customerName: string // 客戶名稱（例如：橘色測測屋）
   industry: string // 行業類別（例如：餐飲）
-  status: CustomerStatus // 客戶狀態（活躍、低活躍、未使用）
+  status: EnvironmentStatus // 環境狀態（申請中、已通知、待刪除）
   autoUrl: string // 快速自動輸入網址
   frontendUrl: string // 前台連結網址
   backendUrl: string // 後台連結網址

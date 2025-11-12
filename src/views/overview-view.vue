@@ -52,17 +52,17 @@ import { ref, onMounted } from 'vue'
 import PageTitle from '@/components/common/page-title.vue'
 import CardContainer from '@/components/common/card-container.vue'
 import TableContainer from '@/components/table/table-container.vue'
-import CustomerDetailDrawer from '@/components/customer/customer-detail-drawer.vue'
+import CustomerDetailDrawer from '@/components/customer/drawer-customer-detail.vue'
 
 // 引入卡片元件
-import CustomerStatsCard from '@/components/overview/customer-stats-card.vue'
-import CustomerGrowthCard from '@/components/overview/customer-growth-card.vue'
-import AlertListCard from '@/components/overview/alert-list-card.vue'
-import AttentionCustomersCard from '@/components/overview/attention-customers-card.vue'
-import ModuleUsageChartCard from '@/components/overview/module-usage-chart-card.vue'
+import CustomerStatsCard from '@/components/overview/card-customer-stats.vue'
+import CustomerGrowthCard from '@/components/overview/card-customer-growth.vue'
+import AlertListCard from '@/components/overview/card-alert-list.vue'
+import AttentionCustomersCard from '@/components/overview/card-attention-customers.vue'
+import ModuleUsageChartCard from '@/components/overview/card-module-usage-chart.vue'
 
 // 引入客戶列表表格元件
-import CustomerTable from '@/components/customer/customer-table.vue'
+import CustomerTable from '@/components/customer/table-customer.vue'
 
 /**
  * 總覽頁面主元件

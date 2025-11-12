@@ -36,21 +36,6 @@ import { customerService } from '@/services/customer.service'
 import type { CustomerListItem } from '@/types/customer'
 import type { ColumnConfig, FilterConfig, BatchActionConfig } from '@/types/table'
 
-/**
- * CustomerTable 業務元件
- *
- * 功能：
- * - 封裝客戶列表表格的所有邏輯
- * - 自動載入客戶資料
- * - 統一的欄位配置和篩選器配置
- * - 透過 props 控制顯示哪些功能
- * - 透過 emit 將事件傳遞給父元件處理
- *
- * 使用場景：
- * - 首頁（/overview）：簡單版（不需要選取功能）
- * - 客戶管理（/customers）：完整版（需要選取功能和批量操作）
- */
-
 // ===== Props 定義 =====
 interface Props {
   /** 是否顯示搜尋框（預設：true） */

@@ -42,34 +42,21 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import PageTitle from '@/components/common/page-title.vue'
 import CardContainer from '@/components/common/card-container.vue'
 import TableContainer from '@/components/table/table-container.vue'
-import CustomerDetailDrawer from '@/components/customer/customer-detail-drawer.vue'
+import CustomerDetailDrawer from '@/components/customer/drawer-customer-detail.vue'
 
 // 客戶列表表格元件
-import CustomerTable from '@/components/customer/customer-table.vue'
+import CustomerTable from '@/components/customer/table-customer.vue'
 
 // 總客戶數卡片元件
-import TotalCustomerCard from '@/components/customer/total-customer-card.vue'
+import TotalCustomerCard from '@/components/customer/card-total-customer.vue'
 
 // 活躍客戶卡片元件
-import ActiveCustomerCard from '@/components/customer/active-customer-card.vue'
+import ActiveCustomerCard from '@/components/customer/card-active-customer.vue'
 
 // 需關注客戶卡片元件
-import AttentionCustomerCard from '@/components/customer/attention-customer-card.vue'
+import AttentionCustomerCard from '@/components/customer/card-attention-customer.vue'
 
 // import { batchDeleteCustomers } from '@/services/customer.service'
-
-/**
- * 客戶管理頁面
- *
- * 功能：
- * - 顯示客戶列表（完整版）
- *   - 有篩選器
- *   - 有搜尋框
- *   - 有新增按鈕
- *   - 有選取功能
- *   - 有編輯和查看按鈕
- *   - 有批量操作（環境刪除）
- */
 
 // const router = useRouter()
 

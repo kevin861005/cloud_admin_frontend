@@ -98,6 +98,17 @@ const routes: RouteRecordRaw[] = [
           title: '環境管理',
         },
       },
+      /**
+       * 環境管理 - 刪除紀錄
+       */
+      {
+        path: '/environment/delete-records',
+        name: 'DeleteRecords',
+        component: () => import('@/views/internal/environment-delete-records.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
 
       /**
        * 設定相關頁面
@@ -123,7 +134,7 @@ const routes: RouteRecordRaw[] = [
           {
             path: '/settings/accounts/create',
             name: 'AccountCreate',
-            component: () => import('@/views/settings/account-create-view.vue'),
+            component: () => import('@/views/internal/account-create-view.vue'),
             meta: {
               requiresAuth: true, //
               requiredPermissions: ['settings.accounts'],
