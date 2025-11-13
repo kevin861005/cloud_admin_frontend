@@ -16,7 +16,6 @@
       :columns="columns"
       :data="users"
       :show-search="true"
-      search-placeholder="搜尋..."
       :show-add-button="true"
       :show-edit-button="false"
       :show-checkbox="false"
@@ -61,20 +60,6 @@ import { useAuthStore } from '@/stores/auth.store'
 import type { UserListItem } from '@/types/user'
 import type { ColumnConfig } from '@/types/table'
 import { formatDateDot } from '@/utils/time'
-
-/**
- * 帳號管理表格元件
- *
- * 功能：
- * - 顯示所有帳號列表
- * - 權限檢查（需要 settings.accounts 權限）
- * - 自動載入資料
- * - 支援搜尋
- * - 點擊「查看」按鈕發出事件
- *
- * 使用範例：
- * <account-management-table @row-view="handleViewUser" />
- */
 
 // ===== Emits 定義 =====
 const emit = defineEmits<{

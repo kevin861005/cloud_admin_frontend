@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-shrink-0 w-full min-w-[320px] rounded-xl bg-white p-6 shadow-[1px_3px_4px_0px_rgba(0,0,0,0.1)]"
+    class="flex-shrink-0 w-full rounded-xl bg-white p-6 shadow-[1px_3px_4px_0px_rgba(0,0,0,0.1)]"
     :style="{ height: `${props.height}px` }"
   >
     <!-- 卡片內容容器 -->

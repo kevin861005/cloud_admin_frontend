@@ -15,14 +15,14 @@ export const environmentService = {
    * 取得所有環境列表
    * GET /api/environments
    *
-   * @returns Promise<EnvironmentListItem[]> 客戶列表
+   * @returns Promise<EnvironmentListItem[]> 環境列表
    */
   async getAllEnvironments(): Promise<EnvironmentListItem[]> {
     const response = await axios.get<ApiResponse<EnvironmentListItem[]>>('/environments')
 
     // 如果 API 回傳失敗或沒有資料，拋出錯誤
     if (!response.data.success || !response.data.data) {
-      throw new Error(response.data.message || '取得客戶列表失敗')
+      throw new Error(response.data.message || '取得環境列表失敗')
     }
 
     return response.data.data
@@ -34,7 +34,7 @@ export const environmentService = {
    * Mock Data - 環境列表
    *
    * 注意：此方法僅用於開發階段
-   * 上線前請切換為 getAllCustomers() 方法
+   * 上線前請切換為 getAllEnvironments() 方法
    *
    * @returns Promise<EnvironmentListItem[]> 包含 16 筆測試環境資料
    */

@@ -165,6 +165,18 @@ const routes: RouteRecordRaw[] = [
             },
           },
           /**
+           * 模組設定 - 新增模組
+           */
+          {
+            path: '/settings/modules/create',
+            name: 'ModuleCreate',
+            component: () => import('@/views/internal/module-create-view.vue'),
+            meta: {
+              requiresAuth: true, //
+              requiredPermissions: ['settings.modules'],
+            },
+          },
+          /**
            * 產業別設定
            */
           {

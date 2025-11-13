@@ -14,16 +14,7 @@
     </CardContainer>
 
     <TableContainer>
-      <environment-table
-        ref="customerTableRef"
-        :show-filters="true"
-        :show-search="true"
-        :show-add-button="false"
-        :show-checkbox="true"
-        :show-edit-button="false"
-        :show-border="false"
-        @row-view="handleView"
-      />
+      <environment-table ref="tableRef" @row-view="handleView" />
     </TableContainer>
 
     <!-- 環境詳細資訊 Drawer -->
@@ -47,7 +38,7 @@ import EnvironmentTable from '@/components/environment/table-environment.vue'
 import EnvironmentDetailDrawer from '@/components/environment/drawer-environment-detail.vue'
 
 /**
- * 選中的客戶 ID
+ * 選中的環境 ID
  */
 const selectedEnvironmentId = ref<number | null>(null)
 
@@ -57,15 +48,15 @@ const selectedEnvironmentId = ref<number | null>(null)
 const isDrawerOpen = ref(false)
 
 /**
- * 處理查看客戶
- * 跳轉到客戶詳情頁
+ * 處理查看環境
+ * 跳轉到環境詳情頁
  */
 const handleView = (row: Record<string, unknown>) => {
   // 安全的型別轉換
   const environment = row as unknown as { id: number; name: string }
   console.log('查看環境:', environment)
 
-  // 設定選中的客戶 ID 並開啟 Drawer
+  // 設定選中的環境 ID 並開啟 Drawer
   selectedEnvironmentId.value = environment.id
   isDrawerOpen.value = true
 }

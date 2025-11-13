@@ -1,43 +1,4 @@
 <template>
-  <!--
-    【通用表格容器元件】
-
-    用途：
-    - 提供統一的表格容器佈局
-    - 自動處理水平滾動
-    - 支援滑鼠滾輪轉換為水平滾動
-    - 支援自訂高度
-
-    使用場景：
-    - 資料表格頁面
-    - 列表頁面
-    - 任何需要放置表格的地方
-
-    使用方式：
-
-    【方式 1：預設高度】
-    <table-container>
-      <data-table :columns="columns" :data="data" />
-    </table-container>
-
-    【方式 2：自訂高度】
-    <table-container :height="800">
-      <data-table :columns="columns" :data="data" />
-    </table-container>
-
-    【方式 3：不使用白色背景卡片】
-    <table-container :use-card="false">
-      <data-table :columns="columns" :data="data" />
-    </table-container>
-
-    特性：
-    ✅ 統一的容器樣式
-    ✅ 自動處理水平滾動
-    ✅ 滑鼠滾輪支援（上下滾動轉為左右滾動）
-    ✅ 自訂容器高度
-    ✅ 可選的白色卡片背景
-    ✅ 響應式設計
-  -->
   <div
     ref="containerRef"
     class="w-full mx-auto px-10 pb-10 overflow-x-auto overflow-y-visible [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"

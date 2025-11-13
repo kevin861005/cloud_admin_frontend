@@ -66,7 +66,7 @@ interface Props {
    * 區塊標題
    * @example '個人資訊', '異動資訊'
    */
-  title: string
+  title?: string
 }
 
 defineProps<Props>()

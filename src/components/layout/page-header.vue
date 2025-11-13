@@ -117,6 +117,13 @@ const isAccountCreatePage = computed(() => {
 })
 
 /**
+ * 是否為新增模組頁面
+ */
+const isModuleCreatePage = computed(() => {
+  return route.name === 'ModuleCreate' || route.path === '/settings/modules/create'
+})
+
+/**
  * 是否為主功能頁面
  * 主功能頁面：在左側選單中的頁面
  */
@@ -129,7 +136,7 @@ const isMainFeaturePage = computed(() => {
  * 只有總覽頁面不顯示
  */
 const showBackButton = computed(() => {
-  return !isOverviewPage.value && !isAccountCreatePage.value
+  return !isOverviewPage.value && !isAccountCreatePage.value && !isModuleCreatePage.value
 })
 
 /**

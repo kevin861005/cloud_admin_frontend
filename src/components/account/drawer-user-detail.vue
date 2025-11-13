@@ -78,7 +78,6 @@
 
             <!-- 權限 -->
             <FormCheckboxGroup
-              ref="rolesCheckboxRef"
               v-model="formData.roleIds"
               label="權限"
               :options="roleOptions"
@@ -87,7 +86,6 @@
 
             <!-- 使用狀態 -->
             <FormRadioGroup
-              ref="statusRadioRef"
               v-model="formData.statusCode"
               label="使用狀態"
               :options="statusOptions"
@@ -270,8 +268,6 @@ const errors = ref({
 })
 
 // ===== Template Refs =====
-const rolesCheckboxRef = ref<{ focus: () => void } | null>(null)
-const statusRadioRef = ref<{ focus: () => void } | null>(null)
 const nameInputRef = ref<{ focus: () => void } | null>(null)
 const emailInputRef = ref<{ focus: () => void } | null>(null)
 
@@ -495,7 +491,7 @@ const handleFieldErrors = (fieldErrors: FieldError[]) => {
   }
 
   // Ref 對應表 (後端欄位名稱 -> Ref)
-  const fieldRefMap: Record<string, typeof rolesCheckboxRef> = {
+  const fieldRefMap: Record<string, typeof nameInputRef> = {
     name: nameInputRef,
     email: emailInputRef,
   }

@@ -1,12 +1,20 @@
 <template>
-  <div class="flex flex-col" :style="{ width: `${width}px`, gap: `${gap}px` }">
-    <!-- 區塊標題 -->
-    <h3 class="text-sm font-bold text-gray-900">
-      {{ title }}
-    </h3>
+  <div class="flex flex-col" :style="{ width: `${width}px` }">
+    <!-- 標題區域（主標題 + 副標題） -->
+    <div class="flex flex-col">
+      <!-- 主標題 -->
+      <h3 class="text-sm font-bold text-gray-900">
+        {{ title }}
+      </h3>
 
-    <!-- 區塊內容 (使用 slot) -->
-    <div class="flex flex-1 flex-col" :style="{ gap: `${gap}px` }">
+      <!-- 副標題（選填，緊貼主標題下方） -->
+      <p v-if="subtitle" class="text-sm font-medium" style="color: #398ff9">
+        {{ subtitle }}
+      </p>
+    </div>
+
+    <!-- 內容區域（與標題區域間隔 8px） -->
+    <div class="flex flex-1 flex-col" :style="{ gap: `${gap}px`, marginTop: '8px' }">
       <slot />
     </div>
   </div>
@@ -20,9 +28,19 @@
  */
 
 interface Props {
-  title: string
+  /** 區塊主標題 */
+  title?: string
+
+  /** 區塊副標題（選填，不傳則不顯示） */
+  subtitle?: string
+
+  /** 區塊寬度 */
   width?: number
+
+  /** 區塊高度 */
   height?: number
+
+  /** 內容區域的元素間距 */
   gap?: number
 }
 

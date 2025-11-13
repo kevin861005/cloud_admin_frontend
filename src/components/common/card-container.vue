@@ -1,47 +1,4 @@
 <template>
-  <!--
-    【通用卡片容器元件】
-
-    用途：
-    - 提供水平排列的卡片容器
-    - 支援平均分配或自訂比例分配寬度
-    - 支援自訂容器高度
-    - 支援水平滾動
-    - 支援滑鼠滾輪轉換為水平滾動
-
-    使用場景：
-    - 總覽頁面的統計卡片
-    - 儀表板的數據卡片
-    - 報表頁面的圖表卡片
-    - 任何需要水平排列卡片的地方
-
-    使用方式：
-
-    【方式 1：平均分配 + 預設高度】
-    <card-container>
-      <Card1 />
-      <Card2 />
-      <Card3 />
-    </card-container>
-
-    【方式 2：自訂比例 + 預設高度】
-    <card-container :width-ratios="[1, 2]">
-      <Card1 />  佔 33.33%
-      <Card2 />  佔 66.67%
-    </card-container>
-
-    【方式 3：平均分配 + 自訂高度】
-    <card-container :height="400">
-      <Card1 />
-      <Card2 />
-    </card-container>
-
-    【方式 4：自訂比例 + 自訂高度】
-    <card-container :width-ratios="[34, 66]" :height="500">
-      <Card1 />  佔 34%
-      <Card2 />  佔 66%
-    </card-container>
-  -->
   <div
     ref="containerRef"
     class="flex items-center gap-5 overflow-x-auto overflow-y-hidden px-10 pb-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"

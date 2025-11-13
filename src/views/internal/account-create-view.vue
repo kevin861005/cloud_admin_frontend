@@ -4,11 +4,11 @@
     <PageTitle title="新增帳號" />
 
     <!-- 主要容器 -->
-    <div class="flex gap-3 rounded-xl bg-white px-10 pb-10 shadow-md">
-      <!-- 左側：填寫資料區域 -->
-      <div class="flex flex-col w-[560px]" style="gap: 12px">
+    <div class="flex gap-5 px-10">
+      <!-- 填寫資料區域 -->
+      <div class="flex flex-col w-full gap-3 px-5 py-6 rounded-xl bg-white shadow-md">
         <!-- 1. 帳號資訊區塊 -->
-        <FormSection title="帳號資訊">
+        <FormSection title="帳號資訊" subtitle="*帳號建立後無法修改">
           <FormInput
             ref="loginIdInputRef"
             v-model="formData.loginId"
@@ -68,9 +68,6 @@
           @confirm="handleConfirm"
         />
       </div>
-
-      <!-- 右側：空白區域 -->
-      <div class="flex items-center justify-center w-[560px] h-[516px]"></div>
     </div>
   </div>
 </template>
@@ -94,6 +91,8 @@ import type { FieldError } from '@/types/common'
  */
 
 const router = useRouter()
+
+const isSubmitting = ref(false)
 
 // ===== 表單資料 =====
 const formData = ref({
@@ -120,8 +119,6 @@ const errors = ref({
   name: '',
   email: '',
 })
-
-const isSubmitting = ref(false)
 
 // ===== Template Refs =====
 const loginIdInputRef = ref<{ focus: () => void } | null>(null)

@@ -30,6 +30,11 @@ const isDrawerOpen = ref(false)
 const selectedLoginId = ref<string | null>(null)
 
 /**
+ * 帳號管理頁面
+ */
+const router = useRouter()
+
+/**
  * 表格元件的 ref（用於呼叫 refresh 方法）
  */
 const tableRef = ref<{ refresh: () => Promise<void> } | null>(null)
@@ -64,11 +69,6 @@ const handleUserUpdated = () => {
   // 呼叫表格的 refresh 方法
   tableRef.value?.refresh()
 }
-
-/**
- * 帳號管理頁面
- */
-const router = useRouter()
 
 /**
  * 處理新增帳號
