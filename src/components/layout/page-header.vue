@@ -124,6 +124,13 @@ const isModuleCreatePage = computed(() => {
 })
 
 /**
+ * 是否為新增產業別頁面
+ */
+const isIndustryCreatePage = computed(() => {
+  return route.name === 'IndustryCreate' || route.path === '/settings/industries/create'
+})
+
+/**
  * 是否為主功能頁面
  * 主功能頁面：在左側選單中的頁面
  */
@@ -136,7 +143,12 @@ const isMainFeaturePage = computed(() => {
  * 只有總覽頁面不顯示
  */
 const showBackButton = computed(() => {
-  return !isOverviewPage.value && !isAccountCreatePage.value && !isModuleCreatePage.value
+  return (
+    !isOverviewPage.value &&
+    !isAccountCreatePage.value &&
+    !isModuleCreatePage.value &&
+    !isIndustryCreatePage.value
+  )
 })
 
 /**

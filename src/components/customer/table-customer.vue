@@ -25,6 +25,10 @@
     <template #statusDisplay="{ row }">
       <Badge :text="getStatusText(row)" :type="getStatusType(row)" />
     </template>
+
+    <template #moduleDisplay="{ row }">
+      <Badge :text="getModuleText(row)" :type="getModuleType(row)" />
+    </template>
   </data-table>
 </template>
 
@@ -101,6 +105,10 @@ const getStatusType = (row: Record<string, unknown>): 'success' | 'error' | 'def
   return 'default'
 }
 
+const getModuleType = (row: Record<string, unknown>): 'default' => {
+  return 'default'
+}
+
 /**
  * 取得狀態顯示文字
  */
@@ -115,6 +123,10 @@ const getStatusText = (row: Record<string, unknown>): string => {
     default:
       return '-'
   }
+}
+
+const getModuleText = (row: Record<string, unknown>): string => {
+  return row.module as string
 }
 
 /**
@@ -148,7 +160,11 @@ const columns = ref<ColumnConfig[]>([
     key: 'module',
     label: '模組',
     width: '120px',
+    align: 'center',
     sortable: true,
+    customRender: 'slot',
+    slotName: 'moduleDisplay',
+    sortKey: 'module',
   },
   {
     key: 'sales',

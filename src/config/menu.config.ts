@@ -68,13 +68,13 @@ export const menuConfig: MenuItem[] = [
         requiredPermissions: [],
       },
       // 權限設定
-      {
-        key: 'settings.roles',
-        label: '權限設定',
-        type: 'item',
-        icon: 'roles',
-        requiredPermissions: ['settings.roles'],
-      },
+      // {
+      //   key: 'settings.roles',
+      //   label: '權限設定',
+      //   type: 'item',
+      //   icon: 'roles',
+      //   requiredPermissions: ['settings.roles'],
+      // },
       // 模組設定
       {
         key: 'settings.modules',

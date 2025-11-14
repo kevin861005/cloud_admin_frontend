@@ -143,15 +143,15 @@ const routes: RouteRecordRaw[] = [
           /**
            * 權限設定
            */
-          {
-            path: 'roles',
-            name: 'SettingsRoles',
-            component: () => import('@/views/settings/roles-view.vue'),
-            meta: {
-              requiresAuth: true,
-              title: '權限設定',
-            },
-          },
+          // {
+          //   path: 'roles',
+          //   name: 'SettingsRoles',
+          //   component: () => import('@/views/settings/roles-view.vue'),
+          //   meta: {
+          //     requiresAuth: true,
+          //     title: '權限設定',
+          //   },
+          // },
           /**
            * 模組設定
            */
@@ -186,6 +186,18 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requiresAuth: true,
               title: '產業別設定',
+            },
+          },
+          /**
+           * 產業別設定 - 新增產業別
+           */
+          {
+            path: '/settings/industries/create',
+            name: 'IndustryCreate',
+            component: () => import('@/views/internal/industry-create-view.vue'),
+            meta: {
+              requiresAuth: true, //
+              requiredPermissions: ['settings.industries'],
             },
           },
           /**

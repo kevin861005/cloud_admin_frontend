@@ -3,7 +3,7 @@
     <PageTitle title="模組設定" subtitle="使用模組" />
 
     <TableContainer>
-      <module-table ref="tableRef" @row-view="handleView" @add="handleAdd" />
+      <ModuleTable ref="tableRef" @row-view="handleView" @add="handleAdd" />
     </TableContainer>
 
     <ModuleDetailDrawer
