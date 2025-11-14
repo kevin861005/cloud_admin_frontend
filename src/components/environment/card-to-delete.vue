@@ -23,7 +23,7 @@ const router = useRouter()
 const handleViewDetails = () => {
   console.log('查看刪除紀錄')
 
-  router.push('/environment/delete-records')
+  router.push('/environments/delete-records')
 }
 </script>
 

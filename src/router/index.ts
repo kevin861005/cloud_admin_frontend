@@ -90,9 +90,9 @@ const routes: RouteRecordRaw[] = [
        * 環境管理
        */
       {
-        path: 'environment',
-        name: 'Environment',
-        component: () => import('@/views/environment-view.vue'),
+        path: 'environments',
+        name: 'Environments',
+        component: () => import('@/views/environments-view.vue'),
         meta: {
           requiresAuth: true,
           title: '環境管理',
@@ -102,7 +102,7 @@ const routes: RouteRecordRaw[] = [
        * 環境管理 - 刪除紀錄
        */
       {
-        path: '/environment/delete-records',
+        path: '/environments/delete-records',
         name: 'DeleteRecords',
         component: () => import('@/views/internal/environment-delete-records.vue'),
         meta: {

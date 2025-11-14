@@ -33,11 +33,11 @@ export const menuConfig: MenuItem[] = [
     requiredPermissions: ['customers'],
   },
   {
-    key: 'environment',
+    key: 'environments',
     label: '環境管理',
     type: 'item',
     icon: 'menu-environment',
-    requiredPermissions: ['environment'],
+    requiredPermissions: ['environments'],
   },
 
   // ==================== 設定群組 ====================
