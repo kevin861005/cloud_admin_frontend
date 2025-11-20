@@ -15,6 +15,11 @@ export type CustomerStatus = 'ACTIVE' | 'INACTIVE' | 'UNUSED'
 export type CustomerModule = 'Master' | 'GGF'
 
 /**
+ * 服務運行狀態
+ */
+export type ServiceStatus = 'RUNNING' | 'NORMAL' | 'ERROR' | 'STOPPED'
+
+/**
  * 客戶列表資料
  */
 export interface CustomerListItem {
@@ -59,4 +64,104 @@ export interface CustomerDetailInfo {
   contactPerson: string // 聯絡人姓名
   phone: string // 聯絡電話
   email: string // 聯絡 E-mail
+
+  /** 最新活動記錄（最多顯示 4 筆） */
+  activities: ActivityRecord[]
+
+  /** 系統環境與運行狀態 */
+  systemEnvironment: SystemEnvironment
+}
+
+/**
+ * 活動記錄項目
+ */
+export interface ActivityRecord {
+  /** 日期時間（例如：2024.09.12 下午14:30） */
+  datetime: string
+  /** 模組類別（例如：人事管理） */
+  module: string
+  /** 操作名稱（例如：新增員工資料） */
+  action: string
+}
+
+/**
+ * 系統環境與運行狀態
+ */
+export interface SystemEnvironment {
+  /** Docker 服務狀態 */
+  docker: ServiceInfo
+
+  /** 資料庫服務狀態 */
+  database: ServiceInfo
+
+  /** DNS 服務狀態 */
+  dns: ServiceInfo
+
+  /** NGINX 服務狀態 */
+  nginx: ServiceInfo
+
+  /** 效能監控資料 */
+  performance: PerformanceMetrics
+
+  /** 系統紀錄（預設顯示最新 5 筆） */
+  systemLogs: SystemLog[]
+}
+
+/**
+ * 服務資訊
+ */
+export interface ServiceInfo {
+  /** 服務名稱（例如：Docker、資料庫、DNS、NGINX） */
+  serviceName: string
+
+  /** 運行狀態 */
+  status: ServiceStatus
+
+  /** 狀態描述（例如：運行中、正常、DNS紀錄有效、代理運行） */
+  statusText: string
+
+  /** 詳細資訊（例如：名稱、版本、資料庫名稱等） */
+  details: string
+}
+
+/**
+ * 效能監控指標
+ */
+export interface PerformanceMetrics {
+  /** CPU 使用率（0-100） */
+  cpu: number
+
+  /** 記憶體使用率（0-100） */
+  memory: number
+
+  /** 磁碟使用率（0-100） */
+  disk: number
+}
+
+/**
+ * 系統紀錄項目
+ */
+export interface SystemLog {
+  /** 日期時間（例如：2024.09.12 下午14:30） */
+  datetime: string
+
+  /** 服務名稱（例如：DNS、資料庫、NGINX） */
+  service: string
+
+  /** 紀錄內容（例如：解析更新完成、容器健康檢查通過） */
+  message: string
+}
+
+/**
+ * 效能監控等級（根據百分比判斷）
+ */
+export type PerformanceLevel = 'GOOD' | 'WARNING' | 'CRITICAL'
+
+/**
+ * 根據百分比取得效能等級
+ */
+export function getPerformanceLevel(percentage: number): PerformanceLevel {
+  if (percentage <= 60) return 'GOOD'
+  if (percentage <= 80) return 'WARNING'
+  return 'CRITICAL'
 }

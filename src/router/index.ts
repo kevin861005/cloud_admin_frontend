@@ -87,6 +87,19 @@ const routes: RouteRecordRaw[] = [
       },
 
       /**
+       * 客戶管理 - 詳細畫面
+       */
+      {
+        path: '/customers/:id/detail',
+        name: 'CustomerDetail',
+        component: () => import('@/views/internal/customer-detail-view.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '客戶詳細資訊',
+        },
+      },
+
+      /**
        * 環境管理
        */
       {

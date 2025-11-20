@@ -55,9 +55,11 @@
         :row-key="rowKey"
         :is-all-selected="isCurrentPageAllSelected"
         :is-indeterminate="isIndeterminate"
+        :enable-row-click="enableRowClick"
         @sort-change="handleSortChange"
         @row-edit="emit('row-edit', $event)"
         @row-view="emit('row-view', $event)"
+        @row-click="emit('row-click', $event)"
         @toggle-all="handleToggleAll"
         @toggle-row="handleToggleRow"
       >
@@ -121,6 +123,7 @@ interface Props {
   selectedIds?: (string | number)[] // 已選擇的項目 ID（v-model）
   rowKey?: string // 資料的唯一識別欄位（預設 'id'）
   batchActions?: BatchActionConfig[] // 批次操作按鈕配置
+  enableRowClick?: boolean // 是否啟用整列點擊（預設 false）
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -140,6 +143,7 @@ const props = withDefaults(defineProps<Props>(), {
   selectedIds: () => [],
   rowKey: 'id',
   batchActions: () => [],
+  enableRowClick: false, // 預設不啟用整列點擊
 })
 
 // ===== Emits 定義 =====
@@ -149,6 +153,7 @@ const emit = defineEmits<{
   'row-view': [row: Record<string, unknown>] // 查看按鈕點擊事件
   'update:selectedIds': [ids: (string | number)[]] // 選取變更事件（v-model）
   'batch-action': [actionKey: string, selectedRows: Record<string, unknown>[]] // 批量操作事件
+  'row-click': [row: Record<string, unknown>] // 整列點擊事件
 }>()
 
 // ===== 內部狀態 =====

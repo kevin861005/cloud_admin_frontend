@@ -116,10 +116,12 @@
             :class="[
               'last:border-b last:border-gray-200 transition-colors',
               isRowSelected(row) ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50',
+              enableRowClick && 'cursor-pointer', // 啟用整列點擊時顯示手指游標
             ]"
+            @click="handleRowClick(row)"
           >
             <!-- Checkbox 欄位（階段三新增） -->
-            <td v-if="showCheckbox" class="px-6 py-4">
+            <td v-if="showCheckbox" class="px-6 py-4" @click.stop>
               <div class="flex items-center justify-center">
                 <input
                   type="checkbox"
@@ -153,6 +155,7 @@
                   :href="`https://${String(row[column.key])}`"
                   :target="column.linkConfig?.target || '_blank'"
                   class="text-blue-600 underline hover:text-blue-800"
+                  @click.stop
                 >
                   {{ row[column.key] }}
                   <!-- 外部連結圖示 -->
@@ -182,6 +185,7 @@
                     column.align === 'right' && 'justify-end',
                     !column.align && 'justify-center',
                   ]"
+                  @click.stop
                 >
                   <!-- 編輯按鈕 -->
                   <button
@@ -284,6 +288,7 @@ interface Props<T = Record<string, unknown>> {
   rowKey?: string // 資料的唯一識別欄位（預設 'id'）
   isAllSelected?: boolean // 當前頁是否全選（預設 false）
   isIndeterminate?: boolean // 是否為半選狀態（預設 false）
+  enableRowClick?: boolean // 是否啟用整列點擊（預設 false）
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -295,6 +300,7 @@ const props = withDefaults(defineProps<Props>(), {
   rowKey: 'id',
   isAllSelected: false,
   isIndeterminate: false,
+  enableRowClick: false, // 預設不啟用整列點擊
 })
 
 // ===== Emits 定義 =====
@@ -304,6 +310,7 @@ const emit = defineEmits<{
   'row-view': [row: Record<string, unknown>] // 查看按鈕點擊事件
   'toggle-all': [] // 全選/取消全選事件
   'toggle-row': [row: Record<string, unknown>] // 單行選取/取消選取事件
+  'row-click': [row: Record<string, unknown>] // 整列點擊事件
 }>()
 
 // ===== 排序狀態 =====
@@ -379,6 +386,17 @@ const handleToggleAll = () => {
  */
 const handleToggleRow = (row: Record<string, unknown>) => {
   emit('toggle-row', row)
+}
+
+/**
+ * 【新增】處理整列點擊
+ * 邏輯：
+ * 1. 只有啟用 enableRowClick 時才會觸發
+ * 2. 發出 row-click 事件，傳遞該行資料
+ */
+const handleRowClick = (row: Record<string, unknown>) => {
+  if (!props.enableRowClick) return
+  emit('row-click', row)
 }
 
 // ===== Checkbox 半選狀態處理 =====

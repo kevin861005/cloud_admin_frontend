@@ -280,6 +280,86 @@ export const customerService = {
         contactPerson: '張先生',
         phone: '02-12345678',
         email: 'contact@orange-tech.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.4.1',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'OrangeTech_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 45,
+            memory: 52,
+            disk: 38,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.09.12 下午14:30',
+              service: 'DNS',
+              message: '解析更新完成',
+            },
+            {
+              datetime: '2024.09.12 下午14:30',
+              service: '資料庫',
+              message: '容器健康檢查通過',
+            },
+            {
+              datetime: '2024.09.12 下午14:30',
+              service: 'NGINX',
+              message: 'Nginx 配置重新載入',
+            },
+            {
+              datetime: '2024.09.12 下午14:25',
+              service: 'Docker',
+              message: '映像更新完成',
+            },
+            {
+              datetime: '2024.09.12 下午14:20',
+              service: '資料庫',
+              message: '備份完成',
+            },
+          ],
+        },
       },
       2: {
         customerName: '藍天餐飲',
@@ -297,6 +377,86 @@ export const customerService = {
         contactPerson: '李小姐',
         phone: '02-23456789',
         email: 'info@blue-sky-food.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.3.8',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'BlueSky_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 68,
+            memory: 72,
+            disk: 55,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.09.10 上午10:15',
+              service: 'NGINX',
+              message: '連線逾時警告已解決',
+            },
+            {
+              datetime: '2024.09.10 上午10:10',
+              service: '資料庫',
+              message: '查詢效能優化完成',
+            },
+            {
+              datetime: '2024.09.09 下午16:30',
+              service: 'DNS',
+              message: 'DNS 記錄更新',
+            },
+            {
+              datetime: '2024.09.09 下午16:25',
+              service: 'Docker',
+              message: '容器重啟完成',
+            },
+            {
+              datetime: '2024.09.09 下午16:20',
+              service: '資料庫',
+              message: '連線池調整',
+            },
+          ],
+        },
       },
       3: {
         customerName: '綠光企業',
@@ -314,6 +474,86 @@ export const customerService = {
         contactPerson: '王經理',
         phone: '03-34567890',
         email: 'contact@green-light.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.4.1',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'GreenLight_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 38,
+            memory: 42,
+            disk: 35,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.09.12 下午15:10',
+              service: 'Docker',
+              message: '系統檢查完成',
+            },
+            {
+              datetime: '2024.09.12 下午15:05',
+              service: '資料庫',
+              message: '索引優化完成',
+            },
+            {
+              datetime: '2024.09.12 下午15:00',
+              service: 'NGINX',
+              message: 'SSL 憑證更新',
+            },
+            {
+              datetime: '2024.09.12 下午14:55',
+              service: 'DNS',
+              message: '紀錄驗證通過',
+            },
+            {
+              datetime: '2024.09.12 下午14:50',
+              service: '資料庫',
+              message: '自動備份完成',
+            },
+          ],
+        },
       },
       4: {
         customerName: '紅葉商店',
@@ -331,6 +571,86 @@ export const customerService = {
         contactPerson: '陳店長',
         phone: '04-45678901',
         email: 'shop@red-leaf.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'STOPPED',
+            statusText: '已停止',
+            details: 'v2.2.5',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'STOPPED',
+            statusText: '已停止',
+            details: 'RedLeaf_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'ERROR',
+            statusText: 'DNS紀錄過期',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'STOPPED',
+            statusText: '代理已停止',
+            details: '',
+          },
+          performance: {
+            cpu: 0,
+            memory: 0,
+            disk: 88,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.06.15 上午09:00',
+              service: 'Docker',
+              message: '容器已停止',
+            },
+            {
+              datetime: '2024.06.15 上午08:55',
+              service: '資料庫',
+              message: '連線中斷',
+            },
+            {
+              datetime: '2024.06.15 上午08:50',
+              service: 'NGINX',
+              message: '服務停止',
+            },
+            {
+              datetime: '2024.06.14 下午18:00',
+              service: 'DNS',
+              message: 'DNS 紀錄即將過期警告',
+            },
+            {
+              datetime: '2024.06.14 下午17:55',
+              service: '資料庫',
+              message: '最後一次備份完成',
+            },
+          ],
+        },
       },
       5: {
         customerName: '黃金地產',
@@ -348,6 +668,86 @@ export const customerService = {
         contactPerson: '黃總',
         phone: '02-56789012',
         email: 'info@golden-estate.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.4.0',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'Golden_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 55,
+            memory: 48,
+            disk: 62,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.09.12 下午16:00',
+              service: 'NGINX',
+              message: '負載平衡配置更新',
+            },
+            {
+              datetime: '2024.09.12 下午15:55',
+              service: '資料庫',
+              message: '連線池擴充完成',
+            },
+            {
+              datetime: '2024.09.12 下午15:50',
+              service: 'DNS',
+              message: 'CDN 設定更新',
+            },
+            {
+              datetime: '2024.09.12 下午15:45',
+              service: 'Docker',
+              message: '容器資源調整',
+            },
+            {
+              datetime: '2024.09.12 下午15:40',
+              service: '資料庫',
+              message: '效能監控啟動',
+            },
+          ],
+        },
       },
       6: {
         customerName: '紫羅蘭服飾',
@@ -365,6 +765,86 @@ export const customerService = {
         contactPerson: '紫小姐',
         phone: '02-67890123',
         email: 'contact@violet-fashion.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.3.6',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'Violet_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'ERROR',
+            statusText: '連線異常',
+            details: '',
+          },
+          performance: {
+            cpu: 75,
+            memory: 82,
+            disk: 68,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.09.08 上午11:30',
+              service: 'NGINX',
+              message: '連線逾時錯誤',
+            },
+            {
+              datetime: '2024.09.08 上午11:25',
+              service: 'NGINX',
+              message: '嘗試重新連線',
+            },
+            {
+              datetime: '2024.09.08 上午11:20',
+              service: '資料庫',
+              message: '查詢回應緩慢',
+            },
+            {
+              datetime: '2024.09.08 上午11:15',
+              service: 'Docker',
+              message: 'CPU 使用率過高警告',
+            },
+            {
+              datetime: '2024.09.08 上午11:10',
+              service: '資料庫',
+              message: '記憶體使用率達80%',
+            },
+          ],
+        },
       },
       7: {
         customerName: '白雲旅行社',
@@ -382,6 +862,86 @@ export const customerService = {
         contactPerson: '白經理',
         phone: '02-78901234',
         email: 'travel@white-cloud.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.4.1',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'WhiteCloud_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 42,
+            memory: 38,
+            disk: 45,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.09.12 下午17:00',
+              service: 'DNS',
+              message: 'HTTPS 憑證自動更新',
+            },
+            {
+              datetime: '2024.09.12 下午16:55',
+              service: 'NGINX',
+              message: '快取清理完成',
+            },
+            {
+              datetime: '2024.09.12 下午16:50',
+              service: '資料庫',
+              message: '定期維護完成',
+            },
+            {
+              datetime: '2024.09.12 下午16:45',
+              service: 'Docker',
+              message: '健康檢查通過',
+            },
+            {
+              datetime: '2024.09.12 下午16:40',
+              service: '資料庫',
+              message: '索引重建完成',
+            },
+          ],
+        },
       },
       8: {
         customerName: '黑貓物流',
@@ -399,6 +959,86 @@ export const customerService = {
         contactPerson: '黑先生',
         phone: '02-89012345',
         email: 'logistics@black-cat.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.4.1',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'BlackCat_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 58,
+            memory: 65,
+            disk: 52,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.09.12 下午18:00',
+              service: '資料庫',
+              message: '批次資料處理完成',
+            },
+            {
+              datetime: '2024.09.12 下午17:55',
+              service: 'NGINX',
+              message: 'API 限流規則更新',
+            },
+            {
+              datetime: '2024.09.12 下午17:50',
+              service: 'Docker',
+              message: '記憶體配置調整',
+            },
+            {
+              datetime: '2024.09.12 下午17:45',
+              service: 'DNS',
+              message: 'Load balancer 設定更新',
+            },
+            {
+              datetime: '2024.09.12 下午17:40',
+              service: '資料庫',
+              message: '連線數監控正常',
+            },
+          ],
+        },
       },
       9: {
         customerName: '粉紅醫美',
@@ -416,6 +1056,86 @@ export const customerService = {
         contactPerson: '粉醫師',
         phone: '02-90123456',
         email: 'beauty@pink-clinic.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.3.2',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'Pink_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 82,
+            memory: 78,
+            disk: 85,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.07.20 下午15:30',
+              service: '資料庫',
+              message: '磁碟空間不足警告',
+            },
+            {
+              datetime: '2024.07.20 下午15:25',
+              service: 'Docker',
+              message: 'CPU 使用率持續偏高',
+            },
+            {
+              datetime: '2024.07.20 下午15:20',
+              service: 'NGINX',
+              message: '回應時間超過閾值',
+            },
+            {
+              datetime: '2024.07.20 下午15:15',
+              service: '資料庫',
+              message: '連線池已滿',
+            },
+            {
+              datetime: '2024.07.20 下午15:10',
+              service: 'DNS',
+              message: '解析延遲增加',
+            },
+          ],
+        },
       },
       10: {
         customerName: '灰色設計',
@@ -433,6 +1153,86 @@ export const customerService = {
         contactPerson: '灰設計師',
         phone: '03-01234567',
         email: 'design@grey.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'STOPPED',
+            statusText: '已停止',
+            details: 'v2.1.8',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'STOPPED',
+            statusText: '已停止',
+            details: 'Grey_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'ERROR',
+            statusText: 'DNS紀錄失效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'STOPPED',
+            statusText: '代理已停止',
+            details: '',
+          },
+          performance: {
+            cpu: 0,
+            memory: 0,
+            disk: 92,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.04.10 下午17:00',
+              service: 'Docker',
+              message: '容器停止運行',
+            },
+            {
+              datetime: '2024.04.10 下午16:55',
+              service: '資料庫',
+              message: '最後備份完成',
+            },
+            {
+              datetime: '2024.04.10 下午16:50',
+              service: 'NGINX',
+              message: '服務終止',
+            },
+            {
+              datetime: '2024.04.10 下午16:45',
+              service: 'DNS',
+              message: '紀錄即將失效',
+            },
+            {
+              datetime: '2024.04.10 下午16:40',
+              service: '資料庫',
+              message: '連線全部關閉',
+            },
+          ],
+        },
       },
       11: {
         customerName: '銀河金融',
@@ -450,6 +1250,86 @@ export const customerService = {
         contactPerson: '銀總監',
         phone: '02-11234567',
         email: 'finance@galaxy.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.4.1',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'Galaxy_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 35,
+            memory: 40,
+            disk: 32,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.09.12 下午19:00',
+              service: '資料庫',
+              message: '加密備份完成',
+            },
+            {
+              datetime: '2024.09.12 下午18:55',
+              service: 'NGINX',
+              message: '安全性掃描通過',
+            },
+            {
+              datetime: '2024.09.12 下午18:50',
+              service: 'Docker',
+              message: '安全更新套用完成',
+            },
+            {
+              datetime: '2024.09.12 下午18:45',
+              service: 'DNS',
+              message: 'DNSSEC 驗證成功',
+            },
+            {
+              datetime: '2024.09.12 下午18:40',
+              service: '資料庫',
+              message: '交易日誌歸檔',
+            },
+          ],
+        },
       },
       12: {
         customerName: '青草茶飲',
@@ -467,6 +1347,86 @@ export const customerService = {
         contactPerson: '青老闆',
         phone: '04-23456789',
         email: 'tea@green-shop.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.3.5',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'ERROR',
+            statusText: '連線異常',
+            details: 'GreenTea_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 72,
+            memory: 85,
+            disk: 78,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.08.15 下午13:30',
+              service: '資料庫',
+              message: '連線逾時錯誤',
+            },
+            {
+              datetime: '2024.08.15 下午13:25',
+              service: '資料庫',
+              message: '嘗試重新連線',
+            },
+            {
+              datetime: '2024.08.15 下午13:20',
+              service: 'Docker',
+              message: '記憶體使用率達85%',
+            },
+            {
+              datetime: '2024.08.15 下午13:15',
+              service: 'NGINX',
+              message: '502 錯誤頻繁發生',
+            },
+            {
+              datetime: '2024.08.15 下午13:10',
+              service: '資料庫',
+              message: '查詢鎖定警告',
+            },
+          ],
+        },
       },
       13: {
         customerName: '棕櫚建設',
@@ -484,6 +1444,86 @@ export const customerService = {
         contactPerson: '棕總',
         phone: '07-34567890',
         email: 'construction@palm.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.4.0',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'Palm_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 48,
+            memory: 55,
+            disk: 42,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.09.12 下午20:00',
+              service: 'Docker',
+              message: '映像版本更新',
+            },
+            {
+              datetime: '2024.09.12 下午19:55',
+              service: '資料庫',
+              message: '效能調校完成',
+            },
+            {
+              datetime: '2024.09.12 下午19:50',
+              service: 'NGINX',
+              message: 'Gzip 壓縮啟用',
+            },
+            {
+              datetime: '2024.09.12 下午19:45',
+              service: 'DNS',
+              message: 'TTL 設定優化',
+            },
+            {
+              datetime: '2024.09.12 下午19:40',
+              service: '資料庫',
+              message: '備份策略更新',
+            },
+          ],
+        },
       },
       14: {
         customerName: '深藍科技',
@@ -501,6 +1541,86 @@ export const customerService = {
         contactPerson: '藍博士',
         phone: '03-45678901',
         email: 'tech@deep-blue.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.4.1',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'DeepBlue_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 52,
+            memory: 58,
+            disk: 48,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.09.12 下午21:00',
+              service: 'NGINX',
+              message: 'WebSocket 連線穩定',
+            },
+            {
+              datetime: '2024.09.12 下午20:55',
+              service: '資料庫',
+              message: 'Redis 快取命中率98%',
+            },
+            {
+              datetime: '2024.09.12 下午20:50',
+              service: 'Docker',
+              message: '容器健康檢查正常',
+            },
+            {
+              datetime: '2024.09.12 下午20:45',
+              service: 'DNS',
+              message: 'CDN 快取更新',
+            },
+            {
+              datetime: '2024.09.12 下午20:40',
+              service: '資料庫',
+              message: '慢查詢優化完成',
+            },
+          ],
+        },
       },
       15: {
         customerName: '淺綠農場',
@@ -518,6 +1638,86 @@ export const customerService = {
         contactPerson: '綠場長',
         phone: '05-56789012',
         email: 'farm@light-green.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'STOPPED',
+            statusText: '已停止',
+            details: 'v2.2.1',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'STOPPED',
+            statusText: '已停止',
+            details: 'LightGreen_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'ERROR',
+            statusText: 'DNS紀錄過期',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'STOPPED',
+            statusText: '代理已停止',
+            details: '',
+          },
+          performance: {
+            cpu: 0,
+            memory: 0,
+            disk: 95,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.05.20 上午10:00',
+              service: 'Docker',
+              message: '服務停止',
+            },
+            {
+              datetime: '2024.05.20 上午09:55',
+              service: '資料庫',
+              message: '資料封存完成',
+            },
+            {
+              datetime: '2024.05.20 上午09:50',
+              service: 'NGINX',
+              message: '代理服務終止',
+            },
+            {
+              datetime: '2024.05.19 下午18:00',
+              service: 'DNS',
+              message: 'DNS 紀錄將於明日失效',
+            },
+            {
+              datetime: '2024.05.19 下午17:55',
+              service: '資料庫',
+              message: '最後完整備份',
+            },
+          ],
+        },
       },
       16: {
         customerName: '深紫律師',
@@ -535,6 +1735,86 @@ export const customerService = {
         contactPerson: '紫律師',
         phone: '02-67890123',
         email: 'law@deep-purple.com',
+        activities: [
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '人事管理',
+            action: '新增員工資料',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '工作站管理',
+            action: '更新設備狀態',
+          },
+          {
+            datetime: '2024.09.12 下午14:30',
+            module: '排崗作業',
+            action: '發布新班表',
+          },
+          {
+            datetime: '2024.09.11 下午16:20',
+            module: '考勤管理',
+            action: '匯入打卡記錄',
+          },
+        ],
+        systemEnvironment: {
+          docker: {
+            serviceName: 'Docker',
+            status: 'RUNNING',
+            statusText: '運行中',
+            details: 'v2.3.7',
+          },
+          database: {
+            serviceName: '資料庫',
+            status: 'NORMAL',
+            statusText: '正常',
+            details: 'DeepPurple_production',
+          },
+          dns: {
+            serviceName: 'DNS',
+            status: 'NORMAL',
+            statusText: 'DNS紀錄有效',
+            details: '',
+          },
+          nginx: {
+            serviceName: 'NGINX',
+            status: 'RUNNING',
+            statusText: '代理運行',
+            details: '',
+          },
+          performance: {
+            cpu: 78,
+            memory: 82,
+            disk: 72,
+          },
+          systemLogs: [
+            {
+              datetime: '2024.08.05 下午14:30',
+              service: 'Docker',
+              message: 'CPU 使用率偏高',
+            },
+            {
+              datetime: '2024.08.05 下午14:25',
+              service: '資料庫',
+              message: '記憶體使用率82%',
+            },
+            {
+              datetime: '2024.08.05 下午14:20',
+              service: 'NGINX',
+              message: '回應時間增加',
+            },
+            {
+              datetime: '2024.08.05 下午14:15',
+              service: '資料庫',
+              message: '查詢佇列增長',
+            },
+            {
+              datetime: '2024.08.05 下午14:10',
+              service: 'DNS',
+              message: '解析請求量激增',
+            },
+          ],
+        },
       },
     }
 

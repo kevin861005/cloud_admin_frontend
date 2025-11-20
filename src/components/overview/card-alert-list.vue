@@ -6,7 +6,7 @@
     - gap: 20px (使用 space-y-5)
     - flex: 1 0 0 (使用 flex-1)
   -->
-  <div class="flex-shrink-0 h-[256px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5">
+  <div class="h-[256px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5">
     <!--
       Contents-Text: 文字內容區域
       - gap: 48px (使用 space-y-12)
@@ -145,24 +145,7 @@
         </span>
       </div>
 
-      <!--
-        More Button: 更多按鈕
-        - width: 41px (auto，依內容調整)
-        - height: 24px
-        - border-radius: 4px
-        - border-width: 1px
-        - padding: 4px 8px
-        - background: #0000000D
-        - border: 1px solid #0000001A
-        - 只在 totalCount > 3 時顯示
-      -->
-      <button
-        v-if="alertData.totalCount > 3"
-        class="inline-flex items-center justify-center h-6 px-2 py-1 rounded border border-gray-200 text-xs font-bold tracking-[0.2px] text-gray-700 bg-gray-100 bd- cursor-pointer hover:bg-opacity-80 transition-colors"
-        @click="handleMoreClick"
-      >
-        更多
-      </button>
+      <BadgeButton v-if="alertData.totalCount > 3" text="更多" @click="handleMoreClick" />
     </div>
   </div>
 </template>
@@ -171,6 +154,7 @@
 import { ref, onMounted } from 'vue'
 import { overviewService } from '@/services/overview.service'
 import type { AlertListData, AlertType } from '@/types/overview'
+import BadgeButton from '@/components/common/badge-button.vue'
 
 /**
  * 異常警示資料

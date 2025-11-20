@@ -76,9 +76,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 // ===== 計算屬性 =====
 
-/**
- * 分隔線樣式 class
- */
 const dividerClasses = computed(() => {
   const classes = []
 
@@ -86,12 +83,12 @@ const dividerClasses = computed(() => {
   if (props.direction === 'horizontal') {
     classes.push('border-t')
   } else {
-    classes.push('border-l')
+    classes.push('border-l', 'h-4') // 垂直預設高度
   }
 
   // 顏色
   const colorMap = {
-    light: 'border-gray-200', // #e5e7eb (接近 #e4e6ea)
+    light: 'border-gray-200',
     default: 'border-gray-300',
     dark: 'border-gray-400',
   }

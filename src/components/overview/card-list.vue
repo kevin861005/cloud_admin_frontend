@@ -17,10 +17,7 @@
     - 分頁區域高度: 32px
   -->
 
-  <div
-    class="flex-shrink-0 bg-white rounded-lg shadow-md py-6 px-5 flex flex-col"
-    :style="{ height: height }"
-  >
+  <div class="bg-white rounded-lg shadow-md py-6 px-5 flex flex-col" :style="{ height: height }">
     <div class="flex flex-col h-full">
       <!-- 標題列 -->
       <div class="flex items-center h-6 mb-6">

@@ -11,6 +11,7 @@
     :show-edit-button="showEditButton"
     :show-border="showBorder"
     :batch-actions="batchActions"
+    :enable-row-click="true"
     title="列表"
     item-name="客戶"
     add-button-text="新增客戶"
@@ -19,6 +20,7 @@
     @add-click="handleAdd"
     @row-edit="handleEdit"
     @row-view="handleView"
+    @row-click="handleRowClick"
     @batch-action="handleBatchAction"
   >
     <!-- 自訂狀態欄位：使用 Badge 元件 -->
@@ -34,6 +36,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, toRefs } from 'vue'
+import { useRouter } from 'vue-router'
 import Badge from '@/components/common/badge.vue'
 import DataTable from '@/components/table/data-table.vue'
 import { customerService } from '@/services/customer.service'
@@ -92,6 +95,11 @@ const customers = ref<CustomerListItem[]>([])
  * 選取的客戶 ID
  */
 const selectedIds = ref<(string | number)[]>([])
+
+/**
+ * Router 實例
+ */
+const router = useRouter()
 
 // ===== 欄位配置 =====
 
@@ -317,6 +325,14 @@ const handleView = (row: Record<string, unknown>) => {
  */
 const handleBatchAction = (actionKey: string, selectedRows: Record<string, unknown>[]) => {
   emit('batch-action', actionKey, selectedRows)
+}
+
+/**
+ * 處理整列點擊
+ * 跳轉到客戶詳細頁面
+ */
+const handleRowClick = (row: Record<string, unknown>) => {
+  router.push(`/customers/${row.id}/detail`)
 }
 
 // ===== 初始化 =====
