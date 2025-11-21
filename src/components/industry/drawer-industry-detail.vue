@@ -1,19 +1,10 @@
 <template>
   <Drawer :is-open="isOpen" @close="handleClose">
     <!-- 載入狀態 -->
-    <div v-if="isLoading" class="flex items-center justify-center p-12">
-      <div class="text-center">
-        <div
-          class="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent mx-auto"
-        ></div>
-        <p class="text-sm text-gray-500">載入中...</p>
-      </div>
-    </div>
+    <Loading v-if="isLoading" message="載入資料中..." :show-spinner="true" />
 
     <!-- 錯誤狀態 -->
-    <div v-else-if="error" class="px-5 py-6">
-      <Alert type="error" title="載入失敗" :description="error" />
-    </div>
+    <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
     <!-- 資料顯示或編輯 -->
     <div v-else-if="industryData" class="flex flex-col gap-3 px-5">
@@ -111,6 +102,7 @@ import DrawerToast from '@/components/drawer/drawer-toast.vue'
 import InfoSection from '@/components/drawer/info-section.vue'
 import InfoField from '@/components/drawer/info-field.vue'
 import Alert from '@/components/common/alert.vue'
+import Loading from '@/components/common/loading.vue'
 import Divider from '@/components/common/divider.vue'
 import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'

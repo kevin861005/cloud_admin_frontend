@@ -60,7 +60,18 @@
           />
         </CardContainer>
 
-        <h2 class="px-10 text-xl font-bold tracking-[-0.2px] text-gray-800">系統環境與運行狀態</h2>
+        <div class="flex flex-1 items-center justify-between px-10">
+          <h2 class="text-xl font-bold tracking-[-0.2px] text-gray-800">系統環境與運行狀態</h2>
+
+          <button
+            class="inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded text-xs font-bold tracking-[0.2px] text-gray-600 cursor-pointer hover:bg-opacity-80 transition-colors"
+            @click="openDeleteDialog(customerInfo.customerName)"
+          >
+            <img :src="TrashIcon" alt="刪除環境" class="h-4 w-4" />
+
+            <span>刪除環境</span>
+          </button>
+        </div>
 
         <CardContainer :height="190" :use-padding-top="true" :padding-top="20" :gap="12">
           <!-- Docker 狀態卡片 -->
@@ -75,16 +86,31 @@
           <!-- NGINX 狀態卡片 -->
           <CardNGINX :nginx-info="customerInfo.systemEnvironment.nginx" />
         </CardContainer>
+
+        <CardContainer :width-ratios="[1, 2]" :height="268" :use-padding-bottom="false">
+          <!-- 需關注客戶卡片 -->
+          <CardEfficacyMonitor :performance="customerInfo.systemEnvironment.performance" />
+
+          <!-- 模組使用量卡片 -->
+          <CardSystemRecords :systemLogs="customerInfo.systemEnvironment.systemLogs" />
+        </CardContainer>
       </div>
     </div>
   </div>
+
+  <!-- 刪除環境確認 Dialog -->
+  <delete-environment-dialog
+    v-model="showDeleteDialog"
+    :environment-id="selectedEnvironmentId"
+    @deleted="handleDeleted"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import type { CustomerDetailInfo } from '@/types/customer'
 import { customerService } from '@/services/customer.service'
+import type { CustomerDetailInfo } from '@/types/customer'
 import HeaderCustomerInfo from '@/components/customer/detail/header-customer-info.vue'
 import CardContainer from '@/components/common/card-container.vue'
 import CardActivityRecords from '@/components/customer/detail/card-activity-records.vue'
@@ -94,22 +120,10 @@ import CardDocker from '@/components/customer/detail/card-docker.vue'
 import CardDatabase from '@/components/customer/detail/card-database.vue'
 import CardDNS from '@/components/customer/detail/card-dns.vue'
 import CardNGINX from '@/components/customer/detail/card-nginx.vue'
-
-/**
- * 客戶詳細頁面
- *
- * 用途：
- * - 顯示單一客戶的完整資訊
- * - 包含客戶基本資料、活動記錄、環境設定、聯絡資訊等
- *
- * 路由參數：
- * - id: 客戶 ID（從 URL 取得）
- *
- * 開發狀態：
- * - ✅ Header 區域已完成
- * - ✅ 客戶資訊概覽（三張卡片）已完成
- * - ⏳ 其他內容區域待實作
- */
+import CardSystemRecords from '@/components/customer/detail/card-system-records.vue'
+import CardEfficacyMonitor from '@/components/customer/detail/card-efficacy-monitor.vue'
+import DeleteEnvironmentDialog from '@/components/dialog/dialog-delete-environment.vue'
+import TrashIcon from '@/assets/icons/common/cm-trash.svg'
 
 const route = useRoute()
 
@@ -127,6 +141,11 @@ const isLoading = ref(false)
  * 錯誤訊息
  */
 const error = ref<string | null>(null)
+
+/**
+ * 是否顯示刪除確認 Dialog
+ */
+const showDeleteDialog = ref(false)
 
 /**
  * 載入客戶詳細資料
@@ -155,9 +174,29 @@ const loadCustomerDetail = async () => {
 }
 
 /**
+ * 選中的環境 ID
+ */
+const selectedEnvironmentId = ref<string>()
+
+/**
  * 元件掛載時載入資料
  */
 onMounted(() => {
   loadCustomerDetail()
 })
+
+/**
+ * 開啟刪除確認 Dialog
+ */
+function openDeleteDialog(environmentId: string) {
+  selectedEnvironmentId.value = environmentId
+  showDeleteDialog.value = true
+}
+
+/**
+ * 刪除成功後的處理
+ */
+function handleDeleted() {
+  console.log('執行刪除')
+}
 </script>

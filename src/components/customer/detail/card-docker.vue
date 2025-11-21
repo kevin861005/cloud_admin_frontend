@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import ServiceCard from '@/components/customer/detail/card-service-common.vue'
 import BadgeButton from '@/components/common/badge-button.vue'
-import dockerIcon from '@/assets/icons/docker.svg'
+import dockerIcon from '@/assets/icons/card/docker.svg'
 import updateIcon from '@/assets/icons/common/cm-download.svg'
 import restartIcon from '@/assets/icons/common/cm-restart.svg'
 

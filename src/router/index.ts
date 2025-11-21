@@ -225,6 +225,18 @@ const routes: RouteRecordRaw[] = [
               title: '經銷商設定',
             },
           },
+          /**
+           * 經銷商設定 - 新增產業別
+           */
+          {
+            path: '/settings/dealers/create',
+            name: 'DealerCreate',
+            component: () => import('@/views/internal/dealer-create-view.vue'),
+            meta: {
+              requiresAuth: true, //
+              requiredPermissions: ['settings.dealers'],
+            },
+          },
         ],
       },
     ],

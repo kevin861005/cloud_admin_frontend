@@ -82,9 +82,9 @@ const badgeType = computed<'success' | 'default' | 'error'>(() => {
     case 'ACTIVE':
       return 'success' // 綠色 - 活躍
     case 'INACTIVE':
-      return 'default' // 灰色 - 低活躍
+      return 'error' // 紅色 - 低活躍
     case 'UNUSED':
-      return 'error' // 紅色 - 未使用
+      return 'default' // 灰色 - 未使用
     default:
       return 'default'
   }

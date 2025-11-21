@@ -1,5 +1,5 @@
 <template>
-  <div class="h-[150px] bg-white rounded px-5 pt-5 pb-4 flex flex-col gap-3 border">
+  <div class="h-[150px] bg-white rounded px-5 pt-5 pb-4 flex flex-col gap-3">
     <!-- 標題區：ICON + 服務名稱 + 狀態文字 -->
     <div class="flex items-center gap-3">
       <!-- ICON (20x20px) -->

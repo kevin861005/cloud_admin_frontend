@@ -10,5 +10,5 @@
 
 <script setup lang="ts">
 import ServiceCard from '@/components/customer/detail/card-service-common.vue'
-import nginxIcon from '@/assets/icons/nginx.svg'
+import nginxIcon from '@/assets/icons/card/nginx.svg'
 </script>

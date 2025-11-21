@@ -10,5 +10,5 @@
 
 <script setup lang="ts">
 import ServiceCard from '@/components/customer/detail/card-service-common.vue'
-import dnsIcon from '@/assets/icons/dns.svg'
+import dnsIcon from '@/assets/icons/card/dns.svg'
 </script>

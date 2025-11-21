@@ -131,6 +131,13 @@ const isIndustryCreatePage = computed(() => {
 })
 
 /**
+ * 是否為新增經銷商頁面
+ */
+const isDealerCreatePage = computed(() => {
+  return route.name === 'DealerCreate' || route.path === '/settings/dealers/create'
+})
+
+/**
  * 是否為主功能頁面
  * 主功能頁面：在左側選單中的頁面
  */
@@ -147,7 +154,8 @@ const showBackButton = computed(() => {
     !isOverviewPage.value &&
     !isAccountCreatePage.value &&
     !isModuleCreatePage.value &&
-    !isIndustryCreatePage.value
+    !isIndustryCreatePage.value &&
+    !isDealerCreatePage.value
   )
 })
 

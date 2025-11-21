@@ -1,7 +1,7 @@
 <template>
   <div
     ref="containerRef"
-    class="flex items-center overflow-x-auto overflow-y-hidden px-10 pb-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    class="flex items-center overflow-x-auto overflow-y-hidden px-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     :style="containerStyle"
   >
     <!-- 使用 slot 讓外部可以插入任意數量的卡片 -->
@@ -25,6 +25,8 @@ import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
  * - height: 容器高度（單位：px，預設 296px）
  * - usePaddingTop: 是否使用上方內距（預設 false）
  * - paddingTop: 上方內距數值（單位：px，預設 12px，僅在 usePaddingTop=true 時生效）
+ * - usePaddingBottom: 是否使用下方內距（預設 true）
+ * - paddingBottom: 下方內距數值（單位：px，預設 40px，僅在 usePaddingBottom=true 時生效）
  * - gap: 卡片間距（單位：px，預設 20px）
  */
 
@@ -60,6 +62,20 @@ interface Props {
   paddingTop?: number
 
   /**
+   * 是否使用下方內距
+   * - 預設：true
+   * - 若為 true，則套用 paddingBottom 的數值
+   */
+  usePaddingBottom?: boolean
+
+  /**
+   * 下方內距數值（單位：px）
+   * - 預設：40px
+   * - 僅在 usePaddingBottom=true 時生效
+   */
+  paddingBottom?: number
+
+  /**
    * 卡片間距（單位：px）
    * - 預設：20px
    */
@@ -71,6 +87,8 @@ const props = withDefaults(defineProps<Props>(), {
   height: 296,
   usePaddingTop: false,
   paddingTop: 12,
+  usePaddingBottom: true,
+  paddingBottom: 40,
   gap: 20,
 })
 
@@ -83,6 +101,7 @@ const containerStyle = computed(() => {
   return {
     height: `${props.height}px`,
     paddingTop: props.usePaddingTop ? `${props.paddingTop}px` : '0',
+    paddingBottom: props.usePaddingBottom ? `${props.paddingBottom}px` : '0',
     gap: `${props.gap}px`,
   }
 })

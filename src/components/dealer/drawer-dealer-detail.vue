@@ -7,9 +7,9 @@
     <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
     <!-- 資料顯示或編輯 -->
-    <div v-else-if="userDetail" class="flex flex-col gap-3 px-5">
+    <div v-else-if="dealerDetail" class="flex flex-col gap-3 px-5">
       <!-- 標題區 -->
-      <DrawerHeader :title="userDetail.userName" :subtitle="userDetail.userId" />
+      <DrawerHeader :title="dealerDetail.code" />
 
       <!-- 分隔線 -->
       <Divider />
@@ -17,7 +17,7 @@
       <!-- 顯示模式 -->
       <template v-if="!isEditMode">
         <!-- 帳號資訊區塊 -->
-        <InfoSection title="帳號資訊">
+        <InfoSection>
           <!-- 編輯按鈕 -->
           <template #action>
             <img
@@ -28,75 +28,65 @@
             />
           </template>
 
-          <InfoField label="密碼" :value="userDetail.password" />
+          <InfoField label="經銷商名稱" :value="dealerDetail.name" />
 
-          <InfoField label="權限">
-          <InfoField label="權限">
-            <Badge
-              v-for="(role, index) in userDetail.roles"
-              :key="index"
-              :text="role"
-              type="default"
-            />
-          </InfoField>
-
-          <InfoField label="使用狀態">
-            <Badge :text="statusText" :type="statusType" />
-          </InfoField>
+          <InfoField label="負責業務" :value="dealerDetail.sales.name" />
         </InfoSection>
 
-        <!-- 個人資訊區塊 -->
-        <InfoSection title="個人資訊">
-          <InfoField label="姓名" :value="userDetail.userName" />
+        <!-- 詳細資訊區塊 -->
+        <InfoSection title="詳細資訊">
+          <InfoField label="聯絡人" :value="dealerDetail.contactPerson" />
 
-          <InfoField label="電子信箱" :value="userDetail.email" />
+          <InfoField label="聯絡電話" :value="dealerDetail.contactPhone" />
+
+          <InfoField label="電子信箱" :value="dealerDetail.email" />
+
+          <InfoField label="地址" :value="dealerDetail.address" />
+
+          <InfoField label="說明" :value="dealerDetail.description" />
         </InfoSection>
       </template>
 
       <!-- 編輯模式 -->
       <template v-else>
         <div class="flex flex-col gap-3 overflow-x-hidden">
-          <!-- 帳號資訊區塊（編輯） -->
-          <FormSection title="帳號資訊">
-            <!-- 密碼（唯讀） -->
-            <FormInput
-              v-model="formData.password"
-              label="密碼"
-              type="password"
-              placeholder="請輸入"
-              :disabled="true"
-              :error-message="errors.password"
-            />
-
-            <!-- 權限 -->
-            <FormCheckboxGroup
-              v-model="formData.roleIds"
-              label="權限"
-              :options="roleOptions"
-              :error-message="errors.roles"
-            />
-
-            <!-- 使用狀態 -->
-            <FormRadioGroup
-              v-model="formData.statusCode"
-              label="使用狀態"
-              :options="statusOptions"
-              :error-message="errors.status"
-            />
-          </FormSection>
-
-          <!-- 個人資訊區塊（編輯） -->
-          <FormSection title="個人資訊">
-            <!-- 姓名 -->
+          <FormSection>
             <FormInput
               ref="nameInputRef"
               v-model="formData.name"
-              label="姓名"
+              label="經銷商名稱"
               placeholder="請輸入"
               :error-message="errors.name"
             />
 
-            <!-- 電子信箱 -->
+            <FormSelect
+              label="負責業務"
+              v-model="formData.sales"
+              :options="salesOptions"
+              :required="true"
+              :error-message="errors.sales"
+              placeholder="請選擇業務"
+            />
+          </FormSection>
+
+          <!-- 詳細資訊區塊（編輯） -->
+          <FormSection title="詳細資訊">
+            <FormInput
+              ref="contactPersonInputRef"
+              v-model="formData.contactPerson"
+              label="聯絡人"
+              placeholder="請輸入"
+              :error-message="errors.contactPerson"
+            />
+
+            <FormInput
+              ref="contactPhoneInputRef"
+              v-model="formData.contactPhone"
+              label="聯絡電話"
+              placeholder="請輸入"
+              :error-message="errors.contactPhone"
+            />
+
             <FormInput
               ref="emailInputRef"
               v-model="formData.email"
@@ -104,6 +94,22 @@
               type="email"
               placeholder="請輸入"
               :error-message="errors.email"
+            />
+
+            <FormInput
+              ref="addressInputRef"
+              v-model="formData.address"
+              label="地址"
+              placeholder="請輸入"
+              :error-message="errors.address"
+            />
+
+            <FormInput
+              ref="descriptionInputRef"
+              v-model="formData.description"
+              label="說明"
+              placeholder="請輸入"
+              :error-message="errors.description"
             />
           </FormSection>
 
@@ -124,8 +130,6 @@
       <InfoSection title="異動資訊">
         <InfoField label="建立者" :value="createdByText" />
         <InfoField label="建立日" :value="createdAtText" />
-        <InfoField label="最後異動者" :value="updatedByText" />
-        <InfoField label="最後異動時間" :value="updatedAtText" />
       </InfoSection>
     </div>
 
@@ -147,19 +151,16 @@ import DrawerHeader from '@/components/drawer/drawer-header.vue'
 import DrawerToast from '@/components/drawer/drawer-toast.vue'
 import InfoSection from '@/components/drawer/info-section.vue'
 import InfoField from '@/components/drawer/info-field.vue'
-import Badge from '@/components/common/badge.vue'
 import Alert from '@/components/common/alert.vue'
 import Loading from '@/components/common/loading.vue'
 import Divider from '@/components/common/divider.vue'
 import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'
-import FormCheckboxGroup from '@/components/form/form-checkbox-group.vue'
-import FormRadioGroup from '@/components/form/form-radio-group.vue'
+import FormSelect from '@/components/form/form-select.vue'
 import FormButtonGroup from '@/components/form/form-button-group.vue'
-import { userService } from '@/services/user.service'
-import { roleService } from '@/services/role.service'
+import { dealerService } from '@/services/dealer.service'
 import { formatDateDot, formatDateTimeWithPeriod } from '@/utils/time'
-import type { UserDetailInfo, UpdateUserRequest } from '@/types/user'
+import type { DealerDetailInfo } from '@/types/dealer'
 import type { FieldError } from '@/types/common'
 
 /**
@@ -176,7 +177,7 @@ interface Props {
   /**
    * 使用者登入帳號（用於呼叫 API）
    */
-  loginId: string | null
+  dealerId: number | null
 }
 
 const props = defineProps<Props>()
@@ -203,7 +204,9 @@ const emit = defineEmits<{
 /**
  * 使用者詳細資料
  */
-const userDetail = ref<UserDetailInfo | null>(null)
+const dealerDetail = ref<DealerDetailInfo | null>(null)
+
+const selectedSales = ref<string | number | null>(null)
 
 /**
  * 載入狀態
@@ -242,115 +245,101 @@ const toast = ref({
  * 表單資料
  */
 const formData = ref({
-  password: '',
-  roleIds: [] as number[],
-  statusCode: '',
   name: '',
+  sales: '',
+  contactPerson: '',
+  contactPhone: '',
   email: '',
+  address: '',
+  description: '',
 })
 
 /**
  * 表單錯誤訊息
  */
 const errors = ref({
-  password: '',
-  roles: '',
-  status: '',
   name: '',
+  sales: '',
+  contactPerson: '',
+  contactPhone: '',
   email: '',
+  address: '',
+  description: '',
 })
+
+const salesOptions = [
+  { label: '陳奶輪', value: 'kevin' },
+  { label: '猴靜安', value: 'andy' },
+  { label: '王責剩', value: 'kelvin' },
+  { label: '黃剩父', value: 'max' },
+  { label: '無信溶', value: 'richard' },
+]
 
 // ===== Template Refs =====
 const nameInputRef = ref<{ focus: () => void } | null>(null)
+const salesInputRef = ref<{ focus: () => void } | null>(null)
+const contactPersonInputRef = ref<{ focus: () => void } | null>(null)
+const contactPhoneInputRef = ref<{ focus: () => void } | null>(null)
 const emailInputRef = ref<{ focus: () => void } | null>(null)
+const addressInputRef = ref<{ focus: () => void } | null>(null)
+const descriptionInputRef = ref<{ focus: () => void } | null>(null)
 
 // ===== 選項資料 =====
 
 /**
  * 權限選項（從 API 載入）
  */
-const roleOptions = ref<Array<{ label: string; value: number }>>([])
-
-/**
- * 使用狀態選項
- */
-const statusOptions = [
-  { label: '停用', value: 'INACTIVE' },
-  { label: '啟用', value: 'ACTIVE' },
-]
-
-// ===== 計算屬性 =====
-
-/**
- * 狀態顯示文字
- */
-const statusText = computed(() => {
-  if (!userDetail.value) return ''
-  return userDetail.value.statusCode === 'ACTIVE' ? '啟用' : '停用'
-})
-
-/**
- * 狀態 Badge 類型
- */
-const statusType = computed(() => {
-  if (!userDetail.value) return 'default'
-  return userDetail.value.statusCode === 'ACTIVE' ? 'success' : 'default'
-})
+// const roleOptions = ref<Array<{ label: string; value: number }>>([])
 
 /**
  * 建立者顯示文字
  */
 const createdByText = computed(() => {
-  if (!userDetail.value || !userDetail.value.createdBy) return '-'
-  return userDetail.value.createdBy.name
+  if (!dealerDetail.value || !dealerDetail.value.createdBy) return '-'
+  return dealerDetail.value.createdBy.name
 })
 
 /**
  * 建立日顯示文字
  */
 const createdAtText = computed(() => {
-  if (!userDetail.value) return '-'
-  return formatDateDot(userDetail.value.createdAt)
-})
-
-/**
- * 最後異動者顯示文字
- */
-const updatedByText = computed(() => {
-  if (!userDetail.value || !userDetail.value.updatedBy) return '-'
-  return userDetail.value.updatedBy.name
-})
-
-/**
- * 最後異動時間顯示文字
- */
-const updatedAtText = computed(() => {
-  if (!userDetail.value || !userDetail.value.updatedAt) return '-'
-  return formatDateTimeWithPeriod(userDetail.value.updatedAt)
+  if (!dealerDetail.value) return '-'
+  return formatDateDot(dealerDetail.value.createdAt)
 })
 
 // ===== 方法 =====
 
 /**
- * 載入使用者詳細資料
+ * 載入經銷商詳細資料
  */
-const loadUserDetail = async () => {
-  if (!props.loginId) return
+const loadDealerDetail = async () => {
+  if (!props.dealerId) return
 
   isLoading.value = true
   error.value = null
-  userDetail.value = null
+  dealerDetail.value = null
 
   try {
-    const response = await userService.getUserDetail(props.loginId)
+    // ========== Mock API 版本 ==========
+    const allDetails = await dealerService.getMockDealerDetails()
+    const detail = allDetails[props.dealerId]
 
-    if (response.success && response.data) {
-      userDetail.value = response.data
+    if (detail) {
+      dealerDetail.value = detail
     } else {
-      error.value = response.message || '載入使用者資料失敗'
+      error.value = '找不到經銷商資料'
     }
+
+    // ========== 正式 API 版本（未來使用）==========
+    // const response = await dealerService.getDealerDetail(props.dealerId)
+    //
+    // if (response.success && response.data) {
+    //   dealerDetail.value = response.data
+    // } else {
+    //   error.value = response.message || '載入經銷商資料失敗'
+    // }
   } catch (err) {
-    console.error('載入使用者詳細資料錯誤:', err)
+    console.error('載入經銷商詳細資料錯誤:', err)
     error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'
   } finally {
     isLoading.value = false
@@ -358,46 +347,30 @@ const loadUserDetail = async () => {
 }
 
 /**
- * 載入權限選項
- */
-const loadRoleOptions = async () => {
-  try {
-    const response = await roleService.getRoleOptions()
-
-    if (response.success && response.data) {
-      roleOptions.value = response.data
-      console.log('權限選項載入成功:', roleOptions.value)
-    } else {
-      console.error('載入權限選項失敗:', response.message)
-      roleOptions.value = []
-    }
-  } catch (error) {
-    console.error('載入權限選項錯誤:', error)
-    roleOptions.value = []
-  }
-}
-
-/**
  * 初始化表單資料
  */
 const initFormData = () => {
-  if (!userDetail.value) return
+  if (!dealerDetail.value) return
 
   formData.value = {
-    password: userDetail.value.password,
-    roleIds: userDetail.value.roleIds || [],
-    statusCode: userDetail.value.statusCode,
-    name: userDetail.value.userName,
-    email: userDetail.value.email,
+    name: dealerDetail.value.name,
+    sales: dealerDetail.value.sales.id,
+    contactPerson: dealerDetail.value.contactPerson,
+    contactPhone: dealerDetail.value.contactPhone,
+    email: dealerDetail.value.email,
+    address: dealerDetail.value.address,
+    description: dealerDetail.value.description,
   }
 
   // 清空錯誤訊息
   errors.value = {
-    password: '',
-    roles: '',
-    status: '',
     name: '',
+    sales: '',
+    contactPerson: '',
+    contactPhone: '',
     email: '',
+    address: '',
+    description: '',
   }
 }
 
@@ -436,9 +409,6 @@ const handleClose = () => {
  * 處理編輯按鈕點擊
  */
 const handleEdit = async () => {
-  // 先載入權限選項
-  await loadRoleOptions()
-
   // 初始化表單資料
   initFormData()
 
@@ -467,32 +437,36 @@ const handleFieldErrors = (fieldErrors: FieldError[]) => {
 
   // 清空現有錯誤
   errors.value = {
-    password: '',
-    roles: '',
-    status: '',
     name: '',
+    sales: '',
+    contactPerson: '',
+    contactPhone: '',
     email: '',
+    address: '',
+    description: '',
   }
 
   // 欄位名稱對應表 (後端 -> 前端)
   const fieldMap: Record<string, keyof typeof errors.value> = {
-    password: 'password',
-    roleIds: 'roles',
-    statusCode: 'status',
     name: 'name',
+    sales: 'sales',
+    contactPerson: 'contactPerson',
+    contactPhone: 'contactPhone',
     email: 'email',
+    address: 'address',
+    description: 'description',
   }
 
   // Ref 對應表 (後端欄位名稱 -> Ref)
   const fieldRefMap: Record<string, typeof nameInputRef> = {
     name: nameInputRef,
+    sales: salesInputRef,
+    contactPerson: contactPersonInputRef,
+    contactPhone: contactPhoneInputRef,
     email: emailInputRef,
+    address: addressInputRef,
+    description: descriptionInputRef,
   }
-
-  console.log('Ref 對應表:', {
-    name: nameInputRef.value,
-    email: emailInputRef.value,
-  })
 
   // 記錄哪些欄位有錯誤
   const fieldsWithErrors = new Set<string>()
@@ -517,7 +491,15 @@ const handleFieldErrors = (fieldErrors: FieldError[]) => {
   console.log('有錯誤的欄位:', Array.from(fieldsWithErrors))
 
   // 根據畫面上的欄位順序,找到第一個有錯誤的欄位並 focus
-  const fieldOrder = ['name', 'email']
+  const fieldOrder = [
+    'name',
+    'sales',
+    'contactPerson',
+    'contactPhone',
+    'email',
+    'address',
+    'description',
+  ]
 
   for (const field of fieldOrder) {
     if (fieldsWithErrors.has(field)) {
@@ -559,17 +541,19 @@ const isFieldErrorArray = (data: unknown): data is FieldError[] => {
  * 處理確認編輯
  */
 const handleConfirmEdit = async () => {
-  if (!props.loginId) return
+  if (!props.dealerId) return
 
   console.log('表單資料:', formData.value)
 
   // 清空所有錯誤訊息
   errors.value = {
-    password: '',
-    roles: '',
-    status: '',
     name: '',
+    sales: '',
+    contactPerson: '',
+    contactPhone: '',
     email: '',
+    address: '',
+    description: '',
   }
 
   // 開始提交
@@ -577,90 +561,78 @@ const handleConfirmEdit = async () => {
 
   try {
     // 準備提交的資料
-    const requestData: UpdateUserRequest = {
-      name: formData.value.name,
-      email: formData.value.email,
-      roleIds: formData.value.roleIds,
-      statusCode: formData.value.statusCode as 'ACTIVE' | 'INACTIVE',
-    }
-
-    // 呼叫更新 API
-    const response = await userService.updateUser(props.loginId, requestData)
-
-    console.log('updateUser API 回應:', response)
-
-    if (response.success && response.data) {
-      // 更新成功
-      showToast('success', '異動成功')
-
-      // 更新本地的 userDetail 資料
-      userDetail.value = response.data
-
-      // 退出編輯模式
-      isEditMode.value = false
-
-      // 發出 updated 事件通知父元件
-      emit('updated')
-    } else {
-      console.log('API 失敗 (try 區塊):', {
-        hasData: !!response.data,
-        isArray: Array.isArray(response.data),
-        data: response.data,
-      })
-
-      // 更新失敗
-      if (response.data && isFieldErrorArray(response.data)) {
-        console.log('進入欄位錯誤處理 (try 區塊)')
-        // 有 data：顯示欄位錯誤，不顯示 toast
-        handleFieldErrors(response.data)
-      } else {
-        console.log('進入 toast 顯示 (try 區塊)')
-        // 沒有 data：顯示 toast
-        showToast('error', response.message || '儲存失敗，請重新嘗試')
-
-        // 特殊處理：如果是 EMAIL 已被使用，額外標記欄位並 focus
-        if (response.code === 'USER_003') {
-          errors.value.email = response.message
-          emailInputRef.value?.focus()
-        }
-      }
-    }
+    // const requestData: UpdateUserRequest = {
+    //   name: formData.value.name,
+    //   email: formData.value.email,
+    //   roleIds: formData.value.roleIds,
+    //   statusCode: formData.value.statusCode as 'ACTIVE' | 'INACTIVE',
+    // }
+    // // 呼叫更新 API
+    // const response = await userService.updateUser(props.loginId, requestData)
+    // console.log('updateUser API 回應:', response)
+    // if (response.success && response.data) {
+    //   // 更新成功
+    //   showToast('success', '異動成功')
+    //   // 更新本地的 userDetail 資料
+    //   userDetail.value = response.data
+    //   // 退出編輯模式
+    //   isEditMode.value = false
+    //   // 發出 updated 事件通知父元件
+    //   emit('updated')
+    // } else {
+    //   console.log('API 失敗 (try 區塊):', {
+    //     hasData: !!response.data,
+    //     isArray: Array.isArray(response.data),
+    //     data: response.data,
+    //   })
+    //   // 更新失敗
+    //   if (response.data && isFieldErrorArray(response.data)) {
+    //     console.log('進入欄位錯誤處理 (try 區塊)')
+    //     // 有 data：顯示欄位錯誤，不顯示 toast
+    //     handleFieldErrors(response.data)
+    //   } else {
+    //     console.log('進入 toast 顯示 (try 區塊)')
+    //     // 沒有 data：顯示 toast
+    //     showToast('error', response.message || '儲存失敗，請重新嘗試')
+    //     // 特殊處理：如果是 EMAIL 已被使用，額外標記欄位並 focus
+    //     if (response.code === 'USER_003') {
+    //       errors.value.email = response.message
+    //       emailInputRef.value?.focus()
+    //     }
+    //   }
+    // }
   } catch (err: unknown) {
-    console.error('進入 catch 區塊:', err)
-
-    // 使用 axios 的型別守衛
-    if (isAxiosError(err)) {
-      const errorResponse = err.response?.data
-
-      console.log('Axios 錯誤回應:', {
-        errorResponse,
-        hasData: !!errorResponse?.data,
-        isArray: Array.isArray(errorResponse?.data),
-        checkResult: errorResponse?.data && isFieldErrorArray(errorResponse.data),
-      })
-
-      // 優先檢查是否有 data（欄位錯誤）
-      if (errorResponse?.data && isFieldErrorArray(errorResponse.data)) {
-        console.log('進入欄位錯誤處理 (catch 區塊)')
-        // 有 data：顯示欄位錯誤，不顯示 toast
-        handleFieldErrors(errorResponse.data)
-      } else {
-        console.log('進入 toast 顯示 (catch 區塊)')
-        // 沒有 data：顯示 toast
-        const errorMessage = errorResponse?.message || '儲存失敗，請重新嘗試'
-        showToast('error', errorMessage)
-
-        // 特殊處理：如果是 EMAIL 已被使用，額外標記欄位並 focus
-        if (errorResponse?.code === 'USER_003') {
-          errors.value.email = errorResponse.message
-          emailInputRef.value?.focus()
-        }
-      }
-    } else {
-      console.log('非 Axios 錯誤')
-      // 非 Axios 錯誤
-      showToast('error', '儲存失敗，請重新嘗試')
-    }
+    // console.error('進入 catch 區塊:', err)
+    // // 使用 axios 的型別守衛
+    // if (isAxiosError(err)) {
+    //   const errorResponse = err.response?.data
+    //   console.log('Axios 錯誤回應:', {
+    //     errorResponse,
+    //     hasData: !!errorResponse?.data,
+    //     isArray: Array.isArray(errorResponse?.data),
+    //     checkResult: errorResponse?.data && isFieldErrorArray(errorResponse.data),
+    //   })
+    //   // 優先檢查是否有 data（欄位錯誤）
+    //   if (errorResponse?.data && isFieldErrorArray(errorResponse.data)) {
+    //     console.log('進入欄位錯誤處理 (catch 區塊)')
+    //     // 有 data：顯示欄位錯誤，不顯示 toast
+    //     handleFieldErrors(errorResponse.data)
+    //   } else {
+    //     console.log('進入 toast 顯示 (catch 區塊)')
+    //     // 沒有 data：顯示 toast
+    //     const errorMessage = errorResponse?.message || '儲存失敗，請重新嘗試'
+    //     showToast('error', errorMessage)
+    //     // 特殊處理：如果是 EMAIL 已被使用，額外標記欄位並 focus
+    //     if (errorResponse?.code === 'USER_003') {
+    //       errors.value.email = errorResponse.message
+    //       emailInputRef.value?.focus()
+    //     }
+    //   }
+    // } else {
+    //   console.log('非 Axios 錯誤')
+    //   // 非 Axios 錯誤
+    //   showToast('error', '儲存失敗，請重新嘗試')
+    // }
   } finally {
     isSubmitting.value = false
   }
@@ -674,13 +646,13 @@ const handleConfirmEdit = async () => {
 watch(
   () => props.isOpen,
   (isOpen) => {
-    if (isOpen && props.loginId) {
+    if (isOpen && props.dealerId) {
       // 重置編輯模式
       isEditMode.value = false
       // 關閉 Toast
       handleToastClose()
       // 載入資料
-      loadUserDetail()
+      loadDealerDetail()
     }
   },
   { immediate: true },

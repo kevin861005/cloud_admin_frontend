@@ -11,5 +11,5 @@
 
 <script setup lang="ts">
 import ServiceCard from '@/components/customer/detail/card-service-common.vue'
-import databaseIcon from '@/assets/icons/database.svg'
+import databaseIcon from '@/assets/icons/card/database.svg'
 </script>
