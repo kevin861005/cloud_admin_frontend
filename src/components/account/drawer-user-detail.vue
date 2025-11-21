@@ -31,7 +31,6 @@
           <InfoField label="密碼" :value="userDetail.password" />
 
           <InfoField label="權限">
-          <InfoField label="權限">
             <Badge
               v-for="(role, index) in userDetail.roles"
               :key="index"
