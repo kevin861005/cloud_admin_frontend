@@ -7,12 +7,12 @@
       <component :is="iconComponent" class="mx-auto h-16 w-16 text-gray-400" />
 
       <!-- 標題 -->
-      <h3 class="mt-4 text-lg font-semibold text-gray-900">
+      <h3 class="mt-4 typo-xl-medium text-gray-900">
         {{ title }}
       </h3>
 
       <!-- 描述 -->
-      <p class="mt-2 text-sm text-gray-500">
+      <p class="mt-2 typo-sm text-gray-500">
         {{ description }}
       </p>
 
@@ -20,7 +20,7 @@
       <div v-if="showButton" class="mt-6">
         <button
           type="button"
-          class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 typo-sm-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           @click="handleButtonClick"
         >
           {{ buttonText }}

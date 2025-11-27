@@ -85,6 +85,12 @@ import { ref, onMounted } from 'vue'
 import { overviewService } from '@/services/overview.service'
 import type { CustomerGrowthData } from '@/types/overview'
 
+/** 載入狀態 */
+const isLoading = ref(false)
+
+/** 錯誤訊息 */
+const errorMessage = ref('')
+
 /**
  * 客戶統計資料
  * 目前使用 Mock Data，等後端 API 完成後改為呼叫 getCustomerStats()
@@ -109,19 +115,28 @@ const formatGrowthRate = (rate: number): string => {
 }
 
 /**
+ * 載入月度成長資料
+ */
+async function loadCustomerGrowthData() {
+  try {
+    isLoading.value = true
+    errorMessage.value = ''
+
+    // TODO: 等後端 API 完成後，改用真實 API
+    stats.value = await overviewService.getCustomerGrowthData()
+  } catch (error) {
+    console.error('載入月度成長失敗:', error)
+    errorMessage.value = error instanceof Error ? error.message : '載入失敗，請稍後再試'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+/**
  * 元件掛載時載入資料
  */
 onMounted(() => {
-  // 目前使用 Mock Data
-  stats.value = overviewService.getMockCustomerGrowthData()
-
-  // TODO: 等後端 API 完成後，改為以下程式碼：
-  // try {
-  //   stats.value = await getCustomerStats()
-  // } catch (error) {
-  //   console.error('載入客戶統計資料失敗:', error)
-  //   // 可以顯示錯誤訊息給使用者
-  // }
+  loadCustomerGrowthData()
 })
 </script>
 

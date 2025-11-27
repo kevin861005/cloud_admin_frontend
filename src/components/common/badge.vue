@@ -3,7 +3,7 @@
     :class="[
       'inline-flex items-center justify-center',
       'min-w-[54px] h-6 py-1 px-3 rounded border',
-      'text-xs font-bold tracking-[0.2px]',
+      'typo-xs-bold',
       'whitespace-nowrap',
     ]"
     :style="colorStyles"

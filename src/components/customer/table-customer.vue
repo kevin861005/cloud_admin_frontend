@@ -29,7 +29,7 @@
     </template>
 
     <template #moduleDisplay="{ row }">
-      <Badge :text="getModuleText(row)" :type="getModuleType(row)" />
+      <Badge :text="getModuleText(row)" :type="getModuleType()" />
     </template>
   </data-table>
 </template>
@@ -113,7 +113,7 @@ const getStatusType = (row: Record<string, unknown>): 'success' | 'error' | 'def
   return 'default'
 }
 
-const getModuleType = (row: Record<string, unknown>): 'default' => {
+const getModuleType = (): 'default' => {
   return 'default'
 }
 
@@ -278,11 +278,7 @@ const batchActions: BatchActionConfig[] = [
 const loadCustomers = async () => {
   isLoading.value = true
   try {
-    // TODO: 等後端 API 完成後，切換為 getAllCustomers()
-    // const data = await getAllCustomers()
-
-    // 開發階段：使用 Mock 資料
-    customers.value = await customerService.getMockCustomers()
+    customers.value = await customerService.getAllCustomers()
   } catch (error) {
     console.error('載入客戶列表錯誤:', error)
     // TODO: 顯示錯誤訊息給使用者

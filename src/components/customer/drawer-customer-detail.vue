@@ -19,7 +19,7 @@
     <div v-else-if="customerDetail" class="flex flex-col gap-3 px-5">
       <!-- 標題區（客戶名稱 + 狀態 Badge） -->
       <div class="flex items-center justify-between gap-2">
-        <h2 class="text-xl font-bold text-gray-900">{{ customerDetail.customerName }}</h2>
+        <h2 class="typo-xl-bold text-gray-900">{{ customerDetail.customerName }}</h2>
         <Badge :text="statusText" :type="statusBadgeType" />
       </div>
 

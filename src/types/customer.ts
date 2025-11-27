@@ -24,7 +24,7 @@ export type ServiceStatus = 'RUNNING' | 'NORMAL' | 'ERROR' | 'STOPPED'
  */
 export interface CustomerListItem {
   /** 客戶 ID */
-  id: number
+  id: string
 
   /** 客戶名稱 */
   name: string

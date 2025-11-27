@@ -142,7 +142,7 @@ const iconClasses = computed(() => {
  * 標題文字樣式（根據類型）
  */
 const titleClasses = computed(() => {
-  const baseClasses = 'text-sm font-medium'
+  const baseClasses = 'typo-sm-medium'
   const typeClasses = {
     error: 'text-red-800',
     warning: 'text-yellow-800',
@@ -171,7 +171,7 @@ const descriptionClasses = computed(() => {
  */
 const buttonClasses = computed(() => {
   const baseClasses =
-    'inline-flex items-center rounded-md px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2'
+    'inline-flex items-center rounded-md px-3 py-2 typo-sm-medium focus:outline-none focus:ring-2 focus:ring-offset-2'
   const typeClasses = {
     error: 'bg-red-100 text-red-800 hover:bg-red-200 focus:ring-red-500',
     warning: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200 focus:ring-yellow-500',

@@ -8,7 +8,7 @@
       <!-- 頂部區域：標題 + ICON -->
       <div class="flex items-center justify-between">
         <!-- 標題 -->
-        <h3 class="text-base font-bold text-gray-700">
+        <h3 class="typo-base-bold text-gray-700">
           {{ props.title }}
         </h3>
 
@@ -20,10 +20,10 @@
       <div class="flex flex-col gap-3">
         <!-- 主要數值 + 單位 -->
         <div class="flex items-baseline gap-1">
-          <span class="text-2xl font-bold tracking-[-0.2px] text-gray-800">
+          <span class="typo-2xl-bold text-gray-800">
             {{ props.value }}
           </span>
-          <span class="text-2xl font-bold tracking-[-0.2px] text-gray-800">
+          <span class="typo-2xl-bold text-gray-800">
             {{ props.unit }}
           </span>
         </div>
@@ -31,14 +31,14 @@
         <!-- 副內容 + 按鈕 -->
         <div class="flex items-center justify-between">
           <!-- 副內容 -->
-          <p class="text-sm font-medium text-gray-400">
+          <p class="typo-sm-medium text-gray-400">
             {{ props.subtitle }}
           </p>
 
           <!-- 按鈕（選填） -->
           <button
             v-if="props.buttonText"
-            class="rounded px-2 text-sm font-normal tracking-[0.2px]"
+            class="rounded px-2 typo-sm"
             style="color: #4b5563"
             @click="emit('button-click')"
           >

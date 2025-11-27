@@ -4,7 +4,7 @@
       <!-- 卡片標題 -->
       <div class="flex items-center gap-2">
         <img :src="ActivityIcon" alt="活動記錄" class="h-6 w-6" />
-        <h3 class="text-base font-bold text-gray-700">最新活動記錄</h3>
+        <h3 class="typo-base-bold text-gray-700">最新活動記錄</h3>
       </div>
 
       <!-- 活動列表 -->
@@ -12,7 +12,7 @@
         <div
           v-for="(activity, index) in activities"
           :key="index"
-          class="flex items-center h-9 gap-3 text-sm font-medium text-gray-700 py-[1px]"
+          class="flex items-center h-9 gap-3 typo-sm-medium text-gray-700 py-[1px]"
         >
           <!-- 左側 frame（日期時間 + 模組標籤） -->
           <div class="flex items-center gap-[12px] flex-shrink-0">

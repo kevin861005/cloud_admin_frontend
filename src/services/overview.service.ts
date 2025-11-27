@@ -40,9 +40,7 @@ export const overviewService = {
    * @returns Promise<CustomerGrowthData> 客戶統計資料
    */
   async getCustomerGrowthData(): Promise<CustomerGrowthData> {
-    const response = await axios.get<ApiResponse<CustomerGrowthData>>(
-      '/dashboard/customer-customer-growth',
-    )
+    const response = await axios.get<ApiResponse<CustomerGrowthData>>('/dashboard/customer-growth')
 
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.message || '取得月度成長資料失敗')
@@ -105,34 +103,6 @@ export const overviewService = {
   // ===== Mock 資料（開發階段使用） =====
 
   /**
-   * Mock Data - 客戶統計資料
-   * 等後端 API 完成後，可以移除這個方法
-   */
-  getMockCustomerStats(): CustomerStats {
-    return {
-      totalCustomers: 16,
-      activeCount: 15,
-      activePercentage: 37.5,
-      lowActiveCount: 10,
-      lowActivePercentage: 20,
-      inactiveCount: 15,
-      inactivePercentage: 37.5,
-    }
-  },
-
-  /**
-   * Mock Data - 月度成長資料
-   * 等後端 API 完成後，可以移除這個方法
-   */
-  getMockCustomerGrowthData(): CustomerGrowthData {
-    return {
-      growthRate: 3.8,
-      currentMonthCount: 8,
-      lastMonthCount: 15,
-    }
-  },
-
-  /**
    * Mock Data - 警示列表
    * 等後端 API 完成後，可以移除這個方法
    */
@@ -165,79 +135,6 @@ export const overviewService = {
         },
       ],
       totalCount: 4,
-    }
-  },
-
-  /**
-   * Mock Data - 需關注客戶列表
-   * 等後端 API 完成後，可以移除這個方法
-   */
-  getMockAttentionCustomers(): AttentionCustomersData {
-    return {
-      customers: [
-        {
-          id: 'cust_001',
-          customerName: '橘色涮涮屋',
-          lastUsedTime: '4天前',
-          salesPerson: '周經理',
-        },
-        {
-          id: 'cust_002',
-          customerName:
-            '字太多用tiphover測試顯示效果字太多用tiphover測試顯示效果字太多用tiphover測試顯示效果',
-          lastUsedTime: '4天前',
-          salesPerson: '周經理',
-        },
-        {
-          id: 'cust_003',
-          customerName: '乾杯股份有限公司',
-          lastUsedTime: '5天前',
-          salesPerson: '李經理',
-        },
-        {
-          id: 'cust_004',
-          customerName: '合夥旅食',
-          lastUsedTime: '5天前',
-          salesPerson: '陳經理',
-        },
-        {
-          id: 'cust_005',
-          customerName: 'CityTasty 餐飲集團',
-          lastUsedTime: '6天前',
-          salesPerson: '王經理',
-        },
-        {
-          id: 'cust_006',
-          customerName: '饗食天堂',
-          lastUsedTime: '6天前',
-          salesPerson: '張經理',
-        },
-        {
-          id: 'cust_007',
-          customerName: '鼎泰豐',
-          lastUsedTime: '7天前',
-          salesPerson: '劉經理',
-        },
-        {
-          id: 'cust_008',
-          customerName: '王品集團',
-          lastUsedTime: '7天前',
-          salesPerson: '黃經理',
-        },
-        {
-          id: 'cust_009',
-          customerName: '瓦城泰統',
-          lastUsedTime: '8天前',
-          salesPerson: '林經理',
-        },
-        {
-          id: 'cust_010',
-          customerName: '添好運',
-          lastUsedTime: '8天前',
-          salesPerson: '吳經理',
-        },
-      ],
-      totalCount: 10,
     }
   },
 

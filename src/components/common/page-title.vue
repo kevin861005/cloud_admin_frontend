@@ -18,15 +18,12 @@
   -->
   <div class="pt-10 pb-10 pl-10">
     <!-- 主標題（使用自定義 CSS 類別 page-title-main） -->
-    <h1 class="page-title-main text-2xl font-bold tracking-[-0.2px] text-gray-800">
+    <h1 class="page-title-main typo-2xl-bold text-gray-800">
       {{ title }}
     </h1>
 
     <!-- 副標題（使用自定義 CSS 類別 page-title-subtitle） -->
-    <p
-      v-if="subtitle"
-      class="page-title-subtitle mt-2 text-sm font-normal tracking-[0.2px] text-gray-600"
-    >
+    <p v-if="subtitle" class="page-title-subtitle mt-2 typo-sm text-gray-600">
       {{ subtitle }}
     </p>
   </div>

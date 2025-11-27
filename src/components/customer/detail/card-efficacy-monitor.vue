@@ -4,7 +4,7 @@
       <!-- 卡片標題 -->
       <div class="flex items-center gap-3">
         <img :src="EfficacyIcon" alt="系統紀錄" class="h-8 w-8" />
-        <h3 class="text-base font-bold text-gray-800">系統紀錄</h3>
+        <h3 class="typo-base-bold text-gray-800">系統紀錄</h3>
       </div>
     </div>
 
@@ -21,10 +21,10 @@
         <div v-for="item in progressItems" :key="item.label" class="space-y-2">
           <!-- 標籤和百分比 -->
           <div class="flex items-center justify-between">
-            <span class="text-sm font-medium text-gray-700">
+            <span class="typo-sm-medium text-gray-700">
               {{ item.label }}
             </span>
-            <span class="text-sm font-bold" :class="getColorClasses(item.value).text">
+            <span class="typo-sm-bold" :class="getColorClasses(item.value).text">
               {{ item.value }}%
             </span>
           </div>

@@ -84,10 +84,7 @@ async function loadAttentionCustomers() {
     errorMessage.value = ''
 
     // TODO: 等後端 API 完成後，改用真實 API
-    // const data = await overviewService.getAttentionCustomers()
-
-    // 目前使用 Mock Data
-    const data = overviewService.getMockAttentionCustomers()
+    const data = await overviewService.getAttentionCustomers()
 
     allCustomers.value = data.customers
   } catch (error) {
