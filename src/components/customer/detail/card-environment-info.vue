@@ -4,34 +4,34 @@
       <!-- 卡片標題 -->
       <div class="flex items-center gap-2">
         <img :src="EnvironmentIcon" alt="環境設定" class="h-6 w-6" />
-        <h3 class="text-base font-bold text-gray-700">環境設定資訊</h3>
+        <h3 class="typo-base-bold text-gray-700">環境設定資訊</h3>
       </div>
 
       <!-- 環境連結區塊 -->
       <div class="flex-1 space-y-1">
         <!-- 前台連結 -->
         <div class="flex h-9 items-center justify-between">
-          <span class="text-sm font-medium text-gray-700">前台連結</span>
+          <span class="typo-sm-medium text-gray-700">前台連結</span>
           <BadgeButton text="前往" :icon="linkIcon" @click="openUrl(environmentInfo.frontendUrl)" />
         </div>
 
         <!-- 後台連結 -->
         <div class="flex h-9 items-center justify-between">
-          <span class="text-sm font-medium text-gray-700">後台連結</span>
+          <span class="typo-sm-medium text-gray-700">後台連結</span>
           <BadgeButton text="前往" :icon="linkIcon" @click="openUrl(environmentInfo.backendUrl)" />
         </div>
 
         <!-- 快速自動導入 -->
         <div class="flex h-9 items-center justify-between">
-          <span class="text-sm font-medium text-gray-700">快速自動導入</span>
+          <span class="typo-sm-medium text-gray-700">快速自動導入</span>
           <BadgeButton text="前往" :icon="linkIcon" @click="openUrl(environmentInfo.autoUrl)" />
         </div>
 
         <!-- PinCode -->
         <div class="flex h-9 items-center justify-between">
-          <span class="text-sm font-medium text-gray-700">PinCode</span>
+          <span class="typo-sm-medium text-gray-700">PinCode</span>
           <div class="flex items-center gap-2">
-            <span class="text-sm font-medium text-gray-800">
+            <span class="typo-sm-medium text-gray-800">
               {{ environmentInfo.pinCode }}
             </span>
             <img
@@ -46,9 +46,9 @@
 
         <!-- 客戶代號 -->
         <div class="flex h-9 items-center justify-between">
-          <span class="text-sm font-medium text-gray-700">客戶代號</span>
+          <span class="typo-sm-medium text-gray-700">客戶代號</span>
           <div class="flex items-center gap-2">
-            <span class="text-sm font-medium text-gray-800">
+            <span class="typo-sm-medium text-gray-800">
               {{ environmentInfo.domainName }}
             </span>
             <img

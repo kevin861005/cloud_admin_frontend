@@ -15,8 +15,8 @@
 
     <!-- 選單文字 -->
     <span
-      class="whitespace-nowrap overflow-hidden text-ellipsis text-slate-800 text-sm"
-      :class="isChild ? 'font-normal tracking-tight' : 'font-medium'"
+      class="whitespace-nowrap overflow-hidden text-ellipsis text-slate-800"
+      :class="isChild ? 'typo-sm' : 'typo-sm-medium'"
     >
       {{ item.label }}
     </span>

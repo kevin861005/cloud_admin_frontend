@@ -22,11 +22,11 @@
       <!-- 標題列 -->
       <div class="flex items-center h-6 mb-6">
         <div class="flex items-center gap-3">
-          <h3 class="text-base font-bold text-gray-700">{{ title }}</h3>
+          <h3 class="typo-base-bold text-gray-700">{{ title }}</h3>
 
           <!-- 總筆數標籤 -->
           <span
-            class="inline-flex items-center justify-center min-w-[24px] h-6 px-2 py-1 text-xs font-medium rounded text-[#398ff9] border border-[#398ff91a] bg-[#398ff90d]"
+            class="inline-flex items-center justify-center min-w-[24px] h-6 px-2 py-1 typo-xs-bold rounded text-[#398ff9] border border-[#398ff91a] bg-[#398ff90d]"
           >
             {{ totalCount }}
           </span>
@@ -42,7 +42,7 @@
             :key="column.key"
             :style="{ flex: column.flex || 1 }"
             :class="[
-              'flex items-center h-5 gap-1 text-sm font-medium text-gray-700',
+              'flex items-center h-5 gap-1 typo-sm-medium text-gray-700',
               column.sortable && 'cursor-pointer select-none hover:text-gray-800 transition-colors',
               getAlignClass(column.align),
             ]"
@@ -131,7 +131,7 @@
                 :key="column.key"
                 :style="{ flex: column.flex || 1 }"
                 :class="[
-                  'text-sm font-normal text-gray-700 tracking-[0.2px]',
+                  'typo-sm text-gray-700',
                   column.showTooltip && 'truncate',
                   getAlignClass(column.align),
                 ]"
@@ -146,7 +146,7 @@
 
       <!-- 分頁控制（即使只有一頁也顯示） -->
       <div v-if="!loading && !error" class="flex items-center justify-between h-8 mt-auto pt-6">
-        <div class="text-sm font-medium text-gray-600">
+        <div class="typo-sm-medium text-gray-600">
           第{{ currentPage }}頁，共{{ totalPages }}頁
         </div>
 

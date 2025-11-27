@@ -34,17 +34,17 @@
           <!-- 內容區域 -->
           <div class="px-12 pb-8 pt-12">
             <!-- 標題 -->
-            <h2 id="dialog-title" class="mb-6 text-base font-bold text-gray-800">刪除環境確認</h2>
+            <h2 id="dialog-title" class="mb-6 typo-base-bold text-gray-800">刪除環境確認</h2>
 
             <!-- 說明文字 -->
             <div class="space-y-4">
               <!-- 第一段：灰色說明 -->
-              <p class="text-sm font-normal text-gray-500">
+              <p class="typo-sm text-gray-500">
                 此操作將會刪除整個系統環境，包含Docker容器、資料庫、DNS設定和NGINX配置
               </p>
 
               <!-- 第二段：紅色警告 -->
-              <p class="text-sm font-bold text-red-600">此操作無法復原，請謹慎確認</p>
+              <p class="typo-sm-bold text-red-600">此操作無法復原，請謹慎確認</p>
             </div>
 
             <!-- 按鈕區域 -->
@@ -52,7 +52,7 @@
               <!-- 取消按鈕 -->
               <button
                 type="button"
-                class="rounded-lg bg-gray-100 px-6 py-3 text-sm font-bold text-gray-600 transition-colors hover:bg-gray-200"
+                class="rounded-lg bg-gray-100 px-6 py-3 typo-sm-bold text-gray-600 transition-colors hover:bg-gray-200"
                 @click="handleClose"
               >
                 取消
@@ -61,7 +61,7 @@
               <!-- 確認刪除按鈕 -->
               <button
                 type="button"
-                class="rounded-lg bg-red-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-red-700"
+                class="rounded-lg bg-red-600 px-6 py-3 typo-sm-bold text-white transition-colors hover:bg-red-700"
                 :disabled="isDeleting"
                 @click="handleConfirm"
               >

@@ -6,10 +6,10 @@
       <img :src="props.icon" alt="" class="h-5 w-5 flex-shrink-0" />
 
       <!-- 服務名稱 -->
-      <span class="text-base font-bold text-gray-700">{{ props.serviceName }}</span>
+      <span class="typo-base-bold text-gray-700">{{ props.serviceName }}</span>
 
       <!-- 狀態文字（根據狀態顯示不同顏色）-->
-      <span class="text-xs font-normal" :class="statusColorClass">
+      <span class="typo-xs" :class="statusColorClass">
         {{ props.statusText }}
       </span>
     </div>
@@ -17,12 +17,12 @@
     <!-- 內容區：可選標題 + Badge 樣式內容 -->
     <div class="flex flex-col gap-2">
       <!-- 內容標題（選填）-->
-      <div v-if="props.contentTitle" class="text-xs font-normal text-gray-700">
+      <div v-if="props.contentTitle" class="typo-xs text-gray-700">
         {{ props.contentTitle }}
       </div>
       <!-- Badge 樣式內容（固定 default 樣式）-->
       <div
-        class="inline-flex items-center justify-center self-start rounded bg-gray-100 px-2 py-1 text-xs font-normal text-gray-700"
+        class="inline-flex items-center justify-center self-start rounded bg-gray-100 px-2 py-1 typo-xs text-gray-700"
       >
         {{ props.contentText }}
       </div>

@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col gap-1">
     <!-- 主標題 -->
-    <h2 class="text-xl font-bold tracking-[-0.2px] text-gray-800">
+    <h2 class="typo-xl-bold text-gray-800">
       {{ title }}
     </h2>
 
     <!-- 副標題（可選） -->
-    <p v-if="subtitle" class="text-sm font-normal tracking-[0.2px] text-gray-600">
+    <p v-if="subtitle" class="typo-sm text-gray-600">
       {{ subtitle }}
     </p>
   </div>

@@ -3,12 +3,12 @@
     <!-- 標題區域（主標題 + 副標題） -->
     <div class="flex flex-col">
       <!-- 主標題 -->
-      <h3 class="text-sm font-bold text-gray-900">
+      <h3 class="typo-sm-bold text-gray-900">
         {{ title }}
       </h3>
 
       <!-- 副標題（選填，緊貼主標題下方） -->
-      <p v-if="subtitle" class="text-sm font-medium" style="color: #398ff9">
+      <p v-if="subtitle" class="typo-sm-medium" style="color: #398ff9">
         {{ subtitle }}
       </p>
     </div>

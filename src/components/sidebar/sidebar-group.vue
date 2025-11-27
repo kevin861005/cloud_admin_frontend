@@ -16,7 +16,7 @@
 
       <!-- 群組標題文字 -->
       <span
-        class="flex-1 text-slate-800 text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis"
+        class="flex-1 text-slate-800 typo-sm-medium whitespace-nowrap overflow-hidden text-ellipsis"
       >
         {{ item.label }}
       </span>
@@ -30,7 +30,7 @@
       <template v-for="child in filteredChildren" :key="child.key">
         <!-- 分隔線（設定檔） -->
         <div v-if="child.type === 'divider'" class="h-6 flex items-center pl-2">
-          <span class="text-slate-500 text-xs font-medium">
+          <span class="text-slate-500 typo-xs-medium">
             {{ child.label }}
           </span>
         </div>

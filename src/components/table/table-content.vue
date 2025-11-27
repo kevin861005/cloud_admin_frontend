@@ -24,7 +24,7 @@
             :key="column.key"
             :style="{ width: column.width }"
             :class="[
-              'px-6 py-3 text-sm font-medium leading-5 tracking-normal text-gray-500',
+              'px-6 py-3 typo-sm-medium text-gray-500',
               column.align === 'center' && 'text-center',
               column.align === 'right' && 'text-right',
               column.sortable && 'cursor-pointer select-none hover:bg-gray-100',
@@ -137,14 +137,14 @@
               v-for="column in columns"
               :key="column.key"
               :class="[
-                'px-6 py-4 text-sm font-normal leading-[22px] tracking-[0.2px]',
+                'px-6 py-4 typo-sm',
                 column.align === 'center' && 'text-center',
                 column.align === 'right' && 'text-right',
               ]"
             >
               <!-- 標準顯示 -->
               <template v-if="!column.customRender">
-                <span class="text-sm font-normal tracking-[0.2px] text-gray-800">{{
+                <span class="typo-sm text-gray-800">{{
                   row[column.key]
                 }}</span>
               </template>

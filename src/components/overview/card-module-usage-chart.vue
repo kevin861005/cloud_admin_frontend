@@ -2,13 +2,13 @@
   <div class="relative flex-1 h-[396px] bg-white rounded-lg shadow-md p-6 flex flex-col">
     <!-- Header -->
     <div class="flex items-center justify-between h-[32px] px-6 mb-6">
-      <h3 class="text-base font-bold text-gray-700">模組使用量</h3>
+      <h3 class="typo-base-bold text-gray-700">模組使用量</h3>
 
       <!-- Toggle Switch -->
       <div class="flex items-center gap-2">
         <button
           @click="currentView = 'weekly'"
-          class="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+          class="px-4 py-2 typo-sm-medium rounded-lg transition-colors"
           :class="
             currentView === 'weekly'
               ? 'bg-blue-500 text-white'
@@ -19,7 +19,7 @@
         </button>
         <button
           @click="currentView = 'monthly'"
-          class="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+          class="px-4 py-2 typo-sm-medium rounded-lg transition-colors"
           :class="
             currentView === 'monthly'
               ? 'bg-blue-500 text-white'

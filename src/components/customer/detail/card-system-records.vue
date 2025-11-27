@@ -4,7 +4,7 @@
       <!-- 卡片標題 -->
       <div class="flex items-center gap-3">
         <img :src="SystemIcon" alt="系統紀錄" class="h-8 w-8" />
-        <h3 class="text-base font-bold text-gray-700">系統紀錄</h3>
+        <h3 class="typo-base-bold text-gray-700">系統紀錄</h3>
       </div>
 
       <!-- 活動列表 -->
@@ -12,7 +12,7 @@
         <div
           v-for="(systemLog, index) in systemLogs"
           :key="index"
-          class="flex items-center h-9 gap-3 text-sm font-medium text-gray-700 py-[1px]"
+          class="flex items-center h-9 gap-3 typo-sm-medium text-gray-700 py-[1px]"
         >
           <!-- 左側 frame（日期時間 + 模組標籤） -->
           <div class="flex items-center gap-[12px] flex-shrink-0">

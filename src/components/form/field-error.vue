@@ -1,7 +1,7 @@
 <template>
   <span
     v-if="message"
-    class="inline-block rounded py-1 text-xs font-normal tracking-[0.2px]"
+    class="inline-block rounded py-1 typo-xs"
     :class="colorClasses"
   >
     {{ message }}

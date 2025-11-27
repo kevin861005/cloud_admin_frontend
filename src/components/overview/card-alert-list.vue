@@ -35,25 +35,10 @@
             />
           </div>
 
-          <!--
-            Card-top-Title-Text: 標題文字
-            - font-family: Noto Sans TC
-            - font-size: 16px
-            - font-weight: 700
-            - line-height: 22px
-          -->
-          <span class="text-base font-bold text-gray-700"> 異常警示 </span>
+          <span class="typo-base-bold text-gray-700"> 異常警示 </span>
         </div>
 
-        <!--
-          Card-top-Text: 右側總筆數
-          - font-family: Noto Sans TC
-          - font-size: 24px
-          - font-weight: 700
-          - line-height: 30px
-          - letter-spacing: -0.2px
-        -->
-        <span class="text-2xl font-bold tracking-[-0.2px] text-gray-800">
+        <span class="typo-2xl-bold text-gray-800">
           {{ alertData.totalCount }}筆
         </span>
       </div>
@@ -76,17 +61,8 @@
         >
           <!-- 左側：類型標籤 + 日期時間 -->
           <div class="flex items-center gap-2">
-            <!--
-              Alert Type Badge: 異常類型標籤
-              - width: auto (依內容調整，最小 73px)
-              - height: 24px
-              - border-radius: 4px
-              - border-width: 1px
-              - padding: 4px 12px
-              - 根據類型顯示不同顏色
-            -->
             <span
-              class="inline-flex items-center justify-center h-6 px-3 rounded border text-xs font-bold tracking-[0.2px] whitespace-nowrap"
+              class="inline-flex items-center justify-center h-6 px-3 rounded border typo-xs-bold whitespace-nowrap"
               :style="{
                 backgroundColor: getAlertStyle(alert.type).bgColor,
                 borderColor: getAlertStyle(alert.type).borderColor,
@@ -96,28 +72,12 @@
               {{ getAlertStyle(alert.type).label }}
             </span>
 
-            <!--
-              Alert Time: 異常發生時間
-              - font-family: Inter
-              - font-size: 14px
-              - font-weight: 400
-              - color: #000000
-            -->
-            <span class="text-sm font-medium text-right text-gray-700">
+            <span class="typo-sm-medium text-right text-gray-700">
               {{ alert.occurredAt }}
             </span>
           </div>
 
-          <!-- 右側：客戶名稱 -->
-          <!--
-            Customer Name: 客戶名稱
-            - font-family: Noto Sans TC
-            - font-size: 14px
-            - font-weight: 400
-            - color: #000000
-            - text-align: right
-          -->
-          <span class="text-sm font-medium text-gray-700">
+          <span class="typo-sm-medium text-gray-700">
             {{ alert.customerName }}
           </span>
         </div>
@@ -139,8 +99,8 @@
         - gap: 8px (左側文字與時間之間的間距)
       -->
       <div class="flex items-center gap-2 h-6">
-        <span class="text-sm font-medium text-gray-600"> 更新時間： </span>
-        <span class="text-sm font-medium text-gray-600">
+        <span class="typo-sm-medium text-gray-600"> 更新時間： </span>
+        <span class="typo-sm-medium text-gray-600">
           {{ updateTime }}
         </span>
       </div>

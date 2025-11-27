@@ -3,7 +3,7 @@
   <div v-if="buttonText" class="absolute left-5 right-5 bottom-5">
     <button
       type="button"
-      class="flex h-9 w-full items-center justify-center rounded border text-sm font-bold transition-all"
+      class="flex h-9 w-full items-center justify-center rounded border typo-sm-bold transition-all"
       :class="buttonClasses"
       :disabled="disabled || loading"
       @click="handleClick"

@@ -110,6 +110,11 @@
     @apply text-xs font-normal tracking-[0.2px];
   }
 
+  /* text-xs-medium: 12px/16px, regular, 0.2px */
+  .typo-xs-medium {
+    @apply text-xs font-medium tracking-[0.2px];
+  }
+
   /* text-xs: 12px/16px, bold, 0.2px */
   .typo-xs-bold {
     @apply text-xs font-bold tracking-[0.2px];

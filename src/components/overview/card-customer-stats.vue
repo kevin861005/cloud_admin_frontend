@@ -36,25 +36,10 @@
             />
           </div>
 
-          <!--
-            Card-top-Title-Text: 標題文字
-            - font-family: Noto Sans TC
-            - font-size: 16px
-            - font-weight: 700
-            - line-height: 22px
-          -->
-          <span class="text-base font-bold text-gray-700"> 客戶統計 </span>
+          <span class="typo-base-bold text-gray-700"> 客戶統計 </span>
         </div>
 
-        <!--
-          Card-top-Text: 右側總數
-          - font-family: Noto Sans TC
-          - font-size: 24px
-          - font-weight: 700
-          - line-height: 30px
-          - letter-spacing: -0.2px
-        -->
-        <span class="text-2xl font-bold tracking-[-0.2px] text-gray-800">
+        <span class="typo-2xl-bold text-gray-800">
           {{ stats.totalCustomers }}間
         </span>
       </div>
@@ -66,24 +51,24 @@
       <div class="flex flex-col gap-2">
         <!-- 活躍客戶 -->
         <div class="flex justify-between items-center">
-          <span class="text-sm font-medium text-gray-700"> 活躍 </span>
-          <span class="text-sm font-medium text-gray-700 text-right">
+          <span class="typo-sm-medium text-gray-700"> 活躍 </span>
+          <span class="typo-sm-medium text-gray-700 text-right">
             {{ stats.activeCount }}間（{{ stats.activePercentage }}%）
           </span>
         </div>
 
         <!-- 低活躍客戶 -->
         <div class="flex justify-between items-center">
-          <span class="text-sm font-medium text-gray-700"> 低活躍 </span>
-          <span class="text-sm font-medium text-gray-700 text-right">
+          <span class="typo-sm-medium text-gray-700"> 低活躍 </span>
+          <span class="typo-sm-medium text-gray-700 text-right">
             {{ stats.lowActiveCount }}間（{{ stats.lowActivePercentage }}%）
           </span>
         </div>
 
         <!-- 未使用客戶 -->
         <div class="flex justify-between items-center">
-          <span class="text-sm font-medium text-gray-700"> 未使用 </span>
-          <span class="text-sm font-medium text-gray-700 text-right">
+          <span class="typo-sm-medium text-gray-700"> 未使用 </span>
+          <span class="typo-sm-medium text-gray-700 text-right">
             {{ stats.inactiveCount }}間（{{ stats.inactivePercentage }}%）
           </span>
         </div>
@@ -140,19 +125,19 @@
           <!-- Container: 圓點 -->
           <div class="w-2 h-2 rounded-full bg-slate-700"></div>
           <!-- Text: 標籤文字 -->
-          <span class="text-xs tracking-[0.2px] text-gray-600"> 3天內使用 </span>
+          <span class="typo-xs-medium text-gray-600"> 3天內使用 </span>
         </div>
 
         <!-- Chart-note: 4-7天內使用 -->
         <div class="flex items-center gap-1 h-4">
           <div class="w-2 h-2 rounded-full bg-slate-500"></div>
-          <span class="text-xs tracking-[0.2px] text-gray-600"> 4-7天內使用 </span>
+          <span class="typo-xs-medium text-gray-600"> 4-7天內使用 </span>
         </div>
 
         <!-- Chart-note: 7天以上未使用 -->
         <div class="flex items-center gap-1 h-4">
           <div class="w-2 h-2 rounded-full bg-slate-400"></div>
-          <span class="text-xs tracking-[0.2px] text-gray-600"> 7天以上未使用 </span>
+          <span class="typo-xs-medium text-gray-600"> 7天以上未使用 </span>
         </div>
       </div>
     </div>

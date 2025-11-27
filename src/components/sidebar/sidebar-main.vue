@@ -3,7 +3,7 @@
   <div class="w-64 flex flex-col items-start bg-white min-h-[684px] border-r border-black/[0.08]">
     <!-- 選單標題：功能選單 -->
     <div class="w-full p-2">
-      <h2 class="text-xs font-bold tracking-[0.2px] text-slate-800/70 m-0 px-2">功能選單</h2>
+      <h2 class="typo-xs-bold text-slate-800/70 m-0 px-2">功能選單</h2>
     </div>
 
     <!-- 選單項目列表 -->

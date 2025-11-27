@@ -49,12 +49,12 @@
       <!--
         即時時間（格式：YYYY.MM.DD HH:mm:ss）
       -->
-      <div class="text-sm font-normal text-gray-900 tracking-[0.2px]">
+      <div class="typo-sm text-gray-900">
         {{ currentTime }}
       </div>
 
       <!-- 使用者名稱 -->
-      <div class="text-sm font-medium text-gray-900 text-right">{{ userName }}</div>
+      <div class="typo-sm-medium text-gray-900 text-right">{{ userName }}</div>
     </div>
   </div>
 </template>

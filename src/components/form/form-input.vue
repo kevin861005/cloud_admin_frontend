@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-2">
     <!-- 標籤 -->
-    <label class="text-sm font-medium text-slate-500">
+    <label class="typo-sm-medium text-slate-500">
       {{ label }}
       <span v-if="required" class="text-red-500">*</span>
     </label>

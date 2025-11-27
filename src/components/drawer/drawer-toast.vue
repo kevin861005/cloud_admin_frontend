@@ -17,7 +17,7 @@
       <img :src="iconSrc" :alt="iconAlt" class="w-5 h-5" />
 
       <!-- Message -->
-      <span class="text-sm font-medium" :class="textColorClass">
+      <span class="typo-sm-medium" :class="textColorClass">
         {{ message }}
       </span>
     </div>

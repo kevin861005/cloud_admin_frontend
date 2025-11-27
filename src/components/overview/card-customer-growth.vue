@@ -36,25 +36,10 @@
             />
           </div>
 
-          <!--
-            Card-top-Title-Text: 標題文字
-            - font-family: Noto Sans TC
-            - font-size: 16px
-            - font-weight: 700
-            - line-height: 22px
-          -->
-          <span class="text-base font-bold text-gray-700"> 月度成長 </span>
+          <span class="typo-base-bold text-gray-700"> 月度成長 </span>
         </div>
 
-        <!--
-          Card-top-Text: 右側成長百分比
-          - font-family: Noto Sans TC
-          - font-size: 24px
-          - font-weight: 700
-          - line-height: 30px
-          - letter-spacing: -0.2px
-        -->
-        <span class="text-2xl font-bold tracking-[-0.2px] text-gray-800">
+        <span class="typo-2xl-bold text-gray-800">
           {{ formatGrowthRate(stats.growthRate) }}%
         </span>
       </div>
@@ -66,14 +51,14 @@
       <div class="flex flex-col gap-2">
         <!-- 當月客戶數 -->
         <div class="flex justify-between items-center">
-          <span class="text-sm text-slate-600"> 當月客戶數 </span>
-          <span class="text-sm text-black font-medium"> {{ stats.currentMonthCount }}間 </span>
+          <span class="typo-sm-medium text-slate-600"> 當月客戶數 </span>
+          <span class="typo-sm-medium text-black"> {{ stats.currentMonthCount }}間 </span>
         </div>
 
         <!-- 上月客戶數 -->
         <div class="flex justify-between items-center">
-          <span class="text-sm text-slate-600"> 上月客戶數 </span>
-          <span class="text-sm text-black font-medium"> {{ stats.lastMonthCount }}間 </span>
+          <span class="typo-sm-medium text-slate-600"> 上月客戶數 </span>
+          <span class="typo-sm-medium text-black"> {{ stats.lastMonthCount }}間 </span>
         </div>
       </div>
     </div>

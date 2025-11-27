@@ -6,7 +6,7 @@
       v-model="localValue"
       type="text"
       :placeholder="placeholder"
-      class="h-8 w-full rounded-md border border-gray-300 py-1 px-3 text-sm font-normal placeholder:text-gray-400 focus:outline-none"
+      class="h-8 w-full rounded-md border border-gray-300 py-1 px-3 typo-sm placeholder:text-gray-400 focus:outline-none"
       @input="handleInput"
     />
 

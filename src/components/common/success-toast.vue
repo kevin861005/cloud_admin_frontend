@@ -27,7 +27,7 @@
         />
 
         <!-- 文字 -->
-        <span class="typo-base tracking-wide text-[#222222]">
+        <span class="typo-base text-[#222222]">
           {{ message }}
         </span>
       </div>

@@ -2,7 +2,7 @@
   <!-- 水平排列（預設） -->
   <div v-if="!vertical" class="flex items-center">
     <!-- 左側：標題框（最大寬度 80px） -->
-    <div class="w-[80px] text-left text-sm font-normal tracking-[0.2px] text-gray-600">
+    <div class="w-[80px] text-left typo-sm text-gray-600">
       {{ label }}
     </div>
 
@@ -12,7 +12,7 @@
     <!-- 右側：內容區（佔據剩餘空間） -->
     <div class="flex flex-1 items-center justify-end gap-2">
       <!-- 如果有傳入 value，顯示文字 -->
-      <span v-if="value !== undefined" class="text-sm font-medium text-gray-500">
+      <span v-if="value !== undefined" class="typo-sm-medium text-gray-500">
         {{ value }}
       </span>
 
@@ -36,14 +36,14 @@
   <!-- 垂直排列 -->
   <div v-else class="flex flex-col">
     <!-- 標題（不限制寬度） -->
-    <div class="text-left text-sm font-normal tracking-[0.2px] text-gray-600">
+    <div class="text-left typo-sm text-gray-600">
       {{ label }}
     </div>
 
     <!-- 內容區（靠左對齊） -->
     <div class="flex items-center justify-start gap-2">
       <!-- 如果有傳入 value，顯示文字 -->
-      <span v-if="value !== undefined" class="text-sm font-medium text-gray-500">
+      <span v-if="value !== undefined" class="typo-sm-medium text-gray-500">
         {{ value }}
       </span>
 

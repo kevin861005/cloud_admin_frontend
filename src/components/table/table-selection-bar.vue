@@ -6,7 +6,7 @@
     <!-- 左側：已選擇項目數 + 批量操作按鈕 -->
     <div class="flex items-center gap-3">
       <!-- 已選擇項目數 -->
-      <span class="text-sm font-medium text-[#6B7280]">
+      <span class="typo-sm-medium text-[#6B7280]">
         已選擇 {{ selectedCount }} 個{{ itemName }}
       </span>
 
@@ -15,7 +15,7 @@
         <!-- 通知寄送狀態按鈕（藍色） -->
         <button
           v-if="action.type === 'notify'"
-          class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 text-sm font-medium text-[#398FF9]"
+          class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 typo-sm-medium text-[#398FF9]"
           @click="handleBatchAction(action)"
         >
           <img :src="notifyIcon" alt="" class="h-4 w-4" />
@@ -25,7 +25,7 @@
         <!-- 環境刪除按鈕（紅色） -->
         <button
           v-if="action.type === 'delete'"
-          class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 text-sm font-medium text-[#FD5858]"
+          class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 typo-sm-medium text-[#FD5858]"
           @click="handleBatchAction(action)"
         >
           <img :src="deleteIcon" alt="" class="h-4 w-4" />
@@ -36,7 +36,7 @@
 
     <!-- 右側：取消選擇 -->
     <div class="px-3">
-      <button class="text-sm font-medium text-[#6B7280]" @click="handleCancelSelection">
+      <button class="typo-sm-medium text-[#6B7280]" @click="handleCancelSelection">
         取消選擇
       </button>
     </div>

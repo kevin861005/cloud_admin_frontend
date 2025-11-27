@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-2">
     <!-- 標籤 -->
-    <label class="text-sm font-medium text-slate-500">
+    <label class="typo-sm-medium text-slate-500">
       {{ label }}
       <span v-if="required" class="text-red-500">*</span>
     </label>
@@ -11,7 +11,7 @@
       <label
         v-for="(option, index) in options"
         :key="option.value"
-        class="flex h-9 cursor-pointer items-center gap-1 rounded border bg-slate-500/5 px-3 py-2 text-sm font-medium"
+        class="flex h-9 cursor-pointer items-center gap-1 rounded border bg-slate-500/5 px-3 py-2 typo-sm-medium"
       >
         <input
           :ref="index === 0 ? 'firstRadioRef' : undefined"

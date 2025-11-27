@@ -3,7 +3,7 @@
     <!-- Title 區域：固定高度 40px -->
     <div class="flex h-[40px] items-center justify-between">
       <!-- 左側：標題文字 -->
-      <h3 class="text-sm font-bold text-gray-600">
+      <h3 class="typo-sm-bold text-gray-600">
         {{ title }}
       </h3>
 
