@@ -3,7 +3,7 @@
     <!-- Title 區域：固定高度 40px -->
     <div class="flex h-[40px] items-center justify-between">
       <!-- 左側：標題文字 -->
-      <h3 class="typo-sm-bold text-gray-600">
+      <h3 class="typo-sm-bold text-neutral-600">
         {{ title }}
       </h3>
 
@@ -31,7 +31,7 @@
  * - Title 固定高度：40px
  * - Title 和 Group 之間：無間距
  * - InfoField 之間間距：8px (gap-2)
- * - Title 文字樣式：Noto Sans TC, 700 (Bold), 14px, line-height 20px, text-gray-600
+ * - Title 文字樣式：Noto Sans TC, 700 (Bold), 14px, line-height 20px, text-neutral-600
  * - 無背景色、無邊線、無 padding（由外層控制）
  *
  * @example

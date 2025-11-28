@@ -8,7 +8,7 @@
       <!-- 頂部區域：標題 + ICON -->
       <div class="flex items-center justify-between">
         <!-- 標題 -->
-        <h3 class="typo-base-bold text-gray-700">
+        <h3 class="typo-base-bold text-neutral-700">
           {{ props.title }}
         </h3>
 
@@ -20,10 +20,10 @@
       <div class="flex flex-col gap-3">
         <!-- 主要數值 + 單位 -->
         <div class="flex items-baseline gap-1">
-          <span class="typo-2xl-bold text-gray-800">
+          <span class="typo-2xl-bold text-neutral-800">
             {{ props.value }}
           </span>
-          <span class="typo-2xl-bold text-gray-800">
+          <span class="typo-2xl-bold text-neutral-800">
             {{ props.unit }}
           </span>
         </div>
@@ -31,7 +31,7 @@
         <!-- 副內容 + 按鈕 -->
         <div class="flex items-center justify-between">
           <!-- 副內容 -->
-          <p class="typo-sm-medium text-gray-400">
+          <p class="typo-sm-medium text-neutral-400">
             {{ props.subtitle }}
           </p>
 

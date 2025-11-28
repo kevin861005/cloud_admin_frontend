@@ -6,7 +6,7 @@
         <div
           class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"
         ></div>
-        <p class="text-sm text-gray-500">載入中...</p>
+        <p class="text-sm text-neutral-500">載入中...</p>
       </div>
     </div>
 
@@ -19,12 +19,12 @@
     <div v-else-if="customerDetail" class="flex flex-col gap-3 px-5">
       <!-- 標題區（客戶名稱 + 狀態 Badge） -->
       <div class="flex items-center justify-between gap-2">
-        <h2 class="typo-xl-bold text-gray-900">{{ customerDetail.customerName }}</h2>
+        <h2 class="typo-xl-bold text-neutral-900">{{ customerDetail.customerName }}</h2>
         <Badge :text="statusText" :type="statusBadgeType" />
       </div>
 
       <!-- 副標題（行業） -->
-      <p class="text-sm text-gray-500">{{ customerDetail.industry }}</p>
+      <p class="text-sm text-neutral-500">{{ customerDetail.industry }}</p>
 
       <!-- 分隔線 -->
       <Divider />

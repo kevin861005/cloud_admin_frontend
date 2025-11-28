@@ -4,15 +4,15 @@
   >
     <div class="text-center">
       <!-- 圖示 -->
-      <component :is="iconComponent" class="mx-auto h-16 w-16 text-gray-400" />
+      <component :is="iconComponent" class="mx-auto h-16 w-16 text-neutral-400" />
 
       <!-- 標題 -->
-      <h3 class="mt-4 typo-xl-medium text-gray-900">
+      <h3 class="mt-4 typo-xl-medium text-neutral-900">
         {{ title }}
       </h3>
 
       <!-- 描述 -->
-      <p class="mt-2 typo-sm text-gray-500">
+      <p class="mt-2 typo-sm text-neutral-500">
         {{ description }}
       </p>
 

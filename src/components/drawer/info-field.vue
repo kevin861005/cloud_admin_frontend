@@ -2,7 +2,7 @@
   <!-- 水平排列（預設） -->
   <div v-if="!vertical" class="flex items-center">
     <!-- 左側：標題框（最大寬度 80px） -->
-    <div class="w-[80px] text-left typo-sm text-gray-600">
+    <div class="w-[80px] text-left typo-sm text-neutral-600">
       {{ label }}
     </div>
 
@@ -12,7 +12,7 @@
     <!-- 右側：內容區（佔據剩餘空間） -->
     <div class="flex flex-1 items-center justify-end gap-2">
       <!-- 如果有傳入 value，顯示文字 -->
-      <span v-if="value !== undefined" class="typo-sm-medium text-gray-500">
+      <span v-if="value !== undefined" class="typo-sm-medium text-neutral-500">
         {{ value }}
       </span>
 
@@ -26,7 +26,7 @@
         v-if="value !== undefined && showCopy"
         :src="copyIcon"
         alt="複製"
-        class="h-4 w-4 cursor-pointer text-gray-400 transition-opacity hover:opacity-70"
+        class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
         title="點擊複製"
         @click="handleCopy"
       />
@@ -36,14 +36,14 @@
   <!-- 垂直排列 -->
   <div v-else class="flex flex-col">
     <!-- 標題（不限制寬度） -->
-    <div class="text-left typo-sm text-gray-600">
+    <div class="text-left typo-sm text-neutral-600">
       {{ label }}
     </div>
 
     <!-- 內容區（靠左對齊） -->
     <div class="flex items-center justify-start gap-2">
       <!-- 如果有傳入 value，顯示文字 -->
-      <span v-if="value !== undefined" class="typo-sm-medium text-gray-500">
+      <span v-if="value !== undefined" class="typo-sm-medium text-neutral-500">
         {{ value }}
       </span>
 
@@ -57,7 +57,7 @@
         v-if="value !== undefined && showCopy"
         :src="copyIcon"
         alt="複製"
-        class="h-4 w-4 cursor-pointer text-gray-400 transition-opacity hover:opacity-70"
+        class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
         title="點擊複製"
         @click="handleCopy"
       />
@@ -77,8 +77,8 @@ import copyIcon from '@/assets/icons/common/cm-copy.svg'
  *   - 左側標題框最大寬度：80px
  *   - 中間間距：12px
  *   - 右側內容：佔據剩餘空間，靠右對齊
- *   - 標題樣式：Noto Sans TC, 400, 14px, line-height 20px, letter-spacing 0.2px, text-gray-600
- *   - 內容樣式：Noto Sans TC, 500, 14px, line-height 20px, text-gray-500
+ *   - 標題樣式：Noto Sans TC, 400, 14px, line-height 20px, letter-spacing 0.2px, text-neutral-600
+ *   - 內容樣式：Noto Sans TC, 500, 14px, line-height 20px, text-neutral-500
  *
  * - 垂直排列（vertical=true）：
  *   - 標題在上方，不限制寬度

@@ -1,8 +1,8 @@
 <template>
   <!-- 選單項目 -->
   <div
-    class="flex items-center gap-2 rounded-md cursor-pointer bg-white transition-colors duration-150"
-    :class="[isChild ? 'h-7 px-2' : 'h-8 px-2', isActive ? 'bg-slate-100' : 'hover:bg-slate-100']"
+    class="flex items-center gap-2 rounded-md cursor-pointer bg-white"
+    :class="[isChild ? 'h-7 px-2' : 'h-8 px-2', isActive ? '' : 'hover-bg']"
     @click="handleClick"
   >
     <!-- ICON 圖示 -->
@@ -11,12 +11,16 @@
       :src="getIconPath(item.icon)"
       :alt="item.label"
       class="w-4 h-4 flex-shrink-0"
+      :class="isActive ? 'icon-active' : ''"
     />
 
     <!-- 選單文字 -->
     <span
-      class="whitespace-nowrap overflow-hidden text-ellipsis text-slate-800"
-      :class="isChild ? 'typo-sm' : 'typo-sm-medium'"
+      class="whitespace-nowrap overflow-hidden text-ellipsis"
+      :class="[
+        isChild ? 'typo-sm' : 'typo-sm-medium',
+        isActive ? 'text-primary-500' : 'text-neutral-800',
+      ]"
     >
       {{ item.label }}
     </span>
@@ -88,4 +92,9 @@ function handleClick() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.icon-active {
+  filter: brightness(0) saturate(100%) invert(52%) sepia(52%) saturate(2758%) hue-rotate(196deg)
+    brightness(100%) contrast(96%);
+}
+</style>

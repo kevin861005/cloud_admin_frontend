@@ -4,19 +4,19 @@
   >
     <!-- 客戶名稱 + 狀態標籤 -->
     <div class="mb-3 flex items-center gap-3">
-      <h1 class="typo-2xl-bold text-gray-800">
+      <h1 class="typo-2xl-bold text-neutral-800">
         {{ customerInfo.customerName }}
       </h1>
       <Badge :text="statusText" :type="badgeType" />
     </div>
 
     <!-- 產業別 -->
-    <p class="mb-4 typo-sm text-gray-600">
+    <p class="mb-4 typo-sm text-neutral-600">
       {{ customerInfo.industry }}
     </p>
 
     <!-- 次要資訊（使用時間、模組、負責業務、建立日期）-->
-    <div class="flex items-center gap-3 typo-sm-medium text-gray-600">
+    <div class="flex items-center gap-3 typo-sm-medium text-neutral-600">
       <span>使用時間：{{ customerInfo.usageTime }}</span>
       <Divider direction="vertical" color="light" />
       <span class="flex items-center gap-2">

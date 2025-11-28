@@ -3,7 +3,7 @@
     <!-- 標題區域（主標題 + 副標題） -->
     <div class="flex flex-col">
       <!-- 主標題 -->
-      <h3 class="typo-sm-bold text-gray-900">
+      <h3 class="typo-sm-bold text-neutral-900">
         {{ title }}
       </h3>
 

@@ -3,7 +3,7 @@
   <div class="flex items-center justify-between bg-white">
     <!-- 左側：標題 + 總數 -->
     <div class="flex items-center gap-3">
-      <h2 class="typo-base-bold text-gray-700">{{ title }}</h2>
+      <h2 class="typo-base-bold text-neutral-700">{{ title }}</h2>
       <span
         class="flex h-6 items-center justify-center rounded border border-[#398FF91A] bg-[#398FF90D] px-2 typo-sm-medium text-[#398FF9]"
       >

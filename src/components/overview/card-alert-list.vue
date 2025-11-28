@@ -35,12 +35,10 @@
             />
           </div>
 
-          <span class="typo-base-bold text-gray-700"> 異常警示 </span>
+          <span class="typo-base-bold text-neutral-700"> 異常警示 </span>
         </div>
 
-        <span class="typo-2xl-bold text-gray-800">
-          {{ alertData.totalCount }}筆
-        </span>
+        <span class="typo-2xl-bold text-neutral-800"> {{ alertData.totalCount }}筆 </span>
       </div>
 
       <!--
@@ -57,7 +55,7 @@
         <div
           v-for="alert in alertData.alerts.slice(0, 3)"
           :key="alert.id"
-          class="flex justify-between items-center"
+          class="flex justify-between items-center hover-bg"
         >
           <!-- 左側：類型標籤 + 日期時間 -->
           <div class="flex items-center gap-2">
@@ -72,12 +70,12 @@
               {{ getAlertStyle(alert.type).label }}
             </span>
 
-            <span class="typo-sm-medium text-right text-gray-700">
+            <span class="typo-sm-medium text-right text-neutral-700">
               {{ alert.occurredAt }}
             </span>
           </div>
 
-          <span class="typo-sm-medium text-gray-700">
+          <span class="typo-sm-medium text-neutral-700">
             {{ alert.customerName }}
           </span>
         </div>
@@ -99,8 +97,8 @@
         - gap: 8px (左側文字與時間之間的間距)
       -->
       <div class="flex items-center gap-2 h-6">
-        <span class="typo-sm-medium text-gray-600"> 更新時間： </span>
-        <span class="typo-sm-medium text-gray-600">
+        <span class="typo-sm-medium text-neutral-600"> 更新時間： </span>
+        <span class="typo-sm-medium text-neutral-600">
           {{ updateTime }}
         </span>
       </div>

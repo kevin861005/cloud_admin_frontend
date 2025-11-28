@@ -74,7 +74,7 @@ const emit = defineEmits<{
 const buttonClasses = computed(() => {
   // 禁用或載入中的樣式
   if (props.disabled || props.loading) {
-    return 'cursor-not-allowed opacity-50 bg-gray-100 border-gray-300 text-gray-500'
+    return 'cursor-not-allowed opacity-50 bg-gray-100 border-gray-300 text-neutral-500'
   }
 
   // Success 類型（綠色）

@@ -13,10 +13,10 @@
         ref="triggerRef"
         type="button"
         :disabled="disabled"
-        class="flex h-9 w-full items-center justify-between rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-left text-sm disabled:bg-gray-100 disabled:text-gray-500 focus:outline-none"
+        class="flex h-9 w-full items-center justify-between rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-left text-sm disabled:bg-gray-100 disabled:text-neutral-500 focus:outline-none"
         @click="toggleDropdown"
       >
-        <span :class="selectedLabel ? 'text-gray-900' : 'text-gray-400'">
+        <span :class="selectedLabel ? 'text-neutral-900' : 'text-neutral-400'">
           {{ selectedLabel || placeholder }}
         </span>
         <!-- 下拉箭頭 -->
@@ -63,7 +63,7 @@
               class="flex w-full items-center px-3 py-2 text-left typo-sm-medium hover:bg-blue-50"
               :class="{
                 'bg-blue-100 text-blue-700': isSelected(option.value),
-                'text-gray-900': !isSelected(option.value),
+                'text-neutral-900': !isSelected(option.value),
               }"
               @click="selectOption(option)"
             >
@@ -72,7 +72,7 @@
           </template>
 
           <!-- 無選項提示 -->
-          <div v-else class="px-3 py-4 text-center text-sm text-gray-500">無選項</div>
+          <div v-else class="px-3 py-4 text-center text-sm text-neutral-500">無選項</div>
         </div>
       </div>
     </div>

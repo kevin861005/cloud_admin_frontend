@@ -120,3 +120,76 @@
     @apply text-xs font-bold tracking-[0.2px];
   }
 }
+
+/* 統一互動樣式 */
+@layer components {
+  /* 通用 hover 背景效果 */
+  .hover-bg {
+    @apply transition-colors duration-150 hover:bg-neutral-100;
+  }
+}
+
+/* 上下頁按鈕樣式 */
+@layer components {
+  .btn-pagination {
+    @apply flex items-center justify-center w-[38px] h-8 rounded-md border transition-colors cursor-pointer opacity-50
+           bg-neutral-100 text-neutral-800 border-neutral-200
+           hover:bg-neutral-400 hover:text-neutral-800
+           active:bg-neutral-400 active:text-neutral-50;
+  }
+
+  .btn-pagination:disabled {
+    @apply cursor-not-allowed bg-neutral-100 text-neutral-400;
+  }
+
+  /* 按鈕內的 icon 預設顏色（neutral-800: #1F2937） */
+  .btn-pagination .icon {
+    @apply w-4 h-4 transition-all;
+    filter: brightness(0) saturate(100%) invert(12%) sepia(10%) saturate(1000%) hue-rotate(180deg)
+      brightness(95%);
+  }
+
+  /* disabled 狀態 icon 顏色（neutral-400: #9CA3AF） */
+  .btn-pagination:disabled .icon {
+    filter: brightness(0) saturate(100%) invert(70%) sepia(5%) saturate(500%) hue-rotate(180deg)
+      brightness(95%);
+  }
+
+  /* pressed 狀態 icon 顏色（neutral-50: #F9FAFB） */
+  .btn-pagination:active:not(:disabled) .icon {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) brightness(103%);
+  }
+}
+
+/* 連結樣式 */
+@layer components {
+  .link {
+    @apply text-neutral-800 underline cursor-pointer transition-colors;
+  }
+}
+
+/* 圖示顏色 */
+@layer components {
+  .icon-primary {
+    filter: brightness(0) saturate(100%) invert(52%) sepia(52%) saturate(2758%) hue-rotate(196deg)
+      brightness(100%) contrast(96%);
+  }
+
+  /* 表格欄位內的圖示按鈕樣式（填滿欄位） */
+  .btn-icon-cell {
+    @apply flex items-center justify-center flex-1 h-full py-4 cursor-pointer transition-all;
+  }
+
+  /* 預設顏色（neutral-600） */
+  .btn-icon-cell .icon {
+    @apply w-4 h-4;
+    filter: brightness(0) saturate(100%) invert(42%) sepia(9%) saturate(569%) hue-rotate(182deg)
+      brightness(94%) contrast(90%);
+  }
+
+  /* hover 顏色（primary-500: #398FF9） */
+  .btn-icon-cell:hover .icon {
+    filter: brightness(0) saturate(100%) invert(52%) sepia(52%) saturate(2758%) hue-rotate(196deg)
+      brightness(100%) contrast(96%);
+  }
+}

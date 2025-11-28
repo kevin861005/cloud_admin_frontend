@@ -2,7 +2,7 @@
   <div class="relative flex-1 h-[396px] bg-white rounded-lg shadow-md p-6 flex flex-col">
     <!-- Header -->
     <div class="flex items-center justify-between h-[32px] px-6 mb-6">
-      <h3 class="typo-base-bold text-gray-700">模組使用量</h3>
+      <h3 class="typo-base-bold text-neutral-700">模組使用量</h3>
 
       <!-- Toggle Switch -->
       <div class="flex items-center gap-2">
@@ -12,7 +12,7 @@
           :class="
             currentView === 'weekly'
               ? 'bg-blue-500 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              : 'bg-gray-100 text-neutral-600 hover:bg-gray-200'
           "
         >
           週報
@@ -23,7 +23,7 @@
           :class="
             currentView === 'monthly'
               ? 'bg-blue-500 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              : 'bg-gray-100 text-neutral-600 hover:bg-gray-200'
           "
         >
           月報

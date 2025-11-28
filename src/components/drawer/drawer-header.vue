@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col gap-1">
     <!-- 主標題 -->
-    <h2 class="typo-xl-bold text-gray-800">
+    <h2 class="typo-xl-bold text-neutral-800">
       {{ title }}
     </h2>
 
     <!-- 副標題（可選） -->
-    <p v-if="subtitle" class="typo-sm text-gray-600">
+    <p v-if="subtitle" class="typo-sm text-neutral-600">
       {{ subtitle }}
     </p>
   </div>
@@ -19,8 +19,8 @@
  *
  * 規格：
  * - 主標題和副標題間距：4px (gap-1)
- * - 主標題樣式：Noto Sans TC, 700 (Bold), 20px, line-height 28px, letter-spacing -0.2%, text-gray-800
- * - 副標題樣式：Noto Sans TC, 400 (Regular), 14px, line-height 20px, letter-spacing 0.2px, text-gray-600
+ * - 主標題樣式：Noto Sans TC, 700 (Bold), 20px, line-height 28px, letter-spacing -0.2%, text-neutral-800
+ * - 副標題樣式：Noto Sans TC, 400 (Regular), 14px, line-height 20px, letter-spacing 0.2px, text-neutral-600
  * - 無背景色、無 padding（由外層控制）
  * - 高度由內容自動撐開
  * - 與下方內容的間距由外層容器控制

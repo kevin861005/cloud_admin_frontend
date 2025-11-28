@@ -24,7 +24,7 @@
           <!-- 關閉按鈕 -->
           <button
             type="button"
-            class="absolute right-6 top-6 text-gray-400 transition-colors hover:text-gray-600"
+            class="absolute right-6 top-6 text-neutral-400 transition-colors hover:text-neutral-600"
             @click="handleClose"
             aria-label="關閉對話框"
           >
@@ -34,12 +34,12 @@
           <!-- 內容區域 -->
           <div class="px-12 pb-8 pt-12">
             <!-- 標題 -->
-            <h2 id="dialog-title" class="mb-6 typo-base-bold text-gray-800">刪除環境確認</h2>
+            <h2 id="dialog-title" class="mb-6 typo-base-bold text-neutral-800">刪除環境確認</h2>
 
             <!-- 說明文字 -->
             <div class="space-y-4">
               <!-- 第一段：灰色說明 -->
-              <p class="typo-sm text-gray-500">
+              <p class="typo-sm text-neutral-500">
                 此操作將會刪除整個系統環境，包含Docker容器、資料庫、DNS設定和NGINX配置
               </p>
 
@@ -52,7 +52,7 @@
               <!-- 取消按鈕 -->
               <button
                 type="button"
-                class="rounded-lg bg-gray-100 px-6 py-3 typo-sm-bold text-gray-600 transition-colors hover:bg-gray-200"
+                class="rounded-lg bg-gray-100 px-6 py-3 typo-sm-bold text-neutral-600 transition-colors hover:bg-gray-200"
                 @click="handleClose"
               >
                 取消

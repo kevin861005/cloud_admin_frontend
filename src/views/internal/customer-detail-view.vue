@@ -6,7 +6,7 @@
         <div
           class="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"
         ></div>
-        <p class="text-sm text-gray-600">載入中...</p>
+        <p class="text-sm text-neutral-600">載入中...</p>
       </div>
     </div>
 
@@ -14,7 +14,7 @@
     <div v-else-if="error" class="flex flex-1 items-center justify-center">
       <div class="text-center">
         <p class="mb-4 typo-xl-bold text-red-600">載入失敗</p>
-        <p class="mb-4 typo-sm-medium text-gray-600">{{ error }}</p>
+        <p class="mb-4 typo-sm-medium text-neutral-600">{{ error }}</p>
         <button
           @click="loadCustomerDetail"
           class="rounded-lg bg-blue-600 px-4 py-2 typo-sm-medium text-white hover:bg-blue-700"
@@ -32,7 +32,7 @@
       <!-- 內容區域 -->
       <div class="flex-1 overflow-y-auto bg-gray-50">
         <!-- 區塊標題（距離 Header 20px，距離卡片 24px） -->
-        <h2 class="px-10 pt-5 typo-xl-bold text-gray-800">客戶資訊概覽</h2>
+        <h2 class="px-10 pt-5 typo-xl-bold text-neutral-800">客戶資訊概覽</h2>
 
         <!-- 三張卡片容器 -->
         <CardContainer :height="360" :use-padding-top="true">
@@ -61,10 +61,10 @@
         </CardContainer>
 
         <div class="flex flex-1 items-center justify-between px-10">
-          <h2 class="typo-xl-bold text-gray-800">系統環境與運行狀態</h2>
+          <h2 class="typo-xl-bold text-neutral-800">系統環境與運行狀態</h2>
 
           <button
-            class="inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-gray-600 cursor-pointer hover:bg-opacity-80 transition-colors"
+            class="inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:bg-opacity-80 transition-colors"
             @click="openDeleteDialog(customerInfo.customerName)"
           >
             <img :src="TrashIcon" alt="刪除環境" class="h-4 w-4" />

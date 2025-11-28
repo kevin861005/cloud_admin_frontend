@@ -1,6 +1,6 @@
 <template>
   <!-- 表格容器 -->
-  <div class="overflow-x-auto">
+  <div ref="tableContainerRef" class="overflow-x-auto" @wheel="handleWheel">
     <table class="w-full border-collapse bg-white">
       <!-- 表格標題列 -->
       <thead>
@@ -24,7 +24,7 @@
             :key="column.key"
             :style="{ width: column.width }"
             :class="[
-              'px-6 py-3 typo-sm-medium text-gray-500',
+              'px-6 py-3 typo-sm-medium text-neutral-500',
               column.align === 'center' && 'text-center',
               column.align === 'right' && 'text-right',
               column.sortable && 'cursor-pointer select-none hover:bg-gray-100',
@@ -40,52 +40,28 @@
             >
               <span>{{ column.label }}</span>
               <!-- 排序圖示 -->
-              <span v-if="column.sortable" class="text-gray-400">
+              <span v-if="column.sortable" class="text-neutral-400">
                 <!-- 無排序狀態 -->
-                <svg
+                <img
                   v-if="sortState.key !== (column.sortKey || column.key)"
+                  src="@/assets/icons/common/cm-sort.svg"
+                  alt="排序"
                   class="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-                  />
-                </svg>
+                />
                 <!-- 升冪排序 -->
-                <svg
+                <img
                   v-else-if="sortState.order === 'asc'"
-                  class="h-4 w-4 text-blue-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 15l7-7 7 7"
-                  />
-                </svg>
+                  src="@/assets/icons/common/cm-arrow-up.svg"
+                  alt="升冪"
+                  class="h-4 w-4 icon-primary"
+                />
                 <!-- 降冪排序 -->
-                <svg
+                <img
                   v-else
-                  class="h-4 w-4 text-blue-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+                  src="@/assets/icons/common/cm-arrow-down.svg"
+                  alt="降冪"
+                  class="h-4 w-4 icon-primary"
+                />
               </span>
             </div>
           </th>
@@ -115,7 +91,7 @@
             :key="rowIndex"
             :class="[
               'last:border-b last:border-gray-200 transition-colors',
-              isRowSelected(row) ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50',
+              isRowSelected(row) ? 'bg-blue-50 hover:bg-blue-100' : 'hover-bg',
               enableRowClick && 'cursor-pointer', // 啟用整列點擊時顯示手指游標
             ]"
             @click="handleRowClick(row)"
@@ -137,16 +113,15 @@
               v-for="column in columns"
               :key="column.key"
               :class="[
-                'px-6 py-4 typo-sm',
+                'typo-sm whitespace-nowrap',
+                column.customRender === 'actions' ? 'p-0' : 'px-6 py-4',
                 column.align === 'center' && 'text-center',
                 column.align === 'right' && 'text-right',
               ]"
             >
               <!-- 標準顯示 -->
               <template v-if="!column.customRender">
-                <span class="typo-sm text-gray-800">{{
-                  row[column.key]
-                }}</span>
+                <span class="typo-sm text-neutral-800">{{ row[column.key] }}</span>
               </template>
 
               <!-- Link 連結顯示 -->
@@ -154,7 +129,7 @@
                 <a
                   :href="`https://${String(row[column.key])}`"
                   :target="column.linkConfig?.target || '_blank'"
-                  class="text-blue-600 underline hover:text-blue-800"
+                  class="link"
                   @click.stop
                 >
                   {{ row[column.key] }}
@@ -180,7 +155,7 @@
               <template v-else-if="column.customRender === 'actions'">
                 <div
                   :class="[
-                    'flex items-center gap-3',
+                    'flex items-center gap-3 h-full',
                     column.align === 'center' && 'justify-center',
                     column.align === 'right' && 'justify-end',
                     !column.align && 'justify-center',
@@ -190,39 +165,15 @@
                   <!-- 編輯按鈕 -->
                   <button
                     v-if="showEditButton"
-                    class="text-gray-600 transition-colors hover:text-blue-600"
+                    class="btn-icon-cell"
                     title="編輯"
                     @click="handleEdit(row)"
                   >
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      />
-                    </svg>
+                    <img src="@/assets/icons/common/cm-edit.svg" alt="編輯" class="icon" />
                   </button>
                   <!-- 查看按鈕 -->
-                  <button
-                    class="text-gray-600 transition-colors hover:text-green-600"
-                    title="查看"
-                    @click="handleView(row)"
-                  >
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
+                  <button class="btn-icon-cell" title="查看" @click="handleView(row)">
+                    <img src="@/assets/icons/common/cm-view.svg" alt="查看" class="icon" />
                   </button>
                 </div>
               </template>
@@ -250,30 +201,15 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import Loading from '@/components/common/loading.vue'
 import EmptyState from '@/components/common/empty-state.vue'
 import type { ColumnConfig, SortState } from '@/types/table'
 
-/**
- * Table 表格內容元件（階段三：整合選取功能）
- *
- * 功能：
- * 1. 顯示表格標題列（含排序圖示）
- * 2. 顯示資料列
- * 3. 支援多種自訂渲染方式（badge、link、actions、slot）
- * 4. 前端排序功能（點擊欄位標題）
- * 5. 載入狀態和空資料狀態
- * 6. Checkbox 選取功能（單選、全選）
- * 7. 選中行的視覺回饋（藍色背景）
- *
- * 事件：
- * - sort-change: 排序改變時觸發，回傳 { key: string, order: 'asc' | 'desc' }
- * - row-edit: 點擊編輯按鈕時觸發，回傳該列資料
- * - row-view: 點擊查看按鈕時觸發，回傳該列資料
- * - toggle-all: 全選/取消全選時觸發
- * - toggle-row: 單行選取/取消選取時觸發，回傳該列資料
- */
+// ===== Refs =====
+
+/** 表格容器的參考 */
+const tableContainerRef = ref<HTMLDivElement | null>(null)
 
 // ===== Props 定義 =====
 interface Props<T = Record<string, unknown>> {
@@ -412,6 +348,26 @@ const updateCheckboxIndeterminate = () => {
   const checkbox = document.querySelector('thead input[type="checkbox"]') as HTMLInputElement
   if (checkbox) {
     checkbox.indeterminate = props.isIndeterminate
+  }
+}
+
+/**
+ * 處理滑鼠滾輪事件
+ * 將垂直滾動轉換為水平滾動
+ */
+const handleWheel = (event: WheelEvent) => {
+  const container = tableContainerRef.value
+  if (!container) return
+
+  // 檢查是否需要水平滾動（內容寬度 > 容器寬度）
+  const hasHorizontalScroll = container.scrollWidth > container.clientWidth
+
+  if (hasHorizontalScroll) {
+    // 阻止預設的垂直滾動
+    event.preventDefault()
+
+    // 將垂直滾動轉換為水平滾動
+    container.scrollLeft += event.deltaY
   }
 }
 

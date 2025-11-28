@@ -6,7 +6,7 @@
       v-model="localValue"
       type="text"
       :placeholder="placeholder"
-      class="h-8 w-full rounded-md border border-gray-300 py-1 px-3 typo-sm placeholder:text-gray-400 focus:outline-none"
+      class="h-8 w-full rounded-md border border-gray-300 py-1 px-3 typo-sm placeholder:text-neutral-400 focus:outline-none"
       @input="handleInput"
     />
 
@@ -14,7 +14,7 @@
     <img
       :src="searchIcon"
       alt="搜尋"
-      class="pointer-events-none absolute right-3 h-5 w-5 text-gray-400"
+      class="pointer-events-none absolute right-3 h-5 w-5 text-neutral-400"
     />
   </div>
 </template>

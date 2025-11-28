@@ -1,28 +1,10 @@
 <template>
-  <!--
-    CardList 元件 - 卡片列表
-
-    功能:
-    1. 顯示資料列表（支援任意資料型別）
-    2. 支援前端分頁
-    3. 支援前端排序（可針對特定欄位啟用）
-    4. 欄位寬度使用 flex 比例配置
-    5. 支援 tooltip（可針對特定欄位啟用）
-    6. 支援載入/錯誤/空資料狀態
-
-    尺寸規格:
-    - 間距: py-6 px-5（上下 24px，左右 20px）
-    - 高度: 可自訂（預設 396px）
-    - 內容區域高度: 248px（固定）
-    - 分頁區域高度: 32px
-  -->
-
   <div class="bg-white rounded-lg shadow-md py-6 px-5 flex flex-col" :style="{ height: height }">
     <div class="flex flex-col h-full">
       <!-- 標題列 -->
       <div class="flex items-center h-6 mb-6">
         <div class="flex items-center gap-3">
-          <h3 class="typo-base-bold text-gray-700">{{ title }}</h3>
+          <h3 class="typo-base-bold text-neutral-700">{{ title }}</h3>
 
           <!-- 總筆數標籤 -->
           <span
@@ -42,8 +24,9 @@
             :key="column.key"
             :style="{ flex: column.flex || 1 }"
             :class="[
-              'flex items-center h-5 gap-1 typo-sm-medium text-gray-700',
-              column.sortable && 'cursor-pointer select-none hover:text-gray-800 transition-colors',
+              'flex items-center h-5 gap-1 typo-sm-medium text-neutral-700 whitespace-nowrap',
+              column.sortable &&
+                'cursor-pointer select-none hover:text-neutral-800 transition-colors',
               getAlignClass(column.align),
             ]"
             @click="column.sortable && handleSort(column.key)"
@@ -51,54 +34,30 @@
             {{ column.label }}
 
             <!-- 排序圖示（僅在可排序時顯示） -->
-            <span v-if="column.sortable" class="text-gray-400">
+            <span v-if="column.sortable" class="text-neutral-400">
               <!-- 無排序狀態 -->
-              <svg
+              <img
                 v-if="sortState.key !== column.key"
+                src="@/assets/icons/common/cm-sort.svg"
+                alt="排序"
                 class="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-                />
-              </svg>
+              />
 
               <!-- 升冪排序 -->
-              <svg
+              <img
                 v-else-if="sortState.order === 'asc'"
-                class="h-4 w-4 text-blue-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 15l7-7 7 7"
-                />
-              </svg>
+                src="@/assets/icons/common/cm-arrow-up.svg"
+                alt="升冪"
+                class="h-4 w-4 icon-primary"
+              />
 
               <!-- 降冪排序 -->
-              <svg
+              <img
                 v-else
-                class="h-4 w-4 text-blue-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
+                src="@/assets/icons/common/cm-arrow-down.svg"
+                alt="降冪"
+                class="h-4 w-4 icon-primary"
+              />
             </span>
           </div>
         </div>
@@ -124,14 +83,14 @@
             <div
               v-for="(item, index) in paginatedData"
               :key="index"
-              class="flex items-center gap-5 py-1 hover:bg-gray-50 transition-colors rounded"
+              class="flex items-center gap-5 py-1 rounded hover-bg"
             >
               <div
                 v-for="column in columns"
                 :key="column.key"
                 :style="{ flex: column.flex || 1 }"
                 :class="[
-                  'typo-sm text-gray-700',
+                  'typo-sm text-neutral-700',
                   column.showTooltip && 'truncate',
                   getAlignClass(column.align),
                 ]"
@@ -146,59 +105,23 @@
 
       <!-- 分頁控制（即使只有一頁也顯示） -->
       <div v-if="!loading && !error" class="flex items-center justify-between h-8 mt-auto pt-6">
-        <div class="typo-sm-medium text-gray-600">
+        <div class="typo-sm-medium text-neutral-600">
           第{{ currentPage }}頁，共{{ totalPages }}頁
         </div>
 
         <div class="flex gap-2">
-          <button
-            @click="previousPage"
-            :disabled="currentPage === 1"
-            class="flex items-center justify-center w-[38px] h-8 rounded-md border transition-colors"
-            :class="
-              currentPage === 1
-                ? 'opacity-50 cursor-not-allowed bg-[#F8F9FF] border-black/[0.08]'
-                : 'bg-[#F8F9FF] border-black/[0.08] hover:bg-gray-100'
-            "
-          >
-            <svg
-              class="w-4 h-4 text-gray-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
+          <!-- 上一頁按鈕 -->
+          <button :disabled="currentPage === 0" class="btn-pagination" @click="previousPage">
+            <img src="@/assets/icons/common/cm-arrow-left.svg" alt="上一頁" class="icon" />
           </button>
 
+          <!-- 下一頁按鈕 -->
           <button
+            :disabled="currentPage >= totalPages - 1"
+            class="btn-pagination"
             @click="nextPage"
-            :disabled="currentPage === totalPages"
-            class="flex items-center justify-center w-[38px] h-8 rounded-md border transition-colors"
-            :class="
-              currentPage === totalPages
-                ? 'opacity-50 cursor-not-allowed bg-[#F8F9FF] border-black/[0.08]'
-                : 'bg-[#F8F9FF] border-black/[0.08] hover:bg-gray-100'
-            "
           >
-            <svg
-              class="w-4 h-4 text-gray-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
+            <img src="@/assets/icons/common/cm-arrow-right.svg" alt="下一頁" class="icon" />
           </button>
         </div>
       </div>

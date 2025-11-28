@@ -18,15 +18,17 @@
             />
           </svg>
         </div>
-        <h2 class="text-3xl font-bold text-gray-900">歡迎回來</h2>
-        <p class="text-gray-600 mt-2">請登入您的帳號</p>
+        <h2 class="text-3xl font-bold text-neutral-900">歡迎回來</h2>
+        <p class="text-neutral-600 mt-2">請登入您的帳號</p>
       </div>
 
       <!-- 登入表單 -->
       <form @submit.prevent="handleLogin" class="space-y-6">
         <!-- 帳號輸入框 -->
         <div>
-          <label for="loginId" class="block text-sm font-medium text-gray-700 mb-2"> 帳號 </label>
+          <label for="loginId" class="block text-sm font-medium text-neutral-700 mb-2">
+            帳號
+          </label>
           <input
             id="loginId"
             v-model="form.loginId"
@@ -47,7 +49,9 @@
 
         <!-- 密碼輸入框 -->
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-2"> 密碼 </label>
+          <label for="password" class="block text-sm font-medium text-neutral-700 mb-2">
+            密碼
+          </label>
           <div class="relative">
             <input
               id="password"
@@ -66,7 +70,7 @@
               type="button"
               @click="togglePasswordVisibility"
               :disabled="isLoading || isSubmitting"
-              class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-400 hover:text-neutral-600"
             >
               <svg
                 v-if="!showPassword"
@@ -165,18 +169,20 @@
 
       <!-- 除錯資訊 (開發階段使用，生產環境請移除) -->
       <div v-if="true" class="mt-6 p-4 bg-gray-100 rounded-lg text-xs font-mono space-y-1">
-        <div class="font-bold text-gray-700 mb-2">🔍 除錯資訊</div>
+        <div class="font-bold text-neutral-700 mb-2">🔍 除錯資訊</div>
         <div>
-          <span class="text-gray-600">isAuthenticated:</span> {{ authStore.isAuthenticated }}
+          <span class="text-neutral-600">isAuthenticated:</span> {{ authStore.isAuthenticated }}
         </div>
-        <div><span class="text-gray-600">isLoading:</span> {{ isLoading }}</div>
-        <div><span class="text-gray-600">isSubmitting:</span> {{ isSubmitting }}</div>
+        <div><span class="text-neutral-600">isLoading:</span> {{ isLoading }}</div>
+        <div><span class="text-neutral-600">isSubmitting:</span> {{ isSubmitting }}</div>
         <div>
-          <span class="text-gray-600">userName:</span>
+          <span class="text-neutral-600">userName:</span>
           {{ authStore.userInfo?.userName || 'null' }}
         </div>
-        <div><span class="text-gray-600">當前路由:</span> {{ router.currentRoute.value.path }}</div>
-        <div><span class="text-gray-600">hasToken:</span> {{ hasToken }}</div>
+        <div>
+          <span class="text-neutral-600">當前路由:</span> {{ router.currentRoute.value.path }}
+        </div>
+        <div><span class="text-neutral-600">hasToken:</span> {{ hasToken }}</div>
       </div>
     </div>
   </div>

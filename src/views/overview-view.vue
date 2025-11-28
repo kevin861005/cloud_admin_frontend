@@ -6,7 +6,7 @@
     <!-- Card 容器（外部傳入卡片元件） -->
     <CardContainer>
       <!-- 客戶統計卡片 -->
-      <CustomerStatsCard />
+      <CustomerStatsCard @click="scrollToCustomerTable" class="cursor-pointer" />
 
       <!-- 月度成長卡片 -->
       <CustomerGrowthCard />
@@ -25,7 +25,7 @@
     </CardContainer>
 
     <!-- Card 容器（外部傳入卡片元件） -->
-    <TableContainer>
+    <TableContainer ref="customerTableRef">
       <!-- 客戶列表區域 -->
       <customer-table
         :show-filters="true"
@@ -64,21 +64,12 @@ import ModuleUsageChartCard from '@/components/overview/card-module-usage-chart.
 // 引入客戶列表表格元件
 import CustomerTable from '@/components/customer/table-customer.vue'
 
+// ==================== Refs ====================
+
 /**
- * 總覽頁面主元件
- *
- * 結構：
- * 1. PageTitle - 頁面標題
- * 2. SectionCardContainer - 包含 3 張統計卡片（客戶統計、月度成長、異常警示）
- * 3. SectionChartContainer - 包含需關注客戶和模組使用量圖表
- * 4. SectionCustomerListTableContainer - 包含客戶列表表格
- * 5. CustomerDetailDrawer - 客戶詳細資訊抽屜
- *
- * 設計理念：
- * - 採用「直接包含子元件」模式
- * - 父元件只管理容器，不管理個別卡片
- * - 簡化引入，提高可維護性
+ * 客戶列表區域的參考
  */
+const customerTableRef = ref<InstanceType<typeof TableContainer> | null>(null)
 
 // ==================== 狀態管理 ====================
 
@@ -93,6 +84,16 @@ const isDrawerOpen = ref(false)
 const selectedCustomerId = ref<number | null>(null)
 
 // ==================== 事件處理 ====================
+
+/**
+ * 滾動到客戶列表區域
+ */
+const scrollToCustomerTable = () => {
+  customerTableRef.value?.$el.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  })
+}
 
 /**
  * 處理查看客戶詳情

@@ -145,7 +145,7 @@ const columns = ref<ColumnConfig[]>([
   {
     key: 'name',
     label: '客戶',
-    width: '180px',
+    width: '150px',
     sortable: true,
   },
   {
@@ -161,7 +161,7 @@ const columns = ref<ColumnConfig[]>([
   {
     key: 'lastUsed',
     label: '使用時間',
-    width: '150px',
+    width: '120px',
     sortable: true,
   },
   {

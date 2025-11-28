@@ -22,7 +22,7 @@
           class="h-4 w-4 border border-black/20 bg-white text-blue-600"
           @change="handleChange(option.value)"
         />
-        <span class="text-gray-900">{{ option.label }}</span>
+        <span class="text-neutral-900">{{ option.label }}</span>
       </label>
     </div>
 

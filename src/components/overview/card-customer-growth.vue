@@ -36,10 +36,10 @@
             />
           </div>
 
-          <span class="typo-base-bold text-gray-700"> 月度成長 </span>
+          <span class="typo-base-bold text-neutral-700"> 月度成長 </span>
         </div>
 
-        <span class="typo-2xl-bold text-gray-800">
+        <span class="typo-2xl-bold text-neutral-800">
           {{ formatGrowthRate(stats.growthRate) }}%
         </span>
       </div>

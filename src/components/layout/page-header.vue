@@ -34,7 +34,7 @@
       <div v-if="showBackButton">
         <button
           @click="handleBack"
-          class="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
+          class="flex items-center gap-2 text-neutral-600 hover:text-neutral-800 transition-colors"
         >
           <!-- 左箭頭 ICON（16x16px SVG） -->
           <img src="@/assets/icons/common/back-arrow.svg" alt="返回" class="h-4 w-4" />
@@ -49,12 +49,12 @@
       <!--
         即時時間（格式：YYYY.MM.DD HH:mm:ss）
       -->
-      <div class="typo-sm text-gray-900">
+      <div class="typo-sm text-neutral-900">
         {{ currentTime }}
       </div>
 
       <!-- 使用者名稱 -->
-      <div class="typo-sm-medium text-gray-900 text-right">{{ userName }}</div>
+      <div class="typo-sm-medium text-neutral-900 text-right">{{ userName }}</div>
     </div>
   </div>
 </template>

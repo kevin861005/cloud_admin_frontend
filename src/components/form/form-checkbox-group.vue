@@ -23,7 +23,7 @@
           style="border-radius: 4px"
           @change="handleChange(option.value)"
         />
-        <span class="text-gray-900">{{ option.label }}</span>
+        <span class="text-neutral-900">{{ option.label }}</span>
       </label>
     </div>
 

@@ -4,7 +4,7 @@
       <!-- 卡片標題 -->
       <div class="flex items-center gap-3">
         <img :src="EfficacyIcon" alt="系統紀錄" class="h-8 w-8" />
-        <h3 class="typo-base-bold text-gray-800">系統紀錄</h3>
+        <h3 class="typo-base-bold text-neutral-800">系統紀錄</h3>
       </div>
     </div>
 
@@ -21,7 +21,7 @@
         <div v-for="item in progressItems" :key="item.label" class="space-y-2">
           <!-- 標籤和百分比 -->
           <div class="flex items-center justify-between">
-            <span class="typo-sm-medium text-gray-700">
+            <span class="typo-sm-medium text-neutral-700">
               {{ item.label }}
             </span>
             <span class="typo-sm-bold" :class="getColorClasses(item.value).text">
@@ -41,7 +41,7 @@
       </div>
 
       <!-- 無資料 -->
-      <div v-else class="py-8 text-center text-sm text-gray-500">暫無效能監控資料</div>
+      <div v-else class="py-8 text-center text-sm text-neutral-500">暫無效能監控資料</div>
     </div>
   </div>
 </template>

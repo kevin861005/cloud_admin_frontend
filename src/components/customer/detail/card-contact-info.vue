@@ -4,30 +4,30 @@
       <!-- 卡片標題 -->
       <div class="flex items-center gap-2">
         <img :src="ContactIcon" alt="聯絡資訊" class="h-6 w-6" />
-        <h3 class="typo-base-bold text-gray-700">聯絡資訊</h3>
+        <h3 class="typo-base-bold text-neutral-700">聯絡資訊</h3>
       </div>
 
       <!-- 聯絡資訊列表 -->
       <div class="flex-1 space-y-1">
         <!-- 聯絡人 -->
         <div class="flex h-9 items-center justify-between">
-          <span class="typo-sm-medium text-gray-700">聯絡人</span>
-          <span class="typo-sm-medium text-gray-800">
+          <span class="typo-sm-medium text-neutral-700">聯絡人</span>
+          <span class="typo-sm-medium text-neutral-800">
             {{ contactInfo.contactPerson }}
           </span>
         </div>
 
         <!-- 聯絡電話 -->
         <div class="flex h-9 items-center justify-between">
-          <span class="typo-sm-medium text-gray-700">聯絡電話</span>
+          <span class="typo-sm-medium text-neutral-700">聯絡電話</span>
           <div class="flex items-center gap-2">
-            <span class="typo-sm-medium text-gray-800">
+            <span class="typo-sm-medium text-neutral-800">
               {{ contactInfo.phone }}
             </span>
             <img
               :src="copyIcon"
               alt="複製"
-              class="h-4 w-4 cursor-pointer text-gray-400 transition-opacity hover:opacity-70"
+              class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
               title="點擊複製 PinCode"
               @click="copyToClipboard(contactInfo.phone)"
             />
@@ -36,15 +36,15 @@
 
         <!-- 電子信箱 -->
         <div class="flex h-9 items-center justify-between">
-          <span class="typo-sm-medium text-gray-700">電子信箱</span>
+          <span class="typo-sm-medium text-neutral-700">電子信箱</span>
           <div class="flex items-center gap-2">
-            <span class="typo-sm-medium text-gray-800">
+            <span class="typo-sm-medium text-neutral-800">
               {{ contactInfo.email }}
             </span>
             <img
               :src="copyIcon"
               alt="複製"
-              class="h-4 w-4 cursor-pointer text-gray-400 transition-opacity hover:opacity-70"
+              class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
               title="點擊複製 PinCode"
               @click="copyToClipboard(contactInfo.email)"
             />

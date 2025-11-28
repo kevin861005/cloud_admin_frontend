@@ -6,7 +6,7 @@
         <div
           class="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent mx-auto"
         ></div>
-        <p class="text-sm text-gray-500">載入中...</p>
+        <p class="text-sm text-neutral-500">載入中...</p>
       </div>
     </div>
 

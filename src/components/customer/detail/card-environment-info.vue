@@ -4,40 +4,40 @@
       <!-- 卡片標題 -->
       <div class="flex items-center gap-2">
         <img :src="EnvironmentIcon" alt="環境設定" class="h-6 w-6" />
-        <h3 class="typo-base-bold text-gray-700">環境設定資訊</h3>
+        <h3 class="typo-base-bold text-neutral-700">環境設定資訊</h3>
       </div>
 
       <!-- 環境連結區塊 -->
       <div class="flex-1 space-y-1">
         <!-- 前台連結 -->
         <div class="flex h-9 items-center justify-between">
-          <span class="typo-sm-medium text-gray-700">前台連結</span>
+          <span class="typo-sm-medium text-neutral-700">前台連結</span>
           <BadgeButton text="前往" :icon="linkIcon" @click="openUrl(environmentInfo.frontendUrl)" />
         </div>
 
         <!-- 後台連結 -->
         <div class="flex h-9 items-center justify-between">
-          <span class="typo-sm-medium text-gray-700">後台連結</span>
+          <span class="typo-sm-medium text-neutral-700">後台連結</span>
           <BadgeButton text="前往" :icon="linkIcon" @click="openUrl(environmentInfo.backendUrl)" />
         </div>
 
         <!-- 快速自動導入 -->
         <div class="flex h-9 items-center justify-between">
-          <span class="typo-sm-medium text-gray-700">快速自動導入</span>
+          <span class="typo-sm-medium text-neutral-700">快速自動導入</span>
           <BadgeButton text="前往" :icon="linkIcon" @click="openUrl(environmentInfo.autoUrl)" />
         </div>
 
         <!-- PinCode -->
         <div class="flex h-9 items-center justify-between">
-          <span class="typo-sm-medium text-gray-700">PinCode</span>
+          <span class="typo-sm-medium text-neutral-700">PinCode</span>
           <div class="flex items-center gap-2">
-            <span class="typo-sm-medium text-gray-800">
+            <span class="typo-sm-medium text-neutral-800">
               {{ environmentInfo.pinCode }}
             </span>
             <img
               :src="copyIcon"
               alt="複製"
-              class="h-4 w-4 cursor-pointer text-gray-400 transition-opacity hover:opacity-70"
+              class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
               title="點擊複製 PinCode"
               @click="copyToClipboard(environmentInfo.pinCode)"
             />
@@ -46,15 +46,15 @@
 
         <!-- 客戶代號 -->
         <div class="flex h-9 items-center justify-between">
-          <span class="typo-sm-medium text-gray-700">客戶代號</span>
+          <span class="typo-sm-medium text-neutral-700">客戶代號</span>
           <div class="flex items-center gap-2">
-            <span class="typo-sm-medium text-gray-800">
+            <span class="typo-sm-medium text-neutral-800">
               {{ environmentInfo.domainName }}
             </span>
             <img
               :src="copyIcon"
               alt="複製"
-              class="h-4 w-4 cursor-pointer text-gray-400 transition-opacity hover:opacity-70"
+              class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
               title="點擊複製客戶代號"
               @click="copyToClipboard(environmentInfo.domainName)"
             />
