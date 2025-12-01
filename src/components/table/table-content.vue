@@ -113,8 +113,8 @@
               v-for="column in columns"
               :key="column.key"
               :class="[
-                'typo-sm whitespace-nowrap',
-                column.customRender === 'actions' ? 'p-0' : 'px-6 py-4',
+                'typo-sm whitespace-nowrap px-6 py-4',
+                column.align === 'left' && 'text-left',
                 column.align === 'center' && 'text-center',
                 column.align === 'right' && 'text-right',
               ]"
@@ -153,15 +153,7 @@
 
               <!-- Actions 操作按鈕 -->
               <template v-else-if="column.customRender === 'actions'">
-                <div
-                  :class="[
-                    'flex items-center gap-3 h-full',
-                    column.align === 'center' && 'justify-center',
-                    column.align === 'right' && 'justify-end',
-                    !column.align && 'justify-center',
-                  ]"
-                  @click.stop
-                >
+                <div class="inline-flex items-center gap-3" @click.stop>
                   <!-- 編輯按鈕 -->
                   <button
                     v-if="showEditButton"

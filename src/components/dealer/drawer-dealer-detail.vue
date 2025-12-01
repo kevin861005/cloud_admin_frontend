@@ -7,7 +7,7 @@
     <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
     <!-- 資料顯示或編輯 -->
-    <div v-else-if="dealerDetail" class="flex flex-col gap-3 px-5">
+    <div v-else-if="dealerDetail" class="drawer">
       <!-- 標題區 -->
       <DrawerHeader :title="dealerDetail.code" />
 
@@ -49,7 +49,7 @@
 
       <!-- 編輯模式 -->
       <template v-else>
-        <div class="flex flex-col gap-3 overflow-x-hidden">
+        <div class="edit">
           <FormSection>
             <FormInput
               ref="nameInputRef"

@@ -29,13 +29,13 @@
     </template>
 
     <template #moduleDisplay="{ row }">
-      <Badge :text="getModuleText(row)" :type="getModuleType()" />
+      <Badge v-if="row.module" :text="getModuleText(row)" :type="getModuleType()" />
     </template>
   </data-table>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, toRefs } from 'vue'
+import { ref, computed, onMounted, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 import Badge from '@/components/common/badge.vue'
 import DataTable from '@/components/table/data-table.vue'
@@ -100,6 +100,72 @@ const selectedIds = ref<(string | number)[]>([])
  * Router 實例
  */
 const router = useRouter()
+
+// ===== 動態篩選器選項 =====
+
+/**
+ * 從資料中取得不重複的值作為篩選選項
+ * @param key - 資料欄位名稱
+ * @param labelMap - 值與顯示文字的對應（可選）
+ */
+const getDistinctOptions = (
+  key: keyof CustomerListItem,
+  labelMap?: Record<string, string>,
+): { label: string; value: string }[] => {
+  // 取得所有不重複的值
+  const values = [...new Set(customers.value.map((item) => item[key]))]
+
+  // 轉換為選項格式
+  const options = values.map((value) => {
+    const strValue = value === null || value === undefined || value === '' ? '' : String(value)
+    const label = strValue === '' ? '(空白)' : (labelMap?.[strValue] ?? strValue)
+    return { label, value: strValue }
+  })
+
+  // 排序：空白放最後，其他按字母排序
+  options.sort((a, b) => {
+    if (a.value === '') return 1
+    if (b.value === '') return -1
+    return a.label.localeCompare(b.label, 'zh-TW')
+  })
+
+  // 加入「全部」選項
+  return [{ label: '全部', value: 'all' }, ...options]
+}
+
+/**
+ * 狀態值與顯示文字的對應
+ */
+const statusLabelMap: Record<string, string> = {
+  ACTIVE: '活躍',
+  INACTIVE: '低活躍',
+  UNUSED: '未使用',
+}
+
+/**
+ * 動態篩選器配置
+ * 根據 customers 資料動態產生選項
+ */
+const filters = computed<FilterConfig[]>(() => [
+  {
+    key: 'status',
+    label: '狀態:',
+    options: getDistinctOptions('status', statusLabelMap),
+    defaultValue: 'all',
+  },
+  {
+    key: 'module',
+    label: '模組:',
+    options: getDistinctOptions('module'),
+    defaultValue: 'all',
+  },
+  {
+    key: 'sales',
+    label: '業務:',
+    options: getDistinctOptions('sales'),
+    defaultValue: 'all',
+  },
+])
 
 // ===== 欄位配置 =====
 
@@ -204,46 +270,6 @@ const columns = ref<ColumnConfig[]>([
     customRender: 'actions',
   },
 ])
-
-// ===== 篩選器配置 =====
-
-/**
- * 篩選器配置
- */
-const filters: FilterConfig[] = [
-  {
-    key: 'status',
-    label: '狀態:',
-    options: [
-      { label: '全部', value: 'all' },
-      { label: '活躍', value: 'ACTIVE' },
-      { label: '低活躍', value: 'INACTIVE' },
-      { label: '未使用', value: 'UNUSED' },
-    ],
-    defaultValue: 'all',
-  },
-  {
-    key: 'module',
-    label: '模組:',
-    options: [
-      { label: '全部', value: 'all' },
-      { label: 'Master', value: 'Master' },
-      { label: 'GGF', value: 'GGF' },
-    ],
-    defaultValue: 'all',
-  },
-  {
-    key: 'sales',
-    label: '業務:',
-    options: [
-      { label: '全部', value: 'all' },
-      { label: '周經理', value: '周經理' },
-      { label: '林經理', value: '林經理' },
-      { label: '陳經理', value: '陳經理' },
-    ],
-    defaultValue: 'all',
-  },
-]
 
 // ===== 批量操作配置 =====
 

@@ -193,3 +193,14 @@
       brightness(100%) contrast(96%);
   }
 }
+
+/* drawer 相關樣式 */
+@layer components {
+  .drawer {
+    @apply flex flex-col gap-1 px-5 pb-10;
+  }
+
+  .drawer .edit {
+    @apply flex flex-col gap-3 overflow-x-hidden;
+  }
+}

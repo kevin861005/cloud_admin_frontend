@@ -1,36 +1,24 @@
 <template>
   <Drawer :is-open="isOpen" @close="handleClose">
     <!-- 載入狀態 -->
-    <div v-if="isLoading" class="flex items-center justify-center p-12">
-      <div class="text-center">
-        <div
-          class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"
-        ></div>
-        <p class="text-sm text-neutral-500">載入中...</p>
-      </div>
-    </div>
+    <Loading v-if="isLoading" message="載入資料中..." :show-spinner="true" />
 
     <!-- 錯誤狀態 -->
-    <div v-else-if="error" class="px-5 py-6">
-      <Alert type="error" title="載入失敗" :description="error" />
-    </div>
+    <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
     <!-- 資料顯示 -->
-    <div v-else-if="customerDetail" class="flex flex-col gap-3 px-5">
-      <!-- 標題區（客戶名稱 + 狀態 Badge） -->
-      <div class="flex items-center justify-between gap-2">
-        <h2 class="typo-xl-bold text-neutral-900">{{ customerDetail.customerName }}</h2>
-        <Badge :text="statusText" :type="statusBadgeType" />
-      </div>
-
-      <!-- 副標題（行業） -->
-      <p class="text-sm text-neutral-500">{{ customerDetail.industry }}</p>
+    <div v-else-if="customerDetail" class="drawer">
+      <DrawerHeader :title="customerDetail.customerName" :subtitle="customerDetail.industry">
+        <template #badge>
+          <Badge :text="statusText" :type="statusBadgeType" />
+        </template>
+      </DrawerHeader>
 
       <!-- 分隔線 -->
       <Divider />
 
       <!-- 環境網址區塊 -->
-      <InfoSection title="環境網址">
+      <InfoSection title="環境網址" class="mb-2">
         <InfoField label="快速自動輸入" :vertical="true">
           <a
             :href="customerDetail.autoUrl"
@@ -69,7 +57,7 @@
       <Divider />
 
       <!-- 詳細資訊區塊 -->
-      <InfoSection title="詳細資訊">
+      <InfoSection title="詳細資訊" class="mb-2">
         <InfoField label="PinCode" :value="customerDetail.pinCode" />
         <InfoField
           label="環境域名"
@@ -116,6 +104,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import Drawer from '@/components/drawer/drawer.vue'
+import DrawerHeader from '@/components/drawer/drawer-header.vue'
 import DrawerToast from '@/components/drawer/drawer-toast.vue'
 import InfoSection from '@/components/drawer/info-section.vue'
 import InfoField from '@/components/drawer/info-field.vue'

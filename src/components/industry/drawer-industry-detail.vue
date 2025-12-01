@@ -7,7 +7,7 @@
     <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
     <!-- 資料顯示或編輯 -->
-    <div v-else-if="industryData" class="flex flex-col gap-3 px-5">
+    <div v-else-if="industryData" class="drawer">
       <!-- 標題區 -->
       <DrawerHeader :title="industryData.code" />
 

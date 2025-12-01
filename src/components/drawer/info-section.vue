@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Title 區域：固定高度 40px -->
-    <div class="flex h-[40px] items-center justify-between">
+    <div class="flex h-7 items-center justify-between">
       <!-- 左側：標題文字 -->
       <h3 class="typo-sm-bold text-neutral-600">
         {{ title }}
