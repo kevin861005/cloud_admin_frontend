@@ -28,6 +28,11 @@ export interface UserListItem {
   updatedAt: string
 }
 
+export interface SaleListItem {
+  id: string
+  name: string
+}
+
 /**
  * 新增使用者請求
  */

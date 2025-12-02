@@ -20,9 +20,8 @@
     :show-border="true"
     title="列表"
     item-name="模組"
-    row-key="id"
+    row-key="code"
     empty-text="目前沒有模組資料"
-    v-model:selected-ids="selectedIds"
     @row-view="handleView"
     @add-click="handleAdd"
   >
@@ -76,11 +75,6 @@ const authStore = useAuthStore()
 const modules = ref<ModuleListItem[]>([])
 
 /**
- * 選取的環境 ID
- */
-const selectedIds = ref<(string | number)[]>([])
-
-/**
  * 錯誤訊息
  */
 const errorMessage = ref<string | null>(null)
@@ -100,25 +94,16 @@ const hasPermission = computed(() => {
 /**
  * 取得狀態 Badge 類型
  */
-const getStatusType = (row: Record<string, unknown>): 'success' | 'error' | 'default' => {
-  const status = row.status as string
-  if (status === 'ACTIVE') return 'success'
-  if (status === 'INACTIVE') return 'error'
-  return 'default' // PENDING
+const getStatusType = (row: Record<string, unknown>): 'success' | 'error' => {
+  return row.isActive === true ? 'success' : 'error'
 }
 
 /**
  * 取得狀態顯示文字
  */
 const getStatusText = (row: Record<string, unknown>): string => {
-  switch (row.status) {
-    case 'ACTIVE':
-      return '啟用'
-    case 'INACTIVE':
-      return '停用'
-    default:
-      return '-'
-  }
+  console.log('row.isActive:', row.isActive)
+  return row.isActive === true ? '啟用' : '停用'
 }
 
 /**
@@ -148,7 +133,7 @@ const columns = ref<ColumnConfig[]>([
     sortKey: 'status',
   },
   {
-    key: 'createdAt',
+    key: 'createdDate',
     label: '建立日',
     width: '150px',
     sortable: false,
@@ -168,17 +153,23 @@ const columns = ref<ColumnConfig[]>([
  * 載入模組列表
  * 從 API 取得所有模組資料
  *
- * 開發階段：使用 getMockModules() 回傳模擬資料
- * 正式環境：使用 getAllModules() 呼叫後端 API
  */
 const loadModules = async () => {
-  isLoading.value = true
-  try {
-    // TODO: 等後端 API 完成後，切換為 getAllModules()
-    // const data = await moduleService.getAllModules()
+  if (!hasPermission.value) {
+    return
+  }
 
-    // 開發階段：使用 Mock 資料
-    modules.value = await moduleService.getMockModules()
+  isLoading.value = true
+  errorMessage.value = null
+
+  try {
+    const response = await moduleService.getAllModules()
+
+    if (response.success && response.data) {
+      modules.value = response.data
+    } else {
+      errorMessage.value = response.message || '載入模組列表失敗'
+    }
   } catch (error) {
     console.error('載入模組列表錯誤:', error)
     // TODO: 顯示錯誤訊息給使用者
@@ -223,12 +214,5 @@ defineExpose({
    * 用於新增、編輯、刪除後刷新列表
    */
   refresh: loadModules,
-
-  /**
-   * 清空選取狀態
-   */
-  clearSelection: () => {
-    selectedIds.value = []
-  },
 })
 </script>

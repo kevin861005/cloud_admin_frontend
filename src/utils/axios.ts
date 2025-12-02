@@ -3,24 +3,30 @@
  *
  * 功能：
  * 1. 設定 Base URL
- * 2. 自動附加 JWT Token
- * 3. 自動刷新過期的 Token
+ * 2. 自動附加 JWT Token（Access Token）
+ * 3. 自動刷新過期的 Token（Refresh Token 由 HttpOnly Cookie 攜帶）
  * 4. 統一錯誤處理
+ *
+ * 安全機制：
+ * - Access Token：儲存在 localStorage，每次請求自動附加
+ * - Refresh Token：由後端設為 HttpOnly Cookie，前端無法存取，瀏覽器自動攜帶
  */
 
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import type { ApiResponse } from '@/types/common'
-import type { RefreshTokenRequest, RefreshTokenResponse } from '@/types/auth'
+import type { LoginResponse } from '@/types/auth'
 
 /**
  * 建立 Axios 實例
  */
 const apiClient = axios.create({
-  baseURL: '/cloudadmin/api', // API Base URL
-  timeout: 30000, // 請求逾時時間（30 秒）
+  baseURL: '/cloudadmin/api',
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
+  // 允許跨域請求攜帶 Cookie（HttpOnly Cookie 需要此設定）
+  withCredentials: true,
 })
 
 /**
@@ -49,7 +55,15 @@ function onTokenRefreshed(token: string) {
 }
 
 /**
- * 請求攔截器：自動附加 Token
+ * 清除登入狀態並跳轉到登入頁
+ */
+function clearAuthAndRedirect() {
+  localStorage.removeItem('accessToken')
+  window.location.href = '/cloudadmin/login'
+}
+
+/**
+ * 請求攔截器：自動附加 Access Token
  */
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -69,10 +83,12 @@ apiClient.interceptors.request.use(
 
 /**
  * 回應攔截器：自動刷新 Token
+ *
+ * 當 Access Token 過期（401 錯誤）時，自動呼叫 /auth/refresh
+ * Refresh Token 會由瀏覽器自動從 HttpOnly Cookie 中攜帶
  */
 apiClient.interceptors.response.use(
   (response) => {
-    // 成功回應，直接返回 data
     return response
   },
   async (error: AxiosError<ApiResponse<null>>) => {
@@ -80,12 +96,9 @@ apiClient.interceptors.response.use(
 
     // 如果是 401 錯誤，且還沒重試過，嘗試刷新 Token
     if (error.response?.status === 401 && !originalRequest._retry) {
-      // 避免無限循環
+      // 避免無限循環：刷新 Token API 本身失敗時不再重試
       if (originalRequest.url?.includes('/auth/refresh')) {
-        // 如果刷新 Token 也失敗，清除登入狀態並跳轉到登入頁
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
-        window.location.href = '/cloudadmin/login'
+        clearAuthAndRedirect()
         return Promise.reject(error)
       }
 
@@ -94,28 +107,15 @@ apiClient.interceptors.response.use(
       if (!isRefreshing) {
         isRefreshing = true
 
-        const refreshToken = localStorage.getItem('refreshToken')
-
-        if (!refreshToken) {
-          // 沒有 Refresh Token，清除登入狀態並跳轉到登入頁
-          localStorage.removeItem('accessToken')
-          window.location.href = '/cloudadmin/login'
-          return Promise.reject(error)
-        }
-
         try {
-          // 呼叫刷新 Token API
-          const response = await axios.post<ApiResponse<RefreshTokenResponse>>(
-            '/cloudadmin/api/auth/refresh',
-            { refreshToken } as RefreshTokenRequest,
-          )
+          // 呼叫刷新 Token API（不需要傳參數，Refresh Token 由 Cookie 自動攜帶）
+          const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/refresh')
 
           if (response.data.success && response.data.data) {
-            const { accessToken, refreshToken: newRefreshToken } = response.data.data
+            const { accessToken } = response.data.data
 
-            // 更新本地儲存的 Token
+            // 更新本地儲存的 Access Token
             localStorage.setItem('accessToken', accessToken)
-            localStorage.setItem('refreshToken', newRefreshToken)
 
             // 通知所有等待的請求
             onTokenRefreshed(accessToken)
@@ -131,9 +131,7 @@ apiClient.interceptors.response.use(
           }
         } catch (refreshError) {
           // Token 刷新失敗，清除登入狀態並跳轉到登入頁
-          localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
-          window.location.href = '/cloudadmin/login'
+          clearAuthAndRedirect()
           return Promise.reject(refreshError)
         } finally {
           isRefreshing = false

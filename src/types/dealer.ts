@@ -8,9 +8,6 @@
  * 經銷商列表資料
  */
 export interface DealerListItem {
-  /** 經銷商 ID */
-  id: number
-
   /** 經銷商編號 */
   code: string
 
@@ -18,8 +15,7 @@ export interface DealerListItem {
   name: string
 
   /** 業務窗口 */
-  sales: string
-
+  sales: { id: string; name: string }
   /** 聯絡人 */
   contactPerson: string
 
@@ -56,8 +52,57 @@ export interface DealerDetailInfo {
   description: string
 
   /** 建立日期 */
-  createdAt: string
+  createdDate: string
 
   /** 建立者 */
   createdBy: { id: string; name: string } | null
+}
+
+export interface CreateDealerRequest {
+  /** 經銷商編號 */
+  code: string
+
+  /** 經銷商名稱 */
+  name: string
+
+  /** 業務窗口 */
+  sales: string
+
+  /** 聯絡人 */
+  contactPerson: string
+
+  /** 連絡電話 */
+  contactPhone: string
+
+  /** 電子信箱 */
+  email: string
+
+  /** 地址 */
+  address: string
+
+  /** 說明 */
+  description: string
+}
+
+export interface UpdateDealerRequest {
+  /** 經銷商名稱 */
+  name: string
+
+  /** 業務窗口 */
+  sales: string
+
+  /** 聯絡人 */
+  contactPerson: string
+
+  /** 連絡電話 */
+  contactPhone: string
+
+  /** 電子信箱 */
+  email: string
+
+  /** 地址 */
+  address: string
+
+  /** 說明 */
+  description: string
 }

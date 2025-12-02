@@ -8,7 +8,7 @@
 
     <ModuleDetailDrawer
       :is-open="isDrawerOpen"
-      :module-data="selectedModule"
+      :code="selectedCode"
       @close="handleCloseDrawer"
       @updated="handleModuleUpdated"
     />
@@ -22,15 +22,15 @@ import PageTitle from '@/components/common/page-title.vue'
 import TableContainer from '@/components/table/table-container.vue'
 import ModuleTable from '@/components/module/table-module.vue'
 import ModuleDetailDrawer from '@/components/module/drawer-module-detail.vue'
-import type { ModuleListItem } from '@/types/module'
 
 const router = useRouter()
-const tableRef = ref()
+
+const tableRef = ref<{ refresh: () => Promise<void> } | null>(null)
 
 /**
- * 選中的模組資料
+ * 選中的模組 ID
  */
-const selectedModule = ref<ModuleListItem | null>(null)
+const selectedCode = ref<string | null>(null)
 
 /**
  * Drawer 開啟狀態
@@ -41,13 +41,11 @@ const isDrawerOpen = ref(false)
  * 處理查看模組
  * 開啟 Drawer 顯示模組詳情
  */
-const handleView = (row: Record<string, unknown>) => {
-  // 型別轉換
-  const module = row as unknown as ModuleListItem
+const handleView = (module: Record<string, unknown>) => {
   console.log('查看模組:', module)
 
   // 設定選中的模組資料並開啟 Drawer
-  selectedModule.value = module
+  selectedCode.value = module.code as string
   isDrawerOpen.value = true
 }
 
@@ -58,7 +56,7 @@ const handleCloseDrawer = () => {
   isDrawerOpen.value = false
   // 延遲清空資料，避免 Drawer 關閉動畫時資料消失
   setTimeout(() => {
-    selectedModule.value = null
+    selectedCode.value = null
   }, 300)
 }
 
@@ -68,9 +66,7 @@ const handleCloseDrawer = () => {
  */
 const handleModuleUpdated = () => {
   // 重新載入表格
-  if (tableRef.value && tableRef.value.refresh) {
-    tableRef.value.refresh()
-  }
+  tableRef.value?.refresh()
 }
 
 /**

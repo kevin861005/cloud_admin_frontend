@@ -95,13 +95,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import PageTitle from '@/components/common/page-title.vue'
 import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'
 import FormSelect from '@/components/form/form-select.vue'
 import FormButtonGroup from '@/components/form/form-button-group.vue'
+import type { CreateDealerRequest } from '@/types/dealer'
+import type { SaleListItem } from '@/types/user'
+import type { FieldError } from '@/types/common'
+import { dealerService } from '@/services/dealer.service'
+import { userService } from '@/services/user.service'
 
 const router = useRouter()
 
@@ -121,13 +126,13 @@ const formData = ref({
 
 // ===== 欄位是否必填 =====
 const fieldRequired = {
-  code: true,
-  name: true,
-  sales: true,
-  contactPerson: true,
-  contactPhone: true,
-  email: true,
-  address: true,
+  code: false,
+  name: false,
+  sales: false,
+  contactPerson: false,
+  contactPhone: false,
+  email: false,
+  address: false,
   description: false,
 }
 
@@ -142,13 +147,26 @@ const errors = ref({
   description: '',
 })
 
-const salesOptions = [
-  { label: '陳奶輪', value: 'kevin' },
-  { label: '猴靜安', value: 'andy' },
-  { label: '王責剩', value: 'kelvin' },
-  { label: '黃剩父', value: 'max' },
-  { label: '無信溶', value: 'richard' },
-]
+// ===== 生命週期 =====
+
+onMounted(() => {
+  loadSaleOptions()
+})
+
+/**
+ * 業務列表（原始資料）
+ */
+const salesList = ref<SaleListItem[]>([])
+
+/**
+ * 業務選項（轉換為 FormSelect 格式）
+ */
+const salesOptions = computed(() => {
+  return salesList.value.map((sale) => ({
+    label: sale.name,
+    value: sale.id,
+  }))
+})
 
 // ===== Template Refs =====
 const codeInputRef = ref<{ focus: () => void } | null>(null)
@@ -163,6 +181,116 @@ const descriptionInputRef = ref<{ focus: () => void } | null>(null)
 // ===== 事件處理 =====
 
 /**
+ * 載入權限選項
+ */
+const loadSaleOptions = async () => {
+  try {
+    const response = await userService.getAllSales()
+
+    if (response.success && response.data) {
+      salesList.value = response.data
+      console.log('業務選項載入成功:', salesOptions.value)
+    } else {
+      console.error('載入業務選項失敗:', response.message)
+      salesList.value = []
+    }
+  } catch (error) {
+    console.error('載入業務選項錯誤:', error)
+    salesList.value = []
+  }
+}
+
+const handleFieldErrors = (fieldErrors: FieldError[]) => {
+  console.log('handleFieldErrors 被呼叫, 收到的錯誤:', fieldErrors)
+
+  // 清空現有錯誤
+  errors.value = {
+    code: '',
+    name: '',
+    sales: '',
+    contactPerson: '',
+    contactPhone: '',
+    email: '',
+    address: '',
+    description: '',
+  }
+
+  // 欄位名稱對應表 (後端 -> 前端)
+  const fieldMap: Record<string, keyof typeof errors.value> = {
+    code: 'code',
+    name: 'name',
+    sales: 'sales',
+    contactPerson: 'contactPerson',
+    contactPhone: 'contactPhone',
+    email: 'email',
+    address: 'address',
+    description: 'description',
+  }
+
+  // Ref 對應表 (後端欄位名稱 -> Ref)
+  const fieldRefMap: Record<string, typeof codeInputRef> = {
+    code: codeInputRef,
+    name: nameInputRef,
+    sales: salesInputRef,
+    contactPerson: contactPersonInputRef,
+    contactPhone: contactPhoneInputRef,
+    email: emailInputRef,
+    address: addressInputRef,
+    description: descriptionInputRef,
+  }
+
+  // 記錄哪些欄位有錯誤
+  const fieldsWithErrors = new Set<string>()
+
+  // 遍歷所有欄位錯誤
+  fieldErrors.forEach((fieldError) => {
+    const frontendField = fieldMap[fieldError.field]
+
+    if (frontendField) {
+      // 如果該欄位已經有錯誤訊息,用分號串接
+      if (errors.value[frontendField]) {
+        errors.value[frontendField] += `; ${fieldError.message}`
+      } else {
+        errors.value[frontendField] = fieldError.message
+      }
+
+      // 記錄有錯誤的欄位 (使用後端欄位名稱)
+      fieldsWithErrors.add(fieldError.field)
+    }
+  })
+
+  console.log('有錯誤的欄位:', Array.from(fieldsWithErrors))
+
+  // 根據畫面上的欄位順序,找到第一個有錯誤的欄位並 focus
+  const fieldOrder = [
+    'code',
+    'name',
+    'sales',
+    'contactPerson',
+    'contactPhone',
+    'email',
+    'address',
+    'description',
+  ]
+
+  for (const field of fieldOrder) {
+    if (fieldsWithErrors.has(field)) {
+      console.log('嘗試 focus 到:', field)
+      const refToFocus = fieldRefMap[field]
+      console.log('Ref 物件:', refToFocus?.value)
+
+      if (refToFocus?.value?.focus) {
+        console.log('呼叫 focus()')
+        refToFocus.value.focus()
+      } else {
+        console.log('focus 方法不存在')
+      }
+      break // 只 focus 第一個錯誤欄位
+    }
+  }
+}
+
+/**
  * 取消按鈕
  * 返回經銷商設定列表
  */
@@ -170,7 +298,59 @@ const handleCancel = () => {
   router.push('/settings/dealers')
 }
 
-const handleConfirm = async () => {}
+const handleConfirm = async () => {
+  errors.value = {
+    code: '',
+    name: '',
+    sales: '',
+    contactPerson: '',
+    contactPhone: '',
+    email: '',
+    address: '',
+    description: '',
+  }
+
+  // 開始提交
+  isSubmitting.value = true
+
+  try {
+    // 準備提交的資料
+    const requestData: CreateDealerRequest = {
+      code: formData.value.code,
+      name: formData.value.name,
+      sales: formData.value.sales,
+      contactPerson: formData.value.contactPerson,
+      contactPhone: formData.value.contactPhone,
+      email: formData.value.email,
+      address: formData.value.address,
+      description: formData.value.description,
+    }
+
+    // 呼叫 API
+    const response = await dealerService.createDealer(requestData)
+
+    if (response.success) {
+      // 成功:返回列表頁面
+      router.push('/settings/dealers?success=新增成功')
+    } else {
+      // 失敗:檢查是否為欄位驗證錯誤
+      if (response.code === 'VALIDATION_ERROR' && response.data) {
+        // 後端欄位驗證錯誤
+        const fieldErrors = response.data as FieldError[]
+        handleFieldErrors(fieldErrors)
+      } else if (response.code === 'DEALER_002') {
+        // 經銷商已存在
+        errors.value.code = response.message
+        codeInputRef.value?.focus()
+      }
+    }
+  } catch (error) {
+    console.error('新增經銷商時發生錯誤:', error)
+    alert('新增經銷商時發生錯誤,請稍後再試')
+  } finally {
+    isSubmitting.value = false
+  }
+}
 </script>
 
 <style scoped></style>

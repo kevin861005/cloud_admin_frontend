@@ -20,12 +20,14 @@
     :show-border="true"
     title="列表"
     item-name="經銷商"
-    row-key="id"
+    row-key="code"
     empty-text="目前沒有經銷商資料"
-    v-model:selected-ids="selectedIds"
     @row-view="handleView"
     @add-click="handleAdd"
   >
+    <template #salesDisplay="{ row }">
+      {{ getSalesName(row) }}
+    </template>
   </data-table>
 
   <!-- 錯誤訊息顯示 -->
@@ -71,11 +73,6 @@ const authStore = useAuthStore()
 const dealers = ref<DealerListItem[]>([])
 
 /**
- * 選取的環境 ID
- */
-const selectedIds = ref<(string | number)[]>([])
-
-/**
  * 錯誤訊息
  */
 const errorMessage = ref<string | null>(null)
@@ -89,6 +86,14 @@ const hasPermission = computed(() => {
   const permissions = authStore.userInfo?.permissions || []
   return permissions.includes('settings.dealers')
 })
+
+/**
+ * 取得業務名稱
+ */
+const getSalesName = (row: Record<string, unknown>): string => {
+  const sales = row.sales as { id: string; name: string } | null
+  return sales?.name || '-'
+}
 
 // ===== 欄位配置 =====
 
@@ -111,6 +116,8 @@ const columns = ref<ColumnConfig[]>([
     key: 'sales',
     label: '負責業務',
     width: '150px',
+    customRender: 'slot',
+    slotName: 'salesDisplay',
   },
   {
     key: 'contactPerson',
@@ -148,11 +155,13 @@ const columns = ref<ColumnConfig[]>([
 const loadDealers = async () => {
   isLoading.value = true
   try {
-    // TODO: 等後端 API 完成後，切換為 getAllDealers()
-    // const data = await dealerService.getAllDealers()
+    const response = await dealerService.getAllDealers()
 
-    // 開發階段：使用 Mock 資料
-    dealers.value = await dealerService.getMockDealers()
+    if (response.success && response.data) {
+      dealers.value = response.data
+    } else {
+      errorMessage.value = response.message || '載入經銷商列表失敗'
+    }
   } catch (error) {
     console.error('載入經銷商列表錯誤:', error)
     // TODO: 顯示錯誤訊息給使用者
@@ -197,12 +206,5 @@ defineExpose({
    * 用於新增、編輯、刪除後刷新列表
    */
   refresh: loadDealers,
-
-  /**
-   * 清空選取狀態
-   */
-  clearSelection: () => {
-    selectedIds.value = []
-  },
 })
 </script>

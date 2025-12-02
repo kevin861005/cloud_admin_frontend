@@ -1,6 +1,6 @@
 /**
  * 選單狀態管理 Store
- * 
+ *
  * 功能：
  * 1. 管理當前選中的選單項目
  * 2. 管理展開的群組選單狀態
@@ -49,7 +49,7 @@ export const useMenuStore = defineStore('menu', () => {
 
   /**
    * 設定當前選中的選單項目
-   * 
+   *
    * @param key 選單項目的 key
    */
   function setActiveMenu(key: string) {
@@ -60,7 +60,7 @@ export const useMenuStore = defineStore('menu', () => {
 
   /**
    * 切換群組選單的展開/收合狀態
-   * 
+   *
    * @param groupKey 群組選單的 key（例如：'settings'）
    */
   function toggleGroup(groupKey: string) {
@@ -80,7 +80,7 @@ export const useMenuStore = defineStore('menu', () => {
 
   /**
    * 檢查群組是否已展開
-   * 
+   *
    * @param groupKey 群組選單的 key
    * @returns true 表示已展開，false 表示已收合
    */
@@ -90,7 +90,7 @@ export const useMenuStore = defineStore('menu', () => {
 
   /**
    * 切換選單收合/展開狀態
-   * 
+   *
    * 用途：點擊 Container 左側的收合按鈕時呼叫
    */
   function toggleCollapsed() {
@@ -101,7 +101,7 @@ export const useMenuStore = defineStore('menu', () => {
 
   /**
    * 重設選單狀態（清空 localStorage）
-   * 
+   *
    * 用途：登出時呼叫，清除所有選單狀態
    */
   function resetMenuState() {

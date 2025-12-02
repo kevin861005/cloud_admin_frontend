@@ -8,7 +8,7 @@
 
     <DealerDetailDrawer
       :is-open="isDrawerOpen"
-      :dealer-id="selectedDealerId"
+      :code="selectedDealerId"
       @close="closeDrawer"
       @updated="handleDealerUpdated"
     />
@@ -25,7 +25,7 @@ import DealerDetailDrawer from '@/components/dealer/drawer-dealer-detail.vue'
 
 // ===== Drawer 狀態 =====
 const isDrawerOpen = ref(false)
-const selectedDealerId = ref<number | null>(null)
+const selectedDealerId = ref<string | null>(null)
 
 const router = useRouter()
 
@@ -40,7 +40,7 @@ const tableRef = ref<{ refresh: () => Promise<void> } | null>(null)
  */
 const handleView = (dealer: Record<string, unknown>) => {
   console.log('查看經銷商:', dealer)
-  selectedDealerId.value = dealer.id as number
+  selectedDealerId.value = dealer.code as string
   isDrawerOpen.value = true
 }
 
@@ -56,8 +56,7 @@ const closeDrawer = () => {
 }
 
 const handleDealerUpdated = () => {
-  // 呼叫表格的 refresh 方法
-  // tableRef.value?.refresh()
+  tableRef.value?.refresh()
 }
 
 const handleAdd = () => {

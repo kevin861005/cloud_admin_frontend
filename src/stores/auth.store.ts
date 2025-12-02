@@ -5,6 +5,10 @@
  * 1. 管理登入狀態
  * 2. 儲存使用者資訊（從 /api/users/me 取得）
  * 3. 提供權限檢查方法
+ *
+ * 安全機制：
+ * - Access Token：儲存在 localStorage（短期有效）
+ * - Refresh Token：由後端設為 HttpOnly Cookie（前端無法存取）
  */
 
 import { defineStore } from 'pinia'
@@ -16,6 +20,7 @@ import { authService } from '@/services/auth.service'
 import { userService } from '@/services/user.service'
 import { useRouter } from 'vue-router'
 import type { AxiosError } from 'axios'
+import { useMenuStore } from '@/stores/menu.store'
 
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
@@ -38,7 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
   const errorMessage = ref<string | null>(null)
 
   /**
-   * ✨ 新增：響應式的 Token 狀態追蹤
+   * 響應式的 Token 狀態追蹤
    * 用於解決 localStorage 不是響應式的問題
    */
   const hasToken = ref(false)
@@ -49,19 +54,11 @@ export const useAuthStore = defineStore('auth', () => {
    * 是否已登入
    *
    * 判斷條件：
-   * 1. hasToken 為 true（響應式追蹤 localStorage 中的 Token）
+   * 1. hasToken 為 true（響應式追蹤 localStorage 中的 Access Token）
    * 2. userInfo 不為 null（已呼叫 /api/users/me 取得資訊）
    */
   const isAuthenticated = computed(() => {
-    const authenticated = hasToken.value && userInfo.value !== null
-
-    // 診斷日誌（生產環境可移除）
-    console.log('[Auth Store] isAuthenticated 計算:')
-    console.log('  hasToken:', hasToken.value)
-    console.log('  userInfo:', userInfo.value ? userInfo.value : 'userInfo is null')
-    console.log('  結果:', authenticated ? '已認證' : '未認證')
-
-    return authenticated
+    return hasToken.value && userInfo.value !== null
   })
 
   /**
@@ -75,7 +72,7 @@ export const useAuthStore = defineStore('auth', () => {
   const userPermissions = computed(() => userInfo.value?.permissions || [])
 
   /**
-   * 使用者名稱（用於顯示在 Container）
+   * 使用者名稱（用於顯示在 Header）
    */
   const userName = computed(() => userInfo.value?.userName || '')
 
@@ -85,8 +82,8 @@ export const useAuthStore = defineStore('auth', () => {
    * 登入
    *
    * 流程：
-   * 1. 呼叫 /api/auth/login 取得 Token
-   * 2. 儲存 Token 到 localStorage 並更新響應式狀態
+   * 1. 呼叫 /api/auth/login 取得 Access Token（Refresh Token 由後端設為 HttpOnly Cookie）
+   * 2. 儲存 Access Token 到 localStorage
    * 3. 呼叫 /api/users/me 取得使用者資訊
    * 4. 儲存使用者資訊到 Store
    *
@@ -112,35 +109,28 @@ export const useAuthStore = defineStore('auth', () => {
 
       console.log('登入 API 成功')
 
-      // 步驟 2: 儲存 Token 到 localStorage 並更新響應式狀態
-      console.log('2. 儲存 Token')
-      const { accessToken, refreshToken } = loginResponse.data
+      // 步驟 2: 只儲存 Access Token（Refresh Token 由後端設為 HttpOnly Cookie）
+      console.log('2. 儲存 Access Token')
+      const { accessToken } = loginResponse.data
 
       localStorage.setItem('accessToken', accessToken)
-      localStorage.setItem('refreshToken', refreshToken)
-
-      // ✨ 關鍵：更新響應式狀態
       hasToken.value = true
 
-      console.log('   Token 儲存完成')
-      console.log('   accessToken:', accessToken.substring(0, 20) + '...')
-      console.log('   hasToken.value:', hasToken.value)
+      console.log('   Access Token 儲存完成')
 
       // 步驟 3: 呼叫 /api/users/me 取得使用者資訊
       console.log('3. 呼叫 /api/users/me')
       const userInfoResponse = await userService.getCurrentUserInfo()
 
       if (!userInfoResponse.success || !userInfoResponse.data) {
-        // 如果無法取得使用者資訊，清除 Token 並返回失敗
-        console.log(' 無法取得使用者資訊')
+        console.log('無法取得使用者資訊')
         localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
         hasToken.value = false
         errorMessage.value = '無法取得使用者資訊'
         return false
       }
 
-      console.log(' 取得使用者資訊成功')
+      console.log('取得使用者資訊成功')
 
       // 步驟 4: 儲存使用者資訊到 Store
       console.log('4. 儲存使用者資訊到 Store')
@@ -152,23 +142,11 @@ export const useAuthStore = defineStore('auth', () => {
         roles: userInfoResponse.data.roles,
       }
 
-      console.log('   使用者資訊儲存完成')
-      console.log('   userName:', userInfo.value.userName)
-      console.log('   permissions:', userInfo.value.permissions.length, '個權限')
-
-      // 驗證最終狀態
-      console.log('=== 最終狀態驗證 ===')
-      console.log('  hasToken.value:', hasToken.value)
-      console.log('  userInfo.value:', userInfo.value ? userInfo.value : 'userInfo is null')
-      console.log('  isAuthenticated.value:', isAuthenticated.value)
       console.log('=== Auth Store: 登入完成 ===')
-
-      // 登入成功
       return true
     } catch (err) {
-      console.error('❌ 登入錯誤:', err)
+      console.error('登入錯誤:', err)
 
-      // 處理錯誤訊息
       const error = err as AxiosError<ApiResponse<null>>
 
       if (error.response?.data?.message) {
@@ -179,9 +157,8 @@ export const useAuthStore = defineStore('auth', () => {
         errorMessage.value = '登入失敗，請稍後再試'
       }
 
-      // 清除可能已儲存的 Token
+      // 清除 Access Token
       localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
       hasToken.value = false
       userInfo.value = null
 
@@ -195,29 +172,26 @@ export const useAuthStore = defineStore('auth', () => {
    * 登出
    *
    * 流程：
-   * 1. 呼叫 /api/auth/logout 撤銷 Refresh Token
-   * 2. 清除 localStorage 中的 Token
-   * 3. 清除響應式狀態
-   * 4. 清除 userInfo
-   * 5. 跳轉到登入頁
+   * 1. 呼叫 /api/auth/logout（後端會從 Cookie 讀取並撤銷 Refresh Token，然後清除 Cookie）
+   * 2. 清除 localStorage 中的 Access Token
+   * 3. 清除 Store 狀態
+   * 4. 跳轉到登入頁
    */
   async function logout(): Promise<void> {
     try {
-      const refreshToken = localStorage.getItem('refreshToken')
-      if (refreshToken) {
-        await authService.logout(refreshToken)
-      }
+      // 呼叫登出 API（不需要傳參數，Refresh Token 由 Cookie 攜帶）
+      await authService.logout()
     } catch (err) {
       console.error('登出錯誤:', err)
-      // 即使登出 API 失敗，仍然清除本地資料
     } finally {
-      // 清除本地資料
+      // 清除本地 Access Token
       localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
       hasToken.value = false
       userInfo.value = null
 
-      // 跳轉到登入頁
+      const menuStore = useMenuStore()
+      menuStore.resetMenuState()
+
       router.push('/login')
     }
   }
@@ -225,7 +199,7 @@ export const useAuthStore = defineStore('auth', () => {
   /**
    * 從 Token 恢復使用者資訊
    *
-   * 用途：頁面重新整理時，如果 localStorage 中有 Token，
+   * 用途：頁面重新整理時，如果 localStorage 中有 Access Token，
    * 則呼叫 /api/users/me 重新取得使用者資訊
    */
   async function restoreUserInfo(): Promise<void> {
@@ -236,7 +210,6 @@ export const useAuthStore = defineStore('auth', () => {
       return
     }
 
-    // 有 Token，更新響應式狀態
     hasToken.value = true
 
     try {
@@ -250,28 +223,22 @@ export const useAuthStore = defineStore('auth', () => {
           permissions: userInfoResponse.data.permissions,
           roles: userInfoResponse.data.roles,
         }
-        console.log(' 恢復使用者資訊成功:', userInfo.value.userName)
+        console.log('恢復使用者資訊成功:', userInfo.value.userName)
       } else {
-        // 如果無法取得使用者資訊，清除 Token
+        // 無法取得使用者資訊，清除 Access Token
         localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
         hasToken.value = false
-        console.log(' 恢復使用者資訊失敗')
+        console.log('恢復使用者資訊失敗')
       }
     } catch (err) {
       console.error('恢復使用者資訊錯誤:', err)
-      // 如果 API 呼叫失敗，清除 Token
       localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
       hasToken.value = false
     }
   }
 
   /**
    * 檢查是否有特定權限
-   *
-   * @param permission 權限代號（例如：'overview', 'settings.accounts'）
-   * @returns true 表示有權限，false 表示無權限
    */
   function hasPermission(permission: string): boolean {
     return userPermissions.value.includes(permission)
@@ -279,9 +246,6 @@ export const useAuthStore = defineStore('auth', () => {
 
   /**
    * 檢查是否有特定角色
-   *
-   * @param role 角色名稱（例如：'ADMIN', 'USER'）
-   * @returns true 表示有角色，false 表示無角色
    */
   function hasRole(role: string): boolean {
     return userRoles.value.includes(role)

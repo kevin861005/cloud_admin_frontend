@@ -8,7 +8,7 @@
 
     <IndustryDetailDrawer
       :is-open="isDrawerOpen"
-      :industry-data="selectedIndustry"
+      :code="selectedCode"
       @close="handleCloseDrawer"
       @updated="handleIndustryUpdated"
     />
@@ -22,15 +22,15 @@ import PageTitle from '@/components/common/page-title.vue'
 import TableContainer from '@/components/table/table-container.vue'
 import IndustryTable from '@/components/industry/table-industry.vue'
 import IndustryDetailDrawer from '@/components/industry/drawer-industry-detail.vue'
-import type { IndustryListItem } from '@/types/industry'
 
 const router = useRouter()
-const tableRef = ref()
+
+const tableRef = ref<{ refresh: () => Promise<void> } | null>(null)
 
 /**
- * 選中的模組資料
+ * 選中的產業別 ID
  */
-const selectedIndustry = ref<IndustryListItem | null>(null)
+const selectedCode = ref<string | null>(null)
 
 /**
  * Drawer 開啟狀態
@@ -38,16 +38,15 @@ const selectedIndustry = ref<IndustryListItem | null>(null)
 const isDrawerOpen = ref(false)
 
 /**
- * 處理查看模組
+ * 處理查看產業別
  * 開啟 Drawer 顯示模組詳情
  */
-const handleView = (row: Record<string, unknown>) => {
+const handleView = (industry: Record<string, unknown>) => {
   // 型別轉換
-  const industry = row as unknown as IndustryListItem
   console.log('查看產業別:', industry)
 
   // 設定選中的模組資料並開啟 Drawer
-  selectedIndustry.value = industry
+  selectedCode.value = industry.code as string
   isDrawerOpen.value = true
 }
 
@@ -58,7 +57,7 @@ const handleCloseDrawer = () => {
   isDrawerOpen.value = false
   // 延遲清空資料，避免 Drawer 關閉動畫時資料消失
   setTimeout(() => {
-    selectedIndustry.value = null
+    selectedCode.value = null
   }, 300)
 }
 
@@ -68,9 +67,7 @@ const handleCloseDrawer = () => {
  */
 const handleIndustryUpdated = () => {
   // 重新載入表格
-  if (tableRef.value && tableRef.value.refresh) {
-    tableRef.value.refresh()
-  }
+  tableRef.value?.refresh()
 }
 
 /**

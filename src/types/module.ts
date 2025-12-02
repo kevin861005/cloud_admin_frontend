@@ -5,17 +5,9 @@
  */
 
 /**
- * 模組狀態
- */
-export type ModuleStatus = 'ACTIVE' | 'INACTIVE'
-
-/**
  * 模組列表資料
  */
 export interface ModuleListItem {
-  /** 模組 ID */
-  id: number
-
   /** 模組代號 */
   code: string
 
@@ -23,11 +15,41 @@ export interface ModuleListItem {
   name: string
 
   /** 狀態 */
-  status: ModuleStatus
+  isActive: boolean
 
   /** 建立日期 */
-  createdAt: string
+  createdDate: string
+}
+
+export interface ModuleDetailInfo {
+  /** 模組代號 */
+  code: string
+
+  /** 模組名稱 */
+  name: string
+
+  /** 狀態 */
+  isActive: boolean
+
+  /** 建立日期 */
+  createdDate: string
 
   /** 建立者 */
   createdBy: { id: string; name: string } | null
+}
+
+export interface CreateModuleRequest {
+  /** 代號 */
+  code: string
+
+  /** 名稱 */
+  name: string
+}
+
+export interface UpdateModuleRequest {
+  /** 名稱 */
+  name: string
+
+  /** 狀態 */
+  isActive: boolean
 }

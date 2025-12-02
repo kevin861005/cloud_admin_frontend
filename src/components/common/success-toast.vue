@@ -130,7 +130,7 @@ const showToast = (msg: string) => {
   // 測試用
   hideTimer = setTimeout(() => {
     isVisible.value = false
-  }, 100000000000)
+  }, 3000)
 }
 
 // ========== Watchers ==========

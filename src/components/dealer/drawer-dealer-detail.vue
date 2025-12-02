@@ -129,7 +129,7 @@
       <!-- 異動資訊區塊（始終顯示） -->
       <InfoSection title="異動資訊">
         <InfoField label="建立者" :value="createdByText" />
-        <InfoField label="建立日" :value="createdAtText" />
+        <InfoField label="建立日" :value="dealerDetail.createdDate" />
       </InfoSection>
     </div>
 
@@ -158,10 +158,11 @@ import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'
 import FormSelect from '@/components/form/form-select.vue'
 import FormButtonGroup from '@/components/form/form-button-group.vue'
-import { dealerService } from '@/services/dealer.service'
-import { formatDateDot, formatDateTimeWithPeriod } from '@/utils/time'
-import type { DealerDetailInfo } from '@/types/dealer'
+import type { DealerDetailInfo, UpdateDealerRequest } from '@/types/dealer'
+import type { SaleListItem } from '@/types/user'
 import type { FieldError } from '@/types/common'
+import { dealerService } from '@/services/dealer.service'
+import { userService } from '@/services/user.service'
 
 /**
  * 使用者詳細資訊 Drawer
@@ -175,9 +176,9 @@ interface Props {
   isOpen: boolean
 
   /**
-   * 使用者登入帳號（用於呼叫 API）
+   * 經銷商代號
    */
-  dealerId: number | null
+  code: string | null
 }
 
 const props = defineProps<Props>()
@@ -202,11 +203,24 @@ const emit = defineEmits<{
 // ===== 狀態管理 =====
 
 /**
- * 使用者詳細資料
+ * 經銷商詳細資料
  */
 const dealerDetail = ref<DealerDetailInfo | null>(null)
 
-const selectedSales = ref<string | number | null>(null)
+/**
+ * 業務列表（原始資料）
+ */
+const salesList = ref<SaleListItem[]>([])
+
+/**
+ * 業務選項（轉換為 FormSelect 格式）
+ */
+const salesOptions = computed(() => {
+  return salesList.value.map((sale) => ({
+    label: sale.name,
+    value: sale.id,
+  }))
+})
 
 /**
  * 載入狀態
@@ -267,14 +281,6 @@ const errors = ref({
   description: '',
 })
 
-const salesOptions = [
-  { label: '陳奶輪', value: 'kevin' },
-  { label: '猴靜安', value: 'andy' },
-  { label: '王責剩', value: 'kelvin' },
-  { label: '黃剩父', value: 'max' },
-  { label: '無信溶', value: 'richard' },
-]
-
 // ===== Template Refs =====
 const nameInputRef = ref<{ focus: () => void } | null>(null)
 const salesInputRef = ref<{ focus: () => void } | null>(null)
@@ -287,24 +293,11 @@ const descriptionInputRef = ref<{ focus: () => void } | null>(null)
 // ===== 選項資料 =====
 
 /**
- * 權限選項（從 API 載入）
- */
-// const roleOptions = ref<Array<{ label: string; value: number }>>([])
-
-/**
  * 建立者顯示文字
  */
 const createdByText = computed(() => {
   if (!dealerDetail.value || !dealerDetail.value.createdBy) return '-'
   return dealerDetail.value.createdBy.name
-})
-
-/**
- * 建立日顯示文字
- */
-const createdAtText = computed(() => {
-  if (!dealerDetail.value) return '-'
-  return formatDateDot(dealerDetail.value.createdAt)
 })
 
 // ===== 方法 =====
@@ -313,36 +306,45 @@ const createdAtText = computed(() => {
  * 載入經銷商詳細資料
  */
 const loadDealerDetail = async () => {
-  if (!props.dealerId) return
+  if (!props.code) return
 
   isLoading.value = true
   error.value = null
   dealerDetail.value = null
 
   try {
-    // ========== Mock API 版本 ==========
-    const allDetails = await dealerService.getMockDealerDetails()
-    const detail = allDetails[props.dealerId]
+    const response = await dealerService.getDealerDetail(props.code)
 
-    if (detail) {
-      dealerDetail.value = detail
+    if (response.success && response.data) {
+      dealerDetail.value = response.data
     } else {
-      error.value = '找不到經銷商資料'
+      error.value = response.message || '載入經銷商資料失敗'
     }
-
-    // ========== 正式 API 版本（未來使用）==========
-    // const response = await dealerService.getDealerDetail(props.dealerId)
-    //
-    // if (response.success && response.data) {
-    //   dealerDetail.value = response.data
-    // } else {
-    //   error.value = response.message || '載入經銷商資料失敗'
-    // }
   } catch (err) {
     console.error('載入經銷商詳細資料錯誤:', err)
     error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'
   } finally {
     isLoading.value = false
+  }
+}
+
+/**
+ * 載入權限選項
+ */
+const loadSaleOptions = async () => {
+  try {
+    const response = await userService.getAllSales()
+
+    if (response.success && response.data) {
+      salesList.value = response.data
+      console.log('業務選項載入成功:', salesOptions.value)
+    } else {
+      console.error('載入業務選項失敗:', response.message)
+      salesList.value = []
+    }
+  } catch (error) {
+    console.error('載入業務選項錯誤:', error)
+    salesList.value = []
   }
 }
 
@@ -409,6 +411,9 @@ const handleClose = () => {
  * 處理編輯按鈕點擊
  */
 const handleEdit = async () => {
+  // 先載入業務選項
+  await loadSaleOptions()
+
   // 初始化表單資料
   initFormData()
 
@@ -541,7 +546,7 @@ const isFieldErrorArray = (data: unknown): data is FieldError[] => {
  * 處理確認編輯
  */
 const handleConfirmEdit = async () => {
-  if (!props.dealerId) return
+  if (!props.code) return
 
   console.log('表單資料:', formData.value)
 
@@ -561,78 +566,87 @@ const handleConfirmEdit = async () => {
 
   try {
     // 準備提交的資料
-    // const requestData: UpdateUserRequest = {
-    //   name: formData.value.name,
-    //   email: formData.value.email,
-    //   roleIds: formData.value.roleIds,
-    //   statusCode: formData.value.statusCode as 'ACTIVE' | 'INACTIVE',
-    // }
-    // // 呼叫更新 API
-    // const response = await userService.updateUser(props.loginId, requestData)
-    // console.log('updateUser API 回應:', response)
-    // if (response.success && response.data) {
-    //   // 更新成功
-    //   showToast('success', '異動成功')
-    //   // 更新本地的 userDetail 資料
-    //   userDetail.value = response.data
-    //   // 退出編輯模式
-    //   isEditMode.value = false
-    //   // 發出 updated 事件通知父元件
-    //   emit('updated')
-    // } else {
-    //   console.log('API 失敗 (try 區塊):', {
-    //     hasData: !!response.data,
-    //     isArray: Array.isArray(response.data),
-    //     data: response.data,
-    //   })
-    //   // 更新失敗
-    //   if (response.data && isFieldErrorArray(response.data)) {
-    //     console.log('進入欄位錯誤處理 (try 區塊)')
-    //     // 有 data：顯示欄位錯誤，不顯示 toast
-    //     handleFieldErrors(response.data)
-    //   } else {
-    //     console.log('進入 toast 顯示 (try 區塊)')
-    //     // 沒有 data：顯示 toast
-    //     showToast('error', response.message || '儲存失敗，請重新嘗試')
-    //     // 特殊處理：如果是 EMAIL 已被使用，額外標記欄位並 focus
-    //     if (response.code === 'USER_003') {
-    //       errors.value.email = response.message
-    //       emailInputRef.value?.focus()
-    //     }
-    //   }
-    // }
+    const requestData: UpdateDealerRequest = {
+      name: formData.value.name,
+      sales: formData.value.sales,
+      contactPerson: formData.value.contactPerson,
+      contactPhone: formData.value.contactPhone,
+      email: formData.value.email,
+      address: formData.value.address,
+      description: formData.value.description,
+    }
+
+    // 呼叫更新 API
+    const response = await dealerService.updateDealer(props.code, requestData)
+
+    console.log('updateDealer API 回應:', response)
+
+    if (response.success && response.data) {
+      // 更新成功
+      showToast('success', '異動成功')
+
+      // 更新本地的 userDetail 資料
+      dealerDetail.value = response.data
+
+      // 退出編輯模式
+      isEditMode.value = false
+
+      // 發出 updated 事件通知父元件
+      emit('updated')
+    } else {
+      console.log('API 失敗 (try 區塊):', {
+        hasData: !!response.data,
+        isArray: Array.isArray(response.data),
+        data: response.data,
+      })
+
+      // 更新失敗
+      if (response.data && isFieldErrorArray(response.data)) {
+        console.log('進入欄位錯誤處理 (try 區塊)')
+        // 有 data：顯示欄位錯誤，不顯示 toast
+        handleFieldErrors(response.data)
+      } else {
+        console.log('進入 toast 顯示 (try 區塊)')
+        // 沒有 data：顯示 toast
+        showToast('error', response.message || '儲存失敗，請重新嘗試')
+      }
+    }
   } catch (err: unknown) {
-    // console.error('進入 catch 區塊:', err)
-    // // 使用 axios 的型別守衛
-    // if (isAxiosError(err)) {
-    //   const errorResponse = err.response?.data
-    //   console.log('Axios 錯誤回應:', {
-    //     errorResponse,
-    //     hasData: !!errorResponse?.data,
-    //     isArray: Array.isArray(errorResponse?.data),
-    //     checkResult: errorResponse?.data && isFieldErrorArray(errorResponse.data),
-    //   })
-    //   // 優先檢查是否有 data（欄位錯誤）
-    //   if (errorResponse?.data && isFieldErrorArray(errorResponse.data)) {
-    //     console.log('進入欄位錯誤處理 (catch 區塊)')
-    //     // 有 data：顯示欄位錯誤，不顯示 toast
-    //     handleFieldErrors(errorResponse.data)
-    //   } else {
-    //     console.log('進入 toast 顯示 (catch 區塊)')
-    //     // 沒有 data：顯示 toast
-    //     const errorMessage = errorResponse?.message || '儲存失敗，請重新嘗試'
-    //     showToast('error', errorMessage)
-    //     // 特殊處理：如果是 EMAIL 已被使用，額外標記欄位並 focus
-    //     if (errorResponse?.code === 'USER_003') {
-    //       errors.value.email = errorResponse.message
-    //       emailInputRef.value?.focus()
-    //     }
-    //   }
-    // } else {
-    //   console.log('非 Axios 錯誤')
-    //   // 非 Axios 錯誤
-    //   showToast('error', '儲存失敗，請重新嘗試')
-    // }
+    console.error('進入 catch 區塊:', err)
+
+    // 使用 axios 的型別守衛
+    if (isAxiosError(err)) {
+      const errorResponse = err.response?.data
+
+      console.log('Axios 錯誤回應:', {
+        errorResponse,
+        hasData: !!errorResponse?.data,
+        isArray: Array.isArray(errorResponse?.data),
+        checkResult: errorResponse?.data && isFieldErrorArray(errorResponse.data),
+      })
+
+      // 優先檢查是否有 data（欄位錯誤）
+      if (errorResponse?.data && isFieldErrorArray(errorResponse.data)) {
+        console.log('進入欄位錯誤處理 (catch 區塊)')
+        // 有 data：顯示欄位錯誤，不顯示 toast
+        handleFieldErrors(errorResponse.data)
+      } else {
+        console.log('進入 toast 顯示 (catch 區塊)')
+        // 沒有 data：顯示 toast
+        const errorMessage = errorResponse?.message || '儲存失敗，請重新嘗試'
+        showToast('error', errorMessage)
+
+        // 特殊處理：如果是 EMAIL 已被使用，額外標記欄位並 focus
+        if (errorResponse?.code === 'USER_003') {
+          errors.value.email = errorResponse.message
+          emailInputRef.value?.focus()
+        }
+      }
+    } else {
+      console.log('非 Axios 錯誤')
+      // 非 Axios 錯誤
+      showToast('error', '儲存失敗，請重新嘗試')
+    }
   } finally {
     isSubmitting.value = false
   }
@@ -646,7 +660,7 @@ const handleConfirmEdit = async () => {
 watch(
   () => props.isOpen,
   (isOpen) => {
-    if (isOpen && props.dealerId) {
+    if (isOpen && props.code) {
       // 重置編輯模式
       isEditMode.value = false
       // 關閉 Toast

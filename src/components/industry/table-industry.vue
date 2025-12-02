@@ -20,9 +20,8 @@
     :show-border="true"
     title="列表"
     item-name="產業別"
-    row-key="id"
+    row-key="code"
     empty-text="目前沒有產業別資料"
-    v-model:selected-ids="selectedIds"
     @row-view="handleView"
     @add-click="handleAdd"
   >
@@ -71,11 +70,6 @@ const authStore = useAuthStore()
 const industries = ref<IndustryListItem[]>([])
 
 /**
- * 選取的環境 ID
- */
-const selectedIds = ref<(string | number)[]>([])
-
-/**
  * 錯誤訊息
  */
 const errorMessage = ref<string | null>(null)
@@ -114,7 +108,7 @@ const columns = ref<ColumnConfig[]>([
     width: '180px',
   },
   {
-    key: 'createdAt',
+    key: 'createdDate',
     label: '建立日',
     width: '150px',
     sortable: false,
@@ -140,11 +134,13 @@ const columns = ref<ColumnConfig[]>([
 const loadIndustries = async () => {
   isLoading.value = true
   try {
-    // TODO: 等後端 API 完成後，切換為 getAllIndustries()
-    // const data = await industryService.getAllIndustries()
+    const response = await industryService.getAllIndustries()
 
-    // 開發階段：使用 Mock 資料
-    industries.value = await industryService.getMockIndustries()
+    if (response.success && response.data) {
+      industries.value = response.data
+    } else {
+      errorMessage.value = response.message || '載入產業別列表失敗'
+    }
   } catch (error) {
     console.error('載入產業別列表錯誤:', error)
     // TODO: 顯示錯誤訊息給使用者
@@ -189,12 +185,5 @@ defineExpose({
    * 用於新增、編輯、刪除後刷新列表
    */
   refresh: loadIndustries,
-
-  /**
-   * 清空選取狀態
-   */
-  clearSelection: () => {
-    selectedIds.value = []
-  },
 })
 </script>

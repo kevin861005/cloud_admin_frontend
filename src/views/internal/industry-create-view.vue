@@ -29,17 +29,17 @@
           v-model="formData.sqlFile"
           label="SQL檔名"
           placeholder="請輸入"
-          :required="fieldRequired.name"
-          :error-message="errors.name"
+          :required="fieldRequired.sqlFile"
+          :error-message="errors.sqlFile"
         />
 
         <FormInput
           ref="descriptionInputRef"
           v-model="formData.description"
-          label="SQL檔名"
+          label="說明"
           placeholder="請輸入"
-          :required="fieldRequired.name"
-          :error-message="errors.name"
+          :required="fieldRequired.description"
+          :error-message="errors.description"
         />
       </FormSection>
 
@@ -60,6 +60,9 @@ import PageTitle from '@/components/common/page-title.vue'
 import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'
 import FormButtonGroup from '@/components/form/form-button-group.vue'
+import type { CreateIndustryRequest } from '@/types/industry'
+import type { FieldError } from '@/types/common'
+import { industryService } from '@/services/industry.service'
 
 const router = useRouter()
 
@@ -96,6 +99,75 @@ const descriptionInputRef = ref<{ focus: () => void } | null>(null)
 
 // ===== 事件處理 =====
 
+const handleFieldErrors = (fieldErrors: FieldError[]) => {
+  console.log('handleFieldErrors 被呼叫, 收到的錯誤:', fieldErrors)
+
+  // 清空現有錯誤
+  errors.value = {
+    code: '',
+    name: '',
+    sqlFile: '',
+    description: '',
+  }
+
+  // 欄位名稱對應表 (後端 -> 前端)
+  const fieldMap: Record<string, keyof typeof errors.value> = {
+    code: 'code',
+    name: 'name',
+    sqlFile: 'sqlFile',
+    description: 'description',
+  }
+
+  // Ref 對應表 (後端欄位名稱 -> Ref)
+  const fieldRefMap: Record<string, typeof codeInputRef> = {
+    code: codeInputRef,
+    name: nameInputRef,
+    sqlFile: sqlFileInputRef,
+    description: descriptionInputRef,
+  }
+
+  // 記錄哪些欄位有錯誤
+  const fieldsWithErrors = new Set<string>()
+
+  // 遍歷所有欄位錯誤
+  fieldErrors.forEach((fieldError) => {
+    const frontendField = fieldMap[fieldError.field]
+
+    if (frontendField) {
+      // 如果該欄位已經有錯誤訊息,用分號串接
+      if (errors.value[frontendField]) {
+        errors.value[frontendField] += `; ${fieldError.message}`
+      } else {
+        errors.value[frontendField] = fieldError.message
+      }
+
+      // 記錄有錯誤的欄位 (使用後端欄位名稱)
+      fieldsWithErrors.add(fieldError.field)
+    }
+  })
+
+  console.log('有錯誤的欄位:', Array.from(fieldsWithErrors))
+
+  // 根據畫面上的欄位順序,找到第一個有錯誤的欄位並 focus
+  const fieldOrder = ['code', 'name', 'sqlFile', 'description']
+
+  for (const field of fieldOrder) {
+    if (fieldsWithErrors.has(field)) {
+      console.log('嘗試 focus 到:', field)
+      const refToFocus = fieldRefMap[field]
+      console.log('Ref 物件:', refToFocus?.value)
+
+      if (refToFocus?.value?.focus) {
+        console.log('呼叫 focus()')
+        refToFocus.value.focus()
+      } else {
+        console.log('focus 方法不存在')
+      }
+      break // 只 focus 第一個錯誤欄位
+    }
+  }
+}
+
 /**
  * 取消按鈕
  * 返回帳號管理列表
@@ -104,7 +176,51 @@ const handleCancel = () => {
   router.push('/settings/industries')
 }
 
-const handleConfirm = async () => {}
+const handleConfirm = async () => {
+  errors.value = {
+    code: '',
+    name: '',
+    sqlFile: '',
+    description: '',
+  }
+
+  // 開始提交
+  isSubmitting.value = true
+
+  try {
+    // 準備提交的資料
+    const requestData: CreateIndustryRequest = {
+      code: formData.value.code,
+      name: formData.value.name,
+      sqlFile: formData.value.sqlFile,
+      description: formData.value.description,
+    }
+
+    // 呼叫 API
+    const response = await industryService.createIndustry(requestData)
+
+    if (response.success) {
+      // 成功:返回列表頁面
+      router.push('/settings/industries?success=新增成功')
+    } else {
+      // 失敗:檢查是否為欄位驗證錯誤
+      if (response.code === 'VALIDATION_ERROR' && response.data) {
+        // 後端欄位驗證錯誤
+        const fieldErrors = response.data as FieldError[]
+        handleFieldErrors(fieldErrors)
+      } else if (response.code === 'INDUSTRY_002') {
+        // 產業別已存在
+        errors.value.code = response.message
+        codeInputRef.value?.focus()
+      }
+    }
+  } catch (error) {
+    console.error('新增產業別時發生錯誤:', error)
+    alert('新增產業別時發生錯誤,請稍後再試')
+  } finally {
+    isSubmitting.value = false
+  }
+}
 </script>
 
 <style scoped></style>

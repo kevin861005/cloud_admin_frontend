@@ -162,3 +162,30 @@ export function formatDateTimeWithPeriod(dateString: string): string {
 
   return `${year}.${month}.${day}${period}${hoursStr}:${minutes}`
 }
+
+/**
+ * 格式化 YYYYmmdd 為 YYYY.mm.dd 格式
+ *
+ * @param dateString 日期字串（格式：'YYYYmmdd'，例如：'20251220'）
+ * @returns 格式化後的日期字串（YYYY.mm.dd 格式）
+ *
+ * @example
+ * formatDateFromCompact('20251220')
+ * // 輸出：
+ * // "2025.12.20"
+ *
+ * formatDateFromCompact('20250107')
+ * // 輸出：
+ * // "2025.01.07"
+ */
+export function formatDateFromCompact(dateString: string): string {
+  if (!dateString || dateString.length !== 8) {
+    return dateString
+  }
+
+  const year = dateString.substring(0, 4)
+  const month = dateString.substring(4, 6)
+  const day = dateString.substring(6, 8)
+
+  return `${year}.${month}.${day}`
+}

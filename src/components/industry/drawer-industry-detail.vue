@@ -7,9 +7,9 @@
     <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
     <!-- 資料顯示或編輯 -->
-    <div v-else-if="industryData" class="drawer">
+    <div v-else-if="industryDetail" class="drawer">
       <!-- 標題區 -->
-      <DrawerHeader :title="industryData.code" />
+      <DrawerHeader :title="industryDetail.code" />
 
       <!-- 分隔線 -->
       <Divider />
@@ -27,11 +27,11 @@
             />
           </template>
 
-          <InfoField label="中文名稱" :value="industryData.name" />
+          <InfoField label="中文名稱" :value="industryDetail.name" />
 
-          <InfoField label="SQL檔名" :value="industryData.sqlFile" />
+          <InfoField label="SQL檔名" :value="industryDetail.sqlFile" />
 
-          <InfoField label="說明" :value="industryData.description" />
+          <InfoField label="說明" :value="industryDetail.description" />
         </InfoSection>
       </template>
 
@@ -80,7 +80,7 @@
       <!-- 異動資訊區塊（始終顯示） -->
       <InfoSection title="異動資訊">
         <InfoField label="建立者" :value="createdByText" />
-        <InfoField label="建立日" :value="createdAtText" />
+        <InfoField label="建立日" :value="industryDetail.createdDate" />
       </InfoSection>
     </div>
 
@@ -96,6 +96,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { isAxiosError } from 'axios'
 import Drawer from '@/components/drawer/drawer.vue'
 import DrawerHeader from '@/components/drawer/drawer-header.vue'
 import DrawerToast from '@/components/drawer/drawer-toast.vue'
@@ -107,8 +108,9 @@ import Divider from '@/components/common/divider.vue'
 import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'
 import FormButtonGroup from '@/components/form/form-button-group.vue'
-import { formatDateDot } from '@/utils/time'
-import type { IndustryListItem } from '@/types/industry'
+import type { IndustryDetailInfo, UpdateIndustryRequest } from '@/types/industry'
+import type { FieldError } from '@/types/common'
+import { industryService } from '@/services/industry.service'
 
 /**
  * 使用者詳細資訊 Drawer
@@ -122,9 +124,9 @@ interface Props {
   isOpen: boolean
 
   /**
-   * 列表資料
+   * 產業別代號
    */
-  industryData: IndustryListItem | null
+  code: string | null
 }
 
 const props = defineProps<Props>()
@@ -147,6 +149,11 @@ const emit = defineEmits<{
 }>()
 
 // ===== 狀態管理 =====
+
+/**
+ * 產業別詳細資料
+ */
+const industryDetail = ref<IndustryDetailInfo | null>(null)
 
 /**
  * 載入狀態
@@ -210,30 +217,48 @@ const descriptionInputRef = ref<{ focus: () => void } | null>(null)
  * 建立者顯示文字
  */
 const createdByText = computed(() => {
-  if (!props.industryData || !props.industryData.createdBy) return '-'
-  return props.industryData.createdBy.name
-})
-
-/**
- * 建立日顯示文字
- */
-const createdAtText = computed(() => {
-  if (!props.industryData) return '-'
-  return formatDateDot(props.industryData.createdAt)
+  if (!industryDetail.value || !industryDetail.value.createdBy) return '-'
+  return industryDetail.value.createdBy.name
 })
 
 // ===== 方法 =====
 
 /**
+ * 載入產業別詳細資料
+ */
+const loadIndustryDetail = async () => {
+  if (!props.code) return
+
+  isLoading.value = true
+  error.value = null
+  industryDetail.value = null
+
+  try {
+    const response = await industryService.getIndustryDetail(props.code)
+
+    if (response.success && response.data) {
+      industryDetail.value = response.data
+    } else {
+      error.value = response.message || '載入產業別資料失敗'
+    }
+  } catch (err) {
+    console.error('載入產業別詳細資料錯誤:', err)
+    error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+/**
  * 初始化表單資料
  */
 const initFormData = () => {
-  if (!props.industryData) return
+  if (!industryDetail.value) return
 
   formData.value = {
-    name: props.industryData.name,
-    sqlFile: props.industryData.sqlFile,
-    description: props.industryData.description,
+    name: industryDetail.value.name,
+    sqlFile: industryDetail.value.sqlFile,
+    description: industryDetail.value.description,
   }
 
   // 清空錯誤訊息
@@ -241,6 +266,17 @@ const initFormData = () => {
     name: '',
     sqlFile: '',
     description: '',
+  }
+}
+
+/**
+ * 顯示 Toast 提示
+ */
+const showToast = (type: 'success' | 'error', message: string) => {
+  toast.value = {
+    isVisible: true,
+    type,
+    message,
   }
 }
 
@@ -286,9 +322,155 @@ const handleCancelEdit = () => {
 }
 
 /**
+ * 處理後端回傳的欄位錯誤
+ * 將後端的欄位名稱對應到前端的錯誤訊息
+ *
+ * @param fieldErrors - 後端回傳的欄位錯誤列表
+ */
+const handleFieldErrors = (fieldErrors: FieldError[]) => {
+  // 清空現有錯誤
+  errors.value = {
+    name: '',
+    sqlFile: '',
+    description: '',
+  }
+
+  // 欄位名稱對應表 (後端 -> 前端)
+  const fieldMap: Record<string, keyof typeof errors.value> = {
+    name: 'name',
+    sqlFile: 'sqlFile',
+    description: 'description',
+  }
+
+  // Ref 對應表 (後端欄位名稱 -> Ref)
+  const fieldRefMap: Record<string, typeof nameInputRef> = {
+    name: nameInputRef,
+    sqlFile: sqlFileInputRef,
+    description: descriptionInputRef,
+  }
+
+  // 記錄哪些欄位有錯誤
+  const fieldsWithErrors = new Set<string>()
+
+  // 遍歷所有欄位錯誤
+  fieldErrors.forEach((fieldError) => {
+    const frontendField = fieldMap[fieldError.field]
+
+    if (frontendField) {
+      // 如果該欄位已經有錯誤訊息，用分號串接
+      if (errors.value[frontendField]) {
+        errors.value[frontendField] += `; ${fieldError.message}`
+      } else {
+        errors.value[frontendField] = fieldError.message
+      }
+
+      // 記錄有錯誤的欄位 (使用後端欄位名稱)
+      fieldsWithErrors.add(fieldError.field)
+    }
+  })
+
+  // 根據畫面上的欄位順序，找到第一個有錯誤的欄位並 focus
+  const fieldOrder = ['name', 'sqlFile', 'description']
+
+  for (const field of fieldOrder) {
+    if (fieldsWithErrors.has(field)) {
+      const refToFocus = fieldRefMap[field]
+
+      if (refToFocus?.value?.focus && typeof refToFocus.value.focus === 'function') {
+        try {
+          refToFocus.value.focus()
+        } catch (focusError) {
+          console.error(`focus 到 ${field} 時發生錯誤:`, focusError)
+        }
+      }
+      break // 只 focus 第一個錯誤欄位
+    }
+  }
+}
+
+/**
+ * 檢查是否為欄位錯誤陣列
+ */
+const isFieldErrorArray = (data: unknown): data is FieldError[] => {
+  if (!Array.isArray(data)) return false
+  if (data.length === 0) return true
+  return (
+    typeof data[0] === 'object' && data[0] !== null && 'field' in data[0] && 'message' in data[0]
+  )
+}
+
+/**
  * 處理確認編輯
  */
-const handleConfirmEdit = async () => {}
+const handleConfirmEdit = async () => {
+  if (!props.code) return
+
+  // 清空所有錯誤訊息
+  errors.value = {
+    name: '',
+    sqlFile: '',
+    description: '',
+  }
+
+  // 開始提交
+  isSubmitting.value = true
+
+  try {
+    // 準備提交的資料
+    const requestData: UpdateIndustryRequest = {
+      name: formData.value.name,
+      sqlFile: formData.value.sqlFile,
+      description: formData.value.description,
+    }
+
+    // 呼叫更新 API
+    const response = await industryService.updateIndustry(props.code, requestData)
+
+    if (response.success && response.data) {
+      // 更新成功
+      showToast('success', '異動成功')
+
+      // 更新本地的 moduleDetail 資料
+      industryDetail.value = response.data
+
+      // 退出編輯模式
+      isEditMode.value = false
+
+      // 發出 updated 事件通知父元件
+      emit('updated')
+    } else {
+      // 更新失敗
+      if (response.data && isFieldErrorArray(response.data)) {
+        // 有 data：顯示欄位錯誤，不顯示 toast
+        handleFieldErrors(response.data)
+      } else {
+        // 沒有 data：顯示 toast
+        showToast('error', response.message || '儲存失敗，請重新嘗試')
+      }
+    }
+  } catch (err: unknown) {
+    // 使用 axios 的型別守衛
+    if (isAxiosError(err)) {
+      const errorResponse = err.response?.data
+
+      // 優先檢查是否有 data（欄位錯誤）
+      if (errorResponse?.data && isFieldErrorArray(errorResponse.data)) {
+        // 有 data：顯示欄位錯誤，不顯示 toast
+        handleFieldErrors(errorResponse.data)
+      } else {
+        // 沒有 data：顯示 toast
+        const errorMessage = errorResponse?.message || '儲存失敗，請重新嘗試'
+        showToast('error', errorMessage)
+      }
+    } else {
+      // 非 Axios 錯誤
+      showToast('error', '儲存失敗，請重新嘗試')
+    }
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
 // ===== 監聽 =====
 
 /**
@@ -298,11 +480,13 @@ const handleConfirmEdit = async () => {}
 watch(
   () => props.isOpen,
   (isOpen) => {
-    if (isOpen && props.industryData) {
+    if (isOpen && props.code) {
       // 重置編輯模式
       isEditMode.value = false
       // 關閉 Toast
       handleToastClose()
+      // 載入資料
+      loadIndustryDetail()
     }
   },
   { immediate: true },

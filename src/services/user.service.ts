@@ -12,6 +12,7 @@ import type {
   CreateUserRequest,
   UserDetailInfo,
   UpdateUserRequest,
+  SaleListItem,
 } from '@/types/user'
 
 /**
@@ -50,6 +51,11 @@ export const userService = {
    */
   async getAllUsers(): Promise<ApiResponse<UserListItem[]>> {
     const response = await apiClient.get<ApiResponse<UserListItem[]>>('/users')
+    return response.data
+  },
+
+  async getAllSales(): Promise<ApiResponse<SaleListItem[]>> {
+    const response = await apiClient.get<ApiResponse<SaleListItem[]>>('/users/sales')
     return response.data
   },
 
