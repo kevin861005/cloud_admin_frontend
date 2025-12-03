@@ -96,7 +96,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { isAxiosError } from 'axios'
 import Drawer from '@/components/drawer/drawer.vue'
 import DrawerHeader from '@/components/drawer/drawer-header.vue'
 import DrawerToast from '@/components/drawer/drawer-toast.vue'
@@ -111,6 +110,7 @@ import FormButtonGroup from '@/components/form/form-button-group.vue'
 import type { IndustryDetailInfo, UpdateIndustryRequest } from '@/types/industry'
 import type { FieldError } from '@/types/common'
 import { industryService } from '@/services/industry.service'
+import { ApiError } from '@/types/common'
 
 /**
  * 使用者詳細資訊 Drawer
@@ -234,13 +234,7 @@ const loadIndustryDetail = async () => {
   industryDetail.value = null
 
   try {
-    const response = await industryService.getIndustryDetail(props.code)
-
-    if (response.success && response.data) {
-      industryDetail.value = response.data
-    } else {
-      error.value = response.message || '載入產業別資料失敗'
-    }
+    industryDetail.value = await industryService.getIndustryDetail(props.code)
   } catch (err) {
     console.error('載入產業別詳細資料錯誤:', err)
     error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'
@@ -423,47 +417,34 @@ const handleConfirmEdit = async () => {
       description: formData.value.description,
     }
 
-    // 呼叫更新 API
-    const response = await industryService.updateIndustry(props.code, requestData)
+    // 呼叫更新 API：成功回傳 IndustryDetailInfo，失敗會丟 ApiError
+    const updatedIndustry = await industryService.updateIndustry(props.code, requestData)
 
-    if (response.success && response.data) {
-      // 更新成功
-      showToast('success', '異動成功')
+    // 更新成功
+    showToast('success', '異動成功')
 
-      // 更新本地的 moduleDetail 資料
-      industryDetail.value = response.data
+    // 更新本地的 industryDetail 資料
+    industryDetail.value = updatedIndustry
 
-      // 退出編輯模式
-      isEditMode.value = false
+    // 退出編輯模式
+    isEditMode.value = false
 
-      // 發出 updated 事件通知父元件
-      emit('updated')
-    } else {
-      // 更新失敗
-      if (response.data && isFieldErrorArray(response.data)) {
-        // 有 data：顯示欄位錯誤，不顯示 toast
-        handleFieldErrors(response.data)
-      } else {
-        // 沒有 data：顯示 toast
-        showToast('error', response.message || '儲存失敗，請重新嘗試')
-      }
-    }
+    // 發出 updated 事件通知父元件
+    emit('updated')
   } catch (err: unknown) {
-    // 使用 axios 的型別守衛
-    if (isAxiosError(err)) {
-      const errorResponse = err.response?.data
+    console.error('更新產業別失敗:', err)
 
-      // 優先檢查是否有 data（欄位錯誤）
-      if (errorResponse?.data && isFieldErrorArray(errorResponse.data)) {
-        // 有 data：顯示欄位錯誤，不顯示 toast
-        handleFieldErrors(errorResponse.data)
-      } else {
-        // 沒有 data：顯示 toast
-        const errorMessage = errorResponse?.message || '儲存失敗，請重新嘗試'
-        showToast('error', errorMessage)
+    if (err instanceof ApiError) {
+      // 後端欄位驗證錯誤（例如 VALIDATION_ERROR）
+      if (err.code === 'VALIDATION_ERROR' && err.data && isFieldErrorArray(err.data)) {
+        handleFieldErrors(err.data)
+        return
       }
+
+      // 其他業務錯誤：顯示 toast
+      showToast('error', err.message || '儲存失敗，請重新嘗試')
     } else {
-      // 非 Axios 錯誤
+      // 非預期錯誤（例如網路問題或程式 bug）
       showToast('error', '儲存失敗，請重新嘗試')
     }
   } finally {

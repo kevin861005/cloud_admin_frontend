@@ -145,7 +145,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { isAxiosError } from 'axios'
 import Drawer from '@/components/drawer/drawer.vue'
 import DrawerHeader from '@/components/drawer/drawer-header.vue'
 import DrawerToast from '@/components/drawer/drawer-toast.vue'
@@ -163,6 +162,7 @@ import type { SaleListItem } from '@/types/user'
 import type { FieldError } from '@/types/common'
 import { dealerService } from '@/services/dealer.service'
 import { userService } from '@/services/user.service'
+import { ApiError } from '@/types/common'
 
 /**
  * 使用者詳細資訊 Drawer
@@ -313,13 +313,7 @@ const loadDealerDetail = async () => {
   dealerDetail.value = null
 
   try {
-    const response = await dealerService.getDealerDetail(props.code)
-
-    if (response.success && response.data) {
-      dealerDetail.value = response.data
-    } else {
-      error.value = response.message || '載入經銷商資料失敗'
-    }
+    dealerDetail.value = await dealerService.getDealerDetail(props.code)
   } catch (err) {
     console.error('載入經銷商詳細資料錯誤:', err)
     error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'
@@ -333,17 +327,14 @@ const loadDealerDetail = async () => {
  */
 const loadSaleOptions = async () => {
   try {
-    const response = await userService.getAllSales()
+    const sales = await userService.getAllSales() // 直接拿資料
 
-    if (response.success && response.data) {
-      salesList.value = response.data
-      console.log('業務選項載入成功:', salesOptions.value)
-    } else {
-      console.error('載入業務選項失敗:', response.message)
-      salesList.value = []
-    }
-  } catch (error) {
-    console.error('載入業務選項錯誤:', error)
+    salesList.value = sales
+    console.log('業務選項載入成功:', salesList.value)
+  } catch (err) {
+    console.error('載入業務選項錯誤:', err)
+
+    // 安全 fallback
     salesList.value = []
   }
 }
@@ -576,75 +567,38 @@ const handleConfirmEdit = async () => {
       description: formData.value.description,
     }
 
-    // 呼叫更新 API
-    const response = await dealerService.updateDealer(props.code, requestData)
+    // 呼叫更新 API：成功就回 DealerDetailInfo，失敗會丟 ApiError
+    const updatedDealer = await dealerService.updateDealer(props.code, requestData)
 
-    console.log('updateDealer API 回應:', response)
+    console.log('updateDealer API 回應:', updatedDealer)
 
-    if (response.success && response.data) {
-      // 更新成功
-      showToast('success', '異動成功')
+    // 更新成功
+    showToast('success', '異動成功')
 
-      // 更新本地的 userDetail 資料
-      dealerDetail.value = response.data
+    // 更新本地的 dealerDetail 資料
+    dealerDetail.value = updatedDealer
 
-      // 退出編輯模式
-      isEditMode.value = false
+    // 退出編輯模式
+    isEditMode.value = false
 
-      // 發出 updated 事件通知父元件
-      emit('updated')
-    } else {
-      console.log('API 失敗 (try 區塊):', {
-        hasData: !!response.data,
-        isArray: Array.isArray(response.data),
-        data: response.data,
-      })
-
-      // 更新失敗
-      if (response.data && isFieldErrorArray(response.data)) {
-        console.log('進入欄位錯誤處理 (try 區塊)')
-        // 有 data：顯示欄位錯誤，不顯示 toast
-        handleFieldErrors(response.data)
-      } else {
-        console.log('進入 toast 顯示 (try 區塊)')
-        // 沒有 data：顯示 toast
-        showToast('error', response.message || '儲存失敗，請重新嘗試')
-      }
-    }
+    // 發出 updated 事件通知父元件
+    emit('updated')
   } catch (err: unknown) {
     console.error('進入 catch 區塊:', err)
 
-    // 使用 axios 的型別守衛
-    if (isAxiosError(err)) {
-      const errorResponse = err.response?.data
-
-      console.log('Axios 錯誤回應:', {
-        errorResponse,
-        hasData: !!errorResponse?.data,
-        isArray: Array.isArray(errorResponse?.data),
-        checkResult: errorResponse?.data && isFieldErrorArray(errorResponse.data),
-      })
-
-      // 優先檢查是否有 data（欄位錯誤）
-      if (errorResponse?.data && isFieldErrorArray(errorResponse.data)) {
+    if (err instanceof ApiError) {
+      // 1. 欄位驗證錯誤（例如 VALIDATION_ERROR）
+      if (err.code === 'VALIDATION_ERROR' && err.data && isFieldErrorArray(err.data)) {
         console.log('進入欄位錯誤處理 (catch 區塊)')
-        // 有 data：顯示欄位錯誤，不顯示 toast
-        handleFieldErrors(errorResponse.data)
-      } else {
-        console.log('進入 toast 顯示 (catch 區塊)')
-        // 沒有 data：顯示 toast
-        const errorMessage = errorResponse?.message || '儲存失敗，請重新嘗試'
-        showToast('error', errorMessage)
-
-        // 特殊處理：如果是 EMAIL 已被使用，額外標記欄位並 focus
-        if (errorResponse?.code === 'USER_003') {
-          errors.value.email = errorResponse.message
-          emailInputRef.value?.focus()
-        }
+        handleFieldErrors(err.data)
+        return
       }
+
+      // 2. 其他業務錯誤
+      showToast('error', err.message || '儲存失敗，請重新嘗試')
     } else {
-      console.log('非 Axios 錯誤')
-      // 非 Axios 錯誤
+      // 非預期錯誤（像網路異常或程式 bug）
+      console.log('非 ApiError 錯誤')
       showToast('error', '儲存失敗，請重新嘗試')
     }
   } finally {

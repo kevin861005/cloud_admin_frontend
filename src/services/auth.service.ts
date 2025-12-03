@@ -1,62 +1,70 @@
 /**
  * 認證服務層
  *
- * 負責處理所有認證相關的 API 請求
- *
- * 安全機制：
  * - Access Token：由 API 回傳，儲存在 localStorage
- * - Refresh Token：由後端設為 HttpOnly Cookie，前端無法存取
+ * - Refresh Token：由後端設為 HttpOnly Cookie（前端無法存取）
  */
 
 import apiClient from '@/utils/axios'
+import { ApiError } from '@/types/common'
 import type { ApiResponse } from '@/types/common'
 import type { LoginRequest, LoginResponse } from '@/types/auth'
 
-/**
- * 認證服務
- */
 export const authService = {
   /**
    * 使用者登入
-   * POST /api/auth/login
-   *
-   * 後端會：
-   * 1. 回傳 Access Token
-   * 2. 將 Refresh Token 設為 HttpOnly Cookie
-   *
-   * @param loginData 登入資料（帳號、密碼）
-   * @returns 登入回應（僅包含 Access Token）
+   * 成功：回傳 LoginResponse
+   * 失敗：丟出 ApiError
    */
-  async login(loginData: LoginRequest): Promise<ApiResponse<LoginResponse>> {
+  async login(loginData: LoginRequest): Promise<LoginResponse> {
     const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/login', loginData)
-    return response.data
+
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '登入失敗',
+        data: response.data.data || null,
+      })
+    }
+
+    return response.data.data
   },
 
   /**
    * 刷新 Access Token
-   * POST /api/auth/refresh
-   *
-   * Refresh Token 由瀏覽器自動從 HttpOnly Cookie 中攜帶，不需要傳參數
-   *
-   * @returns 新的 Access Token
+   * 成功：回傳新的 LoginResponse（裡面含新的 accessToken）
+   * 失敗：丟出 ApiError
    */
-  async refreshToken(): Promise<ApiResponse<LoginResponse>> {
+  async refreshToken(): Promise<LoginResponse> {
     const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/refresh')
-    return response.data
+
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '刷新 Token 失敗',
+        data: response.data.data || null,
+      })
+    }
+
+    return response.data.data
   },
 
   /**
    * 登出
-   * POST /api/auth/logout
-   *
-   * 後端會：
-   * 1. 從 Cookie 讀取 Refresh Token 並撤銷
-   * 2. 清除 HttpOnly Cookie
-   *
-   * 前端不需要傳任何參數
+   * 成功：返回 void
+   * 失敗：丟出 ApiError
    */
-  async logout(): Promise<ApiResponse<null>> {
+  async logout(): Promise<void> {
     const response = await apiClient.post<ApiResponse<null>>('/auth/logout')
-    return response.data
+
+    if (!response.data.success) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '登出失敗',
+        data: null,
+      })
+    }
+
+    // 無需回傳任何資料
   },
 }

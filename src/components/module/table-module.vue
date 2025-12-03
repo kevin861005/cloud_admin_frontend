@@ -163,13 +163,7 @@ const loadModules = async () => {
   errorMessage.value = null
 
   try {
-    const response = await moduleService.getAllModules()
-
-    if (response.success && response.data) {
-      modules.value = response.data
-    } else {
-      errorMessage.value = response.message || '載入模組列表失敗'
-    }
+    modules.value = await moduleService.getAllModules()
   } catch (error) {
     console.error('載入模組列表錯誤:', error)
     // TODO: 顯示錯誤訊息給使用者

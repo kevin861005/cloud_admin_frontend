@@ -155,13 +155,7 @@ const columns = ref<ColumnConfig[]>([
 const loadDealers = async () => {
   isLoading.value = true
   try {
-    const response = await dealerService.getAllDealers()
-
-    if (response.success && response.data) {
-      dealers.value = response.data
-    } else {
-      errorMessage.value = response.message || '載入經銷商列表失敗'
-    }
+    dealers.value = await dealerService.getAllDealers()
   } catch (error) {
     console.error('載入經銷商列表錯誤:', error)
     // TODO: 顯示錯誤訊息給使用者

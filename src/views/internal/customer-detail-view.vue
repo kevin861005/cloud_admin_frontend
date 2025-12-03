@@ -164,7 +164,7 @@ const loadCustomerDetail = async () => {
     }
 
     // 使用 Mock 資料（開發階段）
-    customerInfo.value = await customerService.getMockCustomerDetail(customerId)
+    customerInfo.value = await customerService.getCustomerById(customerId)
   } catch (err) {
     console.error('載入客戶詳細資料失敗:', err)
     error.value = err instanceof Error ? err.message : '載入失敗，請稍後再試'

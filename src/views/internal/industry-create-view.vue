@@ -61,8 +61,9 @@ import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'
 import FormButtonGroup from '@/components/form/form-button-group.vue'
 import type { CreateIndustryRequest } from '@/types/industry'
-import type { FieldError } from '@/types/common'
 import { industryService } from '@/services/industry.service'
+import { ApiError } from '@/types/common'
+import type { FieldError } from '@/types/common'
 
 const router = useRouter()
 
@@ -196,27 +197,35 @@ const handleConfirm = async () => {
       description: formData.value.description,
     }
 
-    // 呼叫 API
-    const response = await industryService.createIndustry(requestData)
+    // 呼叫 API：成功不回資料，失敗會丟 ApiError
+    await industryService.createIndustry(requestData)
 
-    if (response.success) {
-      // 成功:返回列表頁面
-      router.push('/settings/industries?success=新增成功')
-    } else {
-      // 失敗:檢查是否為欄位驗證錯誤
-      if (response.code === 'VALIDATION_ERROR' && response.data) {
-        // 後端欄位驗證錯誤
-        const fieldErrors = response.data as FieldError[]
+    // 成功：返回列表頁面
+    router.push('/settings/industries?success=新增成功')
+  } catch (err: unknown) {
+    console.error('新增產業別時發生錯誤:', err)
+
+    if (err instanceof ApiError) {
+      // 後端欄位驗證錯誤
+      if (err.code === 'VALIDATION_ERROR' && err.data) {
+        const fieldErrors = err.data as FieldError[]
         handleFieldErrors(fieldErrors)
-      } else if (response.code === 'INDUSTRY_002') {
-        // 產業別已存在
-        errors.value.code = response.message
-        codeInputRef.value?.focus()
+        return
       }
+
+      // 產業別已存在
+      if (err.code === 'INDUSTRY_002') {
+        errors.value.code = err.message
+        codeInputRef.value?.focus()
+        return
+      }
+
+      // 其他業務錯誤
+      alert(err.message || '新增產業別時發生錯誤,請稍後再試')
+    } else {
+      // 非預期錯誤（例如網路問題）
+      alert('新增產業別時發生錯誤,請稍後再試')
     }
-  } catch (error) {
-    console.error('新增產業別時發生錯誤:', error)
-    alert('新增產業別時發生錯誤,請稍後再試')
   } finally {
     isSubmitting.value = false
   }

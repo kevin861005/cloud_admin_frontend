@@ -107,6 +107,7 @@ import type { SaleListItem } from '@/types/user'
 import type { FieldError } from '@/types/common'
 import { dealerService } from '@/services/dealer.service'
 import { userService } from '@/services/user.service'
+import { ApiError } from '@/types/common'
 
 const router = useRouter()
 
@@ -185,17 +186,15 @@ const descriptionInputRef = ref<{ focus: () => void } | null>(null)
  */
 const loadSaleOptions = async () => {
   try {
-    const response = await userService.getAllSales()
+    // 直接取得業務清單
+    const sales = await userService.getAllSales()
 
-    if (response.success && response.data) {
-      salesList.value = response.data
-      console.log('業務選項載入成功:', salesOptions.value)
-    } else {
-      console.error('載入業務選項失敗:', response.message)
-      salesList.value = []
-    }
-  } catch (error) {
-    console.error('載入業務選項錯誤:', error)
+    salesList.value = sales
+    console.log('業務選項載入成功:', salesList.value)
+  } catch (err) {
+    console.error('載入業務選項錯誤:', err)
+
+    // fallback
     salesList.value = []
   }
 }
@@ -299,6 +298,7 @@ const handleCancel = () => {
 }
 
 const handleConfirm = async () => {
+  // 先清空欄位錯誤
   errors.value = {
     code: '',
     name: '',
@@ -310,11 +310,9 @@ const handleConfirm = async () => {
     description: '',
   }
 
-  // 開始提交
   isSubmitting.value = true
 
   try {
-    // 準備提交的資料
     const requestData: CreateDealerRequest = {
       code: formData.value.code,
       name: formData.value.name,
@@ -326,26 +324,35 @@ const handleConfirm = async () => {
       description: formData.value.description,
     }
 
-    // 呼叫 API
-    const response = await dealerService.createDealer(requestData)
+    // 成功就不會丟錯
+    await dealerService.createDealer(requestData)
 
-    if (response.success) {
-      // 成功:返回列表頁面
-      router.push('/settings/dealers?success=新增成功')
-    } else {
-      // 失敗:檢查是否為欄位驗證錯誤
-      if (response.code === 'VALIDATION_ERROR' && response.data) {
-        // 後端欄位驗證錯誤
-        const fieldErrors = response.data as FieldError[]
-        handleFieldErrors(fieldErrors)
-      } else if (response.code === 'DEALER_002') {
-        // 經銷商已存在
-        errors.value.code = response.message
-        codeInputRef.value?.focus()
-      }
-    }
+    // 成功：回列表
+    router.push('/settings/dealers?success=新增成功')
   } catch (error) {
     console.error('新增經銷商時發生錯誤:', error)
+
+    if (error instanceof ApiError) {
+      // 後端欄位驗證錯誤
+      if (error.code === 'VALIDATION_ERROR' && error.data) {
+        const fieldErrors = error.data as FieldError[]
+        handleFieldErrors(fieldErrors)
+        return
+      }
+
+      // 經銷商已存在
+      if (error.code === 'DEALER_002') {
+        errors.value.code = error.message
+        codeInputRef.value?.focus()
+        return
+      }
+
+      // 其他業務錯誤
+      alert(error.message || '新增經銷商時發生錯誤,請稍後再試')
+      return
+    }
+
+    // 非預期錯誤（像網路異常、程式 bug）
     alert('新增經銷商時發生錯誤,請稍後再試')
   } finally {
     isSubmitting.value = false

@@ -44,6 +44,7 @@ import FormButtonGroup from '@/components/form/form-button-group.vue'
 import type { CreateModuleRequest } from '@/types/module'
 import type { FieldError } from '@/types/common'
 import { moduleService } from '@/services/module.service'
+import { ApiError } from '@/types/common'
 
 const router = useRouter()
 
@@ -159,27 +160,35 @@ const handleConfirm = async () => {
       name: formData.value.name,
     }
 
-    // 呼叫 API
-    const response = await moduleService.createModule(requestData)
+    // 呼叫 API：成功不回資料，失敗會丟 ApiError
+    await moduleService.createModule(requestData)
 
-    if (response.success) {
-      // 成功:返回列表頁面
-      router.push('/settings/modules?success=新增成功')
-    } else {
-      // 失敗:檢查是否為欄位驗證錯誤
-      if (response.code === 'VALIDATION_ERROR' && response.data) {
-        // 後端欄位驗證錯誤
-        const fieldErrors = response.data as FieldError[]
+    // 成功：返回列表頁面
+    router.push('/settings/modules?success=新增成功')
+  } catch (err: unknown) {
+    console.error('新增模組時發生錯誤:', err)
+
+    if (err instanceof ApiError) {
+      // 後端欄位驗證錯誤
+      if (err.code === 'VALIDATION_ERROR' && err.data) {
+        const fieldErrors = err.data as FieldError[]
         handleFieldErrors(fieldErrors)
-      } else if (response.code === 'MODULE_002') {
-        // 模組已存在
-        errors.value.code = response.message
-        codeInputRef.value?.focus()
+        return
       }
+
+      // 模組已存在
+      if (err.code === 'MODULE_002') {
+        errors.value.code = err.message
+        codeInputRef.value?.focus()
+        return
+      }
+
+      // 其他業務錯誤
+      alert(err.message || '新增模組時發生錯誤,請稍後再試')
+    } else {
+      // 非預期錯誤（例如網路問題）
+      alert('新增模組時發生錯誤,請稍後再試')
     }
-  } catch (error) {
-    console.error('新增模組時發生錯誤:', error)
-    alert('新增模組時發生錯誤,請稍後再試')
   } finally {
     isSubmitting.value = false
   }

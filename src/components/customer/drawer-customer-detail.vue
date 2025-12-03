@@ -153,7 +153,7 @@ interface Props {
   /**
    * 客戶 ID（用於呼叫 API）
    */
-  customerId: number | null
+  customerId: string | null
 }
 
 const props = defineProps<Props>()
@@ -239,9 +239,7 @@ const loadCustomerDetail = async () => {
 
   try {
     // TODO: 上線前切換為實際 API
-    // const response = await customerService.getCustomerById(props.customerId)
-    const response = await customerService.getMockCustomerDetail(props.customerId)
-    customerDetail.value = response
+    customerDetail.value = await customerService.getCustomerById(props.customerId)
   } catch (err) {
     console.error('載入客戶詳細資料錯誤:', err)
     error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'

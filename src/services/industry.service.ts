@@ -1,9 +1,9 @@
 /**
  * 產業別 API Service
- * 提供產業別管理相關的 API 呼叫
  */
 
 import apiClient from '@/utils/axios'
+import { ApiError } from '@/types/common'
 import type { ApiResponse } from '@/types/common'
 import type {
   IndustryListItem,
@@ -12,47 +12,79 @@ import type {
   UpdateIndustryRequest,
 } from '@/types/industry'
 
-/**
- * 產業別服務
- */
 export const industryService = {
   /**
    * 取得所有產業別列表
-   * GET /api/industries
-   *
-   * @returns Promise<ApiResponse<IndustryListItem[]>> 產業別列表
+   * GET /industries
    */
-  async getAllIndustries(): Promise<ApiResponse<IndustryListItem[]>> {
+  async getAllIndustries(): Promise<IndustryListItem[]> {
     const response = await apiClient.get<ApiResponse<IndustryListItem[]>>('/industries')
 
-    return response.data
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '取得產業別列表失敗',
+        data: response.data.data ?? null,
+      })
+    }
+
+    return response.data.data
   },
 
-  async createIndustry(industryData: CreateIndustryRequest): Promise<ApiResponse<void>> {
+  /**
+   * 新增產業別
+   * POST /industries
+   */
+  async createIndustry(industryData: CreateIndustryRequest): Promise<void> {
     const response = await apiClient.post<ApiResponse<void>>('/industries', industryData)
-    return response.data
-  },
 
-  async updateIndustry(
-    code: string,
-    data: UpdateIndustryRequest,
-  ): Promise<ApiResponse<IndustryDetailInfo>> {
-    try {
-      const response = await apiClient.put<ApiResponse<IndustryDetailInfo>>(
-        `/industries/${code}`,
-        data,
-      )
-      return response.data
-    } catch (error) {
-      console.error('更新產業別資料失敗:', error)
-      throw error
+    if (!response.data.success) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '新增產業別失敗',
+        data: null,
+      })
     }
   },
 
-  async getIndustryDetail(code: string): Promise<ApiResponse<IndustryDetailInfo>> {
-    const response = await apiClient.get<ApiResponse<IndustryDetailInfo>>(
+  /**
+   * 更新產業別資料
+   * PUT /industries/{code}
+   */
+  async updateIndustry(code: string, data: UpdateIndustryRequest): Promise<IndustryDetailInfo> {
+    const response = await apiClient.put<ApiResponse<IndustryDetailInfo | null>>(
+      `/industries/${code}`,
+      data,
+    )
+
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '更新產業別資料失敗',
+        data: response.data.data ?? null,
+      })
+    }
+
+    return response.data.data
+  },
+
+  /**
+   * 取得產業別詳細資料
+   * GET /industries/{code}/detail
+   */
+  async getIndustryDetail(code: string): Promise<IndustryDetailInfo> {
+    const response = await apiClient.get<ApiResponse<IndustryDetailInfo | null>>(
       `/industries/${code}/detail`,
     )
-    return response.data
+
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '取得產業別詳情失敗',
+        data: response.data.data ?? null,
+      })
+    }
+
+    return response.data.data
   },
 }

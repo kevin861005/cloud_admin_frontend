@@ -85,6 +85,7 @@ import { roleService } from '@/services/role.service'
 import { userService } from '@/services/user.service'
 import type { CreateUserRequest } from '@/types/user'
 import type { FieldError } from '@/types/common'
+import { ApiError } from '@/types/common'
 
 /**
  * 新增帳號頁面
@@ -135,18 +136,12 @@ const roleOptions = ref<Array<{ label: string; value: number }>>([])
  */
 const loadRoleOptions = async () => {
   try {
-    const response = await roleService.getRoleOptions()
+    const options = await roleService.getRoleOptions() // 直接回 RoleOption[]
 
-    if (response.success && response.data) {
-      roleOptions.value = response.data
-      console.log('權限選項載入成功:', roleOptions.value)
-    } else {
-      console.error('載入權限選項失敗:', response.message)
-      // 使用預設選項作為後備
-      roleOptions.value = []
-    }
-  } catch (error) {
-    console.error('載入權限選項錯誤:', error)
+    roleOptions.value = options
+    console.log('權限選項載入成功:', roleOptions.value)
+  } catch (err) {
+    console.error('載入權限選項錯誤:', err)
     // 使用預設選項作為後備
     roleOptions.value = []
   }
@@ -273,27 +268,35 @@ const handleConfirm = async () => {
       roleIds: formData.value.roleIds,
     }
 
-    // 呼叫 API
-    const response = await userService.createUser(requestData)
+    // 呼叫 API：成功不回資料，失敗會丟 ApiError
+    await userService.createUser(requestData)
 
-    if (response.success) {
-      // 成功:返回列表頁面
-      router.push('/settings/accounts?success=新增成功')
-    } else {
-      // 失敗:檢查是否為欄位驗證錯誤
-      if (response.code === 'VALIDATION_ERROR' && response.data) {
-        // 後端欄位驗證錯誤
-        const fieldErrors = response.data as FieldError[]
+    // 成功: 返回列表頁面
+    router.push('/settings/accounts?success=新增成功')
+  } catch (err: unknown) {
+    console.error('新增帳號時發生錯誤:', err)
+
+    if (err instanceof ApiError) {
+      // 後端欄位驗證錯誤
+      if (err.code === 'VALIDATION_ERROR' && err.data) {
+        const fieldErrors = err.data as FieldError[]
         handleFieldErrors(fieldErrors)
-      } else if (response.code === 'USER_002') {
-        // 帳號已存在
-        errors.value.loginId = response.message
-        loginIdInputRef.value?.focus()
+        return
       }
+
+      // 帳號已存在
+      if (err.code === 'USER_002') {
+        errors.value.loginId = err.message
+        loginIdInputRef.value?.focus()
+        return
+      }
+
+      // 其他業務錯誤
+      alert(err.message || '新增帳號時發生錯誤,請稍後再試')
+    } else {
+      // 非預期錯誤（例如網路問題）
+      alert('新增帳號時發生錯誤,請稍後再試')
     }
-  } catch (error) {
-    console.error('新增帳號時發生錯誤:', error)
-    alert('新增帳號時發生錯誤,請稍後再試')
   } finally {
     isSubmitting.value = false
   }

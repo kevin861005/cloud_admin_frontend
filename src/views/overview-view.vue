@@ -81,7 +81,7 @@ const isDrawerOpen = ref(false)
 /**
  * 選中的客戶 ID
  */
-const selectedCustomerId = ref<number | null>(null)
+const selectedCustomerId = ref<string | null>(null)
 
 // ==================== 事件處理 ====================
 

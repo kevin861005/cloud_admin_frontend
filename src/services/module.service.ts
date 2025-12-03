@@ -4,6 +4,7 @@
  */
 
 import apiClient from '@/utils/axios'
+import { ApiError } from '@/types/common'
 import type { ApiResponse } from '@/types/common'
 import type {
   ModuleListItem,
@@ -12,42 +13,79 @@ import type {
   UpdateModuleRequest,
 } from '@/types/module'
 
-/**
- * 模組服務
- */
 export const moduleService = {
   /**
    * 取得所有模組列表
-   * GET /api/modules
-   *
-   * @returns Promise<ApiResponse<ModuleListItem[]>> 模組列表
+   * GET /modules
    */
-  async getAllModules(): Promise<ApiResponse<ModuleListItem[]>> {
+  async getAllModules(): Promise<ModuleListItem[]> {
     const response = await apiClient.get<ApiResponse<ModuleListItem[]>>('/modules')
 
-    return response.data
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '取得模組列表失敗',
+        data: response.data.data ?? null,
+      })
+    }
+
+    return response.data.data
   },
 
-  async createModule(moduleData: CreateModuleRequest): Promise<ApiResponse<void>> {
+  /**
+   * 新增模組
+   * POST /modules
+   */
+  async createModule(moduleData: CreateModuleRequest): Promise<void> {
     const response = await apiClient.post<ApiResponse<void>>('/modules', moduleData)
-    return response.data
-  },
 
-  async updateModule(
-    code: string,
-    data: UpdateModuleRequest,
-  ): Promise<ApiResponse<ModuleDetailInfo>> {
-    try {
-      const response = await apiClient.put<ApiResponse<ModuleDetailInfo>>(`/modules/${code}`, data)
-      return response.data
-    } catch (error) {
-      console.error('更新模組資料失敗:', error)
-      throw error
+    if (!response.data.success) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '新增模組失敗',
+        data: null,
+      })
     }
   },
 
-  async getModuleDetail(code: string): Promise<ApiResponse<ModuleDetailInfo>> {
-    const response = await apiClient.get<ApiResponse<ModuleDetailInfo>>(`/modules/${code}/detail`)
-    return response.data
+  /**
+   * 更新模組
+   * PUT /modules/{code}
+   */
+  async updateModule(code: string, data: UpdateModuleRequest): Promise<ModuleDetailInfo> {
+    const response = await apiClient.put<ApiResponse<ModuleDetailInfo | null>>(
+      `/modules/${code}`,
+      data,
+    )
+
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '更新模組資料失敗',
+        data: response.data.data ?? null,
+      })
+    }
+
+    return response.data.data
+  },
+
+  /**
+   * 取得模組詳情
+   * GET /modules/{code}/detail
+   */
+  async getModuleDetail(code: string): Promise<ModuleDetailInfo> {
+    const response = await apiClient.get<ApiResponse<ModuleDetailInfo | null>>(
+      `/modules/${code}/detail`,
+    )
+
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '取得模組詳情失敗',
+        data: response.data.data ?? null,
+      })
+    }
+
+    return response.data.data
   },
 }

@@ -134,13 +134,7 @@ const columns = ref<ColumnConfig[]>([
 const loadIndustries = async () => {
   isLoading.value = true
   try {
-    const response = await industryService.getAllIndustries()
-
-    if (response.success && response.data) {
-      industries.value = response.data
-    } else {
-      errorMessage.value = response.message || '載入產業別列表失敗'
-    }
+    industries.value = await industryService.getAllIndustries()
   } catch (error) {
     console.error('載入產業別列表錯誤:', error)
     // TODO: 顯示錯誤訊息給使用者

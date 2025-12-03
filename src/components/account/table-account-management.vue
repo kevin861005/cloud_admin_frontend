@@ -198,23 +198,24 @@ const loadUsers = async () => {
   errorMessage.value = null
 
   try {
-    const response = await userService.getAllUsers()
+    // 成功直接回陣列，失敗丟 ApiError
+    const userList = await userService.getAllUsers()
 
-    console.log('getAllUsers response:' + JSON.stringify(response))
+    console.log('getAllUsers result:', userList)
 
-    if (response.success && response.data) {
-      // 格式化資料：格式化建立日期為 YYYY.MM.DD
-      users.value = response.data.map((user) => ({
-        ...user,
-        // 格式化建立日期為 YYYY.MM.DD
-        createdAtFormatted: formatDateDot(user.createdAt),
-      }))
+    // 格式化日期後放入 users
+    users.value = userList.map((user) => ({
+      ...user,
+      createdAtFormatted: formatDateDot(user.createdAt),
+    }))
+  } catch (err) {
+    console.error('載入帳號列表錯誤:', err)
+
+    if (err instanceof Error) {
+      errorMessage.value = err.message
     } else {
-      errorMessage.value = response.message || '載入帳號列表失敗'
+      errorMessage.value = '發生未知錯誤，請稍後再試'
     }
-  } catch (error) {
-    console.error('載入帳號列表錯誤:', error)
-    errorMessage.value = error instanceof Error ? error.message : '發生未知錯誤，請稍後再試'
   } finally {
     isLoading.value = false
   }

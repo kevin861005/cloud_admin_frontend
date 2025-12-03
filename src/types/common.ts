@@ -34,3 +34,14 @@ export interface FieldError {
   /** 錯誤訊息 */
   message: string
 }
+
+export class ApiError<T = unknown> extends Error {
+  code?: string
+  data?: T
+
+  constructor(options: { code?: string; message: string; data?: T }) {
+    super(options.message)
+    this.code = options.code
+    this.data = options.data
+  }
+}

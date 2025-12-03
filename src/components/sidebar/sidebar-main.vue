@@ -196,18 +196,13 @@ async function fetchUserPermissions() {
   error.value = null
 
   try {
-    // 呼叫 API 取得使用者資訊（包含權限）
-    const response = await userService.getCurrentUserInfo()
+    // 直接拿回 UserInfo，若失敗會丟 ApiError
+    const userInfo = await userService.getCurrentUserInfo()
 
-    // 檢查回應是否成功
-    if (response.success && response.data) {
-      // 儲存權限清單
-      userPermissions.value = response.data.permissions
+    // 儲存權限清單
+    userPermissions.value = userInfo.permissions
 
-      console.log('使用者權限:', response.data.permissions)
-    } else {
-      error.value = response.message || '無法取得使用者權限'
-    }
+    console.log('使用者權限:', userInfo.permissions)
   } catch (err) {
     console.error('取得使用者權限失敗:', err)
     error.value = '無法載入選單，請重新整理頁面'
