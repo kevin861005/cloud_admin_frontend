@@ -65,9 +65,17 @@
 
 /* 自訂文字樣式 - 根據 UI/UX 規範 */
 @layer components {
+  .typo-4xl-bold {
+    @apply text-4xl font-bold tracking-[-0.2px];
+  }
+
   /* text-2xl: 24px/32px, bold, -0.2px */
   .typo-2xl-bold {
     @apply text-2xl font-bold tracking-[-0.2px];
+  }
+
+  .typo-2xl-medium {
+    @apply text-2xl font-medium tracking-[-0.2px];
   }
 
   /* text-xl: 20px/28px, medium, -0.2px */
