@@ -1,6 +1,6 @@
 <template>
   <button
-    class="inline-flex items-center justify-center gap-2 h-6 px-2 py-1 rounded border border-gray-200 typo-xs-bold text-neutral-700 bg-gray-100 cursor-pointer hover:bg-opacity-80 transition-colors"
+    class="inline-flex items-center justify-center gap-2 h-6 px-2 py-1 rounded border border-neutral-200 typo-xs-bold text-neutral-700 bg-neutral-100 cursor-pointer hover:bg-neutral-200 transition-colors"
     @click="handleClick"
   >
     <!-- 圖片在左邊 -->

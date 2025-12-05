@@ -5,7 +5,7 @@
     <div class="flex items-center gap-3">
       <h2 class="typo-base-bold text-neutral-700">{{ title }}</h2>
       <span
-        class="flex h-6 items-center justify-center rounded border border-[#398FF91A] bg-[#398FF90D] px-2 typo-sm-medium text-[#398FF9]"
+        class="flex h-6 items-center justify-center rounded border border-primary-500/30 bg-primary-500/5 px-2 typo-xs-bold text-primary-500"
       >
         {{ totalCount }}
       </span>

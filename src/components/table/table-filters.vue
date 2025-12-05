@@ -9,15 +9,23 @@
       </label>
 
       <!-- 下拉選單 -->
-      <select
-        :value="modelValue[filter.key] ?? getDefaultValue(filter)"
-        @change="handleFilterChange(filter.key, ($event.target as HTMLSelectElement).value)"
-        class="h-8 py-1 px-3 border rounded-md border-gray-300 typo-sm text-neutral-700 focus:outline-none"
-      >
-        <option v-for="option in filter.options" :key="option.value" :value="option.value">
-          {{ option.label }}
-        </option>
-      </select>
+      <div class="relative">
+        <select
+          :value="modelValue[filter.key] ?? getDefaultValue(filter)"
+          @change="handleFilterChange(filter.key, ($event.target as HTMLSelectElement).value)"
+          class="h-8 py-1 px-3 pr-10 border rounded-md border-neutral-500 typo-sm text-neutral-700 focus:outline-none appearance-none w-full focus:border-primary-500"
+        >
+          <option v-for="option in filter.options" :key="option.value" :value="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+
+        <img
+          src="@/assets/icons/common/cm-arrow-down.svg"
+          alt="arrow"
+          class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+        />
+      </div>
     </div>
   </div>
 </template>

@@ -20,7 +20,11 @@
       <span>使用時間：{{ customerInfo.usageTime }}</span>
       <Divider direction="vertical" color="light" />
       <span class="flex items-center gap-2">
-        模組：<Badge :text="customerInfo.module" :type="getModuleType()" />
+        模組：<Badge
+          v-if="customerInfo.module"
+          :text="customerInfo.module"
+          :type="getModuleType()"
+        />
       </span>
       <Divider direction="vertical" color="light" />
       <span>負責業務：{{ customerInfo.salesPerson }}</span>

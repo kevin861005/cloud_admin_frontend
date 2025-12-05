@@ -69,7 +69,7 @@
         <InfoField label="建立日期" :value="customerDetail.createdAt" />
         <InfoField label="使用時間" :value="customerDetail.usageTime" />
         <InfoField label="模組">
-          <Badge :text="customerDetail.module" />
+          <Badge v-if="customerDetail.module" :text="customerDetail.module" />
         </InfoField>
         <InfoField label="負責業務" :value="customerDetail.salesPerson" />
       </InfoSection>
@@ -218,8 +218,8 @@ const statusBadgeType = computed(() => {
 
   const typeMap = {
     ACTIVE: 'success',
-    INACTIVE: 'error',
-    UNUSED: 'default',
+    INACTIVE: 'default',
+    UNUSED: 'error',
   }
 
   return typeMap[customerDetail.value.status] as 'success' | 'error' | 'default'

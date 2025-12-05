@@ -50,7 +50,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.store'
-import { useMenuStore } from '@/stores/menu.store'
 import { userService } from '@/services/user.service'
 import { menuConfig } from '@/config/menu.config'
 import Loading from '@/components/common/loading.vue'
@@ -64,7 +63,6 @@ const router = useRouter()
 
 // ==================== Stores ====================
 const authStore = useAuthStore()
-const menuStore = useMenuStore()
 
 // ==================== State ====================
 
@@ -160,9 +158,6 @@ function handleMenuClick(key: string) {
   if (key.includes('divider')) {
     return
   }
-
-  // 更新 Store 中的選中狀態
-  menuStore.setActiveMenu(key)
 
   // 根據選單 key 決定路由路徑
   let routePath = ''

@@ -175,8 +175,8 @@ const filters = computed<FilterConfig[]>(() => [
 const getStatusType = (row: Record<string, unknown>): 'success' | 'error' | 'default' => {
   const status = row.status as string
   if (status === 'ACTIVE') return 'success'
-  if (status === 'INACTIVE') return 'error'
-  return 'default'
+  if (status === 'INACTIVE') return 'default'
+  return 'error'
 }
 
 const getModuleType = (): 'default' => {

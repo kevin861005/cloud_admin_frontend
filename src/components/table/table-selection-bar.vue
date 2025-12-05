@@ -15,7 +15,7 @@
         <!-- 通知寄送狀態按鈕（藍色） -->
         <button
           v-if="action.type === 'notify'"
-          class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 typo-sm-medium text-[#398FF9]"
+          class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 typo-sm-medium text-primary-500 hover:bg-neutral-200"
           @click="handleBatchAction(action)"
         >
           <img :src="notifyIcon" alt="" class="h-4 w-4" />
@@ -25,7 +25,7 @@
         <!-- 環境刪除按鈕（紅色） -->
         <button
           v-if="action.type === 'delete'"
-          class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 typo-sm-medium text-[#FD5858]"
+          class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 typo-sm-medium text-semantic-warning hover:bg-neutral-200"
           @click="handleBatchAction(action)"
         >
           <img :src="deleteIcon" alt="" class="h-4 w-4" />
@@ -36,7 +36,10 @@
 
     <!-- 右側：取消選擇 -->
     <div class="px-3">
-      <button class="typo-sm-medium text-[#6B7280]" @click="handleCancelSelection">
+      <button
+        class="flex h-8 items-center rounded px-2.5 typo-sm-medium text-neutral-500 hover:bg-neutral-200"
+        @click="handleCancelSelection"
+      >
         取消選擇
       </button>
     </div>

@@ -166,24 +166,6 @@
       <div class="mt-6 text-center">
         <a href="#" class="text-sm text-indigo-600 hover:text-indigo-700"> 忘記密碼？ </a>
       </div>
-
-      <!-- 除錯資訊 (開發階段使用，生產環境請移除) -->
-      <div v-if="true" class="mt-6 p-4 bg-gray-100 rounded-lg text-xs font-mono space-y-1">
-        <div class="font-bold text-neutral-700 mb-2">🔍 除錯資訊</div>
-        <div>
-          <span class="text-neutral-600">isAuthenticated:</span> {{ authStore.isAuthenticated }}
-        </div>
-        <div><span class="text-neutral-600">isLoading:</span> {{ isLoading }}</div>
-        <div><span class="text-neutral-600">isSubmitting:</span> {{ isSubmitting }}</div>
-        <div>
-          <span class="text-neutral-600">userName:</span>
-          {{ authStore.userInfo?.userName || 'null' }}
-        </div>
-        <div>
-          <span class="text-neutral-600">當前路由:</span> {{ router.currentRoute.value.path }}
-        </div>
-        <div><span class="text-neutral-600">hasToken:</span> {{ hasToken }}</div>
-      </div>
     </div>
   </div>
 </template>
@@ -264,13 +246,6 @@ const isLoading = computed(() => {
   return false
 })
 
-/**
- * 檢查是否有 Token（供 template 使用）
- */
-const hasToken = computed(() => {
-  return !!localStorage.getItem('accessToken')
-})
-
 // === Methods ===
 
 /**
@@ -304,27 +279,24 @@ function validateForm(): boolean {
  * 處理登入
  */
 async function handleLogin(): Promise<void> {
-  console.log('╔════════════════════════════════════════╗')
-  console.log('║     登入流程開始 - login-view.vue     ║')
-  console.log('╚════════════════════════════════════════╝')
   console.log('1. handleLogin 函數被呼叫')
   console.log('   帳號:', form.value.loginId)
   console.log('   密碼長度:', form.value.password.length)
 
   // 防止重複提交
   if (isSubmitting.value) {
-    console.log('⚠️  登入進行中，忽略重複提交')
+    console.log(' 登入進行中，忽略重複提交')
     return
   }
 
   // 驗證表單
   console.log('2. 開始表單驗證')
   if (!validateForm()) {
-    console.log('❌ 表單驗證失敗')
-    console.log('   錯誤:', formErrors.value)
+    console.log(' 表單驗證失敗')
+    console.log(' 錯誤:', formErrors.value)
     return
   }
-  console.log('✅ 表單驗證通過')
+  console.log(' 表單驗證通過')
 
   try {
     isSubmitting.value = true
@@ -342,23 +314,12 @@ async function handleLogin(): Promise<void> {
       password: form.value.password,
     })
 
-    console.log('5. authStore.login 執行完成')
-    console.log('   ├─ 返回值 success:', success)
-    console.log('   ├─ authStore.isAuthenticated:', authStore.isAuthenticated)
-    console.log('   ├─ authStore.userInfo:', authStore.userInfo)
-    console.log('   └─ localStorage Token:', !!localStorage.getItem('accessToken'))
-
     // 登入成功，跳轉到首頁
     if (success) {
-      console.log('6. ✅ 登入成功分支')
+      console.log('6. 登入成功分支')
       console.log('7. 等待 nextTick 確保狀態更新')
 
       await nextTick()
-
-      console.log('8. nextTick 完成，再次確認狀態:')
-      console.log('   ├─ isAuthenticated:', authStore.isAuthenticated)
-      console.log('   ├─ userInfo:', authStore.userInfo)
-      console.log('   └─ 當前路由:', router.currentRoute.value.path)
 
       console.log('9. 準備執行路由跳轉')
       console.log('   目標路由: /overview')
@@ -370,21 +331,11 @@ async function handleLogin(): Promise<void> {
       console.log('    ├─ 跳轉結果:', result)
       console.log('    ├─ 新路由路徑:', router.currentRoute.value.path)
       console.log('    └─ 新路由名稱:', router.currentRoute.value.name)
-
-      console.log('╔════════════════════════════════════════╗')
-      console.log('║         ✅ 登入流程成功完成            ║')
-      console.log('╚════════════════════════════════════════╝')
     } else {
-      console.log('6. ❌ 登入失敗分支')
+      console.log('6. 登入失敗分支')
       console.log('   錯誤訊息:', authStore.errorMessage)
-      console.log('╔════════════════════════════════════════╗')
-      console.log('║         ❌ 登入流程失敗                ║')
-      console.log('╚════════════════════════════════════════╝')
     }
   } catch (error) {
-    console.error('╔════════════════════════════════════════╗')
-    console.error('║      ⚠️  handleLogin 捕獲錯誤         ║')
-    console.error('╚════════════════════════════════════════╝')
     console.error('錯誤詳情:', error)
     console.error('錯誤堆疊:', (error as Error).stack)
   } finally {

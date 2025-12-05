@@ -32,10 +32,11 @@
  * 選單項目元件
  *
  * 用於顯示單一選單項目（例如：總覽、客戶管理、帳號管理等）
+ * Active 狀態根據當前路由自動判斷
  */
 
 import { computed } from 'vue'
-import { useMenuStore } from '@/stores/menu.store'
+import { useRoute } from 'vue-router'
 import type { MenuItem } from '@/types/menu'
 
 // ==================== Props ====================
@@ -58,17 +59,35 @@ const emit = defineEmits<{
   click: []
 }>()
 
-// ==================== Stores ====================
+// ==================== Composables ====================
 
-const menuStore = useMenuStore()
+const route = useRoute()
 
 // ==================== Computed ====================
 
 /**
  * 判斷是否為當前選中的項目
+ * 根據當前路由路徑判斷，支援子頁面
+ *
+ * 邏輯：
+ * 1. 將 item.key 轉換為路徑格式（settings.accounts → /settings/accounts）
+ * 2. 檢查當前路由是否以該路徑開頭
+ *
+ * 範例：
+ * - item.key: 'customers'，當前路由: '/customers/11111/detail' → active
+ * - item.key: 'settings.accounts'，當前路由: '/settings/accounts/create' → active
  */
 const isActive = computed(() => {
-  return menuStore.activeMenuKey === props.item.key
+  const currentPath = route.path
+
+  // 將 item.key 轉換為路徑格式
+  // 'overview' → '/overview'
+  // 'customers' → '/customers'
+  // 'settings.accounts' → '/settings/accounts'
+  const menuPath = '/' + props.item.key.replace(/\./g, '/')
+
+  // 檢查當前路由是否完全匹配或以該路徑開頭（子頁面）
+  return currentPath === menuPath || currentPath.startsWith(menuPath + '/')
 })
 
 // ==================== Methods ====================
@@ -80,7 +99,6 @@ const isActive = computed(() => {
  * @returns ICON 的完整路徑
  */
 function getIconPath(iconName: string): string {
-  // ICON 路徑：/src/assets/icons/menu/{iconName}.svg
   return new URL(`../../assets/icons/menu/${iconName}.svg`, import.meta.url).href
 }
 

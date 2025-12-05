@@ -5,16 +5,20 @@
       <!-- 表格標題列 -->
       <thead>
         <tr class="border-b border-gray-200">
-          <!-- Checkbox 欄位（階段三新增） -->
+          <!-- Checkbox 欄位 -->
           <th v-if="showCheckbox" class="w-12 px-6 py-3">
             <div class="flex items-center justify-center">
-              <input
-                type="checkbox"
-                :checked="isAllSelected"
-                :indeterminate="isIndeterminate"
-                class="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                @change="handleToggleAll"
-              />
+              <button
+                type="button"
+                class="flex h-4 w-4 items-center justify-center"
+                @click="handleToggleAll"
+              >
+                <img
+                  :src="isAllSelected || isIndeterminate ? CheckboxOnIcon : CheckboxOffIcon"
+                  alt="全選"
+                  class="h-4 w-4 cursor-pointer"
+                />
+              </button>
             </div>
           </th>
 
@@ -99,12 +103,17 @@
             <!-- Checkbox 欄位（階段三新增） -->
             <td v-if="showCheckbox" class="px-6 py-4" @click.stop>
               <div class="flex items-center justify-center">
-                <input
-                  type="checkbox"
-                  :checked="isRowSelected(row)"
-                  class="h-4 w-4 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                  @change="handleToggleRow(row)"
-                />
+                <button
+                  type="button"
+                  class="flex h-4 w-4 items-center justify-center"
+                  @click="handleToggleRow(row)"
+                >
+                  <img
+                    :src="isRowSelected(row) ? CheckboxOnIcon : CheckboxOffIcon"
+                    alt="選取"
+                    class="h-4 w-4 cursor-pointer"
+                  />
+                </button>
               </div>
             </td>
 
@@ -133,21 +142,6 @@
                   @click.stop
                 >
                   {{ row[column.key] }}
-                  <!-- 外部連結圖示 -->
-                  <svg
-                    v-if="column.linkConfig?.showIcon"
-                    class="ml-1 inline h-3 w-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
                 </a>
               </template>
 
@@ -197,6 +191,8 @@ import { ref, reactive, onMounted, watch } from 'vue'
 import Loading from '@/components/common/loading.vue'
 import EmptyState from '@/components/common/empty-state.vue'
 import type { ColumnConfig, SortState } from '@/types/table'
+import CheckboxOnIcon from '@/assets/icons/common/cm-checkbox-on.svg'
+import CheckboxOffIcon from '@/assets/icons/common/cm-checkbox.svg'
 
 // ===== Refs =====
 
@@ -209,7 +205,6 @@ interface Props<T = Record<string, unknown>> {
   data: T[] // 表格資料（已經是當前頁的資料）
   loading?: boolean // 載入狀態
   emptyText?: string // 無資料時的提示文字
-  // ===== 選取功能（階段三）=====
   showCheckbox?: boolean // 是否顯示 Checkbox（預設 false）
   showEditButton?: boolean // 是否顯示編輯按鈕（預設 true)
   selectedIds?: (string | number)[] // 已選擇的項目 ID（預設 []）

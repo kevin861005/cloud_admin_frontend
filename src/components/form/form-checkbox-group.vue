@@ -14,15 +14,18 @@
         class="flex h-9 items-center gap-1 rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 typo-sm-medium"
         :class="{ 'border-blue-500 bg-blue-50': isChecked(option.value) }"
       >
-        <input
+        <button
           :ref="index === 0 ? 'firstCheckboxRef' : undefined"
-          type="checkbox"
-          :value="option.value"
-          :checked="isChecked(option.value)"
-          class="h-4 w-4 rounded border border-black/20 bg-white text-blue-600"
-          style="border-radius: 4px"
-          @change="handleChange(option.value)"
-        />
+          type="button"
+          class="flex h-4 w-4 items-center justify-center"
+          @click="handleChange(option.value)"
+        >
+          <img
+            :src="isChecked(option.value) ? CheckboxOnIcon : CheckboxOffIcon"
+            alt="選取"
+            class="h-4 w-4 cursor-pointer"
+          />
+        </button>
         <span class="text-neutral-900">{{ option.label }}</span>
       </label>
     </div>
@@ -35,6 +38,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import FieldError from '@/components/form/field-error.vue'
+import CheckboxOnIcon from '@/assets/icons/common/cm-checkbox-on.svg'
+import CheckboxOffIcon from '@/assets/icons/common/cm-checkbox.svg'
 
 /**
  * Checkbox 群組元件

@@ -103,7 +103,7 @@ const scrollToCustomerTable = () => {
  */
 const handleView = (row: Record<string, unknown>) => {
   // 安全的型別轉換
-  const customer = row as unknown as { id: number; name: string }
+  const customer = row as unknown as { id: string; name: string }
   console.log('查看客戶:', customer)
 
   // 設定選中的客戶 ID 並開啟 Drawer

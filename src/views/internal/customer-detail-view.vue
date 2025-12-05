@@ -1,28 +1,10 @@
 <template>
   <div class="flex h-full flex-col">
     <!-- 載入狀態 -->
-    <div v-if="isLoading" class="flex flex-1 items-center justify-center">
-      <div class="text-center">
-        <div
-          class="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"
-        ></div>
-        <p class="text-sm text-neutral-600">載入中...</p>
-      </div>
-    </div>
+    <Loading v-if="isLoading" message="載入資料中..." :show-spinner="true" />
 
     <!-- 錯誤狀態 -->
-    <div v-else-if="error" class="flex flex-1 items-center justify-center">
-      <div class="text-center">
-        <p class="mb-4 typo-xl-bold text-red-600">載入失敗</p>
-        <p class="mb-4 typo-sm-medium text-neutral-600">{{ error }}</p>
-        <button
-          @click="loadCustomerDetail"
-          class="rounded-lg bg-blue-600 px-4 py-2 typo-sm-medium text-white hover:bg-blue-700"
-        >
-          重新載入
-        </button>
-      </div>
-    </div>
+    <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
     <!-- 客戶資訊以及環境資訊 -->
     <div v-else-if="customerInfo" class="flex h-full flex-col">
@@ -75,24 +57,42 @@
 
         <CardContainer :height="190" :use-padding-top="true" :padding-top="20" :gap="12">
           <!-- Docker 狀態卡片 -->
-          <CardDocker :docker-info="customerInfo.systemEnvironment.docker" />
+          <CardDocker
+            v-if="customerInfo.systemEnvironment"
+            :docker-info="customerInfo.systemEnvironment.docker"
+          />
 
           <!-- 資料庫狀態卡片 -->
-          <CardDatabase :database-info="customerInfo.systemEnvironment.database" />
+          <CardDatabase
+            v-if="customerInfo.systemEnvironment"
+            :database-info="customerInfo.systemEnvironment.database"
+          />
 
           <!-- DNS 設定卡片 -->
-          <CardDNS :dns-info="customerInfo.systemEnvironment.dns" />
+          <CardDNS
+            v-if="customerInfo.systemEnvironment"
+            :dns-info="customerInfo.systemEnvironment.dns"
+          />
 
           <!-- NGINX 狀態卡片 -->
-          <CardNGINX :nginx-info="customerInfo.systemEnvironment.nginx" />
+          <CardNGINX
+            v-if="customerInfo.systemEnvironment"
+            :nginx-info="customerInfo.systemEnvironment.nginx"
+          />
         </CardContainer>
 
         <CardContainer :width-ratios="[1, 2]" :height="268" :use-padding-bottom="false">
           <!-- 需關注客戶卡片 -->
-          <CardEfficacyMonitor :performance="customerInfo.systemEnvironment.performance" />
+          <CardEfficacyMonitor
+            v-if="customerInfo.systemEnvironment"
+            :performance="customerInfo.systemEnvironment.performance"
+          />
 
           <!-- 模組使用量卡片 -->
-          <CardSystemRecords :systemLogs="customerInfo.systemEnvironment.systemLogs" />
+          <CardSystemRecords
+            v-if="customerInfo.systemEnvironment"
+            :systemLogs="customerInfo.systemEnvironment.systemLogs"
+          />
         </CardContainer>
       </div>
     </div>
@@ -111,6 +111,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { customerService } from '@/services/customer.service'
 import type { CustomerDetailInfo } from '@/types/customer'
+import Alert from '@/components/common/alert.vue'
+import Loading from '@/components/common/loading.vue'
 import HeaderCustomerInfo from '@/components/customer/detail/header-customer-info.vue'
 import CardContainer from '@/components/common/card-container.vue'
 import CardActivityRecords from '@/components/customer/detail/card-activity-records.vue'
@@ -155,15 +157,13 @@ const loadCustomerDetail = async () => {
     isLoading.value = true
     error.value = null
 
-    // 從路由參數取得客戶 ID
-    const customerId = Number(route.params.id)
+    const idParam = route.params.id
+    const customerId = Array.isArray(idParam) ? idParam[0] : idParam
 
-    // 驗證客戶 ID 是否有效
-    if (!customerId || isNaN(customerId)) {
+    if (!customerId) {
       throw new Error('無效的客戶 ID')
     }
 
-    // 使用 Mock 資料（開發階段）
     customerInfo.value = await customerService.getCustomerById(customerId)
   } catch (err) {
     console.error('載入客戶詳細資料失敗:', err)

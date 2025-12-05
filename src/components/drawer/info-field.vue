@@ -12,24 +12,18 @@
     <!-- 右側：內容區（佔據剩餘空間） -->
     <div class="flex flex-1 items-center justify-end gap-2">
       <!-- 如果有傳入 value，顯示文字 -->
-      <span v-if="value !== undefined" class="typo-sm-medium text-neutral-500">
+      <span v-if="value !== undefined" class="typo-sm-medium text-neutral-500 whitespace-nowrap">
         {{ value }}
       </span>
 
       <!-- 否則使用 slot（用於 Badge 等複雜內容） -->
-      <div v-else class="flex flex-wrap justify-end gap-2">
+      <!-- 改用 template，避免產生額外的 DOM 元素 -->
+      <template v-else>
         <slot />
-      </div>
+      </template>
 
       <!-- 複製圖示（僅在有 value 且 showCopy 為 true 時顯示） -->
-      <img
-        v-if="value !== undefined && showCopy"
-        :src="copyIcon"
-        alt="複製"
-        class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
-        title="點擊複製"
-        @click="handleCopy"
-      />
+      <CopyButton v-if="value !== undefined && showCopy" :value="value" />
     </div>
   </div>
 
@@ -48,25 +42,19 @@
       </span>
 
       <!-- 否則使用 slot（用於連結等複雜內容） -->
-      <div v-else class="flex flex-wrap items-center justify-start gap-2">
+      <!-- 改用 template，避免產生額外的 DOM 元素 -->
+      <template v-else>
         <slot />
-      </div>
+      </template>
 
       <!-- 複製圖示（僅在有 value 且 showCopy 為 true 時顯示） -->
-      <img
-        v-if="value !== undefined && showCopy"
-        :src="copyIcon"
-        alt="複製"
-        class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
-        title="點擊複製"
-        @click="handleCopy"
-      />
+      <CopyButton v-if="value !== undefined && showCopy" :value="value" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import copyIcon from '@/assets/icons/common/cm-copy.svg'
+import CopyButton from '@/components/common/copy-button.vue'
 
 /**
  * InfoField 元件
@@ -157,42 +145,8 @@ interface Props {
   vertical?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   showCopy: false,
   vertical: false,
 })
-
-// ===== Emits 定義 =====
-const emit = defineEmits<{
-  /**
-   * 複製成功事件
-   * @param value - 被複製的值
-   */
-  'copy-success': [value: string]
-
-  /**
-   * 複製失敗事件
-   * @param error - 錯誤訊息
-   */
-  'copy-error': [error: string]
-}>()
-
-// ===== 方法 =====
-
-/**
- * 處理複製功能
- * 使用 Clipboard API 複製文字到剪貼簿
- */
-const handleCopy = async () => {
-  if (!props.value) return
-
-  try {
-    // 使用現代 Clipboard API
-    await navigator.clipboard.writeText(props.value)
-    emit('copy-success', props.value)
-  } catch (error) {
-    console.error('複製失敗:', error)
-    emit('copy-error', '複製失敗，請手動複製')
-  }
-}
 </script>

@@ -8,7 +8,7 @@
        - 總覽頁面：不顯示任何內容
        - 子頁面（如 /environment/delete-records）：顯示「返回上一頁」按鈕
        - 主功能頁面（左側選單中的頁面）：顯示「返回總覽」按鈕
-    3. 右側：即時時間 + 使用者名稱
+    3. 右側：即時時間 + 使用者名稱（hover 顯示登出選單）
 
     樣式參考 Figma：
     - 高度：64px
@@ -46,15 +46,63 @@
 
     <!-- 右側：即時時間 + 使用者名稱 -->
     <div class="flex items-center gap-6">
-      <!--
-        即時時間（格式：YYYY.MM.DD HH:mm:ss）
-      -->
+      <!-- 即時時間（格式：YYYY.MM.DD HH:mm:ss） -->
       <div class="typo-sm text-neutral-900">
         {{ currentTime }}
       </div>
 
-      <!-- 使用者名稱 -->
-      <div class="typo-sm-medium text-neutral-900 text-right">{{ userName }}</div>
+      <!-- 使用者名稱 + 登出下拉選單 -->
+      <div class="relative" @mouseenter="showDropdown = true" @mouseleave="showDropdown = false">
+        <!-- 使用者名稱 -->
+        <div
+          class="typo-sm-medium text-right cursor-pointer transition-colors"
+          :class="showDropdown ? 'text-primary-500' : 'text-neutral-900 hover:text-primary-500'"
+        >
+          {{ userName }}
+        </div>
+
+        <!-- 下拉選單容器（pt-2 確保間距區域仍在 hover 範圍內） -->
+        <div v-show="showDropdown" class="absolute right-0 top-full pt-2">
+          <!-- 最外框：之後可加入其他功能項目 -->
+          <div
+            class="flex w-[200px] flex-col gap-2 rounded-lg border border-neutral-200 bg-white p-2 shadow-lg"
+          >
+            <!-- 登出框 -->
+            <button
+              @click="handleLogout"
+              :disabled="isLoggingOut"
+              class="group flex w-full items-center gap-1 rounded p-2 transition-colors hover:bg-neutral-100"
+            >
+              <!-- 登出 Icon -->
+              <img
+                src="@/assets/icons/common/cm-logout.svg"
+                alt="登出"
+                class="h-4 w-4 transition-colors [filter:brightness(0)_saturate(100%)_invert(45%)_sepia(5%)_saturate(500%)_hue-rotate(180deg)] group-hover:[filter:brightness(0)_saturate(100%)_invert(45%)_sepia(98%)_saturate(1500%)_hue-rotate(200deg)_brightness(95%)]"
+              />
+              <!-- 登出文字 -->
+              <span
+                class="typo-sm-medium transition-colors text-neutral-800 group-hover:text-primary-500"
+              >
+                {{ isLoggingOut ? '登出中...' : '登出' }}
+              </span>
+            </button>
+
+            <!-- 之後可在這裡加入其他功能項目，例如： -->
+            <!-- <button class="group flex w-full items-center gap-1 rounded p-2 transition-colors hover:bg-neutral-100">
+        <img src="..." alt="設定" class="h-4 w-4" />
+        <span class="typo-sm-medium text-neutral-800 group-hover:text-primary-500">個人設定</span>
+      </button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 錯誤訊息 Toast -->
+    <div
+      v-if="errorMessage"
+      class="fixed top-20 right-4 z-50 rounded-lg bg-red-500 px-4 py-3 text-white shadow-lg"
+    >
+      {{ errorMessage }}
     </div>
   </div>
 </template>
@@ -99,6 +147,21 @@ const currentTime = ref<string>('')
  * 定時器 ID（用於清除定時器）
  */
 let timerInterval: number | null = null
+
+/**
+ * 是否顯示下拉選單
+ */
+const showDropdown = ref<boolean>(false)
+
+/**
+ * 是否正在登出
+ */
+const isLoggingOut = ref<boolean>(false)
+
+/**
+ * 錯誤訊息
+ */
+const errorMessage = ref<string>('')
 
 // ==================== Computed ====================
 
@@ -226,13 +289,53 @@ function handleBack() {
 
 /**
  * 取得父路徑
- * 例如：/environment/delete-records → /environment
- *      /settings/accounts/create → /settings/accounts
+ * 子頁面直接返回對應的主功能頁面（列表頁）
+ * 例如：/customers/11111/detail → /customers
+ *      /customers/11111 → /customers
+ *      /environment/delete-records → /environment
  */
 function getParentPath(path: string): string {
-  const segments = path.split('/').filter(Boolean) // 移除空字串
-  segments.pop() // 移除最後一段
+  // 找出當前路徑對應的主功能頁面
+  const mainFeaturePath = MAIN_FEATURE_PATHS.find(
+    (mainPath) => path.startsWith(mainPath + '/') || path === mainPath,
+  )
+
+  if (mainFeaturePath && path !== mainFeaturePath) {
+    // 子頁面：直接返回主功能頁面
+    return mainFeaturePath
+  }
+
+  // 其他情況：返回上一層（保底邏輯）
+  const segments = path.split('/').filter(Boolean)
+  segments.pop()
   return '/' + segments.join('/')
+}
+
+/**
+ * 處理登出
+ */
+async function handleLogout() {
+  if (isLoggingOut.value) return
+
+  isLoggingOut.value = true
+  errorMessage.value = ''
+
+  try {
+    await authStore.logout()
+    // 登出成功，跳轉到登入頁
+    router.push('/login')
+  } catch (error) {
+    // 登出失敗，顯示錯誤訊息
+    errorMessage.value = error instanceof Error ? error.message : '登出失敗，請稍後再試'
+
+    // 3 秒後自動清除錯誤訊息
+    setTimeout(() => {
+      errorMessage.value = ''
+    }, 3000)
+  } finally {
+    isLoggingOut.value = false
+    showDropdown.value = false
+  }
 }
 
 // ==================== Lifecycle ====================

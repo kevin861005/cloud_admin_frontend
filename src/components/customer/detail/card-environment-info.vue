@@ -34,13 +34,7 @@
             <span class="typo-sm-medium text-neutral-800">
               {{ environmentInfo.pinCode }}
             </span>
-            <img
-              :src="copyIcon"
-              alt="複製"
-              class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
-              title="點擊複製 PinCode"
-              @click="copyToClipboard(environmentInfo.pinCode)"
-            />
+            <CopyButton :value="environmentInfo.pinCode" />
           </div>
         </div>
 
@@ -51,13 +45,7 @@
             <span class="typo-sm-medium text-neutral-800">
               {{ environmentInfo.domainName }}
             </span>
-            <img
-              :src="copyIcon"
-              alt="複製"
-              class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
-              title="點擊複製客戶代號"
-              @click="copyToClipboard(environmentInfo.domainName)"
-            />
+            <CopyButton :value="environmentInfo.domainName" />
           </div>
         </div>
       </div>
@@ -69,7 +57,7 @@
 import BadgeButton from '@/components/common/badge-button.vue'
 import EnvironmentIcon from '@/assets/icons/card/environment.svg'
 import linkIcon from '@/assets/icons/common/cm-link.svg'
-import copyIcon from '@/assets/icons/common/cm-copy.svg'
+import CopyButton from '@/components/common/copy-button.vue'
 
 /**
  * 環境設定資訊卡片
@@ -102,17 +90,5 @@ defineProps<Props>()
  */
 const openUrl = (url: string) => {
   window.open(url, '_blank', 'noopener,noreferrer')
-}
-
-/**
- * 複製文字到剪貼簿
- */
-const copyToClipboard = async (text: string) => {
-  try {
-    await navigator.clipboard.writeText(text)
-    // 不顯示提示訊息（依照需求）
-  } catch (err) {
-    console.error('複製失敗:', err)
-  }
 }
 </script>

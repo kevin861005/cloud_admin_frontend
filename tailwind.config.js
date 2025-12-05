@@ -11,8 +11,11 @@ export const theme = {
 
     // 全系統顏色
     colors: {
+      gray: {
+        10: '#222222',
+      },
       neutral: {
-        50:  '#F9FAFB',
+        50: '#F9FAFB',
         100: '#F3F4F6',
         200: '#E4E6EA',
         300: '#D1D5DB',
@@ -28,7 +31,7 @@ export const theme = {
       },
       semantic: {
         positive: '#27BD72',
-        warning:  '#FD5858'
+        warning: '#FD5858',
       },
     },
   },

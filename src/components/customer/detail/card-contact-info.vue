@@ -24,13 +24,7 @@
             <span class="typo-sm-medium text-neutral-800">
               {{ contactInfo.phone }}
             </span>
-            <img
-              :src="copyIcon"
-              alt="複製"
-              class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
-              title="點擊複製 PinCode"
-              @click="copyToClipboard(contactInfo.phone)"
-            />
+            <CopyButton :value="contactInfo.phone" />
           </div>
         </div>
 
@@ -41,13 +35,7 @@
             <span class="typo-sm-medium text-neutral-800">
               {{ contactInfo.email }}
             </span>
-            <img
-              :src="copyIcon"
-              alt="複製"
-              class="h-4 w-4 cursor-pointer text-neutral-400 transition-opacity hover:opacity-70"
-              title="點擊複製 PinCode"
-              @click="copyToClipboard(contactInfo.email)"
-            />
+            <CopyButton :value="contactInfo.email" />
           </div>
         </div>
       </div>
@@ -63,7 +51,7 @@
 <script setup lang="ts">
 import ContactIcon from '@/assets/icons/card/contact.svg'
 import BadgeButton from '@/components/common/badge-button.vue'
-import copyIcon from '@/assets/icons/common/cm-copy.svg'
+import CopyButton from '@/components/common/copy-button.vue'
 
 /**
  * 聯絡資訊卡片
@@ -96,18 +84,6 @@ const emit = defineEmits<{
    */
   moreClick: []
 }>()
-
-/**
- * 複製文字到剪貼簿
- */
-const copyToClipboard = async (text: string) => {
-  try {
-    await navigator.clipboard.writeText(text)
-    // 不顯示提示訊息（依照需求）
-  } catch (err) {
-    console.error('複製失敗:', err)
-  }
-}
 
 /**
  * 處理更多按鈕點擊

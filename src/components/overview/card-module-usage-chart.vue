@@ -48,11 +48,31 @@ Chart.register(...registerables)
 
 const chartRef = ref<HTMLCanvasElement | null>(null)
 let chartInstance: Chart | null = null
+
 const currentView = ref<ChartViewType>('weekly')
-const chartData = ref<ModuleUsageData>(overviewService.getMockModuleUsageData())
+
+// 一開始沒有資料，等 API 回來再塞
+const chartData = ref<ModuleUsageData | null>(null)
+
+async function loadChartData() {
+  try {
+    const data = await overviewService.getModuleUsageData()
+    chartData.value = data
+
+    // 有舊圖表先銷毀
+    if (chartInstance) {
+      chartInstance.destroy()
+      chartInstance = null
+    }
+
+    createChart()
+  } catch (err) {
+    console.error('載入模組使用量資料失敗:', err)
+  }
+}
 
 function createChart() {
-  if (!chartRef.value) return
+  if (!chartRef.value || !chartData.value) return
 
   const data = currentView.value === 'weekly' ? chartData.value.weekly : chartData.value.monthly
 
@@ -121,7 +141,7 @@ function createChart() {
 }
 
 function updateChart() {
-  if (!chartInstance) return
+  if (!chartInstance || !chartData.value) return
 
   const data = currentView.value === 'weekly' ? chartData.value.weekly : chartData.value.monthly
 
@@ -140,7 +160,7 @@ function updateChart() {
 }
 
 onMounted(() => {
-  createChart()
+  loadChartData()
 })
 
 watch(currentView, () => {

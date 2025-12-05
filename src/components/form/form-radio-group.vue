@@ -13,15 +13,18 @@
         :key="option.value"
         class="flex h-9 cursor-pointer items-center gap-1 rounded border bg-slate-500/5 px-3 py-2 typo-sm-medium"
       >
-        <input
+        <button
           :ref="index === 0 ? 'firstRadioRef' : undefined"
-          type="radio"
-          :name="fieldId"
-          :value="option.value"
-          :checked="isChecked(option.value)"
-          class="h-4 w-4 border border-black/20 bg-white text-blue-600"
-          @change="handleChange(option.value)"
-        />
+          type="button"
+          class="flex h-4 w-4 items-center justify-center"
+          @click="handleChange(option.value)"
+        >
+          <img
+            :src="isChecked(option.value) ? RadioOnIcon : RadioOffIcon"
+            alt="選取"
+            class="h-4 w-4 cursor-pointer"
+          />
+        </button>
         <span class="text-neutral-900">{{ option.label }}</span>
       </label>
     </div>
@@ -32,8 +35,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import FieldError from '@/components/form/field-error.vue'
+import RadioOnIcon from '@/assets/icons/common/cm-radio-on.svg'
+import RadioOffIcon from '@/assets/icons/common/cm-radio.svg'
 
 /**
  * FormRadioGroup 元件
@@ -79,13 +84,6 @@ const emit = defineEmits<{
    */
   'update:modelValue': [value: string | number]
 }>()
-
-/**
- * 產生唯一的欄位 ID
- */
-const fieldId = computed(() => {
-  return `radio-group-${Math.random().toString(36).substring(2, 9)}`
-})
 
 /**
  * 第一個 radio input 元素的 ref（用於 focus）
