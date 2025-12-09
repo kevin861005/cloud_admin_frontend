@@ -164,7 +164,7 @@ const loadCustomerDetail = async () => {
       throw new Error('無效的客戶 ID')
     }
 
-    customerInfo.value = await customerService.getCustomerById(customerId)
+    customerInfo.value = await customerService.getCustomerDetailById(customerId)
   } catch (err) {
     console.error('載入客戶詳細資料失敗:', err)
     error.value = err instanceof Error ? err.message : '載入失敗，請稍後再試'

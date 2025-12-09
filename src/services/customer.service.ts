@@ -5,7 +5,7 @@
 
 import axios from '@/utils/axios'
 import type { ApiResponse } from '@/types/common'
-import type { CustomerListItem, CustomerDetailInfo } from '@/types/customer'
+import type { CustomerListItem, CustomerDrawerInfo, CustomerDetailInfo } from '@/types/customer'
 
 /**
  * 客戶服務
@@ -29,8 +29,30 @@ export const customerService = {
   },
 
   /**
-   * 取得單一客戶詳情
+   * 取得單一客戶詳情（側邊攔）
    * GET /api/customers/{id}
+   *
+   * 用途:
+   * 1. 客戶詳情頁面
+   * 2. Drawer 顯示客戶完整資訊
+   *
+   * @param id - 客戶 ID
+   * @returns Promise<CustomerDrawerInfo> 客戶詳情
+   */
+  async getCustomerById(id: string): Promise<CustomerDrawerInfo> {
+    const response = await axios.get<ApiResponse<CustomerDrawerInfo>>(`/customers/${id}`)
+
+    // 如果 API 回傳失敗或沒有資料，拋出錯誤
+    if (!response.data.success || !response.data.data) {
+      throw new Error(response.data.message || '取得客戶詳情失敗')
+    }
+
+    return response.data.data
+  },
+
+  /**
+   * 取得單一客戶詳情（詳細頁面）
+   * GET /api/customers/{id}/detail
    *
    * 用途:
    * 1. 客戶詳情頁面
@@ -39,8 +61,8 @@ export const customerService = {
    * @param id - 客戶 ID
    * @returns Promise<Customer> 客戶詳情
    */
-  async getCustomerById(id: string): Promise<CustomerDetailInfo> {
-    const response = await axios.get<ApiResponse<CustomerDetailInfo>>(`/customers/${id}`)
+  async getCustomerDetailById(id: string): Promise<CustomerDetailInfo> {
+    const response = await axios.get<ApiResponse<CustomerDetailInfo>>(`/customers/${id}/detail`)
 
     // 如果 API 回傳失敗或沒有資料，拋出錯誤
     if (!response.data.success || !response.data.data) {

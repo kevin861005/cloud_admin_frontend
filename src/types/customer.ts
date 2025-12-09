@@ -48,6 +48,24 @@ export interface CustomerListItem {
   link: string
 }
 
+export interface CustomerDrawerInfo {
+  customerName: string // 客戶名稱（例如：橘色測測屋）
+  industry: string // 行業類別（例如：餐飲）
+  status: CustomerStatus // 客戶狀態（活躍、低活躍、未使用）
+  autoUrl: string // 快速自動輸入網址
+  frontendUrl: string // 前台連結網址
+  backendUrl: string // 後台連結網址
+  pinCode: string // PinCode（可能以 0 開頭，使用字串格式）
+  domainName: string // 環境域名
+  createdAt: string // 建立日期（例如：2025.02.12）
+  usageTime: string // 使用時間（例如：4天前）
+  module: CustomerModule // 模組類型（Master 或 GGF）
+  salesPerson: string // 負責業務
+  contactPerson: string // 聯絡人姓名
+  phone: string // 聯絡電話
+  email: string // 聯絡 E-mail
+}
+
 export interface CustomerDetailInfo {
   customerName: string // 客戶名稱（例如：橘色測測屋）
   industry: string // 行業類別（例如：餐飲）
@@ -85,43 +103,92 @@ export interface ActivityRecord {
 }
 
 /**
+ * Docker 服務資訊
+ */
+export interface DockerServiceInfo {
+  /** 運行狀態 */
+  status: ServiceStatus
+  /** 狀態描述（例如：運行中） */
+  statusText: string
+  /** 名稱（例如：v2.4.1） */
+  name: string
+  /** 容器 ID（例如：C1923hC3e） */
+  containerId: string
+  /** 映像版本（例如：v2.4.1） */
+  imageVersion: string
+  /** Port 對射（例如：8080 → 80） */
+  portMapping: string
+}
+
+/**
+ * 資料庫服務資訊
+ */
+export interface DatabaseServiceInfo {
+  /** 運行狀態 */
+  status: ServiceStatus
+  /** 狀態描述（例如：正常） */
+  statusText: string
+  /** 名稱（例如：Twfood_production） */
+  name: string
+  /** 伺服器 ID（例如：192.168.1100） */
+  serverId: string
+  /** 資料庫容量（例如：2.4GB） */
+  capacity: string
+}
+
+/**
+ * DNS 服務資訊
+ */
+export interface DnsServiceInfo {
+  /** 運行狀態 */
+  status: ServiceStatus
+  /** 狀態描述（例如：DNS紀錄有效） */
+  statusText: string
+  /** 主要伺服器（例如：8.8.8.8） */
+  primaryServer: string
+  /** 次要伺服器（例如：8.8.4.4） */
+  secondaryServer: string
+  /** 最後檢查時間（例如：2024.01.15下午14:30） */
+  lastChecked: string
+}
+
+/**
+ * NGINX 服務資訊
+ */
+export interface NginxServiceInfo {
+  /** 運行狀態 */
+  status: ServiceStatus
+  /** 狀態描述（例如：代理運行） */
+  statusText: string
+  /** 版本（例如：1.34.2） */
+  version: string
+  /** 配置狀態（例如：有效） */
+  configStatus: string
+  /** 最後重載時間（例如：2024.01.15下午14:30） */
+  lastReload: string
+}
+
+/**
  * 系統環境與運行狀態
  */
 export interface SystemEnvironment {
   /** Docker 服務狀態 */
-  docker: ServiceInfo
+  docker: DockerServiceInfo
 
   /** 資料庫服務狀態 */
-  database: ServiceInfo
+  database: DatabaseServiceInfo
 
   /** DNS 服務狀態 */
-  dns: ServiceInfo
+  dns: DnsServiceInfo
 
   /** NGINX 服務狀態 */
-  nginx: ServiceInfo
+  nginx: NginxServiceInfo
 
   /** 效能監控資料 */
   performance: PerformanceMetrics
 
   /** 系統紀錄（預設顯示最新 5 筆） */
   systemLogs: SystemLog[]
-}
-
-/**
- * 服務資訊
- */
-export interface ServiceInfo {
-  /** 服務名稱（例如：Docker、資料庫、DNS、NGINX） */
-  serviceName: string
-
-  /** 運行狀態 */
-  status: ServiceStatus
-
-  /** 狀態描述（例如：運行中、正常、DNS紀錄有效、代理運行） */
-  statusText: string
-
-  /** 詳細資訊（例如：名稱、版本、資料庫名稱等） */
-  details: string
 }
 
 /**

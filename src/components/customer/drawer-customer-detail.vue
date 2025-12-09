@@ -112,7 +112,7 @@ import Badge from '@/components/common/badge.vue'
 import Alert from '@/components/common/alert.vue'
 import Divider from '@/components/common/divider.vue'
 import { customerService } from '@/services/customer.service'
-import type { CustomerDetailInfo } from '@/types/customer'
+import type { CustomerDrawerInfo } from '@/types/customer'
 
 /**
  * 顯示 Toast 提示
@@ -170,7 +170,7 @@ const emit = defineEmits<{
 /**
  * 客戶詳細資料
  */
-const customerDetail = ref<CustomerDetailInfo | null>(null)
+const customerDetail = ref<CustomerDrawerInfo | null>(null)
 
 /**
  * 載入狀態
