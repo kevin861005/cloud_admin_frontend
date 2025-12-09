@@ -20,7 +20,6 @@ export const customerService = {
   async getAllCustomers(): Promise<CustomerListItem[]> {
     const response = await axios.get<ApiResponse<CustomerListItem[]>>('/customers')
 
-    // 如果 API 回傳失敗或沒有資料，拋出錯誤
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.message || '取得客戶列表失敗')
     }
@@ -29,20 +28,17 @@ export const customerService = {
   },
 
   /**
-   * 取得單一客戶詳情（側邊攔）
-   * GET /api/customers/{id}
-   *
-   * 用途:
-   * 1. 客戶詳情頁面
-   * 2. Drawer 顯示客戶完整資訊
+   * 取得客戶基本資訊（用於 Drawer）
+   * GET /api/customers/:id
    *
    * @param id - 客戶 ID
-   * @returns Promise<CustomerDrawerInfo> 客戶詳情
+   * @returns Promise<CustomerDrawerInfo> 客戶基本資訊
    */
   async getCustomerById(id: string): Promise<CustomerDrawerInfo> {
-    const response = await axios.get<ApiResponse<CustomerDrawerInfo>>(`/customers/${id}`)
+    const response = await axios.get<ApiResponse<CustomerDrawerInfo>>(`/customers/${id}`, {
+      params: { includeSystemInfo: false },
+    })
 
-    // 如果 API 回傳失敗或沒有資料，拋出錯誤
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.message || '取得客戶詳情失敗')
     }
@@ -51,20 +47,17 @@ export const customerService = {
   },
 
   /**
-   * 取得單一客戶詳情（詳細頁面）
-   * GET /api/customers/{id}/detail
-   *
-   * 用途:
-   * 1. 客戶詳情頁面
-   * 2. Drawer 顯示客戶完整資訊
+   * 取得客戶完整詳情（含系統環境資訊，用於詳情頁）
+   * GET /api/customers/:id?includeSystemInfo=true
    *
    * @param id - 客戶 ID
-   * @returns Promise<Customer> 客戶詳情
+   * @returns Promise<CustomerDetailInfo> 客戶完整詳情
    */
   async getCustomerDetailById(id: string): Promise<CustomerDetailInfo> {
-    const response = await axios.get<ApiResponse<CustomerDetailInfo>>(`/customers/${id}/detail`)
+    const response = await axios.get<ApiResponse<CustomerDetailInfo>>(`/customers/${id}`, {
+      params: { includeSystemInfo: true },
+    })
 
-    // 如果 API 回傳失敗或沒有資料，拋出錯誤
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.message || '取得客戶詳情失敗')
     }
@@ -76,9 +69,6 @@ export const customerService = {
    * 批量刪除客戶
    * DELETE /api/customers/batch
    *
-   * 用途:
-   * 1. 客戶列表批量刪除功能
-   *
    * @param ids - 客戶 ID 陣列
    * @returns Promise<void>
    */
@@ -87,7 +77,6 @@ export const customerService = {
       data: { ids },
     })
 
-    // 如果 API 回傳失敗，拋出錯誤
     if (!response.data.success) {
       throw new Error(response.data.message || '批量刪除客戶失敗')
     }
