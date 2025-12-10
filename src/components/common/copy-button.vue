@@ -6,7 +6,7 @@
       :src="copyIcon"
       :alt="title"
       :title="title"
-      class="copy-icon h-4 w-4 flex-shrink-0 cursor-pointer transition-all duration-200"
+      class="icon-neutral icon-neutral-self-hover h-4 w-4 flex-shrink-0 cursor-pointer"
       @click="handleCopy"
     />
 
@@ -14,7 +14,7 @@
     <Transition name="fade">
       <span
         v-if="showToast"
-        class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 z-50 typo-xs-bold text-neutral-800 bg-neutral-300/60 rounded-lg py-1 px-3 pointer-events-none whitespace-nowrap"
+        class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1 -translate-x-1/2 whitespace-nowrap rounded-lg bg-neutral-300/60 px-3 py-1 typo-xs-bold text-neutral-800"
       >
         {{ toastMessage }}
       </span>
@@ -92,28 +92,3 @@ async function handleCopy() {
   }
 }
 </script>
-
-<style scoped>
-/* 圖示預設顏色：#6B7280 */
-.copy-icon {
-  filter: brightness(0) saturate(100%) invert(45%) sepia(5%) saturate(1032%) hue-rotate(182deg)
-    brightness(95%) contrast(90%);
-}
-
-/* 圖示 hover 顏色：#398FF9 */
-.copy-icon:hover {
-  filter: brightness(0) saturate(100%) invert(52%) sepia(52%) saturate(2758%) hue-rotate(196deg)
-    brightness(100%) contrast(96%);
-}
-
-/* 淡入淡出動畫 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

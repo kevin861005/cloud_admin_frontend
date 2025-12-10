@@ -1,3 +1,10 @@
+import type {
+  DockerServiceInfo,
+  DatabaseServiceInfo,
+  DnsServiceInfo,
+  NginxServiceInfo,
+} from './service'
+
 /**
  * 客戶相關型別定義
  *
@@ -13,11 +20,6 @@ export type CustomerStatus = 'ACTIVE' | 'INACTIVE' | 'UNUSED'
  * 使用模組
  */
 export type CustomerModule = 'Master' | 'GGF'
-
-/**
- * 服務運行狀態
- */
-export type ServiceStatus = 'RUNNING' | 'NORMAL' | 'ERROR' | 'STOPPED'
 
 /**
  * 客戶列表資料
@@ -100,72 +102,6 @@ export interface ActivityRecord {
   module: string
   /** 操作名稱（例如：新增員工資料） */
   action: string
-}
-
-/**
- * Docker 服務資訊
- */
-export interface DockerServiceInfo {
-  /** 運行狀態 */
-  status: ServiceStatus
-  /** 狀態描述（例如：運行中） */
-  statusText: string
-  /** 名稱（例如：v2.4.1） */
-  name: string
-  /** 容器 ID（例如：C1923hC3e） */
-  containerId: string
-  /** 映像版本（例如：v2.4.1） */
-  imageVersion: string
-  /** Port 對射（例如：8080 → 80） */
-  portMapping: string
-}
-
-/**
- * 資料庫服務資訊
- */
-export interface DatabaseServiceInfo {
-  /** 運行狀態 */
-  status: ServiceStatus
-  /** 狀態描述（例如：正常） */
-  statusText: string
-  /** 名稱（例如：Twfood_production） */
-  name: string
-  /** 伺服器 ID（例如：192.168.1100） */
-  serverId: string
-  /** 資料庫容量（例如：2.4GB） */
-  capacity: string
-}
-
-/**
- * DNS 服務資訊
- */
-export interface DnsServiceInfo {
-  /** 運行狀態 */
-  status: ServiceStatus
-  /** 狀態描述（例如：DNS紀錄有效） */
-  statusText: string
-  /** 主要伺服器（例如：8.8.8.8） */
-  primaryServer: string
-  /** 次要伺服器（例如：8.8.4.4） */
-  secondaryServer: string
-  /** 最後檢查時間（例如：2024.01.15下午14:30） */
-  lastChecked: string
-}
-
-/**
- * NGINX 服務資訊
- */
-export interface NginxServiceInfo {
-  /** 運行狀態 */
-  status: ServiceStatus
-  /** 狀態描述（例如：代理運行） */
-  statusText: string
-  /** 版本（例如：1.34.2） */
-  version: string
-  /** 配置狀態（例如：有效） */
-  configStatus: string
-  /** 最後重載時間（例如：2024.01.15下午14:30） */
-  lastReload: string
 }
 
 /**

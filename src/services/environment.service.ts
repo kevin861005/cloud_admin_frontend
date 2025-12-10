@@ -3,9 +3,13 @@
  * 提供環境管理相關的 API 呼叫
  */
 
-import axios from '@/utils/axios'
+import apiClient from '@/utils/axios'
 import type { ApiResponse } from '@/types/common'
-import type { EnvironmentListItem, EnvironmentDetailInfo } from '@/types/environment'
+import type {
+  EnvironmentListItem,
+  EnvironmentDetailInfo,
+  RestartEnvironmentResponse,
+} from '@/types/environment'
 
 /**
  * 環境服務
@@ -17,15 +21,26 @@ export const environmentService = {
    *
    * @returns Promise<EnvironmentListItem[]> 環境列表
    */
-  async getAllEnvironments(): Promise<EnvironmentListItem[]> {
-    const response = await axios.get<ApiResponse<EnvironmentListItem[]>>('/environments')
+  // async getAllEnvironments(): Promise<EnvironmentListItem[]> {
+  //   const response = await axios.get<ApiResponse<EnvironmentListItem[]>>('/environments')
 
-    // 如果 API 回傳失敗或沒有資料，拋出錯誤
-    if (!response.data.success || !response.data.data) {
-      throw new Error(response.data.message || '取得環境列表失敗')
-    }
+  //   // 如果 API 回傳失敗或沒有資料，拋出錯誤
+  //   if (!response.data.success || !response.data.data) {
+  //     throw new Error(response.data.message || '取得環境列表失敗')
+  //   }
 
-    return response.data.data
+  //   return response.data.data
+  // },
+
+  /**
+   * 重啟環境
+   * @param customerNo 客戶編號
+   */
+  async restartEnvironment(customerNo: string): Promise<ApiResponse<RestartEnvironmentResponse>> {
+    const response = await apiClient.post<ApiResponse<RestartEnvironmentResponse>>(
+      `/environments/${customerNo}/restart`,
+    )
+    return response.data
   },
 
   // ===== Mock 資料（開發階段使用） =====

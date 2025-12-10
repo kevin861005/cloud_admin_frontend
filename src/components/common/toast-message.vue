@@ -19,12 +19,8 @@
           width: widthValue,
         }"
       >
-        <!-- 左側 ICON -->
-        <img
-          src="@/assets/icons/common/success-icon.svg"
-          alt="success"
-          class="w-5 h-5 rounded-full p-0.5"
-        />
+        <!-- 左側 ICON（根據類型顯示不同圖示） -->
+        <img :src="iconSrc" :alt="type" class="w-5 h-5 rounded-full p-0.5" />
 
         <!-- 文字 -->
         <span class="typo-base text-gray-10">
@@ -40,20 +36,32 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMenuStore } from '@/stores/menu.store'
 
+// ICON 匯入
+import SuccessIcon from '@/assets/icons/common/cm-success.svg'
+import WarningIcon from '@/assets/icons/common/cm-warning.svg'
+
 /**
- * 成功訊息 Toast 元件
+ * Toast 訊息類型
+ */
+type ToastType = 'success' | 'warning'
+
+/**
+ * Toast 訊息元件
  *
  * 使用方式:
- * router.push('/path?success=新增成功')
+ * 成功訊息：router.push('/path?success=新增成功')
+ * 警告訊息：router.push('/path?warning=請注意此操作')
  *
  * 特點:
  * - 使用 Teleport 掛載到 body
  * - 相對於內容區域置中（考慮 Sidebar 寬度）
  * - 可自訂寬度
+ * - 支援成功/警告兩種類型
  */
 
 // ========== Props 定義 ==========
 interface Props {
+  /** Toast 寬度 */
   width?: string
 }
 
@@ -68,11 +76,23 @@ const menuStore = useMenuStore()
 const route = useRoute()
 const isVisible = ref(false)
 const message = ref('')
+const type = ref<ToastType>('success')
 const pageHeaderHeight = ref(0)
 
 let hideTimer: ReturnType<typeof setTimeout> | null = null
 
 // ========== Computed ==========
+/**
+ * 根據類型取得對應的 ICON
+ */
+const iconSrc = computed(() => {
+  const iconMap: Record<ToastType, string> = {
+    success: SuccessIcon,
+    warning: WarningIcon,
+  }
+  return iconMap[type.value]
+})
+
 /**
  * 計算 Toast 的寬度值
  */
@@ -118,16 +138,18 @@ const updatePageHeaderHeight = () => {
 
 /**
  * 顯示 Toast 訊息
+ * @param msg - 訊息內容
+ * @param toastType - 訊息類型（success/warning）
  */
-const showToast = (msg: string) => {
+const showToast = (msg: string, toastType: ToastType = 'success') => {
   if (hideTimer) {
     clearTimeout(hideTimer)
   }
 
   message.value = msg
+  type.value = toastType
   isVisible.value = true
 
-  // 測試用
   hideTimer = setTimeout(() => {
     isVisible.value = false
   }, 3000)
@@ -135,13 +157,20 @@ const showToast = (msg: string) => {
 
 // ========== Watchers ==========
 /**
- * 監聽路由變化,檢查是否有 success query
+ * 監聽路由變化，檢查是否有 success 或 warning query
  */
 watch(
-  () => route.query.success,
-  (successMsg) => {
-    if (successMsg && typeof successMsg === 'string') {
-      showToast(successMsg)
+  () => route.query,
+  (query) => {
+    // 優先檢查 success
+    if (query.success && typeof query.success === 'string') {
+      showToast(query.success, 'success')
+      return
+    }
+
+    // 檢查 warning
+    if (query.warning && typeof query.warning === 'string') {
+      showToast(query.warning, 'warning')
     }
   },
   { immediate: true },
@@ -159,5 +188,4 @@ onMounted(() => {
 })
 </script>
 
-<!-- 原本的 .fade* CSS 已移除，因為改用 Tailwind 的過場 class -->
 <style scoped></style>

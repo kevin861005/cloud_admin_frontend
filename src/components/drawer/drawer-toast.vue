@@ -26,8 +26,8 @@
 
 <script setup lang="ts">
 import { computed, watch } from 'vue'
-import successIcon from '@/assets/icons/common/success-icon.svg'
-import failedIcon from '@/assets/icons/common/failed-icon.svg'
+import successIcon from '@/assets/icons/common/cm-success.svg'
+import failedIcon from '@/assets/icons/common/cm-failed.svg'
 
 /**
  * DrawerToast 元件

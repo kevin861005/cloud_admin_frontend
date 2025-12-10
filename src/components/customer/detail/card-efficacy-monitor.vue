@@ -1,15 +1,13 @@
 <template>
-  <div class="flex h-full flex-col rounded-lg bg-white p-6 shadow-md gap-8">
-    <div class="flex flex-col gap-8">
-      <!-- 卡片標題 -->
-      <div class="flex items-center gap-3">
-        <img :src="EfficacyIcon" alt="系統紀錄" class="h-8 w-8" />
-        <h3 class="typo-base-bold text-neutral-800">系統紀錄</h3>
-      </div>
+  <div class="flex flex-col rounded-lg bg-white p-6 shadow-md">
+    <!-- 卡片標題 -->
+    <div class="flex items-center gap-3">
+      <img :src="EfficacyIcon" alt="系統紀錄" class="h-8 w-8" />
+      <h3 class="typo-base-bold text-neutral-800">系統紀錄</h3>
     </div>
 
     <!-- 內容區 -->
-    <div class="space-y-4">
+    <div class="mt-8 flex-1">
       <!-- Loading 狀態 -->
       <Loading v-if="loading" message="載入資料中..." :show-spinner="true" />
 

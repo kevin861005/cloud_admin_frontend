@@ -1,3 +1,5 @@
+import type { DockerServiceInfo } from './service'
+
 /**
  * 環境相關型別定義
  *
@@ -56,4 +58,18 @@ export interface EnvironmentDetailInfo {
   contactPerson: string // 聯絡人姓名
   phone: string // 聯絡電話
   email: string // 聯絡 E-mail
+}
+
+/**
+ * 重啟環境回應
+ */
+export interface RestartEnvironmentResponse {
+  /** 重啟是否成功 */
+  success: boolean
+  /** 訊息（成功或失敗的描述） */
+  message: string
+  /** 重啟耗時（毫秒） */
+  duration: number | null
+  /** Docker 服務資訊（重啟後的最新狀態） */
+  docker: DockerServiceInfo | null
 }

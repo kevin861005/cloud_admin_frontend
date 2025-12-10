@@ -183,6 +183,31 @@
       brightness(100%) contrast(96%);
   }
 
+  /* 圖示預設顏色（neutral-600: #4B5563） */
+  .icon-neutral {
+    @apply transition-all duration-200;
+    filter: brightness(0) saturate(100%) invert(32%) sepia(9%) saturate(1095%) hue-rotate(182deg)
+      brightness(95%) contrast(92%);
+  }
+
+  /* 搭配 group 使用：hover 時變成 primary-500 */
+  .group:hover .icon-neutral-hover-primary {
+    filter: brightness(0) saturate(100%) invert(52%) sepia(52%) saturate(2758%) hue-rotate(196deg)
+      brightness(100%) contrast(96%);
+  }
+
+  /* 圖示預設顏色（neutral-400: #9CA3AF） */
+  .icon-neutral-light {
+    @apply transition-all duration-200;
+    filter: brightness(0) saturate(100%) invert(70%) sepia(5%) saturate(500%) hue-rotate(180deg)
+      brightness(95%);
+  }
+
+  /* 圖示 disabled 狀態（降低透明度） */
+  .icon-disabled {
+    @apply opacity-40;
+  }
+
   /* 表格欄位內的圖示按鈕樣式（填滿欄位） */
   .btn-icon-cell {
     @apply flex items-center justify-center flex-1 h-full py-4 cursor-pointer transition-all;
@@ -200,6 +225,12 @@
     filter: brightness(0) saturate(100%) invert(52%) sepia(52%) saturate(2758%) hue-rotate(196deg)
       brightness(100%) contrast(96%);
   }
+
+  /* 圖示自身 hover 變色（不需要 group） */
+  .icon-neutral-self-hover:hover {
+    filter: brightness(0) saturate(100%) invert(52%) sepia(52%) saturate(2758%) hue-rotate(196deg)
+      brightness(100%) contrast(96%);
+  }
 }
 
 /* drawer 相關樣式 */
@@ -210,5 +241,19 @@
 
   .drawer .edit {
     @apply flex flex-col gap-3 overflow-x-hidden;
+  }
+}
+
+/* 通用動畫 */
+@layer components {
+  /* 淡入淡出動畫 */
+  .fade-enter-active,
+  .fade-leave-active {
+    @apply transition-opacity duration-300 ease-in-out;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    @apply opacity-0;
   }
 }

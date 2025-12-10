@@ -43,45 +43,72 @@
         </CardContainer>
 
         <div class="flex flex-1 items-center justify-between px-10">
-          <h2 class="typo-xl-bold text-neutral-800">系統環境與運行狀態</h2>
+          <div class="flex flex-row items-center gap-1">
+            <h2 class="typo-xl-bold text-neutral-800">系統環境與運行狀態</h2>
+
+            <button
+              type="button"
+              class="flex items-center justify-center p-1 rounded hover:bg-gray-100 transition-colors cursor-pointer focus:outline-none"
+              :aria-label="isSystemExpanded ? '收合' : '展開'"
+              @click="toggleSystemExpanded"
+            >
+              <img
+                :src="isSystemExpanded ? ArrowUpIcon : ArrowDownIcon"
+                :alt="isSystemExpanded ? '收合' : '展開'"
+                class="h-4 w-4"
+              />
+            </button>
+          </div>
 
           <button
-            class="inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:bg-opacity-80 transition-colors"
+            class="group inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:text-primary-500 transition-colors"
             @click="openDeleteDialog(customerInfo.customerName)"
           >
-            <img :src="TrashIcon" alt="刪除環境" class="h-4 w-4" />
-
+            <img
+              :src="TrashIcon"
+              alt="刪除環境"
+              class="icon-neutral icon-neutral-hover-primary h-4 w-4"
+            />
             <span>刪除環境</span>
           </button>
         </div>
 
-        <CardContainer :height="190" :use-padding-top="true" :padding-top="20" :gap="12">
+        <CardContainer :use-padding-top="true" :padding-top="20" :gap="12">
           <!-- Docker 狀態卡片 -->
           <CardDocker
-            v-if="customerInfo.systemEnvironment"
+            v-if="customerInfo.systemEnvironment.docker"
             :docker-info="customerInfo.systemEnvironment.docker"
+            :customer-name="customerInfo.customerName"
+            :customer-no="customerId"
+            :is-expanded="isSystemExpanded"
+            @restart-success="handleDockerRestartSuccess"
+            @restart-error="handleDockerRestartError"
+            @update-image="handleDockerUpdateImage"
           />
 
           <!-- 資料庫狀態卡片 -->
           <CardDatabase
-            v-if="customerInfo.systemEnvironment"
+            v-if="customerInfo.systemEnvironment.database"
             :database-info="customerInfo.systemEnvironment.database"
+            :is-expanded="isSystemExpanded"
           />
 
           <!-- DNS 設定卡片 -->
           <CardDNS
-            v-if="customerInfo.systemEnvironment"
+            v-if="customerInfo.systemEnvironment.dns"
             :dns-info="customerInfo.systemEnvironment.dns"
+            :is-expanded="isSystemExpanded"
           />
 
           <!-- NGINX 狀態卡片 -->
           <CardNGINX
-            v-if="customerInfo.systemEnvironment"
+            v-if="customerInfo.systemEnvironment.nginx"
             :nginx-info="customerInfo.systemEnvironment.nginx"
+            :is-expanded="isSystemExpanded"
           />
         </CardContainer>
 
-        <CardContainer :width-ratios="[1, 2]" :height="268" :use-padding-bottom="false">
+        <CardContainer :width-ratios="[1, 2]">
           <!-- 需關注客戶卡片 -->
           <CardEfficacyMonitor
             v-if="customerInfo.systemEnvironment"
@@ -107,7 +134,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { customerService } from '@/services/customer.service'
 import type { CustomerDetailInfo } from '@/types/customer'
@@ -126,8 +153,18 @@ import CardSystemRecords from '@/components/customer/detail/card-system-records.
 import CardEfficacyMonitor from '@/components/customer/detail/card-efficacy-monitor.vue'
 import DeleteEnvironmentDialog from '@/components/dialog/dialog-delete-environment.vue'
 import TrashIcon from '@/assets/icons/common/cm-trash.svg'
+import ArrowDownIcon from '@/assets/icons/common/cm-arrow-down.svg'
+import ArrowUpIcon from '@/assets/icons/common/cm-arrow-up.svg'
+import type { DockerServiceInfo } from '@/types/service'
 
 const route = useRoute()
+
+/**
+ * 系統環境區塊是否展開
+ * - true: 展開
+ * - false: 收合（預設）
+ */
+const isSystemExpanded = ref(false)
 
 /**
  * 客戶詳細資訊
@@ -148,6 +185,14 @@ const error = ref<string | null>(null)
  * 是否顯示刪除確認 Dialog
  */
 const showDeleteDialog = ref(false)
+
+/**
+ * 客戶編號（從路由取得）
+ */
+const customerId = computed(() => {
+  const idParam = route.params.id
+  return (Array.isArray(idParam) ? idParam[0] : idParam) || ''
+})
 
 /**
  * 載入客戶詳細資料
@@ -198,5 +243,42 @@ function openDeleteDialog(environmentId: string) {
  */
 function handleDeleted() {
   console.log('執行刪除')
+}
+
+/**
+ * 切換系統環境區塊展開/收合狀態
+ */
+function toggleSystemExpanded() {
+  isSystemExpanded.value = !isSystemExpanded.value
+}
+
+/**
+ * 處理 Docker 更新映像
+ */
+function handleDockerUpdateImage() {
+  console.log('更新 Docker 映像')
+  // TODO: 呼叫 API
+}
+
+/**
+ * Docker 重啟成功處理
+ */
+function handleDockerRestartSuccess(dockerInfo: DockerServiceInfo) {
+  console.log('Docker 重啟成功')
+
+  // 更新 Docker 資訊
+  if (customerInfo.value?.systemEnvironment) {
+    customerInfo.value.systemEnvironment.docker = dockerInfo
+  }
+
+  // TODO: 顯示成功 Toast
+}
+
+/**
+ * Docker 重啟失敗處理
+ */
+function handleDockerRestartError(message: string) {
+  console.error('Docker 重啟失敗:', message)
+  // TODO: 顯示錯誤 Toast
 }
 </script>

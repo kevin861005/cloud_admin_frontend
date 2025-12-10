@@ -1,7 +1,7 @@
 <template>
   <div
     ref="containerRef"
-    class="flex items-center overflow-x-auto overflow-y-hidden px-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    class="flex items-stretch overflow-x-auto overflow-y-hidden px-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     :style="containerStyle"
   >
     <!-- 使用 slot 讓外部可以插入任意數量的卡片 -->
@@ -19,10 +19,11 @@ import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
  * - 自動計算卡片寬度（平均分配或自訂比例）
  * - 支援水平滾動（滑鼠滾輪上下轉換為左右滾動）
  * - 響應式調整（視窗大小變化時自動重新計算）
+ * - 卡片高度自動對齊（以最高的卡片為準，或使用固定高度）
  *
  * Props：
  * - widthRatios: 自訂寬度比例（例如 [1, 2] 表示第一張佔 33%，第二張佔 67%）
- * - height: 容器高度（單位：px，預設 296px）
+ * - height: 容器高度（單位：px，選填，不傳則由內容決定）
  * - usePaddingTop: 是否使用上方內距（預設 false）
  * - paddingTop: 上方內距數值（單位：px，預設 12px，僅在 usePaddingTop=true 時生效）
  * - usePaddingBottom: 是否使用下方內距（預設 true）
@@ -43,7 +44,8 @@ interface Props {
 
   /**
    * 容器高度（單位：px）
-   * - 預設：296px
+   * - 選填，不傳則由內容決定高度
+   * - 有傳則使用固定高度
    */
   height?: number
 
@@ -84,7 +86,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   widthRatios: () => [],
-  height: 296,
+  height: undefined,
   usePaddingTop: false,
   paddingTop: 12,
   usePaddingBottom: true,
@@ -96,14 +98,21 @@ const containerRef = ref<HTMLElement | null>(null)
 
 /**
  * 計算容器樣式
+ * - height: 有傳則使用固定高度，沒傳則由內容決定
  */
 const containerStyle = computed(() => {
-  return {
-    height: `${props.height}px`,
+  const style: Record<string, string> = {
     paddingTop: props.usePaddingTop ? `${props.paddingTop}px` : '0',
     paddingBottom: props.usePaddingBottom ? `${props.paddingBottom}px` : '0',
     gap: `${props.gap}px`,
   }
+
+  // 只有傳入 height 時才設定固定高度
+  if (props.height !== undefined) {
+    style.height = `${props.height}px`
+  }
+
+  return style
 })
 
 /**
@@ -240,7 +249,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  // 清理事件監聽器
+  // 清理事件監聯器
   if (containerRef.value) {
     containerRef.value.removeEventListener('wheel', handleWheel)
   }

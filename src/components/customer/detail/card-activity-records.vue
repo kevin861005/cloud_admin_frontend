@@ -9,27 +9,31 @@
 
       <!-- 活動列表 -->
       <div class="flex-1 space-y-[4px] overflow-y-auto">
-        <div
-          v-for="(activity, index) in activities"
-          :key="index"
-          class="flex items-center h-9 gap-3 typo-sm-medium text-neutral-700 py-[1px]"
-        >
-          <!-- 左側 frame（日期時間 + 模組標籤） -->
-          <div class="flex items-center gap-[12px] flex-shrink-0">
-            <!-- 日期時間 -->
-            <span class="w-36">
-              {{ activity.datetime }}
+        <template v-if="activities && activities.length > 0">
+          <div
+            v-for="(activity, index) in activities"
+            :key="index"
+            class="flex items-center h-9 gap-3 typo-sm-medium text-neutral-700 py-[1px]"
+          >
+            <!-- 左側 frame（日期時間 + 模組標籤） -->
+            <div class="flex items-center gap-[12px] flex-shrink-0">
+              <!-- 日期時間 -->
+              <span class="w-36">
+                {{ activity.datetime }}
+              </span>
+
+              <!-- 模組標籤 -->
+              <Badge :text="activity.module" :type="getModuleType()" />
+            </div>
+
+            <!-- 右側 subtext -->
+            <span class="flex-1 text-right">
+              {{ activity.action }}
             </span>
-
-            <!-- 模組標籤 -->
-            <Badge :text="activity.module" :type="getModuleType()" />
           </div>
+        </template>
 
-          <!-- 右側 subtext -->
-          <span class="flex-1 text-right">
-            {{ activity.action }}
-          </span>
-        </div>
+        <div v-else class="py-8 text-center text-sm text-neutral-500">暫無最新活動紀錄</div>
       </div>
     </div>
 

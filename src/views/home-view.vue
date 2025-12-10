@@ -15,7 +15,7 @@
     <div class="flex flex-1 flex-col min-w-0">
       <PageHeader class="sticky top-0 z-30" />
 
-      <SuccessToast />
+      <ToastMessage />
 
       <main class="flex-1 overflow-auto bg-gray-50">
         <router-view />
@@ -28,7 +28,7 @@
 import { onMounted } from 'vue'
 import PageHeader from '@/components/layout/page-header.vue'
 import Sidebar from '@/components/sidebar/sidebar-main.vue'
-import SuccessToast from '@/components/common/success-toast.vue'
+import ToastMessage from '@/components/common/toast-message.vue'
 import { useMenuStore } from '@/stores/menu.store'
 import { useAuthStore } from '@/stores/auth.store'
 
