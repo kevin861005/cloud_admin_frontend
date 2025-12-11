@@ -1,18 +1,20 @@
 <template>
-  <div class="flex min-h-screen bg-gray-50">
-    <!-- 左側：Sidebar（使用 CSS transition 實現流暢的收合/展開動畫） -->
-    <div
-      class="flex-shrink-0 overflow-hidden transition-all duration-300 ease-in-out border-r border-r-[rgba(0,0,0,0.08)]"
-      :class="menuStore.isCollapsed ? 'w-0' : 'w-[255px]'"
+  <div class="min-h-screen bg-gray-50">
+    <!-- 左側：Sidebar（固定定位，不隨頁面滾動） -->
+    <aside
+      class="fixed left-0 top-0 z-40 h-screen border-r border-r-[rgba(0,0,0,0.08)] bg-white transition-all duration-300 ease-in-out"
+      :class="menuStore.isCollapsed ? 'w-0 overflow-hidden' : 'w-[255px]'"
     >
-      <!-- 整合 Sidebar 元件（固定寬度 255px = w-[255px]） -->
       <div class="w-[255px]">
         <Sidebar />
       </div>
-    </div>
+    </aside>
 
-    <!-- 右側：PageHeader + 內容區域（垂直佈局，會自動跟著展開） -->
-    <div class="flex flex-1 flex-col min-w-0">
+    <!-- 右側：PageHeader + 內容區域（加上左邊距，騰出側邊欄空間） -->
+    <div
+      class="flex min-h-screen flex-col transition-all duration-300 ease-in-out"
+      :class="menuStore.isCollapsed ? 'ml-0' : 'ml-[255px]'"
+    >
       <PageHeader class="sticky top-0 z-30" />
 
       <ToastMessage />

@@ -76,3 +76,19 @@ export interface NginxServiceInfo {
   /** SSL 是否啟用 */
   sslEnabled: boolean
 }
+
+/**
+ * Docker 映像資訊
+ */
+export interface DockerImage {
+  /** 映像 ID */
+  id: string
+  /** 映像檔名 */
+  name: string
+  /** 建立時間 */
+  createdAt: string
+  /** 容量（已格式化，如 "2.21GB"） */
+  size: string
+  /** 是否為最新版本 */
+  isLatest: boolean
+}

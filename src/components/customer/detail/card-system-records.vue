@@ -33,12 +33,18 @@
         </div>
       </template>
 
-      <!-- 無資料 -->
-      <div v-else class="py-8 text-center text-sm text-neutral-500">暫無系統紀錄</div>
+      <!-- 無資料：使用 EmptyState 元件 -->
+      <EmptyState
+        v-else
+        variant="inline"
+        type="no-data"
+        title=""
+        description="目前沒有任何系統紀錄"
+      />
     </div>
 
     <!-- 更多按鈕（固定在底部） -->
-    <div class="mt-4 flex justify-end">
+    <div v-if="systemLogs && systemLogs.length > 0" class="mt-4 flex justify-end">
       <BadgeButton text="更多" @click="handleMoreClick" />
     </div>
   </div>
@@ -48,6 +54,7 @@
 import type { SystemLog } from '@/types/customer'
 import SystemIcon from '@/assets/icons/card/system.svg'
 import Badge from '@/components/common/badge.vue'
+import EmptyState from '@/components/common/empty-state.vue'
 import BadgeButton from '@/components/common/badge-button.vue'
 
 interface Props {

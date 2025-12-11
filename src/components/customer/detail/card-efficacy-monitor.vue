@@ -2,8 +2,8 @@
   <div class="flex flex-col rounded-lg bg-white p-6 shadow-md">
     <!-- 卡片標題 -->
     <div class="flex items-center gap-3">
-      <img :src="EfficacyIcon" alt="系統紀錄" class="h-8 w-8" />
-      <h3 class="typo-base-bold text-neutral-800">系統紀錄</h3>
+      <img :src="EfficacyIcon" alt="效能監控" class="h-8 w-8" />
+      <h3 class="typo-base-bold text-neutral-800">效能監控</h3>
     </div>
 
     <!-- 內容區 -->

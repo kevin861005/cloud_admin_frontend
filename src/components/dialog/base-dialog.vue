@@ -23,7 +23,6 @@
           :aria-labelledby="titleId"
         >
           <!-- ========== Close Section ========== -->
-          <!-- 高度 40px，icon 16x16，點擊區域 40x40 -->
           <div class="flex h-10 items-center justify-end">
             <button
               v-if="showCloseButton && !loading"
@@ -56,11 +55,20 @@
             <div class="px-5 py-1">
               <slot />
             </div>
+
+            <!-- Options (選項列表): px-20px -->
+            <div v-if="$slots.options" class="px-5">
+              <slot name="options" />
+            </div>
           </div>
 
           <!-- ========== Button List ========== -->
-          <!-- px-20px, py-8px, gap-8px -->
-          <div v-if="$slots.footer" class="flex justify-end gap-2 px-5 py-2">
+          <!-- 有 options slot 時顯示上方陰影 -->
+          <div
+            v-if="$slots.footer"
+            class="flex justify-end gap-2 px-5 py-2"
+            :class="{ 'shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]': $slots.options }"
+          >
             <slot name="footer" />
           </div>
         </div>
@@ -80,16 +88,9 @@
  *     - Title
  *     - Subtitle
  *   - Note: padding 20px (左右), 4px (上下)
+ *   - Options: padding 20px (左右) - 選項列表 slot
  * - Button List: padding 20px (左右), 8px (上下), gap 8px
- *
- * @example
- * <BaseDialog v-model="isOpen" title="對話框標題" subtitle="副標題說明">
- *   <p>對話框內容</p>
- *   <template #footer>
- *     <button @click="close">取消</button>
- *     <button @click="confirm">確認</button>
- *   </template>
- * </BaseDialog>
+ *   - 有 options 時上方顯示陰影
  */
 import { computed, useId, watch, onUnmounted } from 'vue'
 import CloseIcon from '@/assets/icons/common/cm-close.svg'

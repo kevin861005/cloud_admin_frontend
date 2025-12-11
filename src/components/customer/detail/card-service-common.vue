@@ -3,31 +3,31 @@
     class="flex min-w-[200px] flex-shrink-0 flex-col gap-3 rounded-xl shadow-md border border-gray-200 bg-white p-5 pb-4"
   >
     <!-- CardTitle：圖標 + 標題 + 狀態 -->
-    <div class="flex items-center">
+    <div class="flex items-center gap-2">
       <!-- 圖標 -->
       <img :src="icon" :alt="title" class="h-5 w-5 flex-shrink-0" />
 
-      <!-- 標題（與圖標間距 8px） -->
-      <span class="ml-2 typo-base-bold text-neutral-800">{{ title }}</span>
+      <!-- 標題 -->
+      <span class="typo-base-bold text-neutral-800">{{ title }}</span>
 
-      <!-- 狀態標籤（與標題間距 12px） -->
-      <span v-if="statusText" class="ml-3 typo-xs-medium" :class="statusColorClass">
-        {{ statusText }}
-      </span>
+      <!-- 狀態標籤 -->
+      <Badge
+        v-if="statusText"
+        :text="statusText"
+        :type="statusBadgeType"
+        :show-border="false"
+        class="ml-1"
+      />
     </div>
 
     <!-- system/item：資料列區域 -->
     <div class="flex flex-1 flex-col gap-3">
       <div v-for="(row, index) in visibleRows" :key="index" class="flex flex-col gap-1">
         <!-- 標題 -->
-        <span class="typo-xs-regular text-neutral-400">{{ row.label }}</span>
+        <span class="typo-xs text-neutral-700">{{ row.label }}</span>
 
-        <!-- 內容（有背景樣式） -->
-        <span
-          class="inline-block self-start break-all rounded bg-neutral-100 px-2 py-0.5 typo-sm-medium text-neutral-800"
-        >
-          {{ row.value }}
-        </span>
+        <!-- Badge 內容 -->
+        <Badge :text="row.value" type="neutral" :show-border="false" class="self-start" />
       </div>
     </div>
 
@@ -40,6 +40,7 @@
 
 <script setup lang="ts">
 import { computed, useSlots } from 'vue'
+import Badge from '@/components/common/badge.vue'
 import type { ServiceStatus } from '@/types/service'
 
 /**
@@ -95,20 +96,18 @@ const visibleRows = computed(() => {
 })
 
 /**
- * 狀態顏色樣式
+ * 狀態對應的 Badge 類型
  */
-const statusColorClass = computed(() => {
+const statusBadgeType = computed(() => {
   switch (props.status) {
     case 'RUNNING':
-      return 'text-primary-500'
     case 'NORMAL':
-      return 'text-primary-500'
+      return 'working'
     case 'ERROR':
-      return 'text-semantic-warning'
     case 'EXITED':
-      return 'text-semantic-warning'
+      return 'error'
     default:
-      return 'text-primary-500'
+      return 'working'
   }
 })
 </script>

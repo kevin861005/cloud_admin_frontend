@@ -33,12 +33,19 @@
           </div>
         </template>
 
-        <div v-else class="py-8 text-center text-sm text-neutral-500">暫無最新活動紀錄</div>
+        <!-- 無資料：使用 EmptyState 元件 -->
+        <EmptyState
+          v-else
+          variant="inline"
+          type="no-data"
+          title=""
+          description="暫無最新活動紀錄"
+        />
       </div>
     </div>
 
-    <!-- 更多按鈕（暫不實作功能） -->
-    <div class="flex justify-end">
+    <!-- 更多按鈕（有資料時才顯示） -->
+    <div v-if="activities && activities.length > 0" class="flex justify-end">
       <BadgeButton text="更多" @click="handleMoreClick" />
     </div>
   </div>
@@ -48,6 +55,7 @@
 import type { ActivityRecord } from '@/types/customer'
 import ActivityIcon from '@/assets/icons/card/activity.svg'
 import Badge from '@/components/common/badge.vue'
+import EmptyState from '@/components/common/empty-state.vue'
 import BadgeButton from '@/components/common/badge-button.vue'
 
 /**

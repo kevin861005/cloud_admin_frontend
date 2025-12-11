@@ -14,21 +14,31 @@
       <button
         type="button"
         :disabled="isDeleting"
-        class="rounded-lg bg-gray-100 px-6 py-3 typo-sm-bold text-neutral-600 transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+        class="group relative rounded-lg bg-gray-100 px-6 py-3 typo-sm-bold text-neutral-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         @click="handleClose"
       >
-        取消
+        <!-- 黑色遮罩層（只影響背景） -->
+        <span
+          class="absolute inset-0 rounded-lg bg-black opacity-0 transition-opacity group-hover:opacity-10 group-disabled:opacity-0"
+        />
+        <!-- 按鈕文字（不受影響） -->
+        <span class="relative">取消</span>
       </button>
 
       <!-- 確認刪除按鈕 -->
       <button
         type="button"
         :disabled="isDeleting"
-        class="flex items-center gap-2 rounded-lg bg-semantic-warning px-6 py-3 typo-sm-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+        class="group relative flex items-center gap-2 rounded-lg bg-semantic-warning px-6 py-3 typo-sm-bold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         @click="handleConfirm"
       >
-        <LoadingSpinner v-if="isDeleting" class="h-4 w-4" />
-        {{ isDeleting ? '刪除中...' : '確認刪除' }}
+        <!-- 黑色遮罩層（只影響背景） -->
+        <span
+          class="absolute inset-0 rounded-lg bg-black opacity-0 transition-opacity group-hover:opacity-10 group-disabled:opacity-0"
+        />
+        <!-- 按鈕內容（不受影響） -->
+        <LoadingSpinner v-if="isDeleting" class="relative h-4 w-4" />
+        <span class="relative">{{ isDeleting ? '刪除中...' : '確認刪除' }}</span>
       </button>
     </template>
   </BaseDialog>

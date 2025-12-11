@@ -8,6 +8,7 @@ import type { ApiResponse } from '@/types/common'
 import type { StartTaskResponse } from '@/types/task'
 import { ApiError } from '@/types/common'
 import type { EnvironmentListItem, EnvironmentDetailInfo } from '@/types/environment'
+import type { DockerImage } from '@/types/service'
 
 /**
  * 環境服務
@@ -38,7 +39,7 @@ export const environmentService = {
    */
   async restartEnvironmentWithProgress(customerNo: string): Promise<StartTaskResponse> {
     const response = await apiClient.post<ApiResponse<StartTaskResponse>>(
-      `/environment/${customerNo}/restart`,
+      `/environments/${customerNo}/restart`,
     )
 
     if (!response.data.success || !response.data.data) {
@@ -55,12 +56,14 @@ export const environmentService = {
   /**
    * 更新映像檔（回傳 taskId，用於 SSE 進度追蹤）
    * @param customerNo 客戶編號
+   * @param imageId 映像檔 ID
    * @returns 包含 taskId 的回應
    * @throws {ApiError} 當 API 呼叫失敗時
    */
-  async updateImageWithProgress(customerNo: string): Promise<StartTaskResponse> {
+  async updateImageWithProgress(customerNo: string, imageId: string): Promise<StartTaskResponse> {
     const response = await apiClient.post<ApiResponse<StartTaskResponse>>(
-      `/environment/${customerNo}/update-image`,
+      `/environments/${customerNo}/update-image`,
+      { imageId },
     )
 
     if (!response.data.success || !response.data.data) {
@@ -69,6 +72,24 @@ export const environmentService = {
         message: response.data.message || '啟動更新映像任務失敗',
         data: response.data.data ?? null,
       })
+    }
+
+    return response.data.data
+  },
+
+  /**
+   * 取得所有可更新的映像檔
+   * GET /api/environments/{customerNo}/images
+   *
+   * @returns  Promise<<DockerImage[]> 可更新的映像檔
+   */
+  async getAllImages(customerNo: string): Promise<DockerImage[]> {
+    const response = await apiClient.get<ApiResponse<DockerImage[]>>(
+      `/environments/${customerNo}/images`,
+    )
+
+    if (!response.data.success || !response.data.data) {
+      throw new Error(response.data.message || '取得可更新的映像檔失敗')
     }
 
     return response.data.data

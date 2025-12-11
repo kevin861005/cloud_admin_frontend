@@ -4,11 +4,11 @@
       <!-- Spinner 動畫 -->
       <div
         v-if="showSpinner"
-        class="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"
+        class="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"
       ></div>
 
       <!-- 載入文字 -->
-      <p class="text-sm text-slate-500">
+      <p class="typo-sm text-neutral-500">
         {{ message }}
       </p>
     </div>

@@ -13,19 +13,29 @@
       <!-- 取消按鈕 -->
       <button
         type="button"
-        class="rounded-lg bg-neutral-100 px-6 py-3 typo-sm-bold text-neutral-600 transition-colors hover:bg-neutral-200"
+        class="group relative rounded-lg bg-neutral-100 px-6 py-3 typo-sm-bold text-neutral-600 transition-colors"
         @click="handleClose"
       >
-        取消
+        <!-- 黑色遮罩層（只影響背景） -->
+        <span
+          class="absolute inset-0 rounded-lg bg-black opacity-0 transition-opacity group-hover:opacity-10"
+        />
+        <!-- 按鈕文字（不受影響） -->
+        <span class="relative">取消</span>
       </button>
 
       <!-- 確認重啟按鈕 -->
       <button
         type="button"
-        class="flex items-center gap-2 rounded-lg bg-primary-500 px-6 py-3 typo-sm-bold text-white transition-colors hover:bg-blue-600"
+        class="group relative rounded-lg bg-primary-500 px-6 py-3 typo-sm-bold text-white transition-colors"
         @click="handleConfirm"
       >
-        確認重啟
+        <!-- 黑色遮罩層（只影響背景） -->
+        <span
+          class="absolute inset-0 rounded-lg bg-black opacity-0 transition-opacity group-hover:opacity-10"
+        />
+        <!-- 按鈕文字（不受影響） -->
+        <span class="relative">確認重啟</span>
       </button>
     </template>
   </BaseDialog>

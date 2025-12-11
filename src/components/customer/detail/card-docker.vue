@@ -18,7 +18,7 @@
               ? 'cursor-pointer border-neutral-200 bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
               : 'cursor-not-allowed border-neutral-100 bg-neutral-50 text-neutral-300',
           ]"
-          @click="handleUpdateImage"
+          @click="openUpdateImageDialog"
         >
           <img
             :src="DownloadIcon"
@@ -50,6 +50,14 @@
     </template>
   </CardServiceCommon>
 
+  <!-- 更新映像 Dialog -->
+  <DialogUpdateImage
+    v-model="showUpdateImageDialog"
+    :customer-no="customerNo"
+    :is-updating="isUpdatingImage"
+    @confirm="handleUpdateImageConfirm"
+  />
+
   <!-- 重啟環境確認 Dialog -->
   <DialogRestartEnvironment
     v-model="showRestartDialog"
@@ -71,7 +79,8 @@
 import { ref, computed, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import CardServiceCommon from './card-service-common.vue'
-import DialogRestartEnvironment from '@/components/dialog/dialog-restart-environment.vue'
+import DialogRestartEnvironment from '@/components/environment/dialog-restart-environment.vue'
+import DialogUpdateImage from '@/components/environment/dialog-update-image.vue'
 import TaskProgressDialog from '@/components/dialog/task-progress-dialog.vue'
 import { environmentService } from '@/services/environment.service'
 import { taskService } from '@/services/task.service'
@@ -103,17 +112,23 @@ const props = withDefaults(defineProps<Props>(), {
  * Emits 定義
  */
 const emit = defineEmits<{
-  /** 更新映像事件 */
-  updateImage: []
   /** 重啟成功事件，回傳最新的 Docker 資訊 */
   restartSuccess: [dockerInfo: DockerServiceInfo]
   /** 重啟失敗事件 */
   restartError: [message: string]
+  /** 更新映像成功事件，回傳最新的 Docker 資訊 */
+  updateImageSuccess: [dockerInfo: DockerServiceInfo]
+  /** 更新映像失敗事件 */
+  updateImageError: [message: string]
 }>()
 
 // ========== Router ==========
 const router = useRouter()
 const route = useRoute()
+
+// ========== 更新映像 Dialog 狀態 ==========
+const showUpdateImageDialog = ref(false)
+const isUpdatingImage = ref(false)
 
 // ========== 重啟確認 Dialog 狀態 ==========
 const showRestartDialog = ref(false)
@@ -124,8 +139,17 @@ const progressTitle = ref('')
 const progressDescription = ref('')
 const progressValue = ref(0)
 
+// ========== 進度更新佇列 ==========
+const progressQueue: Array<{ message: string; progress: number }> = []
+let isProcessingQueue = false
+const PROGRESS_ANIMATION_DURATION = 350 // 動畫時間 + 一點緩衝
+
 // ========== SSE 連線關閉函數 ==========
 let closeSSE: (() => void) | null = null
+
+// ========== 當前任務類型（用於區分回調處理） ==========
+type TaskType = 'restart' | 'updateImage'
+let currentTaskType: TaskType | null = null
 
 /**
  * 資料列（全部欄位）
@@ -137,14 +161,61 @@ const rows = computed(() => [
   { label: 'Port映射', value: props.dockerInfo.portMapping },
 ])
 
+// ========== 更新映像相關 ==========
+
 /**
- * 處理更新映像
+ * 開啟更新映像 Dialog
  */
-function handleUpdateImage() {
+function openUpdateImageDialog() {
   if (props.dockerInfo.canUpdateImage) {
-    emit('updateImage')
+    showUpdateImageDialog.value = true
   }
 }
+
+/**
+ * 確認更新映像
+ */
+async function handleUpdateImageConfirm(imageId: string) {
+  console.log('選擇的映像 ID:', imageId)
+
+  // 1. 設定更新中狀態
+  isUpdatingImage.value = true
+
+  // 2. 關閉選擇 Dialog
+  showUpdateImageDialog.value = false
+
+  // 重置進度佇列
+  resetProgressQueue()
+
+  // 3. 開啟進度條 Dialog
+  currentTaskType = 'updateImage'
+  progressTitle.value = '更新映像中...'
+  progressDescription.value = '正在準備...'
+  progressValue.value = 0
+  showProgressDialog.value = true
+
+  try {
+    // 4. 呼叫 API 取得 taskId
+    const { taskId } = await environmentService.updateImageWithProgress(props.customerNo, imageId)
+
+    // 5. 建立 SSE 連線
+    closeSSE = taskService.subscribeProgress<DockerServiceInfo>(taskId, {
+      onProgress: handleProgress,
+      onCompleted: handleCompleted,
+      onError: handleError,
+      onConnectionError: handleConnectionError,
+    })
+  } catch (error) {
+    console.error('啟動更新映像任務失敗:', error)
+    showProgressDialog.value = false
+    isUpdatingImage.value = false
+
+    const errorMessage = error instanceof Error ? error.message : '啟動更新映像任務失敗'
+    navigateWithMessage('warning', errorMessage)
+  }
+}
+
+// ========== 重啟環境相關 ==========
 
 /**
  * 開啟重啟確認 Dialog
@@ -162,7 +233,11 @@ async function handleRestartConfirm() {
   // 1. 關閉確認 Dialog
   showRestartDialog.value = false
 
+  // 重置進度佇列
+  resetProgressQueue()
+
   // 2. 開啟進度條 Dialog
+  currentTaskType = 'restart'
   progressTitle.value = '重啟環境中...'
   progressDescription.value = '正在準備...'
   progressValue.value = 0
@@ -183,18 +258,58 @@ async function handleRestartConfirm() {
     console.error('啟動重啟任務失敗:', error)
     showProgressDialog.value = false
 
-    // 統一使用 ApiError 的 message
     const errorMessage = error instanceof Error ? error.message : '啟動重啟任務失敗'
     navigateWithMessage('warning', errorMessage)
   }
 }
 
+// ========== SSE 回調處理（共用） ==========
+
 /**
- * 處理進度更新
+ * 處理進度更新（加入佇列）
  */
 function handleProgress(event: TaskProgressEvent<DockerServiceInfo>) {
-  progressDescription.value = event.message
-  progressValue.value = event.progress
+  // 將進度加入佇列
+  progressQueue.push({
+    message: event.message,
+    progress: event.progress,
+  })
+
+  // 開始處理佇列
+  processProgressQueue()
+}
+
+/**
+ * 依序處理進度佇列
+ */
+function processProgressQueue() {
+  // 如果正在處理中或佇列為空，則返回
+  if (isProcessingQueue || progressQueue.length === 0) {
+    return
+  }
+
+  isProcessingQueue = true
+
+  // 取出下一個進度
+  const next = progressQueue.shift()!
+  progressDescription.value = next.message
+  progressValue.value = next.progress
+
+  // 等待動畫完成後處理下一個
+  setTimeout(() => {
+    isProcessingQueue = false
+    processProgressQueue()
+  }, PROGRESS_ANIMATION_DURATION)
+}
+
+/**
+ * 重置進度佇列（在任務開始或結束時呼叫）
+ */
+function resetProgressQueue() {
+  progressQueue.length = 0
+  isProcessingQueue = false
+  progressValue.value = 0
+  progressDescription.value = ''
 }
 
 /**
@@ -208,13 +323,23 @@ function handleCompleted(event: TaskProgressEvent<DockerServiceInfo>) {
   // 關閉進度條
   showProgressDialog.value = false
 
-  // 更新畫面資料
-  if (event.data) {
-    emit('restartSuccess', event.data)
+  // 根據任務類型處理
+  if (currentTaskType === 'updateImage') {
+    isUpdatingImage.value = false
+
+    if (event.data) {
+      emit('updateImageSuccess', event.data)
+    }
+    navigateWithMessage('success', '更新映像成功')
+  } else if (currentTaskType === 'restart') {
+    if (event.data) {
+      emit('restartSuccess', event.data)
+    }
+    navigateWithMessage('success', '重啟成功')
   }
 
-  // 導向成功訊息
-  navigateWithMessage('success', '重啟成功')
+  // 重置任務類型
+  currentTaskType = null
 }
 
 /**
@@ -224,11 +349,20 @@ function handleError(event: TaskProgressEvent<DockerServiceInfo>) {
   // 關閉進度條
   showProgressDialog.value = false
 
-  // emit 錯誤事件
-  emit('restartError', event.message)
+  const errorMessage = event.message || '操作失敗，請再試一次'
 
-  // 導向警告訊息
-  navigateWithMessage('warning', event.message || '重啟失敗，請再試一次')
+  // 根據任務類型處理
+  if (currentTaskType === 'updateImage') {
+    isUpdatingImage.value = false
+    emit('updateImageError', errorMessage)
+    navigateWithMessage('warning', errorMessage)
+  } else if (currentTaskType === 'restart') {
+    emit('restartError', errorMessage)
+    navigateWithMessage('warning', errorMessage)
+  }
+
+  // 重置任務類型
+  currentTaskType = null
 }
 
 /**
@@ -238,11 +372,20 @@ function handleConnectionError() {
   // 關閉進度條
   showProgressDialog.value = false
 
-  // emit 錯誤事件
-  emit('restartError', '連線中斷，請重新嘗試')
+  const errorMessage = '連線中斷，請重新嘗試'
 
-  // 導向警告訊息
-  navigateWithMessage('warning', '連線中斷，請重新嘗試')
+  // 根據任務類型處理
+  if (currentTaskType === 'updateImage') {
+    isUpdatingImage.value = false
+    emit('updateImageError', errorMessage)
+  } else if (currentTaskType === 'restart') {
+    emit('restartError', errorMessage)
+  }
+
+  navigateWithMessage('warning', errorMessage)
+
+  // 重置任務類型
+  currentTaskType = null
 }
 
 /**
@@ -251,7 +394,10 @@ function handleConnectionError() {
 function navigateWithMessage(type: 'success' | 'warning', message: string) {
   router.replace({
     path: route.path,
-    query: { [type]: message },
+    query: {
+      [type]: message,
+      t: Date.now(),
+    },
   })
 }
 

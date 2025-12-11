@@ -42,15 +42,15 @@
     </div>
 
     <!-- 更多按鈕（暫不實作功能） -->
-    <div class="flex justify-end">
+    <!-- <div class="flex justify-end">
       <BadgeButton text="更多" @click="handleMoreClick" />
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
 import ContactIcon from '@/assets/icons/card/contact.svg'
-import BadgeButton from '@/components/common/badge-button.vue'
+// import BadgeButton from '@/components/common/badge-button.vue'
 import CopyButton from '@/components/common/copy-button.vue'
 
 /**
@@ -78,18 +78,18 @@ defineProps<Props>()
 /**
  * Emits 定義
  */
-const emit = defineEmits<{
-  /**
-   * 更多按鈕點擊事件
-   */
-  moreClick: []
-}>()
+// const emit = defineEmits<{
+//   /**
+//    * 更多按鈕點擊事件
+//    */
+//   moreClick: []
+// }>()
 
 /**
  * 處理更多按鈕點擊
  * 將事件向上傳遞給父元件
  */
-const handleMoreClick = () => {
-  emit('moreClick')
-}
+// const handleMoreClick = () => {
+//   emit('moreClick')
+// }
 </script>
