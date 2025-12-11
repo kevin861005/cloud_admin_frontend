@@ -5,11 +5,8 @@
 
 import apiClient from '@/utils/axios'
 import type { ApiResponse } from '@/types/common'
-import type {
-  EnvironmentListItem,
-  EnvironmentDetailInfo,
-  RestartEnvironmentResponse,
-} from '@/types/environment'
+import type { StartTaskResponse } from '@/types/task'
+import type { EnvironmentListItem, EnvironmentDetailInfo } from '@/types/environment'
 
 /**
  * 環境服務
@@ -33,12 +30,27 @@ export const environmentService = {
   // },
 
   /**
-   * 重啟環境
+   * 重啟環境（回傳 taskId，用於 SSE 進度追蹤）
    * @param customerNo 客戶編號
+   * @returns 包含 taskId 的回應
    */
-  async restartEnvironment(customerNo: string): Promise<ApiResponse<RestartEnvironmentResponse>> {
-    const response = await apiClient.post<ApiResponse<RestartEnvironmentResponse>>(
-      `/environments/${customerNo}/restart`,
+  async restartEnvironmentWithProgress(
+    customerNo: string,
+  ): Promise<ApiResponse<StartTaskResponse>> {
+    const response = await apiClient.post<ApiResponse<StartTaskResponse>>(
+      `/environment/${customerNo}/restart`,
+    )
+    return response.data
+  },
+
+  /**
+   * 更新映像檔（回傳 taskId，用於 SSE 進度追蹤）
+   * @param customerNo 客戶編號
+   * @returns 包含 taskId 的回應
+   */
+  async updateImageWithProgress(customerNo: string): Promise<ApiResponse<StartTaskResponse>> {
+    const response = await apiClient.post<ApiResponse<StartTaskResponse>>(
+      `/environment/${customerNo}/update-image`,
     )
     return response.data
   },

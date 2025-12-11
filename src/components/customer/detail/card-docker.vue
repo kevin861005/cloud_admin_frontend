@@ -55,16 +55,28 @@
     v-model="showRestartDialog"
     :customer-name="customerName"
     :customer-no="customerNo"
-    @success="handleRestartSuccess"
-    @error="handleRestartError"
+    @confirm="handleRestartConfirm"
+  />
+
+  <!-- 進度條 Dialog -->
+  <TaskProgressDialog
+    v-model="showProgressDialog"
+    :title="progressTitle"
+    :description="progressDescription"
+    :progress="progressValue"
   />
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import CardServiceCommon from './card-service-common.vue'
 import DialogRestartEnvironment from '@/components/dialog/dialog-restart-environment.vue'
+import TaskProgressDialog from '@/components/dialog/task-progress-dialog.vue'
+import { environmentService } from '@/services/environment.service'
+import { taskService } from '@/services/task.service'
 import type { DockerServiceInfo } from '@/types/service'
+import type { TaskProgressEvent } from '@/types/task'
 import DockerIcon from '@/assets/icons/card/docker.svg'
 import DownloadIcon from '@/assets/icons/common/cm-download.svg'
 import ReStartIcon from '@/assets/icons/common/cm-restart.svg'
@@ -99,10 +111,21 @@ const emit = defineEmits<{
   restartError: [message: string]
 }>()
 
-/**
- * 是否顯示重啟確認 Dialog
- */
+// ========== Router ==========
+const router = useRouter()
+const route = useRoute()
+
+// ========== 重啟確認 Dialog 狀態 ==========
 const showRestartDialog = ref(false)
+
+// ========== 進度條 Dialog 狀態 ==========
+const showProgressDialog = ref(false)
+const progressTitle = ref('')
+const progressDescription = ref('')
+const progressValue = ref(0)
+
+// ========== SSE 連線關閉函數 ==========
+let closeSSE: (() => void) | null = null
 
 /**
  * 資料列（全部欄位）
@@ -133,16 +156,115 @@ function openRestartDialog() {
 }
 
 /**
- * 重啟成功處理
+ * 重啟確認後的處理
  */
-function handleRestartSuccess(dockerInfo: DockerServiceInfo) {
-  emit('restartSuccess', dockerInfo)
+async function handleRestartConfirm() {
+  // 1. 關閉確認 Dialog
+  showRestartDialog.value = false
+
+  // 2. 開啟進度條 Dialog
+  progressTitle.value = '重啟環境中...'
+  progressDescription.value = '正在準備...'
+  progressValue.value = 0
+  showProgressDialog.value = true
+
+  try {
+    // 3. 呼叫 API 取得 taskId
+    const response = await environmentService.restartEnvironmentWithProgress(props.customerNo)
+
+    if (!response.success || !response.data?.taskId) {
+      throw new Error(response.message || '無法啟動重啟任務')
+    }
+
+    const { taskId } = response.data
+
+    // 4. 建立 SSE 連線
+    closeSSE = taskService.subscribeProgress<DockerServiceInfo>(taskId, {
+      onProgress: handleProgress,
+      onCompleted: handleCompleted,
+      onError: handleError,
+      onConnectionError: handleConnectionError,
+    })
+  } catch (error) {
+    console.error('啟動重啟任務失敗:', error)
+    showProgressDialog.value = false
+    navigateWithMessage('warning', error instanceof Error ? error.message : '啟動重啟任務失敗')
+  }
 }
 
 /**
- * 重啟失敗處理
+ * 處理進度更新
  */
-function handleRestartError(message: string) {
-  emit('restartError', message)
+function handleProgress(event: TaskProgressEvent<DockerServiceInfo>) {
+  progressDescription.value = event.message
+  progressValue.value = event.progress
 }
+
+/**
+ * 處理任務完成
+ */
+function handleCompleted(event: TaskProgressEvent<DockerServiceInfo>) {
+  // 更新進度到 100%
+  progressDescription.value = event.message
+  progressValue.value = 100
+
+  // 關閉進度條
+  showProgressDialog.value = false
+
+  // 更新畫面資料
+  if (event.data) {
+    emit('restartSuccess', event.data)
+  }
+
+  // 導向成功訊息
+  navigateWithMessage('success', '重啟成功')
+}
+
+/**
+ * 處理任務錯誤
+ */
+function handleError(event: TaskProgressEvent<DockerServiceInfo>) {
+  // 關閉進度條
+  showProgressDialog.value = false
+
+  // emit 錯誤事件
+  emit('restartError', event.message)
+
+  // 導向警告訊息
+  navigateWithMessage('warning', event.message || '重啟失敗，請再試一次')
+}
+
+/**
+ * 處理 SSE 連線錯誤
+ */
+function handleConnectionError() {
+  // 關閉進度條
+  showProgressDialog.value = false
+
+  // emit 錯誤事件
+  emit('restartError', '連線中斷，請重新嘗試')
+
+  // 導向警告訊息
+  navigateWithMessage('warning', '連線中斷，請重新嘗試')
+}
+
+/**
+ * 導向並帶上訊息參數
+ */
+function navigateWithMessage(type: 'success' | 'warning', message: string) {
+  router.replace({
+    path: route.path,
+    query: { [type]: message },
+  })
+}
+
+/**
+ * 元件卸載時關閉 SSE 連線
+ */
+onUnmounted(() => {
+  if (closeSSE) {
+    closeSSE()
+    closeSSE = null
+  }
+})
 </script>
