@@ -11,7 +11,7 @@
     >
       <div
         v-if="isVisible"
-        class="fixed z-50 flex items-center justify-center gap-2 py-3 bg-white rounded-[20px] shadow-toast"
+        class="fixed z-50 flex items-center justify-center gap-2 py-3 bg-white rounded-[20px] shadow-md"
         :style="{
           top: toastTopPosition,
           left: toastLeftPosition,

@@ -109,32 +109,32 @@ export const overviewService = {
   getMockRecentAlerts(): AlertListData {
     return {
       alerts: [
-        {
-          id: 'alert_001',
-          type: 'RUNTIME_ERROR',
-          customerName: 'CityTasty',
-          occurredAt: '2024.09.12 14:30',
-        },
-        {
-          id: 'alert_002',
-          type: 'CREATE_FAILED',
-          customerName: '合夥旅食',
-          occurredAt: '2024.09.11 08:23',
-        },
-        {
-          id: 'alert_003',
-          type: 'RUNTIME_ERROR',
-          customerName: '乾杯股份有限公司',
-          occurredAt: '2024.09.08 20:42',
-        },
-        {
-          id: 'alert_004',
-          type: 'CREATE_FAILED',
-          customerName: '乃綸股份有限公司',
-          occurredAt: '2024.09.08 20:41',
-        },
+        // {
+        //   id: 'alert_001',
+        //   type: 'RUNTIME_ERROR',
+        //   customerName: 'CityTasty',
+        //   occurredAt: '2024.09.12 14:30',
+        // },
+        // {
+        //   id: 'alert_002',
+        //   type: 'CREATE_FAILED',
+        //   customerName: '合夥旅食',
+        //   occurredAt: '2024.09.11 08:23',
+        // },
+        // {
+        //   id: 'alert_003',
+        //   type: 'RUNTIME_ERROR',
+        //   customerName: '乾杯股份有限公司',
+        //   occurredAt: '2024.09.08 20:42',
+        // },
+        // {
+        //   id: 'alert_004',
+        //   type: 'CREATE_FAILED',
+        //   customerName: '乃綸股份有限公司',
+        //   occurredAt: '2024.09.08 20:41',
+        // },
       ],
-      totalCount: 4,
+      totalCount: 0,
     }
   },
 
