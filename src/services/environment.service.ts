@@ -6,6 +6,7 @@
 import apiClient from '@/utils/axios'
 import type { ApiResponse } from '@/types/common'
 import type { StartTaskResponse } from '@/types/task'
+import { ApiError } from '@/types/common'
 import type { EnvironmentListItem, EnvironmentDetailInfo } from '@/types/environment'
 
 /**
@@ -33,26 +34,44 @@ export const environmentService = {
    * 重啟環境（回傳 taskId，用於 SSE 進度追蹤）
    * @param customerNo 客戶編號
    * @returns 包含 taskId 的回應
+   * @throws {ApiError} 當 API 呼叫失敗時
    */
-  async restartEnvironmentWithProgress(
-    customerNo: string,
-  ): Promise<ApiResponse<StartTaskResponse>> {
+  async restartEnvironmentWithProgress(customerNo: string): Promise<StartTaskResponse> {
     const response = await apiClient.post<ApiResponse<StartTaskResponse>>(
       `/environment/${customerNo}/restart`,
     )
-    return response.data
+
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '啟動重啟任務失敗',
+        data: response.data.data ?? null,
+      })
+    }
+
+    return response.data.data
   },
 
   /**
    * 更新映像檔（回傳 taskId，用於 SSE 進度追蹤）
    * @param customerNo 客戶編號
    * @returns 包含 taskId 的回應
+   * @throws {ApiError} 當 API 呼叫失敗時
    */
-  async updateImageWithProgress(customerNo: string): Promise<ApiResponse<StartTaskResponse>> {
+  async updateImageWithProgress(customerNo: string): Promise<StartTaskResponse> {
     const response = await apiClient.post<ApiResponse<StartTaskResponse>>(
       `/environment/${customerNo}/update-image`,
     )
-    return response.data
+
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '啟動更新映像任務失敗',
+        data: response.data.data ?? null,
+      })
+    }
+
+    return response.data.data
   },
 
   // ===== Mock 資料（開發階段使用） =====

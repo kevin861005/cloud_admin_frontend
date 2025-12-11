@@ -170,13 +170,7 @@ async function handleRestartConfirm() {
 
   try {
     // 3. 呼叫 API 取得 taskId
-    const response = await environmentService.restartEnvironmentWithProgress(props.customerNo)
-
-    if (!response.success || !response.data?.taskId) {
-      throw new Error(response.message || '無法啟動重啟任務')
-    }
-
-    const { taskId } = response.data
+    const { taskId } = await environmentService.restartEnvironmentWithProgress(props.customerNo)
 
     // 4. 建立 SSE 連線
     closeSSE = taskService.subscribeProgress<DockerServiceInfo>(taskId, {
@@ -188,7 +182,10 @@ async function handleRestartConfirm() {
   } catch (error) {
     console.error('啟動重啟任務失敗:', error)
     showProgressDialog.value = false
-    navigateWithMessage('warning', error instanceof Error ? error.message : '啟動重啟任務失敗')
+
+    // 統一使用 ApiError 的 message
+    const errorMessage = error instanceof Error ? error.message : '啟動重啟任務失敗'
+    navigateWithMessage('warning', errorMessage)
   }
 }
 
