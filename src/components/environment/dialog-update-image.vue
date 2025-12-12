@@ -1,8 +1,8 @@
 <template>
   <BaseDialog
     v-model="isVisible"
-    title="更新映像"
-    subtitle="請選擇要更新的版本"
+    title="切換版本"
+    :subtitle="`目前運行版本：v${props.currentVersion}`"
     :loading="isUpdating"
     :close-on-overlay="!isUpdating && !isLoading"
     @update:model-value="handleDialogChange"
@@ -24,24 +24,51 @@
           v-for="image in images"
           :key="image.id"
           type="button"
+          :disabled="image.isRunning"
           class="flex w-full flex-col gap-1 rounded border px-3 py-2 text-left transition-colors"
-          :class="
-            selectedImageId === image.id
-              ? 'border-primary-500 bg-neutral-100'
-              : 'border-neutral-200 bg-white hover:border-primary-500'
-          "
-          @click="handleSelectImage(image.id)"
+          :class="[
+            image.isRunning
+              ? 'cursor-not-allowed border-neutral-100 bg-white'
+              : selectedImageId === image.id
+                ? 'border-primary-500 bg-primary-500/10'
+                : 'border-neutral-200 bg-white hover:bg-neutral-100',
+          ]"
+          @click="handleSelectImage(image.id, image.isRunning)"
         >
-          <!-- Header：檔名 + 最新標籤 -->
+          <!-- Header：檔名 + 版本號 + 標籤 -->
           <div class="flex items-center justify-between">
-            <span class="typo-sm-bold text-neutral-600">{{ image.name }}</span>
-            <Badge v-if="image.isLatest" text="最新" type="success" />
+            <!-- 左側：檔名 + 版本號 -->
+            <div class="flex items-center gap-2">
+              <span
+                class="typo-sm-bold"
+                :class="image.isRunning ? 'text-neutral-400' : 'text-neutral-600'"
+              >
+                {{ image.name }}
+              </span>
+              <Badge :text="image.version" type="neutral" :disabled="image.isRunning" />
+            </div>
+
+            <!-- 右側：運行中 + 最新標籤 -->
+            <div class="flex items-center gap-2">
+              <Badge v-if="image.isRunning" text="運行中" type="working" />
+              <Badge v-if="image.isLatest" text="最新" type="success" />
+            </div>
           </div>
 
           <!-- Content：時間 + 容量 -->
           <div class="flex items-center justify-between">
-            <span class="typo-xs text-neutral-500">{{ image.createdAt }}</span>
-            <span class="typo-xs text-neutral-500">容量:{{ image.size }}</span>
+            <span
+              class="typo-xs"
+              :class="image.isRunning ? 'text-neutral-400' : 'text-neutral-500'"
+            >
+              {{ image.createdAt }}
+            </span>
+            <span
+              class="typo-xs"
+              :class="image.isRunning ? 'text-neutral-400' : 'text-neutral-500'"
+            >
+              容量:{{ image.size }}
+            </span>
           </div>
         </button>
       </div>
@@ -56,27 +83,23 @@
         class="group relative rounded-lg bg-neutral-100 px-6 py-3 typo-sm-bold text-neutral-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         @click="handleClose"
       >
-        <!-- 黑色遮罩層（只影響背景） -->
         <span
           class="absolute inset-0 rounded-lg bg-black opacity-0 transition-opacity group-hover:opacity-10 group-disabled:opacity-0"
         />
-        <!-- 按鈕文字（不受影響） -->
         <span class="relative">取消</span>
       </button>
 
-      <!-- 更新按鈕 -->
+      <!-- 切換按鈕 -->
       <button
         type="button"
         :disabled="!canConfirm"
         class="group relative rounded-lg bg-primary-500 px-6 py-3 typo-sm-bold text-white transition-colors disabled:cursor-not-allowed disabled:bg-neutral-300"
         @click="handleConfirm"
       >
-        <!-- 黑色遮罩層（只影響背景） -->
         <span
           class="absolute inset-0 rounded-lg bg-black opacity-0 transition-opacity group-hover:opacity-10 disabled:group-hover:opacity-0"
         />
-        <!-- 按鈕文字（不受影響） -->
-        <span class="relative">更新</span>
+        <span class="relative">切換</span>
       </button>
     </template>
   </BaseDialog>
@@ -91,6 +114,7 @@
  * - 顯示載入中狀態
  * - 顯示錯誤訊息
  * - 選擇映像並確認更新
+ * - 運行中的映像不可選擇
  */
 import { ref, computed, watch } from 'vue'
 import BaseDialog from '@/components/dialog/base-dialog.vue'
@@ -106,6 +130,8 @@ interface Props {
   modelValue: boolean
   /** 客戶編號（用於 API 呼叫） */
   customerNo: string
+  /** 目前運行的映像版本（用於顯示） */
+  currentVersion: string
   /** 是否正在更新中 */
   isUpdating?: boolean
 }
@@ -182,8 +208,12 @@ async function fetchImages() {
 
 /**
  * 選擇映像
+ * @param imageId 映像 ID
+ * @param isRunning 是否為運行中的映像
  */
-function handleSelectImage(imageId: string) {
+function handleSelectImage(imageId: string, isRunning: boolean) {
+  // 運行中的映像不可選擇
+  if (isRunning) return
   selectedImageId.value = imageId
 }
 
@@ -192,7 +222,6 @@ function handleSelectImage(imageId: string) {
  */
 function handleDialogChange(value: boolean) {
   if (!value) {
-    // 關閉時重置狀態
     resetState()
   }
 }

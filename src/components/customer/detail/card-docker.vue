@@ -22,10 +22,10 @@
         >
           <img
             :src="DownloadIcon"
-            alt="更新映像"
+            alt="切換版本"
             :class="['h-4 w-4', !dockerInfo.canUpdateImage && 'opacity-40']"
           />
-          更新映像
+          切換版本
         </button>
 
         <!-- 重啟環境按鈕 -->
@@ -54,6 +54,7 @@
   <DialogUpdateImage
     v-model="showUpdateImageDialog"
     :customer-no="customerNo"
+    :current-version="dockerInfo.imageVersion"
     :is-updating="isUpdatingImage"
     @confirm="handleUpdateImageConfirm"
   />
@@ -157,7 +158,7 @@ let currentTaskType: TaskType | null = null
 const rows = computed(() => [
   { label: '名稱', value: props.dockerInfo.name },
   { label: '容器ID', value: props.dockerInfo.containerId },
-  { label: '映像版本', value: props.dockerInfo.imageVersion },
+  { label: '映像版本', value: props.dockerInfo.imageName + ':' + props.dockerInfo.imageVersion },
   { label: 'Port映射', value: props.dockerInfo.portMapping },
 ])
 

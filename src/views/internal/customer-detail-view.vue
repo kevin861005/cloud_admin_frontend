@@ -83,7 +83,8 @@
             :is-expanded="isSystemExpanded"
             @restart-success="handleDockerRestartSuccess"
             @restart-error="handleDockerRestartError"
-            @update-image="handleDockerUpdateImage"
+            @update-image-success="handleDockerUpdateImageSuccess"
+            @update-image-error="handleDockerUpdateImageError"
           />
 
           <!-- 資料庫狀態卡片 -->
@@ -253,14 +254,6 @@ function toggleSystemExpanded() {
 }
 
 /**
- * 處理 Docker 更新映像
- */
-function handleDockerUpdateImage() {
-  console.log('更新 Docker 映像')
-  // TODO: 呼叫 API
-}
-
-/**
  * Docker 重啟成功處理
  */
 function handleDockerRestartSuccess(dockerInfo: DockerServiceInfo) {
@@ -280,5 +273,24 @@ function handleDockerRestartSuccess(dockerInfo: DockerServiceInfo) {
 function handleDockerRestartError(message: string) {
   console.error('Docker 重啟失敗:', message)
   // TODO: 顯示錯誤 Toast
+}
+
+/**
+ * Docker 更新映像成功處理
+ */
+function handleDockerUpdateImageSuccess(dockerInfo: DockerServiceInfo) {
+  console.log('Docker 更新映像成功', dockerInfo)
+
+  // 更新 Docker 資訊
+  if (customerInfo.value?.systemEnvironment) {
+    customerInfo.value.systemEnvironment.docker = dockerInfo
+  }
+}
+
+/**
+ * Docker 更新映像失敗處理
+ */
+function handleDockerUpdateImageError(message: string) {
+  console.error('Docker 更新映像失敗:', message)
 }
 </script>

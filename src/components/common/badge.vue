@@ -24,6 +24,7 @@ import { computed } from 'vue'
  * - 使用 Tailwind CSS
  * - 支援顯示/隱藏邊框
  * - 支援不同類型使用不同字體樣式
+ * - 支援 disabled 樣式（文字變淡）
  *
  * @example
  * <!-- 基本使用 -->
@@ -31,6 +32,9 @@ import { computed } from 'vue'
  *
  * <!-- 無邊框 -->
  * <Badge text="處理中" type="working" :show-border="false" />
+ *
+ * <!-- 禁用樣式（文字變淡） -->
+ * <Badge text="v.3.5" type="neutral" disabled />
  */
 
 // ========== 型別定義 ==========
@@ -54,10 +58,11 @@ interface Props {
 
   /**
    * 樣式類型
-   * - success: 綠色（適合：啟用、成功、活躍）
+   * - success: 綠色（適合：啟用、成功、活躍、最新）
    * - error: 紅色（適合：停用、錯誤、低活躍）
-   * - working: 藍色（適合：處理中、進行中、運行中）
-   * - neutral: 灰色背景（適合：資料顯示、標籤內容）
+   * - working: 藍色（適合：處理中、進行中）
+   * - info: 藍色（適合：運行中、資訊提示）
+   * - neutral: 灰色背景（適合：資料顯示、標籤內容、版本號）
    * - default: 灰色（適合：一般標籤、權限、未使用）
    * @default 'default'
    */
@@ -68,12 +73,23 @@ interface Props {
    * @default true
    */
   showBorder?: boolean
+
+  /**
+   * 是否為禁用樣式（文字變淡為 neutral-400）
+   * @default false
+   */
+  disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   type: 'default',
   showBorder: true,
+  disabled: false,
 })
+
+// ========== 常數 ==========
+/** 禁用時的文字顏色 */
+const DISABLED_TEXT_COLOR = '#9CA3AF' // neutral-400
 
 // ========== 樣式配置 ==========
 const styleMap: Record<BadgeType, BadgeStyle> = {
@@ -119,7 +135,7 @@ const badgeStyles = computed(() => {
   return {
     backgroundColor: style.bg,
     borderColor: props.showBorder ? style.border : 'transparent',
-    color: style.text,
+    color: props.disabled ? DISABLED_TEXT_COLOR : style.text,
   }
 })
 

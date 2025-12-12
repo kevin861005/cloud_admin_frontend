@@ -11,11 +11,13 @@ export interface DockerServiceInfo {
   status: ServiceStatus
   /** 狀態描述（例如：運行中） */
   statusText: string
-  /** 名稱（例如：v2.4.1） */
+  /** 名稱（例如：/admiring_diffie） */
   name: string
   /** 容器 ID（例如：C1923hC3e） */
   containerId: string
-  /** 映像版本（例如：v2.4.1） */
+  /** 映像名稱（例如：interinfo/interinfo-all-solution） */
+  imageName: string
+  /** 映像名稱（例如：3.4） */
   imageVersion: string
   /** Port 對射（例如：8080 → 80） */
   portMapping: string
@@ -91,4 +93,8 @@ export interface DockerImage {
   size: string
   /** 是否為最新版本 */
   isLatest: boolean
+  /** 版本號 */
+  version: string
+  /** 是否為目前運行的版本 */
+  isRunning: boolean
 }
