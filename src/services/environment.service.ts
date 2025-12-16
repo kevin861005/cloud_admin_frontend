@@ -100,6 +100,29 @@ export const environmentService = {
   },
 
   /**
+   * 批次刪除環境（回傳單一 taskId，用於 SSE 進度追蹤）
+   * @param customerNos 客戶編號陣列
+   * @returns 包含 taskId 的回應
+   * @throws {ApiError} 當 API 呼叫失敗時
+   */
+  async batchDeleteEnvironmentsWithProgress(customerNos: string[]): Promise<StartTaskResponse> {
+    const response = await apiClient.post<ApiResponse<StartTaskResponse>>(
+      '/environments/batch-delete',
+      { customerNos },
+    )
+
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '批次刪除環境任務失敗',
+        data: response.data.data ?? null,
+      })
+    }
+
+    return response.data.data
+  },
+
+  /**
    * 取得所有可更新的映像檔
    * GET /api/environments/{customerNo}/images
    *

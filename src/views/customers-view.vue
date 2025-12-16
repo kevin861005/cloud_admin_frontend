@@ -1,16 +1,11 @@
 <template>
   <div>
-    <!-- 頁面標題（使用可重用的 PageTitle 元件） -->
+    <!-- 頁面標題 -->
     <PageTitle title="客戶管理" subtitle="業績表現、客戶資料、活躍度狀態" />
 
     <CardContainer>
-      <!-- 總客戶數卡片 -->
       <TotalCustomerCard />
-
-      <!-- 活躍客戶卡片 -->
       <ActiveCustomerCard />
-
-      <!-- 需關注客戶卡片 -->
       <AttentionCustomerCard />
     </CardContainer>
 
@@ -34,6 +29,13 @@
       :customer-id="selectedCustomerId"
       @close="handleCloseDrawer"
     />
+
+    <!-- 批次刪除環境 Dialog -->
+    <BatchDeleteEnvironmentDialog
+      v-model="showBatchDeleteDialog"
+      :customer-nos="selectedCustomerNos"
+      @deleted="handleBatchDeleted"
+    />
   </div>
 </template>
 
@@ -43,22 +45,15 @@ import PageTitle from '@/components/common/page-title.vue'
 import CardContainer from '@/components/common/card-container.vue'
 import TableContainer from '@/components/table/table-container.vue'
 import CustomerDetailDrawer from '@/components/customer/drawer-customer-detail.vue'
+import BatchDeleteEnvironmentDialog from '@/components/environment/dialog-batch-delete-environment.vue'
 
 // 客戶列表表格元件
 import CustomerTable from '@/components/customer/table-customer.vue'
 
-// 總客戶數卡片元件
+// 卡片元件
 import TotalCustomerCard from '@/components/customer/card-total-customer.vue'
-
-// 活躍客戶卡片元件
 import ActiveCustomerCard from '@/components/customer/card-active-customer.vue'
-
-// 需關注客戶卡片元件
 import AttentionCustomerCard from '@/components/customer/card-attention-customer.vue'
-
-// import { batchDeleteCustomers } from '@/services/customer.service'
-
-// const router = useRouter()
 
 const containerRef = ref<HTMLElement | null>(null)
 
@@ -74,9 +69,18 @@ const selectedCustomerId = ref<string | null>(null)
 
 /**
  * CustomerTable 元件引用
- * 用於呼叫元件暴露的方法（如 refresh）
  */
 const customerTableRef = ref<InstanceType<typeof CustomerTable> | null>(null)
+
+/**
+ * 批次刪除 Dialog 顯示狀態
+ */
+const showBatchDeleteDialog = ref(false)
+
+/**
+ * 選中要刪除的客戶編號清單
+ */
+const selectedCustomerNos = ref<string[]>([])
 
 const handleWheel = (event: WheelEvent) => {
   if (!containerRef.value) return
@@ -88,14 +92,11 @@ const handleWheel = (event: WheelEvent) => {
 
 /**
  * 處理查看客戶
- * 跳轉到客戶詳情頁
  */
 const handleView = (row: Record<string, unknown>) => {
-  // 安全的型別轉換
   const customer = row as unknown as { id: string; name: string }
   console.log('查看客戶:', customer)
 
-  // 設定選中的客戶 ID 並開啟 Drawer
   selectedCustomerId.value = customer.id
   isDrawerOpen.value = true
 }
@@ -105,7 +106,6 @@ const handleView = (row: Record<string, unknown>) => {
  */
 const handleCloseDrawer = () => {
   isDrawerOpen.value = false
-  // 延遲清空 customerId，避免 Drawer 關閉動畫時資料消失
   setTimeout(() => {
     selectedCustomerId.value = null
   }, 300)
@@ -113,52 +113,53 @@ const handleCloseDrawer = () => {
 
 /**
  * 處理批量操作
- *
- * @param actionKey - 操作類型（'delete'）
- * @param selectedRows - 選中的客戶列表
  */
-const handleBatchAction = async (actionKey: string, selectedRows: Record<string, unknown>[]) => {
+const handleBatchAction = (actionKey: string, selectedRows: Record<string, unknown>[]) => {
   console.log('========== 批量操作 ==========')
   console.log('操作類型:', actionKey)
   console.log('選中的項目:', selectedRows)
   console.log('==============================')
 
   if (actionKey === 'delete') {
-    // 安全的型別轉換：先轉為 unknown，再轉為目標型別
-    const customers = selectedRows as unknown as Array<{ id: number; name: string }>
+    // 取得選中的客戶編號
+    const customers = selectedRows as unknown as Array<{ id: string; name: string }>
+    selectedCustomerNos.value = customers.map((c) => String(c.id))
 
-    // 執行批量刪除
-    try {
-      const ids = customers.map((customer) => customer.id)
-
-      // TODO: 等後端 API 完成後，取消註解
-      // await batchDeleteCustomers(ids)
-
-      // 開發階段：模擬刪除成功
-      const customerNames = customers.map((c) => c.name).join(', ')
-      alert(`批量刪除成功！\n已刪除 ${ids.length} 個客戶：${customerNames}`)
-
-      // 清空選取狀態並重新載入資料
-      customerTableRef.value?.clearSelection()
-      customerTableRef.value?.refresh()
-    } catch (error) {
-      console.error('批量刪除錯誤:', error)
-      alert('批量刪除失敗，請稍後再試。')
-    }
+    // 開啟批次刪除 Dialog
+    showBatchDeleteDialog.value = true
   }
 
-  onMounted(() => {
-    if (containerRef.value) {
-      containerRef.value.addEventListener('wheel', handleWheel, { passive: false })
-    }
-  })
-
-  onUnmounted(() => {
-    if (containerRef.value) {
-      containerRef.value.removeEventListener('wheel', handleWheel)
-    }
-  })
+  if (actionKey === 'applied') {
+    // TODO: 處理申請刪除邏輯
+    console.log('申請環境刪除')
+  }
 }
+
+/**
+ * 批次刪除成功後的處理
+ */
+const handleBatchDeleted = () => {
+  // 清空選取狀態
+  customerTableRef.value?.clearSelection()
+
+  // 重新載入資料
+  customerTableRef.value?.refresh()
+
+  // 清空選中的客戶編號
+  selectedCustomerNos.value = []
+}
+
+onMounted(() => {
+  if (containerRef.value) {
+    containerRef.value.addEventListener('wheel', handleWheel, { passive: false })
+  }
+})
+
+onUnmounted(() => {
+  if (containerRef.value) {
+    containerRef.value.removeEventListener('wheel', handleWheel)
+  }
+})
 </script>
 
 <style scoped></style>

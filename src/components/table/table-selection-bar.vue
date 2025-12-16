@@ -104,18 +104,7 @@ const visible = computed(() => props.showCheckbox && props.selectedCount > 0)
  * 目前先使用 alert 提示，未來可替換為自訂彈窗
  */
 const handleBatchAction = (action: BatchActionConfig) => {
-  // 先顯示 alert（未來規劃功能時移除）
-  alert(`點擊了：${action.label}`)
-
-  if (action.confirmMessage) {
-    // 顯示確認對話框
-    if (confirm(action.confirmMessage)) {
-      emit('batch-action', action.key)
-    }
-  } else {
-    // 直接執行
-    emit('batch-action', action.key)
-  }
+  emit('batch-action', action.key)
 }
 
 /**
