@@ -62,7 +62,7 @@
 
           <button
             class="group inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:text-primary-500 transition-colors"
-            @click="openDeleteDialog(customerInfo.customerName)"
+            @click="openDeleteDialog"
           >
             <img
               :src="TrashIcon"
@@ -128,14 +128,15 @@
 
   <!-- 刪除環境確認 Dialog -->
   <delete-environment-dialog
+    v-if="authStore.isAdmin"
     v-model="showDeleteDialog"
-    :environment-id="selectedEnvironmentId"
-    @deleted="handleDeleted"
+    :customer-no="customerId"
   />
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import { useAuthStore } from '@/stores/auth.store'
 import { useRoute } from 'vue-router'
 import { customerService } from '@/services/customer.service'
 import type { CustomerDetailInfo } from '@/types/customer'
@@ -159,6 +160,8 @@ import ArrowUpIcon from '@/assets/icons/common/cm-arrow-up.svg'
 import type { DockerServiceInfo } from '@/types/service'
 
 const route = useRoute()
+
+const authStore = useAuthStore()
 
 /**
  * 系統環境區塊是否展開
@@ -220,31 +223,11 @@ const loadCustomerDetail = async () => {
 }
 
 /**
- * 選中的環境 ID
- */
-const selectedEnvironmentId = ref<string>()
-
-/**
  * 元件掛載時載入資料
  */
 onMounted(() => {
   loadCustomerDetail()
 })
-
-/**
- * 開啟刪除確認 Dialog
- */
-function openDeleteDialog(environmentId: string) {
-  selectedEnvironmentId.value = environmentId
-  showDeleteDialog.value = true
-}
-
-/**
- * 刪除成功後的處理
- */
-function handleDeleted() {
-  console.log('執行刪除')
-}
 
 /**
  * 切換系統環境區塊展開/收合狀態
@@ -263,8 +246,6 @@ function handleDockerRestartSuccess(dockerInfo: DockerServiceInfo) {
   if (customerInfo.value?.systemEnvironment) {
     customerInfo.value.systemEnvironment.docker = dockerInfo
   }
-
-  // TODO: 顯示成功 Toast
 }
 
 /**
@@ -292,5 +273,12 @@ function handleDockerUpdateImageSuccess(dockerInfo: DockerServiceInfo) {
  */
 function handleDockerUpdateImageError(message: string) {
   console.error('Docker 更新映像失敗:', message)
+}
+
+/**
+ * 開啟刪除確認 Dialog
+ */
+function openDeleteDialog() {
+  showDeleteDialog.value = true
 }
 </script>

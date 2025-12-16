@@ -15,6 +15,9 @@ export interface UserInfo {
   email: string // Email
   permissions: string[] // 功能權限代號清單
   roles: string[] // 角色清單
+  isAdmin: boolean // 是否為系統管理員
+  isSales: boolean // 是否為業務人員
+  isManager: boolean // 是否為主管
 }
 
 export interface UserListItem {

@@ -84,6 +84,7 @@ export interface CustomerDetailInfo {
   contactPerson: string // 聯絡人姓名
   phone: string // 聯絡電話
   email: string // 聯絡 E-mail
+  canDelete: boolean // 是否可刪除
 
   /** 最新活動記錄（最多顯示 4 筆） */
   activities: ActivityRecord[]

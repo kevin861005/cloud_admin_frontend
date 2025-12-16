@@ -78,6 +78,28 @@ export const environmentService = {
   },
 
   /**
+   * 刪除環境（回傳 taskId，用於 SSE 進度追蹤）
+   * @param customerNo 客戶編號
+   * @returns 包含 taskId 的回應
+   * @throws {ApiError} 當 API 呼叫失敗時
+   */
+  async deleteEnvironmentWithProgress(customerNo: string): Promise<StartTaskResponse> {
+    const response = await apiClient.delete<ApiResponse<StartTaskResponse>>(
+      `/environments/${customerNo}/delete`,
+    )
+
+    if (!response.data.success || !response.data.data) {
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '刪除環境任務失敗',
+        data: response.data.data ?? null,
+      })
+    }
+
+    return response.data.data
+  },
+
+  /**
    * 取得所有可更新的映像檔
    * GET /api/environments/{customerNo}/images
    *

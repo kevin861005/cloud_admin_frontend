@@ -29,6 +29,21 @@ export const useAuthStore = defineStore('auth', () => {
     return hasToken.value && userInfo.value !== null
   })
 
+  /**
+   * 是否為系統管理員（直接使用後端回傳的值）
+   */
+  const isAdmin = computed(() => userInfo.value?.isAdmin ?? false)
+
+  /**
+   * 是否為主管（直接使用後端回傳的值）
+   */
+  const isManager = computed(() => userInfo.value?.isManager ?? false)
+
+  /**
+   * 是否為業務（直接使用後端回傳的值）
+   */
+  const isSales = computed(() => userInfo.value?.isSales ?? false)
+
   const userRoles = computed(() => userInfo.value?.roles || [])
   const userPermissions = computed(() => userInfo.value?.permissions || [])
   const userName = computed(() => userInfo.value?.userName || '')
@@ -71,6 +86,9 @@ export const useAuthStore = defineStore('auth', () => {
         email: currentUser.email,
         permissions: currentUser.permissions,
         roles: currentUser.roles,
+        isAdmin: currentUser.isAdmin,
+        isSales: currentUser.isSales,
+        isManager: currentUser.isManager,
       }
 
       console.log('=== Auth Store: 登入完成 ===')
@@ -150,6 +168,9 @@ export const useAuthStore = defineStore('auth', () => {
         email: currentUser.email,
         permissions: currentUser.permissions,
         roles: currentUser.roles,
+        isAdmin: currentUser.isAdmin,
+        isSales: currentUser.isSales,
+        isManager: currentUser.isManager,
       }
       console.log('恢復使用者資訊成功:', userInfo.value.userName)
     } catch (err) {
@@ -179,6 +200,9 @@ export const useAuthStore = defineStore('auth', () => {
     userRoles,
     userPermissions,
     userName,
+    isAdmin,
+    isSales,
+    isManager,
 
     // Actions
     login,

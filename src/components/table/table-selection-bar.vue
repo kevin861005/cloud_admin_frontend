@@ -12,23 +12,23 @@
 
       <!-- 批量操作按鈕 -->
       <template v-for="action in batchActions" :key="action.key">
-        <!-- 通知寄送狀態按鈕（藍色） -->
+        <!-- 通知寄送狀態按鈕 -->
         <button
-          v-if="action.type === 'notify'"
+          v-if="action.type === 'applied'"
           class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 typo-sm-medium text-primary-500 hover:bg-neutral-200"
           @click="handleBatchAction(action)"
         >
-          <img :src="notifyIcon" alt="" class="h-4 w-4" />
+          <img :src="AppliedIcon" alt="" class="h-4 w-4 icon-primary" />
           <span>{{ action.label }}</span>
         </button>
 
-        <!-- 環境刪除按鈕（紅色） -->
+        <!-- 環境刪除按鈕 -->
         <button
           v-if="action.type === 'delete'"
           class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 typo-sm-medium text-semantic-warning hover:bg-neutral-200"
           @click="handleBatchAction(action)"
         >
-          <img :src="deleteIcon" alt="" class="h-4 w-4" />
+          <img :src="DeleteIcon" alt="" class="h-4 w-4" />
           <span>{{ action.label }}</span>
         </button>
       </template>
@@ -49,8 +49,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { BatchActionConfig } from '@/types/table'
-import notifyIcon from '@/assets/icons/table/notify.svg'
-import deleteIcon from '@/assets/icons/table/delete.svg'
+import AppliedIcon from '@/assets/icons/card/card-e-applied.svg'
+import DeleteIcon from '@/assets/icons/table/delete.svg'
 
 /**
  * Table 選取狀態列元件

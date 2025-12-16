@@ -36,6 +36,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, toRefs } from 'vue'
+import { useAuthStore } from '@/stores/auth.store'
 import { useRouter } from 'vue-router'
 import Badge from '@/components/common/badge.vue'
 import DataTable from '@/components/table/data-table.vue'
@@ -100,6 +101,8 @@ const selectedIds = ref<(string | number)[]>([])
  * Router 實例
  */
 const router = useRouter()
+
+const authStore = useAuthStore()
 
 // ===== 動態篩選器選項 =====
 
@@ -277,20 +280,29 @@ const columns = ref<ColumnConfig[]>([
  * 批量操作按鈕配置
  * 只在 showCheckbox 為 true 時有效
  */
-const batchActions: BatchActionConfig[] = [
-  {
-    key: 'notify',
-    label: '通知寄送狀態',
-    type: 'notify',
-    confirmMessage: '通知',
-  },
-  {
-    key: 'delete',
-    label: '環境刪除',
-    type: 'delete',
-    confirmMessage: '確定要刪除選中的項目嗎？此操作無法復原。',
-  },
-]
+const batchActions = computed<BatchActionConfig[]>(() => {
+  if (authStore.isAdmin) {
+    // 管理員：顯示刪除按鈕
+    return [
+      {
+        key: 'delete',
+        label: '環境刪除',
+        type: 'delete',
+        confirmMessage: '確定要刪除選中的項目嗎？此操作無法復原。',
+      },
+    ]
+  } else {
+    // 非管理員：顯示申請刪除按鈕
+    return [
+      {
+        key: 'applied',
+        label: '申請環境刪除',
+        type: 'applied',
+        confirmMessage: '確定要申請刪除選中的項目嗎？',
+      },
+    ]
+  }
+})
 
 // ===== 載入資料 =====
 

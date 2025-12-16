@@ -41,16 +41,6 @@ const routes: RouteRecordRaw[] = [
     },
   },
 
-  {
-    path: '/test',
-    name: 'Test',
-    component: () => import('@/views/test-view.vue'),
-    meta: {
-      requiresAuth: false,
-      title: '測試',
-    },
-  },
-
   /**
    * 主頁佈局（包含 Container + Sidebar）
    */
