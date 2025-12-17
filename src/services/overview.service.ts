@@ -3,7 +3,7 @@
  * 提供總覽頁面所需的統計資料
  */
 
-import axios from '@/utils/axios'
+import apiClient from '@/utils/axios'
 import type { ApiResponse } from '@/types/common'
 import type {
   CustomerStats,
@@ -24,7 +24,7 @@ export const overviewService = {
    * @returns Promise<CustomerStats> 客戶統計資料
    */
   async getCustomerStats(): Promise<CustomerStats> {
-    const response = await axios.get<ApiResponse<CustomerStats>>('/dashboard/customer-stats')
+    const response = await apiClient.get<ApiResponse<CustomerStats>>('/dashboard/customer-stats')
 
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.message || '取得客戶統計資料失敗')
@@ -40,7 +40,9 @@ export const overviewService = {
    * @returns Promise<CustomerGrowthData> 客戶統計資料
    */
   async getCustomerGrowthData(): Promise<CustomerGrowthData> {
-    const response = await axios.get<ApiResponse<CustomerGrowthData>>('/dashboard/customer-growth')
+    const response = await apiClient.get<ApiResponse<CustomerGrowthData>>(
+      '/dashboard/customer-growth',
+    )
 
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.message || '取得月度成長資料失敗')
@@ -57,7 +59,7 @@ export const overviewService = {
    * @returns Promise<AlertListData> 警示列表資料
    */
   async getRecentAlerts(): Promise<AlertListData> {
-    const response = await axios.get<ApiResponse<AlertListData>>('/alerts/recent')
+    const response = await apiClient.get<ApiResponse<AlertListData>>('/alerts/recent')
 
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.message || '取得警示列表失敗')
@@ -73,7 +75,7 @@ export const overviewService = {
    * @returns Promise<AttentionCustomersData> 需關注客戶列表資料
    */
   async getAttentionCustomers(): Promise<AttentionCustomersData> {
-    const response = await axios.get<ApiResponse<AttentionCustomersData>>(
+    const response = await apiClient.get<ApiResponse<AttentionCustomersData>>(
       '/dashboard/attention-customers',
     )
 
@@ -91,7 +93,7 @@ export const overviewService = {
    * @returns Promise<ModuleUsageData> 模組使用量資料
    */
   async getModuleUsageData(): Promise<ModuleUsageData> {
-    const response = await axios.get<ApiResponse<ModuleUsageData>>('/dashboard/module-usage')
+    const response = await apiClient.get<ApiResponse<ModuleUsageData>>('/dashboard/module-usage')
 
     if (!response.data.success || !response.data.data) {
       throw new Error(response.data.message || '取得模組使用量資料失敗')

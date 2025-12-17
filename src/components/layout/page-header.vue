@@ -289,13 +289,19 @@ function handleBack() {
 
 /**
  * 取得父路徑
- * 子頁面直接返回對應的主功能頁面（列表頁）
- * 例如：/customers/11111/detail → /customers
- *      /customers/11111 → /customers
- *      /environment/delete-records → /environment
+ * 根據不同頁面類型返回對應的父路徑：
+ * - 編輯頁面 (/customers/:id/edit) → 詳細頁 (/customers/:id/detail)
+ * - 詳細頁面 (/customers/:id/detail) → 列表頁 (/customers)
+ * - 其他子頁面 → 主功能頁面（列表頁）
  */
 function getParentPath(path: string): string {
-  // 找出當前路徑對應的主功能頁面
+  // 1. 編輯頁面：返回詳細頁
+  // 例如：/customers/allen322/edit → /customers/allen322/detail
+  if (path.endsWith('/edit')) {
+    return path.replace('/edit', '/detail')
+  }
+
+  // 2. 找出當前路徑對應的主功能頁面
   const mainFeaturePath = MAIN_FEATURE_PATHS.find(
     (mainPath) => path.startsWith(mainPath + '/') || path === mainPath,
   )
@@ -305,7 +311,7 @@ function getParentPath(path: string): string {
     return mainFeaturePath
   }
 
-  // 其他情況：返回上一層（保底邏輯）
+  // 3. 其他情況：返回上一層（保底邏輯）
   const segments = path.split('/').filter(Boolean)
   segments.pop()
   return '/' + segments.join('/')

@@ -52,7 +52,7 @@
               v-model="formData.sqlFile"
               label="SQL檔名"
               placeholder="請輸入"
-              :error-message="errors.name"
+              :error-message="errors.sqlFile"
             />
 
             <FormInput
@@ -60,7 +60,7 @@
               v-model="formData.description"
               label="說明"
               placeholder="請輸入"
-              :error-message="errors.name"
+              :error-message="errors.description"
             />
           </FormSection>
 

@@ -144,7 +144,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import Drawer from '@/components/drawer/drawer.vue'
 import DrawerHeader from '@/components/drawer/drawer-header.vue'
 import DrawerToast from '@/components/drawer/drawer-toast.vue'
@@ -158,10 +158,9 @@ import FormInput from '@/components/form/form-input.vue'
 import FormSelect from '@/components/form/form-select.vue'
 import FormButtonGroup from '@/components/form/form-button-group.vue'
 import type { DealerDetailInfo, UpdateDealerRequest } from '@/types/dealer'
-import type { SaleListItem } from '@/types/user'
-import type { FieldError } from '@/types/common'
+import type { FieldError, SelectOption } from '@/types/common'
 import { dealerService } from '@/services/dealer.service'
-import { userService } from '@/services/user.service'
+import { selectOptionService } from '@/services/select-option.service'
 import { ApiError } from '@/types/common'
 
 /**
@@ -208,19 +207,9 @@ const emit = defineEmits<{
 const dealerDetail = ref<DealerDetailInfo | null>(null)
 
 /**
- * 業務列表（原始資料）
+ * 業務選項
  */
-const salesList = ref<SaleListItem[]>([])
-
-/**
- * 業務選項（轉換為 FormSelect 格式）
- */
-const salesOptions = computed(() => {
-  return salesList.value.map((sale) => ({
-    label: sale.name,
-    value: sale.id,
-  }))
-})
+const salesOptions = ref<SelectOption[]>([])
 
 /**
  * 載入狀態
@@ -316,26 +305,22 @@ const loadDealerDetail = async () => {
     dealerDetail.value = await dealerService.getDealerDetail(props.code)
   } catch (err) {
     console.error('載入經銷商詳細資料錯誤:', err)
-    error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'
+    error.value = err instanceof ApiError ? err.message : '發生未知錯誤，請稍後再試'
   } finally {
     isLoading.value = false
   }
 }
 
 /**
- * 載入權限選項
+ * 載入業務選項
  */
 const loadSaleOptions = async () => {
   try {
-    const sales = await userService.getAllSales() // 直接拿資料
-
-    salesList.value = sales
-    console.log('業務選項載入成功:', salesList.value)
+    salesOptions.value = await selectOptionService.getSalesOptions()
+    console.log('業務選項載入成功:', salesOptions.value)
   } catch (err) {
     console.error('載入業務選項錯誤:', err)
-
-    // 安全 fallback
-    salesList.value = []
+    salesOptions.value = []
   }
 }
 
@@ -605,11 +590,12 @@ const handleConfirmEdit = async () => {
     isSubmitting.value = false
   }
 }
+
 // ===== 監聽 =====
 
 /**
- * 監聽 Drawer 開啟狀態
- * 當 Drawer 開啟且有 loginId 時，載入使用者詳細資料
+ * 監聯 Drawer 開啟狀態
+ * 當 Drawer 開啟且有 code 時，載入經銷商詳細資料
  */
 watch(
   () => props.isOpen,

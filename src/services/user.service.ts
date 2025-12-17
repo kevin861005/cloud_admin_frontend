@@ -6,14 +6,13 @@
 
 import apiClient from '@/utils/axios'
 import { ApiError } from '@/types/common'
-import type { ApiResponse } from '@/types/common'
+import type { ApiResponse, FieldError } from '@/types/common'
 import type {
   UserInfo,
   UserListItem,
   CreateUserRequest,
   UserDetailInfo,
   UpdateUserRequest,
-  SaleListItem,
 } from '@/types/user'
 
 /**
@@ -57,24 +56,6 @@ export const userService = {
   },
 
   /**
-   * 取得所有業務（Sales）列表
-   * GET /api/users/sales
-   */
-  async getAllSales(): Promise<SaleListItem[]> {
-    const response = await apiClient.get<ApiResponse<SaleListItem[] | null>>('/users/sales')
-
-    if (!response.data.success || !response.data.data) {
-      throw new ApiError({
-        code: response.data.code,
-        message: response.data.message || '取得業務列表失敗',
-        data: response.data.data ?? null,
-      })
-    }
-
-    return response.data.data
-  },
-
-  /**
    * 取得使用者詳細資訊
    * GET /api/users/{loginId}/detail
    */
@@ -99,13 +80,13 @@ export const userService = {
    * POST /api/users
    */
   async createUser(userData: CreateUserRequest): Promise<void> {
-    const response = await apiClient.post<ApiResponse<void>>('/users', userData)
+    const response = await apiClient.post<ApiResponse<FieldError[] | null>>('/users', userData)
 
     if (!response.data.success) {
-      throw new ApiError({
+      throw new ApiError<FieldError[] | null>({
         code: response.data.code,
         message: response.data.message || '新增使用者失敗',
-        data: null,
+        data: response.data.data ?? null,
       })
     }
   },
@@ -115,19 +96,19 @@ export const userService = {
    * PUT /api/users/{loginId}
    */
   async updateUser(loginId: string, data: UpdateUserRequest): Promise<UserDetailInfo> {
-    const response = await apiClient.put<ApiResponse<UserDetailInfo | null>>(
+    const response = await apiClient.put<ApiResponse<UserDetailInfo | FieldError[] | null>>(
       `/users/${loginId}`,
       data,
     )
 
     if (!response.data.success || !response.data.data) {
-      throw new ApiError({
+      throw new ApiError<FieldError[] | null>({
         code: response.data.code,
         message: response.data.message || '更新使用者資料失敗',
-        data: response.data.data ?? null,
+        data: (response.data.data ?? null) as FieldError[] | null,
       })
     }
 
-    return response.data.data
+    return response.data.data as UserDetailInfo
   },
 }

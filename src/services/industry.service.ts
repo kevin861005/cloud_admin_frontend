@@ -4,7 +4,7 @@
 
 import apiClient from '@/utils/axios'
 import { ApiError } from '@/types/common'
-import type { ApiResponse } from '@/types/common'
+import type { ApiResponse, FieldError } from '@/types/common'
 import type {
   IndustryListItem,
   CreateIndustryRequest,
@@ -36,13 +36,16 @@ export const industryService = {
    * POST /industries
    */
   async createIndustry(industryData: CreateIndustryRequest): Promise<void> {
-    const response = await apiClient.post<ApiResponse<void>>('/industries', industryData)
+    const response = await apiClient.post<ApiResponse<FieldError[] | null>>(
+      '/industries',
+      industryData,
+    )
 
     if (!response.data.success) {
-      throw new ApiError({
+      throw new ApiError<FieldError[] | null>({
         code: response.data.code,
         message: response.data.message || '新增產業別失敗',
-        data: null,
+        data: response.data.data ?? null,
       })
     }
   },
@@ -52,20 +55,20 @@ export const industryService = {
    * PUT /industries/{code}
    */
   async updateIndustry(code: string, data: UpdateIndustryRequest): Promise<IndustryDetailInfo> {
-    const response = await apiClient.put<ApiResponse<IndustryDetailInfo | null>>(
+    const response = await apiClient.put<ApiResponse<IndustryDetailInfo | FieldError[] | null>>(
       `/industries/${code}`,
       data,
     )
 
     if (!response.data.success || !response.data.data) {
-      throw new ApiError({
+      throw new ApiError<FieldError[] | null>({
         code: response.data.code,
         message: response.data.message || '更新產業別資料失敗',
-        data: response.data.data ?? null,
+        data: (response.data.data ?? null) as FieldError[] | null,
       })
     }
 
-    return response.data.data
+    return response.data.data as IndustryDetailInfo
   },
 
   /**

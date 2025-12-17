@@ -45,3 +45,8 @@ export class ApiError<T = unknown> extends Error {
     this.data = options.data
   }
 }
+
+export interface SelectOption {
+  label: string
+  value: string | number
+}

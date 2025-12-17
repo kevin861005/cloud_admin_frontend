@@ -2,12 +2,27 @@
   <div
     class="relative z-10 border-b border-gray-200 bg-white px-10 pt-8 pb-10 shadow-[1px_3px_4px_0_rgba(0,0,0,0.10)]"
   >
-    <!-- 客戶名稱 + 狀態標籤 -->
-    <div class="mb-3 flex items-center gap-3">
-      <h1 class="typo-2xl-bold text-neutral-800">
-        {{ customerInfo.customerName }}
-      </h1>
-      <Badge :text="statusText" :type="badgeType" />
+    <!-- 第一行：客戶名稱 + 狀態標籤 + 修改資料按鈕 -->
+    <div class="mb-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <h1 class="typo-2xl-bold text-neutral-800">
+          {{ customerInfo.customerName }}
+        </h1>
+        <Badge :text="statusText" :type="badgeType" />
+      </div>
+
+      <!-- 修改資料按鈕 -->
+      <button
+        class="group inline-flex items-center justify-center gap-1 h-9 pr-4 pl-3 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:text-primary-500 hover:border-primary-500 transition-colors"
+        @click="handleEditClick"
+      >
+        <img
+          :src="EditIcon"
+          alt="修改資料"
+          class="icon-neutral icon-neutral-hover-primary h-4 w-4"
+        />
+        <span>修改資料</span>
+      </button>
     </div>
 
     <!-- 產業別 -->
@@ -36,9 +51,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import type { CustomerDetailInfo } from '@/types/customer'
 import Badge from '@/components/common/badge.vue'
 import Divider from '@/components/common/divider.vue'
+import EditIcon from '@/assets/icons/common/cm-edit.svg'
 
 /**
  * 客戶資訊卡片元件
@@ -46,11 +63,7 @@ import Divider from '@/components/common/divider.vue'
  * 用途：
  * - 顯示客戶詳細頁面頂部的基本資訊
  * - 包含客戶名稱、狀態、產業、使用時間等關鍵資訊
- *
- * 特點：
- * - 純展示用途，無互動功能
- * - 使用 Badge 元件顯示狀態
- * - 符合 UI/UX 設計規範
+ * - 提供修改資料按鈕，點擊後跳轉至編輯頁面
  */
 
 interface Props {
@@ -61,6 +74,8 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+
+const router = useRouter()
 
 /**
  * 狀態文字（根據狀態代碼轉換為中文）
@@ -84,11 +99,11 @@ const statusText = computed(() => {
 const badgeType = computed<'success' | 'default' | 'error'>(() => {
   switch (props.customerInfo.status) {
     case 'ACTIVE':
-      return 'success' // 綠色 - 活躍
+      return 'success'
     case 'INACTIVE':
-      return 'error' // 紅色 - 低活躍
+      return 'error'
     case 'UNUSED':
-      return 'default' // 灰色 - 未使用
+      return 'default'
     default:
       return 'default'
   }
@@ -99,5 +114,12 @@ const badgeType = computed<'success' | 'default' | 'error'>(() => {
  */
 const getModuleType = (): 'default' => {
   return 'default'
+}
+
+/**
+ * 點擊修改資料按鈕，跳轉到編輯頁面
+ */
+function handleEditClick() {
+  router.push(`/customers/${props.customerInfo.customerNo}/edit`)
 }
 </script>

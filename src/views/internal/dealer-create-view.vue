@@ -95,18 +95,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import PageTitle from '@/components/common/page-title.vue'
+import Divider from '@/components/common/divider.vue'
 import FormSection from '@/components/form/form-section.vue'
 import FormInput from '@/components/form/form-input.vue'
 import FormSelect from '@/components/form/form-select.vue'
 import FormButtonGroup from '@/components/form/form-button-group.vue'
 import type { CreateDealerRequest } from '@/types/dealer'
-import type { SaleListItem } from '@/types/user'
-import type { FieldError } from '@/types/common'
+import type { FieldError, SelectOption } from '@/types/common'
 import { dealerService } from '@/services/dealer.service'
-import { userService } from '@/services/user.service'
+import { selectOptionService } from '@/services/select-option.service'
 import { ApiError } from '@/types/common'
 
 const router = useRouter()
@@ -155,19 +155,9 @@ onMounted(() => {
 })
 
 /**
- * 業務列表（原始資料）
+ * 業務選項
  */
-const salesList = ref<SaleListItem[]>([])
-
-/**
- * 業務選項（轉換為 FormSelect 格式）
- */
-const salesOptions = computed(() => {
-  return salesList.value.map((sale) => ({
-    label: sale.name,
-    value: sale.id,
-  }))
-})
+const salesOptions = ref<SelectOption[]>([])
 
 // ===== Template Refs =====
 const codeInputRef = ref<{ focus: () => void } | null>(null)
@@ -182,20 +172,15 @@ const descriptionInputRef = ref<{ focus: () => void } | null>(null)
 // ===== 事件處理 =====
 
 /**
- * 載入權限選項
+ * 載入業務選項
  */
 const loadSaleOptions = async () => {
   try {
-    // 直接取得業務清單
-    const sales = await userService.getAllSales()
-
-    salesList.value = sales
-    console.log('業務選項載入成功:', salesList.value)
+    salesOptions.value = await selectOptionService.getSalesOptions()
+    console.log('業務選項載入成功:', salesOptions.value)
   } catch (err) {
     console.error('載入業務選項錯誤:', err)
-
-    // fallback
-    salesList.value = []
+    salesOptions.value = []
   }
 }
 
@@ -359,5 +344,3 @@ const handleConfirm = async () => {
   }
 }
 </script>
-
-<style scoped></style>

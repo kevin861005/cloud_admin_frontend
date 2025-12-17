@@ -69,6 +69,7 @@ export interface CustomerDrawerInfo {
 }
 
 export interface CustomerDetailInfo {
+  customerNo: string // 客戶編號
   customerName: string // 客戶名稱（例如：橘色測測屋）
   industry: string // 行業類別（例如：餐飲）
   status: CustomerStatus // 客戶狀態（活躍、低活躍、未使用）
@@ -168,4 +169,131 @@ export function getPerformanceLevel(percentage: number): PerformanceLevel {
   if (percentage <= 60) return 'GOOD'
   if (percentage <= 80) return 'WARNING'
   return 'CRITICAL'
+}
+
+/**
+ * 客戶編輯資料（從 API 取得）
+ */
+export interface CustomerEditData {
+  /** 客戶編號 */
+  customerNo: string
+
+  // ===== 業務與內部管理 =====
+  /** 負責業務 ID */
+  salesPersonId: string | null
+  /** 經銷商 ID */
+  dealerId: string | null
+
+  // ===== 公司基本資料 =====
+  /** 產業別 ID */
+  industryId: string | null
+  /** 統一編號 */
+  taxId: string
+  /** 中文名稱 */
+  nameCht: string
+  /** 英文名稱 */
+  nameEng: string
+  /** 中文簡稱 */
+  shortNameCht: string
+  /** 英文簡稱 */
+  shortNameEng: string
+  /** 郵遞區號 */
+  postalCode: string
+  /** 地址 */
+  address: string
+  /** 國籍 */
+  nationality: string
+
+  // ===== 聯絡人資訊 =====
+  /** 聯絡人 */
+  contactPerson: string
+  /** 電話 */
+  phone: string
+  /** 手機 */
+  mobile: string
+  /** 電子信箱 */
+  email: string
+  /** Line ID */
+  lineId: string
+
+  // ===== 合約資訊 =====
+  /** 合約起日 (格式: YYYY/MM/DD) */
+  contractStartDate: string
+  /** 合約迄日 (格式: YYYY/MM/DD) */
+  contractEndDate: string
+
+  // ===== 勞健保及其他 =====
+  /** 勞保證號 */
+  laborInsuranceNo: string
+  /** 健保證號 */
+  healthInsuranceNo: string
+  /** 勞退金監督管理委員會證號 */
+  laborPensionSupervisionNo: string
+}
+
+/**
+ * 客戶編輯請求（送出到 API）
+ */
+export interface UpdateCustomerRequest {
+  // ===== 業務與內部管理 =====
+  salesPersonId: string | null
+  dealerId: string | null
+
+  // ===== 公司基本資料 =====
+  industryId: string | null
+  taxId: string
+  nameCht: string
+  nameEng: string
+  shortNameCht: string
+  shortNameEng: string
+  postalCode: string
+  address: string
+  nationality: string
+
+  // ===== 聯絡人資訊 =====
+  contactPerson: string
+  phone: string
+  mobile: string
+  email: string
+  lineId: string
+
+  // ===== 合約資訊 =====
+  contractStartDate: string
+  contractEndDate: string
+
+  // ===== 勞健保及其他 =====
+  laborInsuranceNo: string
+  healthInsuranceNo: string
+  laborPensionSupervisionNo: string
+}
+
+/**
+ * 總客戶數 API 回應
+ * GET /api/customers/customer-count
+ */
+export interface CustomerCountResponse {
+  /** 總客戶數 */
+  total: number
+  /** 與上月相比的成長比例（如：12 表示 12%） */
+  rate: number
+}
+
+/**
+ * 活躍客戶數 API 回應
+ * GET /api/customers/active-customer-count
+ */
+export interface ActiveCustomerCountResponse {
+  /** 活躍客戶數 */
+  total: number
+  /** 活躍度比例（如：37.5 表示 37.5%） */
+  rate: number
+}
+
+/**
+ * 需關注客戶數 API 回應
+ * GET /api/customers/attention-customer-count
+ */
+export interface AttentionCustomerCountResponse {
+  /** 需關注客戶數 */
+  total: number
 }

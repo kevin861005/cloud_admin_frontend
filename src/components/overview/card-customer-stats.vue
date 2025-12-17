@@ -203,7 +203,6 @@ async function loadCustomerStats() {
     isLoading.value = true
     errorMessage.value = ''
 
-    // TODO: 等後端 API 完成後，改用真實 API
     stats.value = await overviewService.getCustomerStats()
   } catch (error) {
     console.error('載入月度成長失敗:', error)

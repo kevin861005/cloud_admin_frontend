@@ -100,6 +100,19 @@ const routes: RouteRecordRaw[] = [
       },
 
       /**
+       * 客戶管理 - 詳細畫面 - 編輯畫面
+       */
+      {
+        path: '/customers/:id/edit',
+        name: 'CustomerEdit',
+        component: () => import('@/views/internal/customer-edit-view.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '修改客戶資料',
+        },
+      },
+
+      /**
        * 環境管理
        */
       {
