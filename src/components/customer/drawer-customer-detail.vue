@@ -24,7 +24,7 @@
             :href="customerDetail.autoUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-sm text-blue-600 hover:underline"
+            class="text-sm text-primary-500 hover:underline"
           >
             {{ customerDetail.autoUrl }}
           </a>
@@ -35,7 +35,7 @@
             :href="customerDetail.frontendUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-sm text-blue-600 hover:underline"
+            class="text-sm text-primary-500 hover:underline"
           >
             {{ customerDetail.frontendUrl }}
           </a>
@@ -46,7 +46,7 @@
             :href="customerDetail.backendUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-sm text-blue-600 hover:underline"
+            class="text-sm text-primary-500 hover:underline"
           >
             {{ customerDetail.backendUrl }}
           </a>

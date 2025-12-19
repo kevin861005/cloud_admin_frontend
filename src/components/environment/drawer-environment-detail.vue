@@ -31,7 +31,7 @@
       <InfoSection title="環境網址" class="mb-2">
         <InfoField label="快速自動輸入" :vertical="true">
           <a
-            :href="environmentDetail.autoUrl"
+            :href="`https://${environmentDetail.autoUrl}`"
             target="_blank"
             rel="noopener noreferrer"
             class="text-sm text-primary-500 hover:underline"
@@ -42,7 +42,7 @@
 
         <InfoField label="前台連結" :vertical="true">
           <a
-            :href="environmentDetail.frontendUrl"
+            :href="`https://${environmentDetail.frontendUrl}`"
             target="_blank"
             rel="noopener noreferrer"
             class="text-sm text-primary-500 hover:underline"
@@ -53,7 +53,7 @@
 
         <InfoField label="後台連結" :vertical="true">
           <a
-            :href="environmentDetail.backendUrl"
+            :href="`https://${environmentDetail.backendUrl}`"
             target="_blank"
             rel="noopener noreferrer"
             class="text-sm text-primary-500 hover:underline"
