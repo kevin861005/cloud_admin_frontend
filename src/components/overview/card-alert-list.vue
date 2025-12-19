@@ -150,8 +150,8 @@ const handleMoreClick = () => {
   alert('跳轉到完整異常警示列表（尚未實作）')
 }
 
-onMounted(() => {
-  alertData.value = overviewService.getMockRecentAlerts()
+onMounted(async () => {
+  alertData.value = await overviewService.getRecentAlerts()
   updateTime.value = formatUpdateTime(new Date().toISOString())
 })
 </script>

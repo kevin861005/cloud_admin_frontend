@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full flex-col">
+  <div class="flex h-full min-h-0 flex-1 flex-col">
     <!-- 載入狀態 -->
     <Loading v-if="isLoading" message="載入資料中..." :show-spinner="true" />
 
@@ -12,22 +12,25 @@
       <PageTitle title="修改資料" />
 
       <!-- 主要容器 -->
-      <div class="flex-1 overflow-y-auto px-10 pb-10">
-        <!-- Tab 導航 -->
-        <div class="sticky top-0 z-10 bg-gray-50 py-4">
+      <div class="flex min-h-0 flex-1 flex-col gap-2 pb-10 pl-10 pr-10">
+        <!-- Tab 導航區塊 -->
+        <div class="flex-shrink-0 bg-gray-50">
           <EditTabNav :tabs="tabs" :active-tab="activeTab" @tab-click="handleTabClick" />
         </div>
 
-        <!-- 表單容器 -->
-        <div class="rounded-xl bg-white px-5 py-6 shadow-md">
+        <!-- 表單區塊（只有這裡滾動） -->
+        <div
+          class="min-h-0 flex-1 space-y-3 overflow-y-auto rounded-lg bg-white px-5 py-6 shadow-md"
+        >
           <!-- 業務與內部管理 -->
-          <div ref="businessSectionRef" class="mb-6">
+          <div ref="businessSectionRef" class="scroll-mt-4 flex flex-col gap-3 pb-5">
             <FormSectionTitle
               title="業務與內部管理"
               :is-highlighted="highlightedSection === 'business'"
             />
-            <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+            <div class="grid grid-cols-3 gap-5">
               <FormSelect
+                ref="salesPersonIdRef"
                 v-model="formData.salesPersonId"
                 label="負責業務"
                 :options="salesOptions"
@@ -35,80 +38,104 @@
                 :error-message="errors.salesPersonId"
               />
               <FormSelect
+                ref="dealerIdRef"
                 v-model="formData.dealerId"
                 label="經銷商"
                 :options="dealerOptions"
                 placeholder="請選擇"
                 :error-message="errors.dealerId"
               />
+              <!-- 第三欄留空 -->
+              <div></div>
             </div>
           </div>
 
-          <Divider class="my-6" />
-
           <!-- 公司基本資料 -->
-          <div ref="companySectionRef" class="mb-6">
+          <div ref="companySectionRef" class="scroll-mt-4 flex flex-col gap-3 pb-5">
             <FormSectionTitle
               title="公司基本資料"
               :is-highlighted="highlightedSection === 'company'"
             />
-            <div class="grid grid-cols-3 gap-x-6 gap-y-4">
+            <div class="grid grid-cols-3 gap-5">
               <FormSelect
+                ref="industryIdRef"
                 v-model="formData.industryId"
                 label="產業別"
                 :options="industryOptions"
                 placeholder="請選擇"
-                :required="true"
+                :required="false"
                 :error-message="errors.industryId"
               />
               <FormInput
+                ref="taxIdRef"
                 v-model="formData.taxId"
                 label="統一編號"
                 placeholder="請輸入"
-                :required="true"
+                :required="false"
                 :error-message="errors.taxId"
               />
               <FormInput
+                ref="nameChtRef"
                 v-model="formData.nameCht"
                 label="中文名稱"
                 placeholder="請輸入"
-                :required="true"
+                :required="false"
                 :error-message="errors.nameCht"
               />
+            </div>
+
+            <div class="grid grid-cols-3 gap-5">
               <FormInput
+                ref="nameEngRef"
                 v-model="formData.nameEng"
                 label="英文名稱"
                 placeholder="請輸入"
                 :error-message="errors.nameEng"
               />
               <FormInput
+                ref="shortNameChtRef"
                 v-model="formData.shortNameCht"
                 label="中文簡稱"
                 placeholder="請輸入"
-                :required="true"
+                :required="false"
                 :error-message="errors.shortNameCht"
               />
               <FormInput
+                ref="shortNameEngRef"
                 v-model="formData.shortNameEng"
                 label="英文簡稱"
                 placeholder="選填"
                 :error-message="errors.shortNameEng"
               />
-              <FormInput
-                v-model="formData.postalCode"
-                label="郵遞區號"
-                placeholder="請輸入"
-                :error-message="errors.postalCode"
-              />
-              <div class="col-span-2">
-                <FormInput
-                  v-model="formData.address"
-                  label="地址"
-                  placeholder="請輸入"
-                  :error-message="errors.address"
-                />
+            </div>
+
+            <div class="grid grid-cols-3 gap-5">
+              <!-- 郵遞區號 + 地址 合併佔前兩欄 -->
+              <div class="col-span-2 flex gap-5">
+                <!-- 郵遞區號較窄 -->
+                <div class="w-1/4">
+                  <FormInput
+                    ref="postalCodeRef"
+                    v-model="formData.postalCode"
+                    label="郵遞區號"
+                    placeholder="請輸入"
+                    :error-message="errors.postalCode"
+                  />
+                </div>
+                <!-- 地址填滿剩餘空間 -->
+                <div class="flex-1">
+                  <FormInput
+                    ref="addressRef"
+                    v-model="formData.address"
+                    label="地址"
+                    placeholder="請輸入"
+                    :error-message="errors.address"
+                  />
+                </div>
               </div>
+              <!-- 國籍對齊第三欄 -->
               <FormInput
+                ref="nationalityRef"
                 v-model="formData.nationality"
                 label="國籍"
                 placeholder="選填"
@@ -117,95 +144,105 @@
             </div>
           </div>
 
-          <Divider class="my-6" />
-
           <!-- 聯絡人資訊 -->
-          <div ref="contactSectionRef" class="mb-6">
+          <div ref="contactSectionRef" class="scroll-mt-4 flex flex-col gap-3 pb-5">
             <FormSectionTitle
               title="聯絡人資訊"
               :is-highlighted="highlightedSection === 'contact'"
             />
-            <div class="grid grid-cols-3 gap-x-6 gap-y-4">
+            <div class="grid grid-cols-3 gap-5">
               <FormInput
+                ref="contactPersonRef"
                 v-model="formData.contactPerson"
                 label="聯絡人"
                 placeholder="請輸入"
                 :error-message="errors.contactPerson"
               />
               <FormInput
+                ref="phoneRef"
                 v-model="formData.phone"
                 label="電話"
                 placeholder="請輸入"
                 :error-message="errors.phone"
               />
               <FormInput
+                ref="mobileRef"
                 v-model="formData.mobile"
                 label="手機"
                 placeholder="請輸入"
                 :error-message="errors.mobile"
               />
+            </div>
+
+            <div class="grid grid-cols-3 gap-5">
               <FormInput
+                ref="emailRef"
                 v-model="formData.email"
-                label="電子信箱"
-                type="email"
+                label="電子郵件"
                 placeholder="請輸入"
                 :error-message="errors.email"
               />
               <FormInput
+                ref="lineIdRef"
                 v-model="formData.lineId"
-                label="LineID"
+                label="LINE ID"
                 placeholder="選填"
                 :error-message="errors.lineId"
               />
+              <!-- 第三欄留空 -->
+              <div></div>
             </div>
           </div>
 
-          <Divider class="my-6" />
-
           <!-- 合約資訊 -->
-          <div ref="contractSectionRef" class="mb-6">
+          <div ref="contractSectionRef" class="scroll-mt-4 flex flex-col gap-3 pb-5">
             <FormSectionTitle
               title="合約資訊"
               :is-highlighted="highlightedSection === 'contract'"
             />
-            <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+            <div class="grid grid-cols-3 gap-5">
               <FormDatepicker
+                ref="contractStartDateRef"
                 v-model="formData.contractStartDate"
                 label="合約起日"
                 placeholder="請選擇日期"
                 :error-message="errors.contractStartDate"
               />
               <FormDatepicker
+                ref="contractEndDateRef"
                 v-model="formData.contractEndDate"
                 label="合約迄日"
                 placeholder="請選擇日期"
                 :error-message="errors.contractEndDate"
               />
+              <!-- 第三欄留空 -->
+              <div></div>
             </div>
           </div>
 
-          <Divider class="my-6" />
-
           <!-- 勞健保及其他 -->
-          <div ref="insuranceSectionRef" class="mb-6">
+          <div ref="insuranceSectionRef" class="scroll-mt-4 flex flex-col gap-3 pb-5">
             <FormSectionTitle
               title="勞健保及其他"
               :is-highlighted="highlightedSection === 'insurance'"
             />
-            <div class="grid grid-cols-3 gap-x-6 gap-y-4">
+            <div class="grid grid-cols-3 gap-5">
               <FormInput
+                ref="laborInsuranceNoRef"
                 v-model="formData.laborInsuranceNo"
                 label="勞保證號"
                 placeholder="請輸入"
                 :error-message="errors.laborInsuranceNo"
               />
               <FormInput
+                ref="healthInsuranceNoRef"
                 v-model="formData.healthInsuranceNo"
                 label="健保證號"
                 placeholder="請輸入"
                 :error-message="errors.healthInsuranceNo"
               />
               <FormInput
+                ref="laborPensionSupervisionNoRef"
                 v-model="formData.laborPensionSupervisionNo"
                 label="勞退金監督管理委員會證號"
                 placeholder="請輸入"
@@ -234,7 +271,6 @@
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import PageTitle from '@/components/common/page-title.vue'
-import Divider from '@/components/common/divider.vue'
 import Loading from '@/components/common/loading.vue'
 import Alert from '@/components/common/alert.vue'
 import FormInput from '@/components/form/form-input.vue'
@@ -286,6 +322,29 @@ const insuranceSectionRef = ref<HTMLDivElement | null>(null)
 const salesOptions = ref<SelectOption[]>([])
 const dealerOptions = ref<SelectOption[]>([])
 const industryOptions = ref<SelectOption[]>([])
+
+// ===== Template Refs（用於 focus）=====
+const salesPersonIdRef = ref<{ focus: () => void } | null>(null)
+const dealerIdRef = ref<{ focus: () => void } | null>(null)
+const industryIdRef = ref<{ focus: () => void } | null>(null)
+const taxIdRef = ref<{ focus: () => void } | null>(null)
+const nameChtRef = ref<{ focus: () => void } | null>(null)
+const nameEngRef = ref<{ focus: () => void } | null>(null)
+const shortNameChtRef = ref<{ focus: () => void } | null>(null)
+const shortNameEngRef = ref<{ focus: () => void } | null>(null)
+const postalCodeRef = ref<{ focus: () => void } | null>(null)
+const addressRef = ref<{ focus: () => void } | null>(null)
+const nationalityRef = ref<{ focus: () => void } | null>(null)
+const contactPersonRef = ref<{ focus: () => void } | null>(null)
+const phoneRef = ref<{ focus: () => void } | null>(null)
+const mobileRef = ref<{ focus: () => void } | null>(null)
+const emailRef = ref<{ focus: () => void } | null>(null)
+const lineIdRef = ref<{ focus: () => void } | null>(null)
+const contractStartDateRef = ref<{ focus: () => void } | null>(null)
+const contractEndDateRef = ref<{ focus: () => void } | null>(null)
+const laborInsuranceNoRef = ref<{ focus: () => void } | null>(null)
+const healthInsuranceNoRef = ref<{ focus: () => void } | null>(null)
+const laborPensionSupervisionNoRef = ref<{ focus: () => void } | null>(null)
 
 // ===== 表單資料 =====
 const formData = reactive({
@@ -424,6 +483,9 @@ async function loadCustomerData() {
 /**
  * Tab 點擊處理
  */
+// 在 function 外面定義 timer 變數
+let highlightTimer: ReturnType<typeof setTimeout> | null = null
+
 function handleTabClick(key: string) {
   activeTab.value = key
 
@@ -438,12 +500,20 @@ function handleTabClick(key: string) {
 
   const sectionRef = sectionRefMap[key]
   if (sectionRef?.value) {
+    // 清除之前的 timer
+    if (highlightTimer) {
+      clearTimeout(highlightTimer)
+      highlightTimer = null
+    }
+
     // 平滑滾動到該區塊
     sectionRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
-    // 高亮區塊標題 2 秒
+    // 立即顯示高亮
     highlightedSection.value = key
-    setTimeout(() => {
+
+    // 高亮持續 2 秒後消失
+    highlightTimer = setTimeout(() => {
       highlightedSection.value = null
     }, 2000)
   }
@@ -464,12 +534,78 @@ function clearErrors() {
 function handleFieldErrors(fieldErrors: FieldError[]) {
   clearErrors()
 
+  // Ref 對應表（欄位名稱 -> Ref）
+  const fieldRefMap: Record<string, { value: { focus: () => void } | null }> = {
+    salesPersonId: salesPersonIdRef,
+    dealerId: dealerIdRef,
+    industryId: industryIdRef,
+    taxId: taxIdRef,
+    nameCht: nameChtRef,
+    nameEng: nameEngRef,
+    shortNameCht: shortNameChtRef,
+    shortNameEng: shortNameEngRef,
+    postalCode: postalCodeRef,
+    address: addressRef,
+    nationality: nationalityRef,
+    contactPerson: contactPersonRef,
+    phone: phoneRef,
+    mobile: mobileRef,
+    email: emailRef,
+    lineId: lineIdRef,
+    contractStartDate: contractStartDateRef,
+    contractEndDate: contractEndDateRef,
+    laborInsuranceNo: laborInsuranceNoRef,
+    healthInsuranceNo: healthInsuranceNoRef,
+    laborPensionSupervisionNo: laborPensionSupervisionNoRef,
+  }
+
+  // 欄位順序（用於 focus 第一個錯誤欄位）
+  const fieldOrder = [
+    'salesPersonId',
+    'dealerId',
+    'industryId',
+    'taxId',
+    'nameCht',
+    'nameEng',
+    'shortNameCht',
+    'shortNameEng',
+    'postalCode',
+    'address',
+    'nationality',
+    'contactPerson',
+    'phone',
+    'mobile',
+    'email',
+    'lineId',
+    'contractStartDate',
+    'contractEndDate',
+    'laborInsuranceNo',
+    'healthInsuranceNo',
+    'laborPensionSupervisionNo',
+  ]
+
+  // 記錄有錯誤的欄位
+  const fieldsWithErrors = new Set<string>()
+
+  // 設定錯誤訊息
   fieldErrors.forEach((fieldError) => {
     const field = fieldError.field as keyof typeof errors
     if (field in errors) {
       errors[field] = fieldError.message
+      fieldsWithErrors.add(fieldError.field)
     }
   })
+
+  // Focus 到第一個有錯誤的欄位
+  for (const field of fieldOrder) {
+    if (fieldsWithErrors.has(field)) {
+      const refToFocus = fieldRefMap[field]
+      if (refToFocus?.value?.focus) {
+        refToFocus.value.focus()
+      }
+      break
+    }
+  }
 }
 
 /**
@@ -515,13 +651,20 @@ async function handleConfirm() {
       laborPensionSupervisionNo: formData.laborPensionSupervisionNo,
     }
 
+    console.log('1. 準備呼叫 API')
     await customerService.updateCustomer(customerNo.value, requestData)
+    console.log('2. API 呼叫成功')
 
     // 更新原始資料（避免返回時觸發離開確認）
     originalData.value = JSON.stringify(formData)
 
-    // 返回詳細頁
-    router.push(`/customers/${customerNo.value}/detail`)
+    // 設定已確認離開，避免觸發離開確認 dialog
+    isConfirmedLeave.value = true
+
+    console.log('3. 準備跳轉')
+    // 返回詳細頁，帶上成功訊息
+    router.push(`/customers/${customerNo.value}/detail?success=修改成功`)
+    console.log('4. 跳轉完成')
   } catch (err) {
     console.error('更新客戶資料失敗:', err)
 

@@ -7,7 +7,7 @@
     </label>
 
     <!-- 下拉選擇器 -->
-    <div ref="selectContainerRef" class="relative w-[280px]">
+    <div ref="selectContainerRef" class="relative w-full">
       <!-- 主輸入框 -->
       <button
         ref="triggerRef"

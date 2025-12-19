@@ -11,12 +11,15 @@
               <button
                 type="button"
                 class="flex h-4 w-4 items-center justify-center"
+                :disabled="isAllCheckboxDisabled"
+                :class="{ 'cursor-not-allowed': isAllCheckboxDisabled }"
                 @click="handleToggleAll"
               >
                 <img
-                  :src="isAllSelected || isIndeterminate ? CheckboxOnIcon : CheckboxOffIcon"
+                  :src="getAllCheckboxIcon"
                   alt="全選"
-                  class="h-4 w-4 cursor-pointer"
+                  class="h-4 w-4"
+                  :class="{ 'cursor-pointer': !isAllCheckboxDisabled }"
                 />
               </button>
             </div>
@@ -100,9 +103,18 @@
             ]"
             @click="handleRowClick(row)"
           >
-            <!-- Checkbox 欄位（階段三新增） -->
-            <td v-if="showCheckbox" class="px-6 py-4" @click.stop>
-              <div class="flex items-center justify-center">
+            <!-- Checkbox 欄位 -->
+            <td v-if="showCheckbox" class="relative" @click.stop>
+              <!-- disabled 狀態：整個欄位都是 hover 區塊 -->
+              <TableTip
+                v-if="isCheckboxDisabled?.(row)"
+                :text="getTooltipText(row)"
+                class="flex h-full w-full items-center justify-center px-6 py-4"
+              >
+                <img :src="CheckboxDisabledIcon" alt="不可選取" class="h-4 w-4" />
+              </TableTip>
+              <!-- 正常狀態 -->
+              <div v-else class="flex items-center justify-center px-6 py-4">
                 <button
                   type="button"
                   class="flex h-4 w-4 items-center justify-center"
@@ -122,7 +134,7 @@
               v-for="column in columns"
               :key="column.key"
               :class="[
-                'typo-sm whitespace-nowrap px-6 py-4',
+                'typo-sm whitespace-nowrap px-6 py-2',
                 column.align === 'left' && 'text-left',
                 column.align === 'center' && 'text-center',
                 column.align === 'right' && 'text-right',
@@ -130,19 +142,26 @@
             >
               <!-- 標準顯示 -->
               <template v-if="!column.customRender">
-                <span class="typo-sm text-neutral-800">{{ row[column.key] }}</span>
+                <span class="typo-sm text-neutral-800">
+                  {{ isEmpty(row[column.key]) ? '-' : row[column.key] }}
+                </span>
               </template>
 
               <!-- Link 連結顯示 -->
               <template v-else-if="column.customRender === 'link'">
-                <a
-                  :href="`https://${String(row[column.key])}`"
-                  :target="column.linkConfig?.target || '_blank'"
-                  class="link"
-                  @click.stop
-                >
-                  {{ row[column.key] }}
-                </a>
+                <template v-if="isEmpty(row[column.key])">
+                  <span class="typo-sm text-neutral-800">-</span>
+                </template>
+                <template v-else>
+                  <a
+                    :href="`https://${String(row[column.key])}`"
+                    :target="column.linkConfig?.target || '_blank'"
+                    class="link"
+                    @click.stop
+                  >
+                    {{ row[column.key] }}
+                  </a>
+                </template>
               </template>
 
               <!-- Actions 操作按鈕 -->
@@ -187,12 +206,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted, watch, computed } from 'vue'
 import Loading from '@/components/common/loading.vue'
 import EmptyState from '@/components/common/empty-state.vue'
 import type { ColumnConfig, SortState } from '@/types/table'
+import TableTip from '@/components/table/table-tip.vue'
 import CheckboxOnIcon from '@/assets/icons/common/cm-checkbox-on.svg'
 import CheckboxOffIcon from '@/assets/icons/common/cm-checkbox.svg'
+import CheckboxDisabledIcon from '@/assets/icons/common/cm-checkbox-disabled.svg'
 
 // ===== Refs =====
 
@@ -212,6 +233,8 @@ interface Props<T = Record<string, unknown>> {
   isAllSelected?: boolean // 當前頁是否全選（預設 false）
   isIndeterminate?: boolean // 是否為半選狀態（預設 false）
   enableRowClick?: boolean // 是否啟用整列點擊（預設 false）
+  isCheckboxDisabled?: (row: T) => boolean // 判斷 checkbox 是否 disabled 的函數
+  checkboxDisabledTooltip?: string | ((row: T) => string) // checkbox disabled 時的提示文字
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -224,6 +247,8 @@ const props = withDefaults(defineProps<Props>(), {
   isAllSelected: false,
   isIndeterminate: false,
   enableRowClick: false, // 預設不啟用整列點擊
+  isCheckboxDisabled: undefined,
+  checkboxDisabledTooltip: '',
 })
 
 // ===== Emits 定義 =====
@@ -242,6 +267,27 @@ const sortState = reactive<SortState>({
   order: null,
 })
 
+// ===== Computed =====
+
+/**
+ * 判斷是否所有 checkbox 都是 disabled
+ * 用於控制全選 checkbox 的 disabled 狀態
+ */
+const isAllCheckboxDisabled = computed(() => {
+  if (!props.showCheckbox || !props.isCheckboxDisabled) return false
+  // 如果所有資料的 checkbox 都是 disabled，則全選也 disabled
+  return props.data.length > 0 && props.data.every((row) => props.isCheckboxDisabled?.(row))
+})
+
+/**
+ * 取得全選 checkbox 的圖示
+ */
+const getAllCheckboxIcon = computed(() => {
+  if (isAllCheckboxDisabled.value) return CheckboxDisabledIcon
+  if (props.isAllSelected || props.isIndeterminate) return CheckboxOnIcon
+  return CheckboxOffIcon
+})
+
 // ===== Helper 函數 =====
 
 /**
@@ -251,6 +297,28 @@ const isRowSelected = (row: Record<string, unknown>): boolean => {
   if (!props.showCheckbox) return false
   const id = row[props.rowKey] as string | number
   return props.selectedIds?.includes(id) || false
+}
+
+/**
+ * 取得 tooltip 文字
+ * 支援字串或函數兩種格式
+ */
+const getTooltipText = (row: Record<string, unknown>): string => {
+  if (typeof props.checkboxDisabledTooltip === 'function') {
+    return props.checkboxDisabledTooltip(row)
+  }
+  return props.checkboxDisabledTooltip || ''
+}
+
+/**
+ * 判斷值是否為空
+ * 空值定義：null、undefined、空字串、只有空白的字串
+ * 注意：數字 0 不算空值
+ */
+const isEmpty = (value: unknown): boolean => {
+  if (value === null || value === undefined) return true
+  if (typeof value === 'string' && value.trim() === '') return true
+  return false
 }
 
 // ===== 事件處理 =====
@@ -301,6 +369,7 @@ const handleView = (row: Record<string, unknown>) => {
  * 處理全選/取消全選
  */
 const handleToggleAll = () => {
+  if (isAllCheckboxDisabled.value) return
   emit('toggle-all')
 }
 
@@ -312,7 +381,7 @@ const handleToggleRow = (row: Record<string, unknown>) => {
 }
 
 /**
- * 【新增】處理整列點擊
+ * 【處理整列點擊
  * 邏輯：
  * 1. 只有啟用 enableRowClick 時才會觸發
  * 2. 發出 row-click 事件，傳遞該行資料

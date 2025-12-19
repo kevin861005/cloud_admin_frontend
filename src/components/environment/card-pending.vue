@@ -2,15 +2,34 @@
   <environment-card
     title="申請中"
     :icon="AppliedIcon"
-    :value="3"
+    :value="pendingCount"
     unit="間"
     subtitle="業務提出申請之案件"
   />
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import EnvironmentCard from '../common/card.vue'
 import AppliedIcon from '@/assets/icons/card/card-e-applied.svg'
-</script>
+import { environmentService } from '@/services/environment.service'
 
-<style scoped></style>
+/** 申請中客戶數 */
+const pendingCount = ref(0)
+
+/**
+ * 取得申請中客戶數
+ */
+const fetchPendingCount = async () => {
+  try {
+    const data = await environmentService.getPendingCount()
+    pendingCount.value = data.total
+  } catch (error) {
+    console.error('取得申請中客戶數失敗:', error)
+  }
+}
+
+onMounted(() => {
+  fetchPendingCount()
+})
+</script>

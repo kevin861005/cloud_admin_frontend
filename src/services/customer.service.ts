@@ -139,18 +139,15 @@ export const customerService = {
    *
    * @param customerNo - 客戶編號
    * @param data - 更新資料
-   * @returns Promise<CustomerDetailInfo> 更新後的客戶資料
    */
-  async updateCustomer(
-    customerNo: string,
-    data: UpdateCustomerRequest,
-  ): Promise<CustomerDetailInfo> {
-    const response = await apiClient.put<ApiResponse<CustomerDetailInfo | FieldError[] | null>>(
+  async updateCustomer(customerNo: string, data: UpdateCustomerRequest): Promise<void> {
+    const response = await apiClient.put<ApiResponse<FieldError[] | null>>(
       `/customers/${customerNo}`,
       data,
     )
 
-    if (!response.data.success || !response.data.data) {
+    // 只檢查 success，不檢查 data（更新成功時後端不回傳 data）
+    if (!response.data.success) {
       throw new ApiError<FieldError[] | null>({
         code: response.data.code,
         message: response.data.message || '更新客戶資料失敗',
@@ -158,7 +155,7 @@ export const customerService = {
       })
     }
 
-    return response.data.data as CustomerDetailInfo
+    // 成功時不需要回傳任何東西
   },
 
   /**

@@ -11,20 +11,30 @@
     <!-- 取消按鈕 -->
     <button
       type="button"
-      class="h-9 rounded border border-slate-900/10 bg-slate-900/5 px-5 py-2 typo-sm-bold text-slate-900"
+      class="group relative h-9 rounded border border-neutral-200 bg-neutral-100 px-4 py-2 typo-sm-bold text-neutral-600 transition-colors"
       @click="handleCancel"
     >
-      {{ cancelText }}
+      <!-- 黑色遮罩層（只影響背景） -->
+      <span
+        class="absolute inset-0 rounded bg-black opacity-0 transition-opacity group-hover:opacity-10"
+      />
+      <!-- 按鈕文字（不受影響） -->
+      <span class="relative">{{ cancelText }}</span>
     </button>
 
     <!-- 確認按鈕 -->
     <button
       type="button"
       :disabled="disabled"
-      class="h-9 rounded bg-blue-500 px-5 py-2 typo-sm-bold text-white"
+      class="group relative h-9 rounded bg-primary-500 px-4 py-2 typo-sm-bold text-white transition-colors disabled:opacity-50"
       @click="handleConfirm"
     >
-      {{ confirmText }}
+      <!-- 黑色遮罩層（只影響背景） -->
+      <span
+        class="absolute inset-0 rounded bg-black opacity-0 transition-opacity group-hover:opacity-10 group-disabled:group-hover:opacity-0"
+      />
+      <!-- 按鈕文字（不受影響） -->
+      <span class="relative">{{ confirmText }}</span>
     </button>
   </div>
 </template>

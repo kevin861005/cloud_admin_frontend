@@ -13,7 +13,7 @@
       :value="modelValue"
       :placeholder="placeholder"
       :disabled="disabled"
-      class="h-9 rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-sm text-neutral-900 placeholder-gray-400 disabled:bg-gray-100 disabled:text-neutral-500 w-[280px] focus:outline-none"
+      class="h-9 rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-sm text-neutral-900 placeholder-gray-400 disabled:bg-gray-100 disabled:text-neutral-500 w-full focus:outline-none"
       @input="handleInput"
     />
 

@@ -17,6 +17,7 @@
     - 陰影：底部淡灰色陰影
   -->
   <div
+    id="page-header"
     class="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-10 shadow-[1px_3px_4px_0_rgba(0,0,0,0.10)]"
   >
     <!-- 左側：選單收合按鈕 -->

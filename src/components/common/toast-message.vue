@@ -130,7 +130,7 @@ const toastTopPosition = computed(() => {
  * 取得 PageHeader 的高度
  */
 const updatePageHeaderHeight = () => {
-  const pageHeader = document.querySelector('.sticky.top-0.z-30') as HTMLElement
+  const pageHeader = document.getElementById('page-header')
   if (pageHeader) {
     pageHeaderHeight.value = pageHeader.offsetHeight
   }

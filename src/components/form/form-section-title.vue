@@ -1,9 +1,11 @@
 <template>
-  <div
-    class="mb-4 transition-all duration-300"
-    :class="{ 'rounded border-2 border-primary-500 px-3 py-2 -mx-3': isHighlighted }"
-  >
-    <h3 class="typo-sm-bold text-primary-500">{{ title }}</h3>
+  <div class="flex">
+    <div
+      class="inline-flex items-center gap-2 rounded bg-primary-500/10 px-2 py-1 transition-all duration-500"
+      :class="{ 'ring-1 ring-primary-500': isHighlighted }"
+    >
+      <h3 class="typo-sm-bold text-primary-500">{{ title }}</h3>
+    </div>
   </div>
 </template>
 

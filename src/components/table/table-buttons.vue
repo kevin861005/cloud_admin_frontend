@@ -2,10 +2,15 @@
   <!-- 新增按鈕 -->
   <button
     v-if="showAddButton"
-    class="rounded-lg bg-primary-500 px-4 py-2 typo-sm-medium text-white transition-colors focus:outline-none"
+    class="group relative rounded-lg bg-primary-500 px-4 py-2 typo-sm-medium text-white transition-colors focus:outline-none"
     @click="handleAddClick"
   >
-    {{ addButtonText }}
+    <!-- 黑色遮罩層（只影響背景） -->
+    <span
+      class="absolute inset-0 rounded-lg bg-black opacity-0 transition-opacity group-hover:opacity-10"
+    />
+    <!-- 按鈕文字（不受影響） -->
+    <span class="relative">{{ addButtonText }}</span>
   </button>
 </template>
 

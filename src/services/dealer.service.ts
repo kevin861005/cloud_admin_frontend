@@ -28,7 +28,11 @@ export const dealerService = {
     const response = await apiClient.get<ApiResponse<DealerListItem[]>>('/dealers')
 
     if (!response.data.success || !response.data.data) {
-      throw new Error(response.data.message || '取得經銷商列表失敗')
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '取得經銷商列表失敗',
+        data: response.data.data ?? null,
+      })
     }
 
     return response.data.data
@@ -38,7 +42,11 @@ export const dealerService = {
     const response = await apiClient.get<ApiResponse<DealerDetailInfo>>(`/dealers/${code}/detail`)
 
     if (!response.data.success || !response.data.data) {
-      throw new Error(response.data.message || '取得經銷商詳情失敗')
+      throw new ApiError({
+        code: response.data.code,
+        message: response.data.message || '取得經銷商詳情失敗',
+        data: response.data.data ?? null,
+      })
     }
 
     return response.data.data

@@ -1,12 +1,14 @@
 <template>
-  <div class="flex gap-1 rounded-lg bg-slate-100 p-1">
+  <div class="flex rounded-md border border-neutral-200 bg-neutral-100 p-1">
     <button
       v-for="tab in tabs"
       :key="tab.key"
       type="button"
-      class="h-9 px-4 rounded-md typo-sm-medium transition-colors"
+      class="h-9 px-4 py-[10px] rounded-md typo-sm-medium transition-colors gap-5"
       :class="
-        activeTab === tab.key ? 'bg-primary-500 text-white' : 'text-neutral-600 hover:bg-slate-200'
+        activeTab === tab.key
+          ? 'bg-primary-500 text-white'
+          : 'text-neutral-600 hover:bg-neutral-200'
       "
       @click="handleTabClick(tab.key)"
     >

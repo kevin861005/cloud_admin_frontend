@@ -30,11 +30,11 @@
       @close="handleCloseDrawer"
     />
 
-    <!-- 批次刪除環境 Dialog -->
-    <BatchDeleteEnvironmentDialog
-      v-model="showBatchDeleteDialog"
+    <!-- 申請環境刪除 Dialog -->
+    <ApplyDeleteDialog
+      v-model="showApplyDeleteDialog"
       :customer-nos="selectedCustomerNos"
-      @deleted="handleBatchDeleted"
+      @success="handleApplyDeleteSuccess"
     />
   </div>
 </template>
@@ -45,7 +45,7 @@ import PageTitle from '@/components/common/page-title.vue'
 import CardContainer from '@/components/common/card-container.vue'
 import TableContainer from '@/components/table/table-container.vue'
 import CustomerDetailDrawer from '@/components/customer/drawer-customer-detail.vue'
-import BatchDeleteEnvironmentDialog from '@/components/environment/dialog-batch-delete-environment.vue'
+import ApplyDeleteDialog from '@/components/customer/dialog-apply-delete.vue'
 
 // 客戶列表表格元件
 import CustomerTable from '@/components/customer/table-customer.vue'
@@ -73,9 +73,9 @@ const selectedCustomerId = ref<string | null>(null)
 const customerTableRef = ref<InstanceType<typeof CustomerTable> | null>(null)
 
 /**
- * 批次刪除 Dialog 顯示狀態
+ * 申請刪除 Dialog 顯示狀態
  */
-const showBatchDeleteDialog = ref(false)
+const showApplyDeleteDialog = ref(false)
 
 /**
  * 選中要刪除的客戶編號清單
@@ -120,25 +120,20 @@ const handleBatchAction = (actionKey: string, selectedRows: Record<string, unkno
   console.log('選中的項目:', selectedRows)
   console.log('==============================')
 
-  if (actionKey === 'delete') {
+  if (actionKey === 'applied') {
     // 取得選中的客戶編號
     const customers = selectedRows as unknown as Array<{ id: string; name: string }>
     selectedCustomerNos.value = customers.map((c) => String(c.id))
 
-    // 開啟批次刪除 Dialog
-    showBatchDeleteDialog.value = true
-  }
-
-  if (actionKey === 'applied') {
-    // TODO: 處理申請刪除邏輯
-    console.log('申請環境刪除')
+    // 開啟申請刪除 Dialog
+    showApplyDeleteDialog.value = true
   }
 }
 
 /**
- * 批次刪除成功後的處理
+ * 申請刪除成功後的處理
  */
-const handleBatchDeleted = () => {
+const handleApplyDeleteSuccess = () => {
   // 清空選取狀態
   customerTableRef.value?.clearSelection()
 

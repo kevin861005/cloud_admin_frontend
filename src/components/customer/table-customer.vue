@@ -12,6 +12,8 @@
     :show-border="showBorder"
     :batch-actions="batchActions"
     :enable-row-click="true"
+    :is-checkbox-disabled="isCheckboxDisabled"
+    checkbox-disabled-tooltip="已申請環境刪除"
     title="列表"
     item-name="客戶"
     add-button-text="新增客戶"
@@ -214,13 +216,13 @@ const columns = ref<ColumnConfig[]>([
   {
     key: 'name',
     label: '客戶',
-    width: '150px',
+    width: '12%',
     sortable: true,
   },
   {
     key: 'statusDisplay',
     label: '狀態',
-    width: '120px',
+    width: '10%',
     align: 'center',
     sortable: true,
     customRender: 'slot',
@@ -230,13 +232,13 @@ const columns = ref<ColumnConfig[]>([
   {
     key: 'lastUsed',
     label: '使用時間',
-    width: '120px',
+    width: '12%',
     sortable: true,
   },
   {
     key: 'module',
     label: '模組',
-    width: '120px',
+    width: '10%',
     align: 'center',
     sortable: true,
     customRender: 'slot',
@@ -246,19 +248,19 @@ const columns = ref<ColumnConfig[]>([
   {
     key: 'sales',
     label: '負責業務',
-    width: '120px',
+    width: '12%',
     sortable: true,
   },
   {
     key: 'industry',
     label: '產業',
-    width: '120px',
+    width: '12%',
     sortable: true,
   },
   {
     key: 'link',
     label: '前台連結',
-    width: '200px',
+    width: '22%',
     customRender: 'link',
     linkConfig: {
       target: '_blank',
@@ -268,7 +270,7 @@ const columns = ref<ColumnConfig[]>([
   {
     key: 'actions',
     label: '操作',
-    width: '100px',
+    width: '10%',
     align: 'center',
     customRender: 'actions',
   },
@@ -281,18 +283,8 @@ const columns = ref<ColumnConfig[]>([
  * 只在 showCheckbox 為 true 時有效
  */
 const batchActions = computed<BatchActionConfig[]>(() => {
-  if (authStore.isAdmin) {
+  if (authStore.isAdmin || authStore.isSales) {
     // 管理員：顯示刪除按鈕
-    return [
-      {
-        key: 'delete',
-        label: '環境刪除',
-        type: 'delete',
-        confirmMessage: '確定要刪除選中的項目嗎？此操作無法復原。',
-      },
-    ]
-  } else {
-    // 非管理員：顯示申請刪除按鈕
     return [
       {
         key: 'applied',
@@ -301,6 +293,9 @@ const batchActions = computed<BatchActionConfig[]>(() => {
         confirmMessage: '確定要申請刪除選中的項目嗎？',
       },
     ]
+  } else {
+    // 一般使用者：不顯示任何批量操作按鈕
+    return []
   }
 })
 
@@ -317,6 +312,11 @@ const loadCustomers = async () => {
   isLoading.value = true
   try {
     customers.value = await customerService.getAllCustomers()
+    console.log('客戶資料:', customers.value)
+    console.log(
+      '有 applied=true 的項目:',
+      customers.value.filter((c) => c.applied === true),
+    )
   } catch (error) {
     console.error('載入客戶列表錯誤:', error)
     // TODO: 顯示錯誤訊息給使用者
@@ -367,6 +367,14 @@ const handleBatchAction = (actionKey: string, selectedRows: Record<string, unkno
  */
 const handleRowClick = (row: Record<string, unknown>) => {
   router.push(`/customers/${row.id}/detail`)
+}
+
+/**
+ * 判斷 checkbox 是否 disabled
+ * applied=true 的項目不可選取
+ */
+const isCheckboxDisabled = (row: Record<string, unknown>): boolean => {
+  return row.applied === true
 }
 
 // ===== 初始化 =====

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-neutral-50">
     <!-- 左側：Sidebar（固定定位，不隨頁面滾動） -->
     <aside
       class="fixed left-0 top-0 z-40 h-screen border-r border-r-[rgba(0,0,0,0.08)] bg-white transition-all duration-300 ease-in-out"
@@ -10,16 +10,16 @@
       </div>
     </aside>
 
-    <!-- 右側：PageHeader + 內容區域（加上左邊距，騰出側邊欄空間） -->
+    <!-- 右側：PageHeader + 內容區域 -->
     <div
-      class="flex min-h-screen flex-col transition-all duration-300 ease-in-out"
+      class="flex h-screen flex-col overflow-hidden bg-neutral-50 transition-all duration-300 ease-in-out"
       :class="menuStore.isCollapsed ? 'ml-0' : 'ml-[255px]'"
     >
-      <PageHeader class="sticky top-0 z-30" />
+      <PageHeader class="flex-shrink-0" />
 
       <ToastMessage />
 
-      <main class="flex-1 overflow-auto bg-gray-50">
+      <main class="min-h-0 flex-1 overflow-y-auto bg-neutral-50">
         <router-view />
       </main>
     </div>

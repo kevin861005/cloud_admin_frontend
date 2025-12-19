@@ -56,6 +56,8 @@
         :is-all-selected="isCurrentPageAllSelected"
         :is-indeterminate="isIndeterminate"
         :enable-row-click="enableRowClick"
+        :is-checkbox-disabled="isCheckboxDisabled"
+        :checkbox-disabled-tooltip="checkboxDisabledTooltip"
         @sort-change="handleSortChange"
         @row-edit="emit('row-edit', $event)"
         @row-view="emit('row-view', $event)"
@@ -124,6 +126,8 @@ interface Props {
   rowKey?: string // 資料的唯一識別欄位（預設 'id'）
   batchActions?: BatchActionConfig[] // 批次操作按鈕配置
   enableRowClick?: boolean // 是否啟用整列點擊（預設 false）
+  isCheckboxDisabled?: (row: Record<string, unknown>) => boolean // 判斷 checkbox 是否 disabled 的函數
+  checkboxDisabledTooltip?: string | ((row: Record<string, unknown>) => string) // checkbox disabled 時的提示文字
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -144,6 +148,8 @@ const props = withDefaults(defineProps<Props>(), {
   rowKey: 'id',
   batchActions: () => [],
   enableRowClick: false, // 預設不啟用整列點擊
+  isCheckboxDisabled: undefined,
+  checkboxDisabledTooltip: '',
 })
 
 // ===== Emits 定義 =====
@@ -358,18 +364,28 @@ const endIndex = computed(() => {
   return Math.min(end, filteredTotalCount.value)
 })
 
-// ===== 選取功能計算屬性（階段三）=====
+// ===== 選取功能計算屬性 =====
+
+/**
+ * 取得當前頁可選取的項目（排除 disabled 的項目）
+ */
+const selectablePageData = computed(() => {
+  if (!props.isCheckboxDisabled) {
+    return paginatedData.value
+  }
+  return paginatedData.value.filter((row) => !props.isCheckboxDisabled?.(row))
+})
 
 /**
  * 當前頁是否全選
  * 邏輯：當前頁所有項目的 ID 都在 selectedIds 中
  */
 const isCurrentPageAllSelected = computed(() => {
-  if (!props.showCheckbox || paginatedData.value.length === 0) {
+  if (!props.showCheckbox || selectablePageData.value.length === 0) {
     return false
   }
 
-  return paginatedData.value.every((row) => {
+  return selectablePageData.value.every((row) => {
     const id = row[props.rowKey] as string | number
     return props.selectedIds?.includes(id)
   })
@@ -380,16 +396,16 @@ const isCurrentPageAllSelected = computed(() => {
  * 邏輯：當前頁有部分項目被選中，但不是全部
  */
 const isIndeterminate = computed(() => {
-  if (!props.showCheckbox || paginatedData.value.length === 0) {
+  if (!props.showCheckbox || selectablePageData.value.length === 0) {
     return false
   }
 
-  const selectedCount = paginatedData.value.filter((row) => {
+  const selectedCount = selectablePageData.value.filter((row) => {
     const id = row[props.rowKey] as string | number
     return props.selectedIds?.includes(id)
   }).length
 
-  return selectedCount > 0 && selectedCount < paginatedData.value.length
+  return selectedCount > 0 && selectedCount < selectablePageData.value.length
 })
 
 // ===== 監聽器 =====
@@ -498,18 +514,21 @@ const handlePageSizeChange = (size: number) => {
 const handleToggleAll = () => {
   if (!props.selectedIds) return
 
-  const currentPageIds = paginatedData.value.map((row) => row[props.rowKey] as string | number)
+  // 只取得可選取的項目 ID
+  const selectableIds = selectablePageData.value.map((row) => row[props.rowKey] as string | number)
+
+  // 如果沒有可選取的項目，不做任何事
+  if (selectableIds.length === 0) return
 
   let newSelectedIds: (string | number)[]
 
   if (isCurrentPageAllSelected.value) {
-    // 取消選中當前頁所有項目
-    newSelectedIds = props.selectedIds.filter((id) => !currentPageIds.includes(id))
+    // 取消選中當前頁所有可選取的項目
+    newSelectedIds = props.selectedIds.filter((id) => !selectableIds.includes(id))
   } else {
-    // 選中當前頁所有項目
-    // 先移除當前頁已選中的項目，避免重複
-    const otherPageIds = props.selectedIds.filter((id) => !currentPageIds.includes(id))
-    newSelectedIds = [...otherPageIds, ...currentPageIds]
+    // 選中當前頁所有可選取的項目
+    const otherPageIds = props.selectedIds.filter((id) => !selectableIds.includes(id))
+    newSelectedIds = [...otherPageIds, ...selectableIds]
   }
 
   emit('update:selectedIds', newSelectedIds)

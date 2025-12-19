@@ -137,3 +137,9 @@ export interface PaginationInfo {
   startIndex: number // 目前頁的起始索引（從 0 開始）
   endIndex: number // 目前頁的結束索引
 }
+
+/**
+ * Checkbox Disabled Tooltip 型別
+ * 支援固定字串或根據資料動態產生的函數
+ */
+export type CheckboxDisabledTooltip<T = Record<string, unknown>> = string | ((row: T) => string)

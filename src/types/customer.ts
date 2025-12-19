@@ -48,6 +48,9 @@ export interface CustomerListItem {
 
   /** 網站連結（不含 https://） */
   link: string
+
+  /** 是否已申請過刪除 */
+  applied: boolean
 }
 
 export interface CustomerDrawerInfo {

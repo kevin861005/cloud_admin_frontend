@@ -17,6 +17,16 @@
       <!-- 分隔線 -->
       <Divider />
 
+      <!-- 申請資訊區塊 -->
+      <InfoSection title="申請資訊" class="mb-2">
+        <InfoField label="申請日" :value="environmentDetail.appliedDate" />
+        <InfoField label="通知日" :value="environmentDetail.appliedDate" />
+        <InfoField label="預定刪除日" :value="environmentDetail.scheduledDeleteDate" />
+      </InfoSection>
+
+      <!-- 分隔線 -->
+      <Divider />
+
       <!-- 環境網址區塊 -->
       <InfoSection title="環境網址" class="mb-2">
         <InfoField label="快速自動輸入" :vertical="true">
@@ -24,7 +34,7 @@
             :href="environmentDetail.autoUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-sm text-blue-600 hover:underline"
+            class="text-sm text-primary-500 hover:underline"
           >
             {{ environmentDetail.autoUrl }}
           </a>
@@ -35,7 +45,7 @@
             :href="environmentDetail.frontendUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-sm text-blue-600 hover:underline"
+            class="text-sm text-primary-500 hover:underline"
           >
             {{ environmentDetail.frontendUrl }}
           </a>
@@ -46,7 +56,7 @@
             :href="environmentDetail.backendUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-sm text-blue-600 hover:underline"
+            class="text-sm text-primary-500 hover:underline"
           >
             {{ environmentDetail.backendUrl }}
           </a>
@@ -102,16 +112,58 @@
 
     <!-- Button（固定在底部） -->
     <DrawerButton
+      v-if="showDeleteButton"
       :button-text="buttonText"
       button-type="error"
       :loading="isDeleting"
-      @click="handleDeleteEnvironment"
+      @click="handleOpenDeleteDialog"
     />
   </Drawer>
+
+  <!-- 刪除確認 Dialog -->
+  <BaseDialog v-model="showDeleteDialog" title="刪除環境" subtitle="請確認是否要刪除此環境">
+    <!-- 說明文字 -->
+    <p class="typo-sm-bold text-semantic-warning">此操作無法復原</p>
+
+    <!-- 按鈕區域 -->
+    <template #footer>
+      <!-- 取消按鈕 -->
+      <button
+        type="button"
+        class="group relative rounded-lg bg-gray-100 px-6 py-3 typo-sm-bold text-neutral-600 transition-colors cursor-pointer"
+        @click="handleCloseDeleteDialog"
+      >
+        <span
+          class="absolute inset-0 rounded-lg bg-black opacity-0 transition-opacity group-hover:opacity-10"
+        />
+        <span class="relative">取消</span>
+      </button>
+
+      <!-- 確認刪除按鈕 -->
+      <button
+        type="button"
+        class="group relative flex items-center gap-2 rounded-lg bg-semantic-warning px-6 py-3 typo-sm-bold text-white transition-colors cursor-pointer"
+        @click="handleConfirmDelete"
+      >
+        <span
+          class="absolute inset-0 rounded-lg bg-black opacity-0 transition-opacity group-hover:opacity-10"
+        />
+        <span class="relative">確認刪除</span>
+      </button>
+    </template>
+  </BaseDialog>
+
+  <!-- 進度條 Dialog -->
+  <TaskProgressDialog
+    v-model="showProgressDialog"
+    :title="progressTitle"
+    :description="progressDescription"
+    :progress="progressValue"
+  />
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onUnmounted } from 'vue'
 import Drawer from '@/components/drawer/drawer.vue'
 import DrawerHeader from '@/components/drawer/drawer-header.vue'
 import DrawerToast from '@/components/drawer/drawer-toast.vue'
@@ -122,41 +174,20 @@ import Badge from '@/components/common/badge.vue'
 import Loading from '@/components/common/loading.vue'
 import Alert from '@/components/common/alert.vue'
 import Divider from '@/components/common/divider.vue'
+import BaseDialog from '@/components/dialog/base-dialog.vue'
+import TaskProgressDialog from '@/components/dialog/task-progress-dialog.vue'
 import { environmentService } from '@/services/environment.service'
+import { taskService } from '@/services/task.service'
+import { ApiError } from '@/types/common'
 import type { EnvironmentDetailInfo } from '@/types/environment'
+import type { TaskProgressEvent } from '@/types/task'
+import { useAuthStore } from '@/stores/auth.store'
 
-const buttonText = ref('刪除環境')
-
-const isDeleting = ref(false)
-
-/**
- * 顯示 Toast 提示
- */
-const showToast = (type: 'success' | 'error', message: string) => {
-  toast.value = {
-    isVisible: true,
-    type,
-    message,
-  }
-}
+const authStore = useAuthStore()
 
 /**
- * 處理複製成功
- */
-const handleCopySuccess = () => {
-  showToast('success', '已複製到剪貼簿')
-}
-
-/**
- * 處理複製失敗
- */
-const handleCopyError = (error: string) => {
-  showToast('error', error)
-}
-
-/**
- * 客戶詳細資訊 Drawer
- * 僅支援查看模式（無編輯功能）
+ * 環境詳細資訊 Drawer
+ * 支援查看環境資訊和刪除環境功能
  */
 
 interface Props {
@@ -166,9 +197,9 @@ interface Props {
   isOpen: boolean
 
   /**
-   * 客戶 ID（用於呼叫 API）
+   * 環境 ID（用於呼叫 API）
    */
-  environmentId: number | null
+  environmentId: string | null
 }
 
 const props = defineProps<Props>()
@@ -178,12 +209,20 @@ const emit = defineEmits<{
    * 關閉 Drawer
    */
   close: []
+  /**
+   * 刪除成功（通知父元件刷新列表）
+   */
+  'delete-success': []
 }>()
+
+// ===== 按鈕狀態 =====
+const buttonText = ref('刪除環境')
+const isDeleting = ref(false)
 
 // ===== 狀態管理 =====
 
 /**
- * 客戶詳細資料
+ * 環境詳細資料
  */
 const environmentDetail = ref<EnvironmentDetailInfo | null>(null)
 
@@ -208,6 +247,31 @@ const toast = ref({
   message: '',
 })
 
+/**
+ * 是否顯示刪除按鈕
+ * 條件：管理員 且 狀態為待刪除（TO_BE_DELETED）
+ */
+const showDeleteButton = computed(() => {
+  return authStore.isAdmin && environmentDetail.value?.status === 'TO_BE_DELETED'
+})
+
+// ===== 刪除確認 Dialog 狀態 =====
+const showDeleteDialog = ref(false)
+
+// ===== 進度條 Dialog 狀態 =====
+const showProgressDialog = ref(false)
+const progressTitle = ref('')
+const progressDescription = ref('')
+const progressValue = ref(0)
+
+// ===== 進度更新佇列 =====
+const progressQueue: Array<{ message: string; progress: number }> = []
+let isProcessingQueue = false
+const PROGRESS_ANIMATION_DURATION = 350
+
+// ===== SSE 連線關閉函數 =====
+let closeSSE: (() => void) | null = null
+
 // ===== 計算屬性 =====
 
 /**
@@ -216,8 +280,7 @@ const toast = ref({
 const statusText = computed(() => {
   if (!environmentDetail.value) return ''
 
-  const statusMap = {
-    NOTIFIED: '已通知',
+  const statusMap: Record<string, string> = {
     TO_BE_DELETED: '待刪除',
     PENDING: '申請中',
   }
@@ -231,38 +294,39 @@ const statusText = computed(() => {
 const statusBadgeType = computed(() => {
   if (!environmentDetail.value) return 'default'
 
-  const typeMap = {
-    NOTIFIED: 'success',
+  const typeMap: Record<string, 'success' | 'error' | 'default'> = {
     TO_BE_DELETED: 'error',
     PENDING: 'default',
   }
 
-  return typeMap[environmentDetail.value.status] as 'success' | 'error' | 'default'
+  return typeMap[environmentDetail.value.status] || 'default'
 })
 
-// ===== 方法 =====
+// ===== Toast 方法 =====
 
 /**
- * 載入客戶詳細資料
+ * 顯示 Toast 提示
  */
-const loadEnvironmentDetail = async () => {
-  if (!props.environmentId) return
-
-  isLoading.value = true
-  error.value = null
-  environmentDetail.value = null
-
-  try {
-    // TODO: 上線前切換為實際 API
-    // const response = await environmentService.getMockEnvironmentDetail(props.environmentId)
-    const response = await environmentService.getMockEnvironmentDetail(props.environmentId)
-    environmentDetail.value = response
-  } catch (err) {
-    console.error('載入環境詳細資料錯誤:', err)
-    error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'
-  } finally {
-    isLoading.value = false
+const showToast = (type: 'success' | 'error', message: string) => {
+  toast.value = {
+    isVisible: true,
+    type,
+    message,
   }
+}
+
+/**
+ * 處理複製成功
+ */
+const handleCopySuccess = () => {
+  showToast('success', '已複製到剪貼簿')
+}
+
+/**
+ * 處理複製失敗
+ */
+const handleCopyError = (errorMsg: string) => {
+  showToast('error', errorMsg)
 }
 
 /**
@@ -272,57 +336,226 @@ const handleToastClose = () => {
   toast.value.isVisible = false
 }
 
+// ===== 載入資料 =====
+
+/**
+ * 載入環境詳細資料
+ */
+const loadEnvironmentDetail = async () => {
+  if (!props.environmentId) return
+
+  isLoading.value = true
+  error.value = null
+  environmentDetail.value = null
+
+  try {
+    const response = await environmentService.getEnvironmentDetailById(props.environmentId)
+    environmentDetail.value = response
+  } catch (err) {
+    console.error('載入環境詳細資料錯誤:', err)
+    error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// ===== Drawer 關閉 =====
+
 /**
  * 處理關閉 Drawer
  */
 const handleClose = () => {
-  // 關閉 Toast
   handleToastClose()
   emit('close')
+}
+
+// ===== 刪除環境功能 =====
+
+/**
+ * 開啟刪除確認 Dialog
+ */
+const handleOpenDeleteDialog = () => {
+  showDeleteDialog.value = true
+}
+
+/**
+ * 關閉刪除確認 Dialog
+ */
+const handleCloseDeleteDialog = () => {
+  showDeleteDialog.value = false
+}
+
+/**
+ * 確認刪除
+ */
+const handleConfirmDelete = async () => {
+  if (!props.environmentId) {
+    console.error('缺少環境 ID')
+    return
+  }
+
+  // 1. 關閉確認 Dialog
+  showDeleteDialog.value = false
+
+  // 2. 重置進度佇列
+  resetProgressQueue()
+
+  // 3. 開啟進度條 Dialog
+  progressTitle.value = '刪除環境中...'
+  progressDescription.value = '正在準備...'
+  progressValue.value = 0
+  showProgressDialog.value = true
+
+  // 4. 設定按鈕載入狀態
+  isDeleting.value = true
+
+  try {
+    // 5. 呼叫 API 取得 taskId
+    const { taskId } = await environmentService.deleteEnvironmentWithProgress(props.environmentId)
+
+    // 6. 建立 SSE 連線
+    closeSSE = taskService.subscribeProgress(taskId, {
+      onProgress: handleProgress,
+      onCompleted: handleCompleted,
+      onError: handleError,
+      onConnectionError: handleConnectionError,
+    })
+  } catch (err) {
+    console.error('啟動刪除環境任務失敗:', err)
+    showProgressDialog.value = false
+    isDeleting.value = false
+
+    // 顯示錯誤 Toast
+    const errorMessage = getErrorMessage(err)
+    showToast('error', errorMessage)
+  }
+}
+
+/**
+ * 從錯誤物件中取得錯誤訊息
+ */
+function getErrorMessage(err: unknown): string {
+  if (err instanceof ApiError) {
+    return err.message
+  }
+
+  if (err instanceof Error) {
+    const axiosError = err as { response?: { data?: { message?: string } } }
+    if (axiosError.response?.data?.message) {
+      return axiosError.response.data.message
+    }
+    return err.message
+  }
+
+  return '刪除環境失敗，請稍後再試'
+}
+
+// ===== 進度處理 =====
+
+/**
+ * 處理進度更新（加入佇列）
+ */
+function handleProgress(event: TaskProgressEvent) {
+  progressQueue.push({
+    message: event.message,
+    progress: event.progress,
+  })
+  processProgressQueue()
+}
+
+/**
+ * 依序處理進度佇列
+ */
+function processProgressQueue() {
+  if (isProcessingQueue || progressQueue.length === 0) {
+    return
+  }
+
+  isProcessingQueue = true
+
+  const next = progressQueue.shift()!
+  progressDescription.value = next.message
+  progressValue.value = next.progress
+
+  setTimeout(() => {
+    isProcessingQueue = false
+    processProgressQueue()
+  }, PROGRESS_ANIMATION_DURATION)
+}
+
+/**
+ * 重置進度佇列
+ */
+function resetProgressQueue() {
+  progressQueue.length = 0
+  isProcessingQueue = false
+  progressValue.value = 0
+  progressDescription.value = ''
+}
+
+/**
+ * 處理任務完成
+ */
+function handleCompleted(event: TaskProgressEvent) {
+  progressDescription.value = event.message
+  progressValue.value = 100
+
+  setTimeout(() => {
+    showProgressDialog.value = false
+    isDeleting.value = false
+
+    // 關閉 Drawer 並通知父元件刷新列表
+    emit('delete-success')
+    emit('close')
+  }, 500)
+}
+
+/**
+ * 處理任務錯誤
+ */
+function handleError(event: TaskProgressEvent) {
+  showProgressDialog.value = false
+  isDeleting.value = false
+
+  const errorMessage = event.message || '刪除環境失敗，請再試一次'
+  showToast('error', errorMessage)
+}
+
+/**
+ * 處理 SSE 連線錯誤
+ */
+function handleConnectionError() {
+  showProgressDialog.value = false
+  isDeleting.value = false
+
+  showToast('error', '連線中斷，請重新嘗試')
 }
 
 // ===== 監聽 =====
 
 /**
  * 監聽 Drawer 開啟狀態
- * 當 Drawer 開啟且有 environmentId 時，載入客戶詳細資料
  */
 watch(
   () => props.isOpen,
   (isOpen) => {
     if (isOpen && props.environmentId) {
-      // 關閉 Toast
       handleToastClose()
-      // 載入資料
       loadEnvironmentDetail()
     }
   },
   { immediate: true },
 )
 
+// ===== 生命週期 =====
+
 /**
- * 處理刪除環境（測試版本）
- * 模擬 API 呼叫：loading 5 秒後顯示成功
+ * 元件卸載時關閉 SSE 連線
  */
-const handleDeleteEnvironment = async () => {
-  try {
-    isDeleting.value = true
-
-    // 模擬 API 呼叫：等待 5 秒
-    await new Promise((resolve) => setTimeout(resolve, 5000))
-
-    // 顯示成功 Toast
-    showToast('success', '刪除成功')
-
-    // Toast 顯示 3 秒後關閉 Drawer
-    setTimeout(() => {
-      emit('close')
-    }, 3000)
-  } catch (error) {
-    // 顯示失敗 Toast
-    showToast('error', error as unknown as string)
-  } finally {
-    isDeleting.value = false
+onUnmounted(() => {
+  if (closeSSE) {
+    closeSSE()
+    closeSSE = null
   }
-}
+})
 </script>

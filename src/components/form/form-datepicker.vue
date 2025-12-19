@@ -7,7 +7,7 @@
     </label>
 
     <!-- 日期輸入框 -->
-    <div ref="containerRef" class="relative w-[280px]">
+    <div ref="containerRef" class="relative w-full">
       <button
         ref="triggerRef"
         type="button"
