@@ -1,5 +1,5 @@
 <template>
-  <customer-card
+  <StatCard
     title="需關注客戶"
     :icon="AttentionCustomerIcon"
     :value="stats.total"
@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import CustomerCard from '../common/card.vue'
+import { StatCard } from '@/components/common'
 import AttentionCustomerIcon from '@/assets/icons/card/card-c-user-warning.svg'
 import { customerService } from '@/services/customer.service'
 import { ApiError } from '@/types/common'
@@ -53,5 +53,3 @@ onMounted(() => {
   loadAttentionCustomerCount()
 })
 </script>
-
-<style scoped></style>

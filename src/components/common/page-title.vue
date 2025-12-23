@@ -38,15 +38,15 @@ interface Props {
    * 主標題文字
    * 例如：「總覽」、「客戶管理」、「環境管理」
    */
-  title: string
+  title: string;
 
   /**
    * 副標題文字（選填）
    * 例如：「關鍵指標和客戶活動狀況」
    */
-  subtitle?: string
+  subtitle?: string;
 }
 
 // 接收 props
-defineProps<Props>()
+defineProps<Props>();
 </script>

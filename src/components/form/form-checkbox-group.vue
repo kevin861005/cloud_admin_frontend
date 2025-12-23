@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import FieldError from '@/components/form/field-error.vue'
+import { FieldError } from '@/components/form'
 import CheckboxOnIcon from '@/assets/icons/common/cm-checkbox-on.svg'
 import CheckboxOffIcon from '@/assets/icons/common/cm-checkbox.svg'
 

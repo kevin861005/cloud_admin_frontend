@@ -49,8 +49,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import PageTitle from '@/components/common/page-title.vue'
-import CardContainer from '@/components/common/card-container.vue'
+import { PageTitle, CardContainer } from '@/components/common'
 import TableContainer from '@/components/table/table-container.vue'
 import CustomerDetailDrawer from '@/components/customer/drawer-customer-detail.vue'
 
@@ -132,5 +131,3 @@ onMounted(() => {
   // TODO: 呼叫其他統計資料的 API
 })
 </script>
-
-<style scoped></style>

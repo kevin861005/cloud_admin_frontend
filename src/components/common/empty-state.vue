@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, h } from 'vue'
+import { computed, h } from "vue";
 
 /**
  * 空狀態/無權限提示元件
@@ -80,7 +80,7 @@ interface Props {
    * - inline: 卡片內嵌（無邊框、較小間距）
    * @default 'page'
    */
-  variant?: 'page' | 'inline'
+  variant?: "page" | "inline";
 
   /**
    * 類型
@@ -88,32 +88,32 @@ interface Props {
    * - no-data: 無資料（文件圖示）
    * - no-results: 搜尋無結果（搜尋圖示）
    */
-  type?: 'no-permission' | 'no-data' | 'no-results'
+  type?: "no-permission" | "no-data" | "no-results";
 
   /** 標題文字 */
-  title: string
+  title: string;
 
   /** 描述文字 */
-  description: string
+  description: string;
 
   /** 是否顯示按鈕 */
-  showButton?: boolean
+  showButton?: boolean;
 
   /** 按鈕文字 */
-  buttonText?: string
+  buttonText?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  variant: 'page',
-  type: 'no-data',
+  variant: "page",
+  type: "no-data",
   showButton: false,
-  buttonText: '確定',
-})
+  buttonText: "確定",
+});
 
 // ===== Emits 定義 =====
 const emit = defineEmits<{
-  'button-click': []
-}>()
+  "button-click": [];
+}>();
 
 // ===== 圖示映射 =====
 
@@ -123,65 +123,65 @@ const emit = defineEmits<{
 const iconComponent = computed(() => {
   const icons = {
     // 無權限圖示（鎖頭）
-    'no-permission': () =>
+    "no-permission": () =>
       h(
-        'svg',
+        "svg",
         {
-          fill: 'none',
-          stroke: 'currentColor',
-          viewBox: '0 0 24 24',
+          fill: "none",
+          stroke: "currentColor",
+          viewBox: "0 0 24 24",
         },
         [
-          h('path', {
-            'stroke-linecap': 'round',
-            'stroke-linejoin': 'round',
-            'stroke-width': '2',
-            d: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
+          h("path", {
+            "stroke-linecap": "round",
+            "stroke-linejoin": "round",
+            "stroke-width": "2",
+            d: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
           }),
         ],
       ),
 
     // 無資料圖示（文件）
-    'no-data': () =>
+    "no-data": () =>
       h(
-        'svg',
+        "svg",
         {
-          fill: 'none',
-          stroke: 'currentColor',
-          viewBox: '0 0 24 24',
+          fill: "none",
+          stroke: "currentColor",
+          viewBox: "0 0 24 24",
         },
         [
-          h('path', {
-            'stroke-linecap': 'round',
-            'stroke-linejoin': 'round',
-            'stroke-width': '2',
-            d: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
+          h("path", {
+            "stroke-linecap": "round",
+            "stroke-linejoin": "round",
+            "stroke-width": "2",
+            d: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
           }),
         ],
       ),
 
     // 搜尋無結果圖示（搜尋）
-    'no-results': () =>
+    "no-results": () =>
       h(
-        'svg',
+        "svg",
         {
-          fill: 'none',
-          stroke: 'currentColor',
-          viewBox: '0 0 24 24',
+          fill: "none",
+          stroke: "currentColor",
+          viewBox: "0 0 24 24",
         },
         [
-          h('path', {
-            'stroke-linecap': 'round',
-            'stroke-linejoin': 'round',
-            'stroke-width': '2',
-            d: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+          h("path", {
+            "stroke-linecap": "round",
+            "stroke-linejoin": "round",
+            "stroke-width": "2",
+            d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z",
           }),
         ],
       ),
-  }
+  };
 
-  return icons[props.type]
-})
+  return icons[props.type];
+});
 
 // ===== 事件處理 =====
 
@@ -189,6 +189,6 @@ const iconComponent = computed(() => {
  * 處理按鈕點擊
  */
 const handleButtonClick = () => {
-  emit('button-click')
-}
+  emit("button-click");
+};
 </script>

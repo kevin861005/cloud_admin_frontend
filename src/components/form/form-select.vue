@@ -84,7 +84,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
-import FieldError from '@/components/form/field-error.vue'
+import { FieldError } from '@/components/form'
 
 /**
  * 下拉選單元件（單選）

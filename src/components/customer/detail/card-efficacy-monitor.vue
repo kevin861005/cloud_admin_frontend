@@ -48,8 +48,7 @@
 import { computed } from 'vue'
 import type { PerformanceMetrics } from '@/types/customer'
 import { getPerformanceLevel } from '@/types/customer'
-import Loading from '@/components/common/loading.vue'
-import Alert from '@/components/common/alert.vue'
+import { Alert, Loading } from '@/components/common'
 import EfficacyIcon from '@/assets/icons/card/efficacy.svg'
 
 /**

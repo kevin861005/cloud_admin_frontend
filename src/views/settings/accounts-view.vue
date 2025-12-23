@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import PageTitle from '@/components/common/page-title.vue'
+import { PageTitle } from '@/components/common'
 import TableContainer from '@/components/table/table-container.vue'
 import UserDetailDrawer from '@/components/account/drawer-user-detail.vue'
 import AccountManagementTable from '@/components/account/table-account-management.vue'
@@ -79,5 +79,3 @@ const handleAdd = () => {
   router.push('/settings/accounts/create')
 }
 </script>
-
-<style scoped></style>

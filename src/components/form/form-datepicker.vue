@@ -124,7 +124,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import FieldError from '@/components/form/field-error.vue'
+import { FieldError } from '@/components/form'
 
 /**
  * 日期選擇器元件

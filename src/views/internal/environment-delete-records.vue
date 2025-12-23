@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div>
     <PageTitle title="刪除紀錄" />
 
     <!-- 表格容器 -->
@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import PageTitle from '@/components/common/page-title.vue'
+import { PageTitle } from '@/components/common'
 import TableContainer from '@/components/table/table-container.vue'
 import TableDeleteRecord from '@/components/environment/table-delete-record.vue'
 import DrawerDeleteRecordDetail from '@/components/environment/drawer-delete-record-detail.vue'

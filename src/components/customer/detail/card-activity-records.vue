@@ -54,9 +54,7 @@
 <script setup lang="ts">
 import type { ActivityRecord } from '@/types/customer'
 import ActivityIcon from '@/assets/icons/card/activity.svg'
-import Badge from '@/components/common/badge.vue'
-import EmptyState from '@/components/common/empty-state.vue'
-import BadgeButton from '@/components/common/badge-button.vue'
+import { Badge, EmptyState, BadgeButton } from '@/components/common'
 
 /**
  * 最新活動記錄卡片

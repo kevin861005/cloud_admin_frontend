@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import FieldError from '@/components/form/field-error.vue'
+import { FieldError } from '@/components/form'
 
 /**
  * 表單輸入欄位元件

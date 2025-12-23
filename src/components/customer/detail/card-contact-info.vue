@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import ContactIcon from '@/assets/icons/card/contact.svg'
 // import BadgeButton from '@/components/common/badge-button.vue'
-import CopyButton from '@/components/common/copy-button.vue'
+import { CopyButton } from '@/components/common'
 
 /**
  * 聯絡資訊卡片

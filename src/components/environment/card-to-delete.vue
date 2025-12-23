@@ -1,5 +1,5 @@
 <template>
-  <environment-card
+  <StatCard
     title="待刪除"
     :icon="DeleteIcon"
     :value="pendingDeletionCount"
@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import EnvironmentCard from '../common/card.vue'
+import { StatCard } from '@/components/common'
 import DeleteIcon from '@/assets/icons/card/card-e-pending-delete.svg'
 import { environmentService } from '@/services/environment.service'
 

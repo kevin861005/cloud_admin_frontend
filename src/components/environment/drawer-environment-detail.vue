@@ -7,7 +7,7 @@
     <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
     <!-- 資料顯示 -->
-    <div v-else-if="environmentDetail" class="drawer">
+    <template v-else-if="environmentDetail">
       <DrawerHeader :title="environmentDetail.customerName" :subtitle="environmentDetail.industry">
         <template #badge>
           <Badge :text="statusText" :type="statusBadgeType" />
@@ -99,7 +99,7 @@
           @copy-error="handleCopyError"
         />
       </InfoSection>
-    </div>
+    </template>
 
     <!-- Toast 提示（浮動在按鈕上方） -->
     <DrawerToast
@@ -107,7 +107,7 @@
       :type="toast.type"
       :message="toast.message"
       :has-button="!!buttonText"
-      @close="handleToastClose"
+      @close="hideToast"
     />
 
     <!-- Button（固定在底部） -->
@@ -166,16 +166,15 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from 'vue'
-import Drawer from '@/components/drawer/drawer.vue'
-import DrawerHeader from '@/components/drawer/drawer-header.vue'
-import DrawerToast from '@/components/drawer/drawer-toast.vue'
-import DrawerButton from '@/components/drawer/drawer-button.vue'
-import InfoSection from '@/components/drawer/info-section.vue'
-import InfoField from '@/components/drawer/info-field.vue'
-import Badge from '@/components/common/badge.vue'
-import Loading from '@/components/common/loading.vue'
-import Alert from '@/components/common/alert.vue'
-import Divider from '@/components/common/divider.vue'
+import {
+  Drawer,
+  DrawerHeader,
+  DrawerToast,
+  DrawerButton,
+  InfoSection,
+  InfoField,
+} from '@/components/drawer'
+import { Badge, Alert, Divider, Loading } from '@/components/common'
 import BaseDialog from '@/components/dialog/base-dialog.vue'
 import TaskProgressDialog from '@/components/dialog/task-progress-dialog.vue'
 import { environmentService } from '@/services/environment.service'
@@ -184,6 +183,7 @@ import { ApiError } from '@/types/common'
 import type { EnvironmentDetailInfo } from '@/types/environment'
 import type { TaskProgressEvent } from '@/types/task'
 import { useAuthStore } from '@/stores/auth.store'
+import { useDrawerToast } from '@/composables/useDrawerToast'
 
 const authStore = useAuthStore()
 
@@ -239,15 +239,7 @@ const isLoading = ref(false)
 const error = ref<string | null>(null)
 
 // ===== Toast 狀態 =====
-
-/**
- * Toast 顯示狀態
- */
-const toast = ref({
-  isVisible: false,
-  type: 'success' as 'success' | 'error',
-  message: '',
-})
+const { toast, showToast, hideToast, resetToast } = useDrawerToast()
 
 /**
  * 是否顯示刪除按鈕
@@ -307,17 +299,6 @@ const statusBadgeType = computed(() => {
 // ===== Toast 方法 =====
 
 /**
- * 顯示 Toast 提示
- */
-const showToast = (type: 'success' | 'error', message: string) => {
-  toast.value = {
-    isVisible: true,
-    type,
-    message,
-  }
-}
-
-/**
  * 處理複製成功
  */
 const handleCopySuccess = () => {
@@ -329,13 +310,6 @@ const handleCopySuccess = () => {
  */
 const handleCopyError = (errorMsg: string) => {
   showToast('error', errorMsg)
-}
-
-/**
- * 關閉 Toast
- */
-const handleToastClose = () => {
-  toast.value.isVisible = false
 }
 
 // ===== 載入資料 =====
@@ -367,7 +341,7 @@ const loadEnvironmentDetail = async () => {
  * 處理關閉 Drawer
  */
 const handleClose = () => {
-  handleToastClose()
+  resetToast()
   emit('close')
 }
 
@@ -542,7 +516,7 @@ watch(
   () => props.isOpen,
   (isOpen) => {
     if (isOpen && props.environmentId) {
-      handleToastClose()
+      resetToast()
       loadEnvironmentDetail()
     }
   },

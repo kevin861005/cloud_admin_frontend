@@ -35,16 +35,16 @@ interface Props {
   /**
    * 載入提示文字
    */
-  message?: string
+  message?: string;
 
   /**
    * 是否顯示 spinner 動畫
    */
-  showSpinner?: boolean
+  showSpinner?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
-  message: '載入中...',
+  message: "載入中...",
   showSpinner: true,
-})
+});
 </script>

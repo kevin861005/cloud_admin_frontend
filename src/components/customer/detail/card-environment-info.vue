@@ -54,10 +54,9 @@
 </template>
 
 <script setup lang="ts">
-import BadgeButton from '@/components/common/badge-button.vue'
 import EnvironmentIcon from '@/assets/icons/card/environment.svg'
 import linkIcon from '@/assets/icons/common/cm-link.svg'
-import CopyButton from '@/components/common/copy-button.vue'
+import { BadgeButton, CopyButton } from '@/components/common'
 
 /**
  * 環境設定資訊卡片

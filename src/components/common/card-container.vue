@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from "vue";
 
 /**
  * CardContainer 元件
@@ -40,48 +40,48 @@ interface Props {
    * - 例如：[1, 2] 表示第一張佔 33%，第二張佔 67%
    * - 若不提供或陣列長度與卡片數量不符，則平均分配
    */
-  widthRatios?: number[]
+  widthRatios?: number[];
 
   /**
    * 容器高度（單位：px）
    * - 選填，不傳則由內容決定高度
    * - 有傳則使用固定高度
    */
-  height?: number
+  height?: number;
 
   /**
    * 是否使用上方內距
    * - 預設：false
    * - 若為 true，則套用 paddingTop 的數值
    */
-  usePaddingTop?: boolean
+  usePaddingTop?: boolean;
 
   /**
    * 上方內距數值（單位：px）
    * - 預設：12px
    * - 僅在 usePaddingTop=true 時生效
    */
-  paddingTop?: number
+  paddingTop?: number;
 
   /**
    * 是否使用下方內距
    * - 預設：true
    * - 若為 true，則套用 paddingBottom 的數值
    */
-  usePaddingBottom?: boolean
+  usePaddingBottom?: boolean;
 
   /**
    * 下方內距數值（單位：px）
    * - 預設：40px
    * - 僅在 usePaddingBottom=true 時生效
    */
-  paddingBottom?: number
+  paddingBottom?: number;
 
   /**
    * 卡片間距（單位：px）
    * - 預設：20px
    */
-  gap?: number
+  gap?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -92,9 +92,9 @@ const props = withDefaults(defineProps<Props>(), {
   usePaddingBottom: true,
   paddingBottom: 40,
   gap: 20,
-})
+});
 
-const containerRef = ref<HTMLElement | null>(null)
+const containerRef = ref<HTMLElement | null>(null);
 
 /**
  * 計算容器樣式
@@ -102,91 +102,91 @@ const containerRef = ref<HTMLElement | null>(null)
  */
 const containerStyle = computed(() => {
   const style: Record<string, string> = {
-    paddingTop: props.usePaddingTop ? `${props.paddingTop}px` : '0',
-    paddingBottom: props.usePaddingBottom ? `${props.paddingBottom}px` : '0',
+    paddingTop: props.usePaddingTop ? `${props.paddingTop}px` : "0",
+    paddingBottom: props.usePaddingBottom ? `${props.paddingBottom}px` : "0",
     gap: `${props.gap}px`,
-  }
+  };
 
   // 只有傳入 height 時才設定固定高度
   if (props.height !== undefined) {
-    style.height = `${props.height}px`
+    style.height = `${props.height}px`;
   }
 
-  return style
-})
+  return style;
+});
 
 /**
  * 計算並設定每張卡片的寬度
  */
 const calculateCardWidth = () => {
-  if (!containerRef.value) return
+  if (!containerRef.value) return;
 
-  const cards = Array.from(containerRef.value.children) as HTMLElement[]
-  const cardCount = cards.length
+  const cards = Array.from(containerRef.value.children) as HTMLElement[];
+  const cardCount = cards.length;
 
-  if (cardCount === 0) return
+  if (cardCount === 0) return;
 
-  const containerWidth = containerRef.value.clientWidth
-  const paddingTotal = 40 * 2 // px-10 = 左右各 40px
-  const gapTotal = props.gap * (cardCount - 1) // 使用傳入的 gap 值
-  const availableWidth = containerWidth - paddingTotal - gapTotal
+  const containerWidth = containerRef.value.clientWidth;
+  const paddingTotal = 40 * 2; // px-10 = 左右各 40px
+  const gapTotal = props.gap * (cardCount - 1); // 使用傳入的 gap 值
+  const availableWidth = containerWidth - paddingTotal - gapTotal;
 
   const useCustomRatios =
-    props.widthRatios && props.widthRatios.length > 0 && props.widthRatios.length === cardCount
+    props.widthRatios && props.widthRatios.length > 0 && props.widthRatios.length === cardCount;
 
   if (useCustomRatios) {
     // 使用自訂比例
-    const ratios = props.widthRatios!
-    const ratioSum = ratios.reduce((sum, ratio) => sum + ratio, 0)
+    const ratios = props.widthRatios!;
+    const ratioSum = ratios.reduce((sum, ratio) => sum + ratio, 0);
 
     cards.forEach((card, index) => {
-      const ratio = ratios[index]
+      const ratio = ratios[index];
       if (ratio === undefined) {
-        return
+        return;
       }
-      const cardWidth = availableWidth * (ratio / ratioSum)
-      card.style.width = `${cardWidth}px`
-      card.style.flexShrink = '0'
-    })
+      const cardWidth = availableWidth * (ratio / ratioSum);
+      card.style.width = `${cardWidth}px`;
+      card.style.flexShrink = "0";
+    });
   } else {
     // 平均分配
-    const cardWidth = availableWidth / cardCount
+    const cardWidth = availableWidth / cardCount;
 
     cards.forEach((card) => {
-      card.style.width = `${cardWidth}px`
-      card.style.flexShrink = '0'
-    })
+      card.style.width = `${cardWidth}px`;
+      card.style.flexShrink = "0";
+    });
   }
-}
+};
 
 /**
  * 處理滑鼠滾輪事件，轉換為水平滾動
  */
 const handleWheel = (event: WheelEvent) => {
-  if (!containerRef.value) return
-  const canScroll = containerRef.value.scrollWidth > containerRef.value.clientWidth
-  if (!canScroll) return
-  event.preventDefault()
-  containerRef.value.scrollLeft += event.deltaY
-}
+  if (!containerRef.value) return;
+  const canScroll = containerRef.value.scrollWidth > containerRef.value.clientWidth;
+  if (!canScroll) return;
+  event.preventDefault();
+  containerRef.value.scrollLeft += event.deltaY;
+};
 
 /**
  * 監聽視窗大小變化，重新計算卡片寬度
  */
 const handleResize = () => {
-  calculateCardWidth()
-}
+  calculateCardWidth();
+};
 
 /**
  * 使用 MutationObserver 監聽子元素變化
  */
-let mutationObserver: MutationObserver | null = null
+let mutationObserver: MutationObserver | null = null;
 
 /**
  * 使用 ResizeObserver 監聽容器大小變化
  * 用於偵測左側選單展開/收起等導致的容器寬度變化
  */
-let resizeObserver: ResizeObserver | null = null
+let resizeObserver: ResizeObserver | null = null;
 
 /**
  * 監聽 widthRatios prop 變化
@@ -195,11 +195,11 @@ watch(
   () => props.widthRatios,
   () => {
     nextTick(() => {
-      calculateCardWidth()
-    })
+      calculateCardWidth();
+    });
   },
   { deep: true },
-)
+);
 
 /**
  * 監聽 gap prop 變化
@@ -208,61 +208,61 @@ watch(
   () => props.gap,
   () => {
     nextTick(() => {
-      calculateCardWidth()
-    })
+      calculateCardWidth();
+    });
   },
-)
+);
 
 onMounted(() => {
   if (containerRef.value) {
     // 初始計算（等待 DOM 完全渲染）
     nextTick(() => {
-      calculateCardWidth()
-    })
+      calculateCardWidth();
+    });
 
     // 監聽滾輪事件
-    containerRef.value.addEventListener('wheel', handleWheel, { passive: false })
+    containerRef.value.addEventListener("wheel", handleWheel, { passive: false });
 
     // 監聽視窗大小變化
-    window.addEventListener('resize', handleResize)
+    window.addEventListener("resize", handleResize);
 
     // 監聽子元素變化（卡片新增/移除）
     mutationObserver = new MutationObserver(() => {
       nextTick(() => {
-        calculateCardWidth()
-      })
-    })
+        calculateCardWidth();
+      });
+    });
     mutationObserver.observe(containerRef.value, {
       childList: true,
       subtree: false,
-    })
+    });
 
     // 監聽容器本身的大小變化
     // 當左側選單展開/收起時，容器寬度會改變，這裡會自動偵測並重新計算
     resizeObserver = new ResizeObserver(() => {
       nextTick(() => {
-        calculateCardWidth()
-      })
-    })
-    resizeObserver.observe(containerRef.value)
+        calculateCardWidth();
+      });
+    });
+    resizeObserver.observe(containerRef.value);
   }
-})
+});
 
 onUnmounted(() => {
   // 清理事件監聯器
   if (containerRef.value) {
-    containerRef.value.removeEventListener('wheel', handleWheel)
+    containerRef.value.removeEventListener("wheel", handleWheel);
   }
-  window.removeEventListener('resize', handleResize)
+  window.removeEventListener("resize", handleResize);
 
   // 清理 MutationObserver
   if (mutationObserver) {
-    mutationObserver.disconnect()
+    mutationObserver.disconnect();
   }
 
   // 清理 ResizeObserver
   if (resizeObserver) {
-    resizeObserver.disconnect()
+    resizeObserver.disconnect();
   }
-})
+});
 </script>

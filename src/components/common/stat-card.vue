@@ -38,8 +38,7 @@
           <!-- 按鈕（選填） -->
           <button
             v-if="props.buttonText"
-            class="rounded px-2 typo-sm"
-            style="color: #4b5563"
+            class="rounded px-2 typo-sm text-neutral-600 hover:text-primary-500"
             @click="emit('button-click')"
           >
             {{ props.buttonText }}
@@ -52,8 +51,20 @@
 
 <script setup lang="ts">
 /**
- * 客戶統計卡片元件
- * 用於總覽頁面顯示各項客戶統計資訊
+ * StatCard 統計卡片元件
+ *
+ * 通用的統計數據展示卡片，用於顯示各項統計資訊
+ * 適用於：總覽頁面、客戶統計、環境統計等
+ * 需搭配 CardContainer 使用
+ *
+ * @example
+ * <StatCard
+ *   title="總客戶數"
+ *   :icon="customerIcon"
+ *   :value="16"
+ *   unit="間"
+ *   subtitle="+12% 相較上個月"
+ * />
  */
 
 /**
@@ -61,19 +72,19 @@
  */
 interface Props {
   /** 卡片標題 */
-  title: string
+  title: string;
   /** ICON 路徑（如 '@/assets/icons/card/growth-up.svg'） */
-  icon: string
+  icon: string;
   /** 主要數值 */
-  value: number
+  value: number;
   /** 數值單位（如「間」） */
-  unit: string
+  unit: string;
   /** 底部副內容（如「+12%相較上個月」） */
-  subtitle: string
+  subtitle: string;
   /** 卡片高度（選填，預設 176px） */
-  height?: number
+  height?: number;
   /** 按鈕文字（選填，未提供則不顯示按鈕） */
-  buttonText?: string
+  buttonText?: string;
 }
 
 /**
@@ -81,15 +92,13 @@ interface Props {
  */
 const props = withDefaults(defineProps<Props>(), {
   height: 176,
-})
+});
 
 /**
  * Emits 定義
  */
 const emit = defineEmits<{
   /** 按鈕點擊事件 */
-  'button-click': []
-}>()
+  "button-click": [];
+}>();
 </script>
-
-<style scoped></style>

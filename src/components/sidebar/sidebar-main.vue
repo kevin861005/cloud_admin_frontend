@@ -52,8 +52,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.store'
 import { userService } from '@/services/user.service'
 import { menuConfig } from '@/config/menu.config'
-import Loading from '@/components/common/loading.vue'
-import Alert from '@/components/common/alert.vue'
+import { Alert, Loading } from '@/components/common'
 import SidebarMenuItem from './sidebar-menuitem.vue'
 import SidebarGroup from './sidebar-group.vue'
 import type { MenuItem } from '@/types/menu'
@@ -218,5 +217,3 @@ onMounted(() => {
   fetchUserPermissions()
 })
 </script>
-
-<style scoped></style>

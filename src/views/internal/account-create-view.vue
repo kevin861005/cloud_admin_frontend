@@ -75,17 +75,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import PageTitle from '@/components/common/page-title.vue'
-import Divider from '@/components/common/divider.vue'
-import FormSection from '@/components/form/form-section.vue'
-import FormInput from '@/components/form/form-input.vue'
-import FormCheckboxGroup from '@/components/form/form-checkbox-group.vue'
-import FormButtonGroup from '@/components/form/form-button-group.vue'
+import { Divider, PageTitle } from '@/components/common'
+import { FormSection, FormInput, FormCheckboxGroup, FormButtonGroup } from '@/components/form'
 import { roleService } from '@/services/role.service'
 import { userService } from '@/services/user.service'
 import type { CreateUserRequest } from '@/types/user'
 import type { FieldError } from '@/types/common'
 import { ApiError } from '@/types/common'
+import { processFieldErrors } from '@/utils/form'
 
 /**
  * 新增帳號頁面
@@ -154,81 +151,23 @@ const loadRoleOptions = async () => {
  * @param fieldErrors - 後端回傳的欄位錯誤列表
  */
 const handleFieldErrors = (fieldErrors: FieldError[]) => {
-  console.log('handleFieldErrors 被呼叫, 收到的錯誤:', fieldErrors)
-
-  // 清空現有錯誤
-  errors.value = {
-    loginId: '',
-    password: '',
-    roles: '',
-    name: '',
-    email: '',
-  }
-
-  // 欄位名稱對應表 (後端 -> 前端)
-  const fieldMap: Record<string, keyof typeof errors.value> = {
-    loginId: 'loginId',
-    password: 'password',
-    roleIds: 'roles',
-    name: 'name',
-    email: 'email',
-  }
-
-  // Ref 對應表 (後端欄位名稱 -> Ref)
-  const fieldRefMap: Record<string, typeof loginIdInputRef> = {
-    loginId: loginIdInputRef,
-    password: passwordInputRef,
-    name: nameInputRef,
-    email: emailInputRef,
-  }
-
-  console.log('Ref 對應表:', {
-    loginId: loginIdInputRef.value,
-    password: passwordInputRef.value,
-    name: nameInputRef.value,
-    email: emailInputRef.value,
+  processFieldErrors(fieldErrors, {
+    errors,
+    fieldMap: {
+      loginId: 'loginId',
+      password: 'password',
+      roleIds: 'roles',
+      name: 'name',
+      email: 'email',
+    },
+    fieldRefMap: {
+      loginId: loginIdInputRef,
+      password: passwordInputRef,
+      name: nameInputRef,
+      email: emailInputRef,
+    },
+    fieldOrder: ['loginId', 'password', 'name', 'email'],
   })
-
-  // 記錄哪些欄位有錯誤
-  const fieldsWithErrors = new Set<string>()
-
-  // 遍歷所有欄位錯誤
-  fieldErrors.forEach((fieldError) => {
-    const frontendField = fieldMap[fieldError.field]
-
-    if (frontendField) {
-      // 如果該欄位已經有錯誤訊息,用分號串接
-      if (errors.value[frontendField]) {
-        errors.value[frontendField] += `; ${fieldError.message}`
-      } else {
-        errors.value[frontendField] = fieldError.message
-      }
-
-      // 記錄有錯誤的欄位 (使用後端欄位名稱)
-      fieldsWithErrors.add(fieldError.field)
-    }
-  })
-
-  console.log('有錯誤的欄位:', Array.from(fieldsWithErrors))
-
-  // 根據畫面上的欄位順序,找到第一個有錯誤的欄位並 focus
-  const fieldOrder = ['loginId', 'password', 'name', 'email']
-
-  for (const field of fieldOrder) {
-    if (fieldsWithErrors.has(field)) {
-      console.log('嘗試 focus 到:', field)
-      const refToFocus = fieldRefMap[field]
-      console.log('Ref 物件:', refToFocus?.value)
-
-      if (refToFocus?.value?.focus) {
-        console.log('呼叫 focus()')
-        refToFocus.value.focus()
-      } else {
-        console.log('focus 方法不存在')
-      }
-      break // 只 focus 第一個錯誤欄位
-    }
-  }
 }
 
 // ===== 事件處理 =====
@@ -311,5 +250,3 @@ onMounted(() => {
   loadRoleOptions()
 })
 </script>
-
-<style scoped></style>

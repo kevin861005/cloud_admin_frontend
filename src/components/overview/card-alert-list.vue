@@ -90,8 +90,7 @@
 import { ref, onMounted } from 'vue'
 import { overviewService } from '@/services/overview.service'
 import type { AlertListData, AlertType } from '@/types/overview'
-import BadgeButton from '@/components/common/badge-button.vue'
-import EmptyState from '@/components/common/empty-state.vue'
+import { BadgeButton, EmptyState } from '@/components/common'
 
 /**
  * 異常警示資料

@@ -51,9 +51,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import Badge from '@/components/common/badge.vue'
-import EmptyState from '@/components/common/empty-state.vue'
-import Alert from '@/components/common/alert.vue'
+import { Badge, EmptyState, Alert } from '@/components/common'
 import DataTable from '@/components/table/data-table.vue'
 import { userService } from '@/services/user.service'
 import { useAuthStore } from '@/stores/auth.store'

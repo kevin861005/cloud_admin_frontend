@@ -41,8 +41,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import PageTitle from '@/components/common/page-title.vue'
-import CardContainer from '@/components/common/card-container.vue'
+import { PageTitle, CardContainer } from '@/components/common'
 import TableContainer from '@/components/table/table-container.vue'
 import CustomerDetailDrawer from '@/components/customer/drawer-customer-detail.vue'
 import ApplyDeleteDialog from '@/components/customer/dialog-apply-delete.vue'
@@ -156,5 +155,3 @@ onUnmounted(() => {
   }
 })
 </script>
-
-<style scoped></style>

@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed } from "vue";
 
 /**
  * Badge 元件
@@ -38,23 +38,23 @@ import { computed } from 'vue'
  */
 
 // ========== 型別定義 ==========
-type BadgeType = 'default' | 'success' | 'error' | 'working' | 'neutral'
+type BadgeType = "default" | "success" | "error" | "working" | "neutral";
 
 interface BadgeStyle {
   /** 背景色 */
-  bg: string
+  bg: string;
   /** 邊框色 */
-  border: string
+  border: string;
   /** 文字色 */
-  text: string
+  text: string;
   /** 字體 class（Tailwind CSS） */
-  font: string
+  font: string;
 }
 
 // ========== Props 定義 ==========
 interface Props {
   /** 顯示文字 */
-  text: string
+  text: string;
 
   /**
    * 樣式類型
@@ -66,83 +66,83 @@ interface Props {
    * - default: 灰色（適合：一般標籤、權限、未使用）
    * @default 'default'
    */
-  type?: BadgeType
+  type?: BadgeType;
 
   /**
    * 是否顯示邊框
    * @default true
    */
-  showBorder?: boolean
+  showBorder?: boolean;
 
   /**
    * 是否為禁用樣式（文字變淡為 neutral-400）
    * @default false
    */
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  type: 'default',
+  type: "default",
   showBorder: true,
   disabled: false,
-})
+});
 
 // ========== 常數 ==========
 /** 禁用時的文字顏色 */
-const DISABLED_TEXT_COLOR = '#9CA3AF' // neutral-400
+const DISABLED_TEXT_COLOR = "#9CA3AF"; // neutral-400
 
 // ========== 樣式配置 ==========
 const styleMap: Record<BadgeType, BadgeStyle> = {
   success: {
-    bg: '#27BD720D',
-    border: 'rgba(39, 189, 114, 0.1)',
-    text: '#27BD72',
-    font: 'typo-xs-bold',
+    bg: "#27BD720D",
+    border: "rgba(39, 189, 114, 0.1)",
+    text: "#27BD72",
+    font: "typo-xs-bold",
   },
   error: {
-    bg: '#FD58580D',
-    border: 'rgba(253, 88, 88, 0.1)',
-    text: '#FD5858',
-    font: 'typo-xs-bold',
+    bg: "#FD58580D",
+    border: "rgba(253, 88, 88, 0.1)",
+    text: "#FD5858",
+    font: "typo-xs-bold",
   },
   working: {
-    bg: '#398FF90D',
-    border: 'rgba(57, 143, 249, 0.1)',
-    text: '#398FF9',
-    font: 'typo-xs-bold',
+    bg: "#398FF90D",
+    border: "rgba(57, 143, 249, 0.1)",
+    text: "#398FF9",
+    font: "typo-xs-bold",
   },
   neutral: {
-    bg: '#F3F4F6',
-    border: 'rgba(0, 0, 0, 0.1)',
-    text: '#374151',
-    font: 'typo-xs',
+    bg: "#F3F4F6",
+    border: "rgba(0, 0, 0, 0.1)",
+    text: "#374151",
+    font: "typo-xs",
   },
   default: {
-    bg: '#0000000D',
-    border: 'rgba(0, 0, 0, 0.1)',
-    text: 'rgba(0, 0, 0, 0.8)',
-    font: 'typo-xs-bold',
+    bg: "#0000000D",
+    border: "rgba(0, 0, 0, 0.1)",
+    text: "rgba(0, 0, 0, 0.8)",
+    font: "typo-xs-bold",
   },
-}
+};
 
 // ========== Computed ==========
 /**
  * Badge 樣式（顏色相關）
  */
 const badgeStyles = computed(() => {
-  const style = styleMap[props.type]
+  const style = styleMap[props.type];
 
   return {
     backgroundColor: style.bg,
-    borderColor: props.showBorder ? style.border : 'transparent',
+    borderColor: props.showBorder ? style.border : "transparent",
     color: props.disabled ? DISABLED_TEXT_COLOR : style.text,
-  }
-})
+  };
+});
 
 /**
  * 字體 class
  */
 const fontClass = computed(() => {
-  return styleMap[props.type].font
-})
+  return styleMap[props.type].font;
+});
 </script>

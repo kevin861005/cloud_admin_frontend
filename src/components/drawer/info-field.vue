@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import CopyButton from '@/components/common/copy-button.vue'
+import { CopyButton } from '@/components/common'
 
 /**
  * InfoField 元件

@@ -8,13 +8,13 @@
       </h3>
 
       <!-- 副標題（選填，緊貼主標題下方） -->
-      <p v-if="subtitle" class="typo-sm-medium" style="color: #398ff9">
+      <p v-if="subtitle" class="typo-sm-medium text-primary-500">
         {{ subtitle }}
       </p>
     </div>
 
     <!-- 內容區域（與標題區域間隔 8px） -->
-    <div class="flex flex-1 flex-col" :style="{ gap: `${gap}px`, marginTop: '8px' }">
+    <div class="flex flex-1 flex-col mt-2" :style="{ gap: `${gap}px` }">
       <slot />
     </div>
   </div>

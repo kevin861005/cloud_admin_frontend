@@ -53,9 +53,8 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { CustomerDetailInfo } from '@/types/customer'
-import Badge from '@/components/common/badge.vue'
-import Divider from '@/components/common/divider.vue'
 import EditIcon from '@/assets/icons/common/cm-edit.svg'
+import { Badge, Divider } from '@/components/common'
 
 /**
  * 客戶資訊卡片元件

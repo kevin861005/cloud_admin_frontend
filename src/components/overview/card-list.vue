@@ -112,18 +112,20 @@
 
         <div class="flex gap-2">
           <!-- 上一頁按鈕 -->
-          <button :disabled="currentPage === 0" class="btn-pagination" @click="previousPage">
-            <img src="@/assets/icons/common/cm-arrow-left.svg" alt="上一頁" class="icon" />
-          </button>
+          <PaginationButton
+            :icon="PrevIcon"
+            alt="上一頁"
+            :disabled="currentPage === 1"
+            @click="previousPage"
+          />
 
           <!-- 下一頁按鈕 -->
-          <button
-            :disabled="currentPage >= totalPages - 1"
-            class="btn-pagination"
+          <PaginationButton
+            :icon="NextIcon"
+            alt="下一頁"
+            :disabled="currentPage >= totalPages"
             @click="nextPage"
-          >
-            <img src="@/assets/icons/common/cm-arrow-right.svg" alt="下一頁" class="icon" />
-          </button>
+          />
         </div>
       </div>
     </div>
@@ -132,10 +134,10 @@
 
 <script setup lang="ts" generic="T extends Record<string, any>">
 import { ref, computed, reactive, watch } from 'vue'
-import Loading from '@/components/common/loading.vue'
-import Alert from '@/components/common/alert.vue'
-import EmptyState from '@/components/common/empty-state.vue'
+import { Alert, Loading, EmptyState, PaginationButton } from '@/components/common'
 import type { CardListColumn, CardListSortState } from '@/types/overview'
+import PrevIcon from '@/assets/icons/common/cm-arrow-left.svg'
+import NextIcon from '@/assets/icons/common/cm-arrow-right.svg'
 
 // ==================== Props ====================
 

@@ -1,5 +1,5 @@
 <template>
-  <environment-card
+  <StatCard
     title="申請中"
     :icon="AppliedIcon"
     :value="pendingCount"
@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import EnvironmentCard from '../common/card.vue'
+import { StatCard } from '@/components/common'
 import AppliedIcon from '@/assets/icons/card/card-e-applied.svg'
 import { environmentService } from '@/services/environment.service'
 

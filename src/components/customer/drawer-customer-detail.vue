@@ -7,7 +7,7 @@
     <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
     <!-- 資料顯示 -->
-    <div v-else-if="customerDetail" class="drawer">
+    <template v-else-if="customerDetail">
       <DrawerHeader :title="customerDetail.customerName" :subtitle="customerDetail.industry">
         <template #badge>
           <Badge :text="statusText" :type="statusBadgeType" />
@@ -89,41 +89,25 @@
           @copy-error="handleCopyError"
         />
       </InfoSection>
-    </div>
+    </template>
 
     <!-- Toast 提示（固定在 Drawer 底部） -->
     <DrawerToast
       :is-visible="toast.isVisible"
       :type="toast.type"
       :message="toast.message"
-      @close="handleToastClose"
+      @close="hideToast"
     />
   </Drawer>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import Drawer from '@/components/drawer/drawer.vue'
-import DrawerHeader from '@/components/drawer/drawer-header.vue'
-import DrawerToast from '@/components/drawer/drawer-toast.vue'
-import InfoSection from '@/components/drawer/info-section.vue'
-import InfoField from '@/components/drawer/info-field.vue'
-import Badge from '@/components/common/badge.vue'
-import Alert from '@/components/common/alert.vue'
-import Divider from '@/components/common/divider.vue'
+import { Drawer, DrawerHeader, DrawerToast, InfoSection, InfoField } from '@/components/drawer'
+import { Badge, Alert, Divider, Loading } from '@/components/common'
 import { customerService } from '@/services/customer.service'
 import type { CustomerDrawerInfo } from '@/types/customer'
-
-/**
- * 顯示 Toast 提示
- */
-const showToast = (type: 'success' | 'error', message: string) => {
-  toast.value = {
-    isVisible: true,
-    type,
-    message,
-  }
-}
+import { useDrawerToast } from '@/composables/useDrawerToast'
 
 /**
  * 處理複製成功
@@ -183,15 +167,7 @@ const isLoading = ref(false)
 const error = ref<string | null>(null)
 
 // ===== Toast 狀態 =====
-
-/**
- * Toast 顯示狀態
- */
-const toast = ref({
-  isVisible: false,
-  type: 'success' as 'success' | 'error',
-  message: '',
-})
+const { toast, showToast, hideToast, resetToast } = useDrawerToast()
 
 // ===== 計算屬性 =====
 
@@ -249,18 +225,11 @@ const loadCustomerDetail = async () => {
 }
 
 /**
- * 關閉 Toast
- */
-const handleToastClose = () => {
-  toast.value.isVisible = false
-}
-
-/**
  * 處理關閉 Drawer
  */
 const handleClose = () => {
   // 關閉 Toast
-  handleToastClose()
+  resetToast()
   emit('close')
 }
 
@@ -275,7 +244,7 @@ watch(
   (isOpen) => {
     if (isOpen && props.customerId) {
       // 關閉 Toast
-      handleToastClose()
+      resetToast()
       // 載入資料
       loadCustomerDetail()
     }

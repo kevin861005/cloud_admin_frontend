@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import EmptyState from '@/components/common/empty-state.vue'
+import { Alert, EmptyState } from '@/components/common'
 import DataTable from '@/components/table/data-table.vue'
 import { useAuthStore } from '@/stores/auth.store'
 import { industryService } from '@/services/industry.service'

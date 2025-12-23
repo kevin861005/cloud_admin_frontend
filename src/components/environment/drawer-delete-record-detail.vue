@@ -7,7 +7,7 @@
     <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
     <!-- 資料顯示 -->
-    <div v-else-if="deleteRecordDetail" class="drawer">
+    <template v-else-if="deleteRecordDetail">
       <DrawerHeader
         :title="deleteRecordDetail.customerName"
         :subtitle="deleteRecordDetail.industry"
@@ -37,19 +37,14 @@
         <InfoField label="刪除時間" :value="deleteRecordDetail.deleteTime" />
         <InfoField label="刪除人" :value="deleteRecordDetail.deletedBy" />
       </InfoSection>
-    </div>
+    </template>
   </Drawer>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import Drawer from '@/components/drawer/drawer.vue'
-import DrawerHeader from '@/components/drawer/drawer-header.vue'
-import InfoSection from '@/components/drawer/info-section.vue'
-import InfoField from '@/components/drawer/info-field.vue'
-import Loading from '@/components/common/loading.vue'
-import Alert from '@/components/common/alert.vue'
-import Divider from '@/components/common/divider.vue'
+import { Drawer, DrawerHeader, InfoSection, InfoField } from '@/components/drawer'
+import { Alert, Divider, Loading } from '@/components/common'
 import { environmentService } from '@/services/environment.service'
 import type { DeleteRecordDetailInfo } from '@/types/environment'
 

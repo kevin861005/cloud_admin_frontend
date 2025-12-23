@@ -30,7 +30,7 @@
 import { onMounted } from 'vue'
 import PageHeader from '@/components/layout/page-header.vue'
 import Sidebar from '@/components/sidebar/sidebar-main.vue'
-import ToastMessage from '@/components/common/toast-message.vue'
+import { ToastMessage } from '@/components/common'
 import { useMenuStore } from '@/stores/menu.store'
 import { useAuthStore } from '@/stores/auth.store'
 

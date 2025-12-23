@@ -6,7 +6,7 @@
       :src="copyIcon"
       :alt="title"
       :title="title"
-      class="icon-neutral icon-neutral-self-hover h-4 w-4 flex-shrink-0 cursor-pointer"
+      class="copy-icon h-4 w-4 flex-shrink-0 cursor-pointer"
       @click="handleCopy"
     />
 
@@ -92,3 +92,27 @@ async function handleCopy() {
   }
 }
 </script>
+
+<style scoped>
+/* 複製圖示：預設灰色，hover 時變主色 */
+.copy-icon {
+  filter: brightness(0) saturate(100%) invert(32%) sepia(9%) saturate(1095%) hue-rotate(182deg)
+    brightness(95%) contrast(92%);
+}
+
+.copy-icon:hover {
+  filter: brightness(0) saturate(100%) invert(52%) sepia(52%) saturate(2758%) hue-rotate(196deg)
+    brightness(100%) contrast(96%);
+}
+
+/* 淡入淡出動畫 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

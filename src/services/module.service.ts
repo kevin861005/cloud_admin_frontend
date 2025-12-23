@@ -5,7 +5,7 @@
 
 import apiClient from '@/utils/axios'
 import { ApiError } from '@/types/common'
-import type { ApiResponse } from '@/types/common'
+import type { ApiResponse, FieldError } from '@/types/common'
 import type {
   ModuleListItem,
   CreateModuleRequest,
@@ -37,13 +37,13 @@ export const moduleService = {
    * POST /modules
    */
   async createModule(moduleData: CreateModuleRequest): Promise<void> {
-    const response = await apiClient.post<ApiResponse<void>>('/modules', moduleData)
+    const response = await apiClient.post<ApiResponse<FieldError[] | null>>('/modules', moduleData)
 
     if (!response.data.success) {
-      throw new ApiError({
+      throw new ApiError<FieldError[] | null>({
         code: response.data.code,
         message: response.data.message || '新增模組失敗',
-        data: null,
+        data: response.data.data ?? null,
       })
     }
   },

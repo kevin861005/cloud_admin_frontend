@@ -6,7 +6,10 @@
  * - /: 主頁佈局（包含 Container + Sidebar）
  *   - /overview: 總覽頁面
  *   - /customers: 客戶管理
- *   - /environment: 環境管理
+ *   - /customers/:id/detail: 客戶詳細頁面
+ *   - /customers/:id/edit: 客戶編輯頁面
+ *   - /environments: 環境管理
+ *   - /environments/delete-records: 環境刪除紀錄
  *   - /settings/*: 設定相關頁面
  */
 
@@ -19,8 +22,9 @@ import { useAuthStore } from '@/stores/auth.store'
  */
 declare module 'vue-router' {
   interface RouteMeta {
-    requiresAuth?: boolean // 是否需要登入
-    title?: string // 頁面標題
+    requiresAuth?: boolean
+    requiredPermissions?: string[]
+    title?: string
   }
 }
 
@@ -28,9 +32,7 @@ declare module 'vue-router' {
  * 路由定義
  */
 const routes: RouteRecordRaw[] = [
-  /**
-   * 登入頁面
-   */
+  // ===== 登入頁面 =====
   {
     path: '/login',
     name: 'Login',
@@ -41,9 +43,7 @@ const routes: RouteRecordRaw[] = [
     },
   },
 
-  /**
-   * 主頁佈局（包含 Container + Sidebar）
-   */
+  // ===== 主頁佈局 =====
   {
     path: '/',
     name: 'Home',
@@ -52,17 +52,13 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: true,
     },
     children: [
-      /**
-       * 根路徑自動跳轉到總覽
-       */
+      // 根路徑自動跳轉到總覽
       {
         path: '',
         redirect: '/overview',
       },
 
-      /**
-       * 總覽頁面
-       */
+      // ----- 總覽 -----
       {
         path: 'overview',
         name: 'Overview',
@@ -73,9 +69,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
 
-      /**
-       * 客戶管理
-       */
+      // ----- 客戶管理 -----
       {
         path: 'customers',
         name: 'Customers',
@@ -85,12 +79,8 @@ const routes: RouteRecordRaw[] = [
           title: '客戶管理',
         },
       },
-
-      /**
-       * 客戶管理 - 詳細畫面
-       */
       {
-        path: '/customers/:id/detail',
+        path: 'customers/:id/detail',
         name: 'CustomerDetail',
         component: () => import('@/views/internal/customer-detail-view.vue'),
         meta: {
@@ -98,12 +88,8 @@ const routes: RouteRecordRaw[] = [
           title: '客戶詳細資訊',
         },
       },
-
-      /**
-       * 客戶管理 - 詳細畫面 - 編輯畫面
-       */
       {
-        path: '/customers/:id/edit',
+        path: 'customers/:id/edit',
         name: 'CustomerEdit',
         component: () => import('@/views/internal/customer-edit-view.vue'),
         meta: {
@@ -112,9 +98,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
 
-      /**
-       * 環境管理
-       */
+      // ----- 環境管理 -----
       {
         path: 'environments',
         name: 'Environments',
@@ -124,27 +108,21 @@ const routes: RouteRecordRaw[] = [
           title: '環境管理',
         },
       },
-      /**
-       * 環境管理 - 刪除紀錄
-       */
       {
-        path: '/environments/delete-records',
+        path: 'environments/delete-records',
         name: 'DeleteRecords',
         component: () => import('@/views/internal/environment-delete-records.vue'),
         meta: {
           requiresAuth: true,
+          title: '刪除紀錄',
         },
       },
 
-      /**
-       * 設定相關頁面
-       */
+      // ----- 設定 -----
       {
         path: 'settings',
         children: [
-          /**
-           * 帳號管理
-           */
+          // 帳號管理
           {
             path: 'accounts',
             name: 'SettingsAccounts',
@@ -154,33 +132,18 @@ const routes: RouteRecordRaw[] = [
               title: '帳號管理',
             },
           },
-          /**
-           * 帳號管理 - 新增帳號
-           */
           {
-            path: '/settings/accounts/create',
+            path: 'accounts/create',
             name: 'AccountCreate',
             component: () => import('@/views/internal/account-create-view.vue'),
             meta: {
-              requiresAuth: true, //
+              requiresAuth: true,
               requiredPermissions: ['settings.accounts'],
+              title: '新增帳號',
             },
           },
-          /**
-           * 權限設定
-           */
-          // {
-          //   path: 'roles',
-          //   name: 'SettingsRoles',
-          //   component: () => import('@/views/settings/roles-view.vue'),
-          //   meta: {
-          //     requiresAuth: true,
-          //     title: '權限設定',
-          //   },
-          // },
-          /**
-           * 模組設定
-           */
+
+          // 模組設定
           {
             path: 'modules',
             name: 'SettingsModules',
@@ -190,21 +153,18 @@ const routes: RouteRecordRaw[] = [
               title: '模組設定',
             },
           },
-          /**
-           * 模組設定 - 新增模組
-           */
           {
-            path: '/settings/modules/create',
+            path: 'modules/create',
             name: 'ModuleCreate',
             component: () => import('@/views/internal/module-create-view.vue'),
             meta: {
-              requiresAuth: true, //
+              requiresAuth: true,
               requiredPermissions: ['settings.modules'],
+              title: '新增模組',
             },
           },
-          /**
-           * 產業別設定
-           */
+
+          // 產業別設定
           {
             path: 'industries',
             name: 'SettingsIndustries',
@@ -214,21 +174,18 @@ const routes: RouteRecordRaw[] = [
               title: '產業別設定',
             },
           },
-          /**
-           * 產業別設定 - 新增產業別
-           */
           {
-            path: '/settings/industries/create',
+            path: 'industries/create',
             name: 'IndustryCreate',
             component: () => import('@/views/internal/industry-create-view.vue'),
             meta: {
-              requiresAuth: true, //
+              requiresAuth: true,
               requiredPermissions: ['settings.industries'],
+              title: '新增產業別',
             },
           },
-          /**
-           * 經銷商設定
-           */
+
+          // 經銷商設定
           {
             path: 'dealers',
             name: 'SettingsDealers',
@@ -238,16 +195,14 @@ const routes: RouteRecordRaw[] = [
               title: '經銷商設定',
             },
           },
-          /**
-           * 經銷商設定 - 新增產業別
-           */
           {
-            path: '/settings/dealers/create',
+            path: 'dealers/create',
             name: 'DealerCreate',
             component: () => import('@/views/internal/dealer-create-view.vue'),
             meta: {
-              requiresAuth: true, //
+              requiresAuth: true,
               requiredPermissions: ['settings.dealers'],
+              title: '新增經銷商',
             },
           },
         ],
@@ -258,9 +213,6 @@ const routes: RouteRecordRaw[] = [
 
 /**
  * 建立 Router 實例
- *
- * 重要：base 必須設定為 '/cloudadmin/' 以匹配後端的 context-path
- * import.meta.env.BASE_URL 會自動讀取 vite.config.ts 中的 base 設定
  */
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -269,11 +221,6 @@ const router = createRouter({
 
 /**
  * 全域路由守衛
- *
- * 功能：
- * 1. 設定頁面標題
- * 2. 檢查是否需要登入
- * 3. 已登入時不允許訪問登入頁
  */
 router.beforeEach(
   async (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
@@ -284,19 +231,17 @@ router.beforeEach(
       document.title = `${to.meta.title} - Cloud Admin`
     }
 
-    // 檢查是否需要登入（預設為需要）
+    // 檢查是否需要登入
     const requiresAuth = to.meta.requiresAuth !== false
 
     if (requiresAuth) {
-      // 如果需要登入但未登入，跳轉到登入頁
       if (!authStore.isAuthenticated) {
-        // 如果 localStorage 有 Token，嘗試恢復使用者資訊
+        // 嘗試從 localStorage 恢復登入狀態
         const token = localStorage.getItem('accessToken')
         if (token) {
           try {
             await authStore.restoreUserInfo()
             if (authStore.isAuthenticated) {
-              // 恢復成功，繼續前往目標頁面
               next()
               return
             }
@@ -305,16 +250,14 @@ router.beforeEach(
           }
         }
 
-        // 未登入或恢復失敗，跳轉到登入頁
+        // 未登入，跳轉到登入頁
         next({ name: 'Login', query: { redirect: to.fullPath } })
       } else {
-        // 已登入，繼續前往目標頁面
         next()
       }
     } else {
-      // 不需要登入的頁面
+      // 已登入時不允許訪問登入頁
       if (to.name === 'Login' && authStore.isAuthenticated) {
-        // 已登入時不允許訪問登入頁，跳轉到首頁
         next({ name: 'Home' })
       } else {
         next()

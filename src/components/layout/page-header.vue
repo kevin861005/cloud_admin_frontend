@@ -28,7 +28,7 @@
         class="flex h-8 w-8 items-center justify-center rounded hover:bg-gray-100 transition-colors"
         :title="menuStore.isCollapsed ? '展開選單' : '收合選單'"
       >
-        <img src="@/assets/icons/common/menu-toggle.svg" alt="選單" class="h-4 w-4" />
+        <img src="@/assets/icons/common/cm-menu-toggle.svg" alt="選單" class="h-4 w-4" />
       </button>
 
       <!-- 中間：返回按鈕（根據路由層級顯示不同文字） -->
@@ -38,7 +38,7 @@
           class="flex items-center gap-2 text-neutral-600 hover:text-neutral-800 transition-colors"
         >
           <!-- 左箭頭 ICON（16x16px SVG） -->
-          <img src="@/assets/icons/common/back-arrow.svg" alt="返回" class="h-4 w-4" />
+          <img src="@/assets/icons/common/cm-back-arrow.svg" alt="返回" class="h-4 w-4" />
           <!-- 文字：根據路由層級動態顯示 -->
           <span class="text-sm">{{ backButtonText }}</span>
         </button>

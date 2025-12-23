@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import Badge from '@/components/common/badge.vue'
+import { Badge } from '@/components/common'
 import DataTable from '@/components/table/data-table.vue'
 import { environmentService } from '@/services/environment.service'
 import type { EnvironmentListItem } from '@/types/environment'

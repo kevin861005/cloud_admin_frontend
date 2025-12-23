@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import PageTitle from '@/components/common/page-title.vue'
+import { PageTitle } from '@/components/common'
 import TableContainer from '@/components/table/table-container.vue'
 import IndustryTable from '@/components/industry/table-industry.vue'
 import IndustryDetailDrawer from '@/components/industry/drawer-industry-detail.vue'
@@ -79,5 +79,3 @@ const handleAdd = () => {
   router.push('/settings/industries/create')
 }
 </script>
-
-<style scoped></style>

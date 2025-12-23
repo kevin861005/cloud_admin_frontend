@@ -26,8 +26,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import PageTitle from '@/components/common/page-title.vue'
-import CardContainer from '@/components/common/card-container.vue'
+import { PageTitle, CardContainer } from '@/components/common'
 import CardPending from '@/components/environment/card-pending.vue'
 import CardToDelete from '@/components/environment/card-to-delete.vue'
 import TableContainer from '@/components/table/table-container.vue'

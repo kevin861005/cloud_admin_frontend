@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { computed, useSlots } from 'vue'
-import Badge from '@/components/common/badge.vue'
+import { Badge } from '@/components/common'
 import type { ServiceStatus } from '@/types/service'
 
 /**

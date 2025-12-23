@@ -60,26 +60,26 @@ interface Props {
   /**
    * 按鈕文字（必填）
    */
-  text: string
+  text: string;
 
   /**
    * 圖片路徑（選填）
    * - 固定尺寸 16x16px
    * - 與文字間隔 8px
    */
-  icon?: string
+  icon?: string;
 
   /**
    * 圖片位置（選填）
    * - 'left': 圖片在文字左邊
    * - 'right': 圖片在文字右邊（預設）
    */
-  iconPosition?: 'left' | 'right'
+  iconPosition?: "left" | "right";
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  iconPosition: 'right',
-})
+  iconPosition: "right",
+});
 
 /**
  * Emits 定義
@@ -88,14 +88,14 @@ const emit = defineEmits<{
   /**
    * 按鈕點擊事件
    */
-  click: []
-}>()
+  click: [];
+}>();
 
 /**
  * 處理按鈕點擊
  * 將點擊事件向上傳遞給父元件
  */
 const handleClick = () => {
-  emit('click')
-}
+  emit("click");
+};
 </script>

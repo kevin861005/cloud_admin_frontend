@@ -144,5 +144,3 @@ function handleChildClick(key: string) {
   emit('itemClick', key)
 }
 </script>
-
-<style scoped></style>

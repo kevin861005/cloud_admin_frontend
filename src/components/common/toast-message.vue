@@ -32,18 +32,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { useMenuStore } from '@/stores/menu.store'
+import { ref, computed, watch, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { useMenuStore } from "@/stores/menu.store";
 
 // ICON 匯入
-import SuccessIcon from '@/assets/icons/common/cm-success.svg'
-import WarningIcon from '@/assets/icons/common/cm-warning.svg'
+import SuccessIcon from "@/assets/icons/common/cm-success.svg";
+import WarningIcon from "@/assets/icons/common/cm-warning.svg";
 
 /**
  * Toast 訊息類型
  */
-type ToastType = 'success' | 'warning'
+type ToastType = "success" | "warning";
 
 /**
  * Toast 訊息元件
@@ -62,24 +62,24 @@ type ToastType = 'success' | 'warning'
 // ========== Props 定義 ==========
 interface Props {
   /** Toast 寬度 */
-  width?: string
+  width?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  width: '141px',
-})
+  width: "141px",
+});
 
 // ========== Stores ==========
-const menuStore = useMenuStore()
+const menuStore = useMenuStore();
 
 // ========== State ==========
-const route = useRoute()
-const isVisible = ref(false)
-const message = ref('')
-const type = ref<ToastType>('success')
-const pageHeaderHeight = ref(0)
+const route = useRoute();
+const isVisible = ref(false);
+const message = ref("");
+const type = ref<ToastType>("success");
+const pageHeaderHeight = ref(0);
 
-let hideTimer: ReturnType<typeof setTimeout> | null = null
+let hideTimer: ReturnType<typeof setTimeout> | null = null;
 
 // ========== Computed ==========
 /**
@@ -89,16 +89,16 @@ const iconSrc = computed(() => {
   const iconMap: Record<ToastType, string> = {
     success: SuccessIcon,
     warning: WarningIcon,
-  }
-  return iconMap[type.value]
-})
+  };
+  return iconMap[type.value];
+});
 
 /**
  * 計算 Toast 的寬度值
  */
 const widthValue = computed(() => {
-  return props.width
-})
+  return props.width;
+});
 
 /**
  * 計算 Toast 的 left 位置
@@ -106,54 +106,54 @@ const widthValue = computed(() => {
  */
 const toastLeftPosition = computed(() => {
   // Sidebar 寬度：展開時 255px，收合時 0px
-  const sidebarWidth = menuStore.isCollapsed ? 0 : 255
+  const sidebarWidth = menuStore.isCollapsed ? 0 : 255;
 
   // 內容區域寬度 = 視窗寬度 - Sidebar 寬度
-  const contentWidth = window.innerWidth - sidebarWidth
+  const contentWidth = window.innerWidth - sidebarWidth;
 
   // Toast 應該在：Sidebar 寬度 + (內容區域寬度 / 2)
-  const leftPosition = sidebarWidth + contentWidth / 2
+  const leftPosition = sidebarWidth + contentWidth / 2;
 
-  return `${leftPosition}px`
-})
+  return `${leftPosition}px`;
+});
 
 /**
  * 計算 Toast 的 top 位置
  * PageHeader 高度 + 20px
  */
 const toastTopPosition = computed(() => {
-  return `${pageHeaderHeight.value + 20}px`
-})
+  return `${pageHeaderHeight.value + 20}px`;
+});
 
 // ========== Methods ==========
 /**
  * 取得 PageHeader 的高度
  */
 const updatePageHeaderHeight = () => {
-  const pageHeader = document.getElementById('page-header')
+  const pageHeader = document.getElementById("page-header");
   if (pageHeader) {
-    pageHeaderHeight.value = pageHeader.offsetHeight
+    pageHeaderHeight.value = pageHeader.offsetHeight;
   }
-}
+};
 
 /**
  * 顯示 Toast 訊息
  * @param msg - 訊息內容
  * @param toastType - 訊息類型（success/warning）
  */
-const showToast = (msg: string, toastType: ToastType = 'success') => {
+const showToast = (msg: string, toastType: ToastType = "success") => {
   if (hideTimer) {
-    clearTimeout(hideTimer)
+    clearTimeout(hideTimer);
   }
 
-  message.value = msg
-  type.value = toastType
-  isVisible.value = true
+  message.value = msg;
+  type.value = toastType;
+  isVisible.value = true;
 
   hideTimer = setTimeout(() => {
-    isVisible.value = false
-  }, 3000)
-}
+    isVisible.value = false;
+  }, 3000);
+};
 
 // ========== Watchers ==========
 /**
@@ -163,29 +163,27 @@ watch(
   () => route.query,
   (query) => {
     // 優先檢查 success
-    if (query.success && typeof query.success === 'string') {
-      showToast(query.success, 'success')
-      return
+    if (query.success && typeof query.success === "string") {
+      showToast(query.success, "success");
+      return;
     }
 
     // 檢查 warning
-    if (query.warning && typeof query.warning === 'string') {
-      showToast(query.warning, 'warning')
+    if (query.warning && typeof query.warning === "string") {
+      showToast(query.warning, "warning");
     }
   },
   { immediate: true },
-)
+);
 
 // ========== Lifecycle ==========
 /**
  * 元件掛載時取得 PageHeader 高度
  */
 onMounted(() => {
-  updatePageHeaderHeight()
+  updatePageHeaderHeight();
 
   // 監聽視窗大小變化和 Sidebar 狀態變化
-  window.addEventListener('resize', updatePageHeaderHeight)
-})
+  window.addEventListener("resize", updatePageHeaderHeight);
+});
 </script>
-
-<style scoped></style>

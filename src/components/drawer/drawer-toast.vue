@@ -9,9 +9,8 @@
   >
     <div
       v-if="isVisible"
-      class="absolute left-5 right-5 flex h-12 items-center justify-center rounded border px-4"
+      class="absolute left-5 right-5 flex h-12 items-center justify-center rounded border px-4 gap-2"
       :class="[toastClasses, positionClass]"
-      style="gap: 8px"
     >
       <!-- Icon -->
       <img :src="iconSrc" :alt="iconAlt" class="w-5 h-5" />
@@ -135,5 +134,3 @@ watch(
   },
 )
 </script>
-
-<style scoped></style>

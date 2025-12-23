@@ -270,14 +270,14 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
-import PageTitle from '@/components/common/page-title.vue'
-import Loading from '@/components/common/loading.vue'
-import Alert from '@/components/common/alert.vue'
-import FormInput from '@/components/form/form-input.vue'
-import FormSelect from '@/components/form/form-select.vue'
-import FormDatepicker from '@/components/form/form-datepicker.vue'
-import FormButtonGroup from '@/components/form/form-button-group.vue'
-import FormSectionTitle from '@/components/form/form-section-title.vue'
+import { Alert, Loading, PageTitle } from '@/components/common'
+import {
+  FormSelect,
+  FormInput,
+  FormDatepicker,
+  FormSectionTitle,
+  FormButtonGroup,
+} from '@/components/form'
 import EditTabNav from '@/components/customer/edit/edit-tab-nav.vue'
 import DialogLeaveConfirm from '@/components/customer/edit/dialog-leave-confirm.vue'
 import { customerService } from '@/services/customer.service'
@@ -285,6 +285,7 @@ import { selectOptionService } from '@/services/select-option.service'
 import type { UpdateCustomerRequest } from '@/types/customer'
 import type { FieldError, SelectOption } from '@/types/common'
 import { ApiError } from '@/types/common'
+import { processFieldErrors } from '@/utils/form'
 
 /**
  * 客戶資料編輯頁面
@@ -375,7 +376,7 @@ const formData = reactive({
 const originalData = ref<string>('')
 
 // ===== 錯誤訊息 =====
-const errors = reactive({
+const errors = ref({
   salesPersonId: '',
   dealerId: '',
   industryId: '',
@@ -520,92 +521,84 @@ function handleTabClick(key: string) {
 }
 
 /**
- * 清空錯誤訊息
+ * 處理後端回傳的欄位錯誤
+ * 將後端的欄位名稱對應到前端的錯誤訊息
+ *
+ * @param fieldErrors - 後端回傳的欄位錯誤列表
  */
-function clearErrors() {
-  Object.keys(errors).forEach((key) => {
-    errors[key as keyof typeof errors] = ''
+const handleFieldErrors = (fieldErrors: FieldError[]) => {
+  processFieldErrors(fieldErrors, {
+    errors,
+    fieldMap: {
+      salesPersonId: 'salesPersonId',
+      dealerId: 'dealerId',
+      industryId: 'industryId',
+      taxId: 'taxId',
+      nameCht: 'nameCht',
+      nameEng: 'nameEng',
+      shortNameCht: 'shortNameCht',
+      shortNameEng: 'shortNameEng',
+      postalCode: 'postalCode',
+      address: 'address',
+      nationality: 'nationality',
+      contactPerson: 'contactPerson',
+      phone: 'phone',
+      mobile: 'mobile',
+      email: 'email',
+      lineId: 'lineId',
+      contractStartDate: 'contractStartDate',
+      contractEndDate: 'contractEndDate',
+      laborInsuranceNo: 'laborInsuranceNo',
+      healthInsuranceNo: 'healthInsuranceNo',
+      laborPensionSupervisionNo: 'laborPensionSupervisionNo',
+    },
+    fieldRefMap: {
+      salesPersonId: salesPersonIdRef,
+      dealerId: dealerIdRef,
+      industryId: industryIdRef,
+      taxId: taxIdRef,
+      nameCht: nameChtRef,
+      nameEng: nameEngRef,
+      shortNameCht: shortNameChtRef,
+      shortNameEng: shortNameEngRef,
+      postalCode: postalCodeRef,
+      address: addressRef,
+      nationality: nationalityRef,
+      contactPerson: contactPersonRef,
+      phone: phoneRef,
+      mobile: mobileRef,
+      email: emailRef,
+      lineId: lineIdRef,
+      contractStartDate: contractStartDateRef,
+      contractEndDate: contractEndDateRef,
+      laborInsuranceNo: laborInsuranceNoRef,
+      healthInsuranceNo: healthInsuranceNoRef,
+      laborPensionSupervisionNo: laborPensionSupervisionNoRef,
+    },
+    fieldOrder: [
+      'salesPersonId',
+      'dealerId',
+      'industryId',
+      'taxId',
+      'nameCht',
+      'nameEng',
+      'shortNameCht',
+      'shortNameEng',
+      'postalCode',
+      'address',
+      'nationality',
+      'contactPerson',
+      'phone',
+      'mobile',
+      'email',
+      'lineId',
+      'contractStartDate',
+      'contractEndDate',
+      'laborInsuranceNo',
+      'healthInsuranceNo',
+      'laborPensionSupervisionNo',
+    ],
   })
-}
-
-/**
- * 處理後端欄位錯誤
- */
-function handleFieldErrors(fieldErrors: FieldError[]) {
-  clearErrors()
-
-  // Ref 對應表（欄位名稱 -> Ref）
-  const fieldRefMap: Record<string, { value: { focus: () => void } | null }> = {
-    salesPersonId: salesPersonIdRef,
-    dealerId: dealerIdRef,
-    industryId: industryIdRef,
-    taxId: taxIdRef,
-    nameCht: nameChtRef,
-    nameEng: nameEngRef,
-    shortNameCht: shortNameChtRef,
-    shortNameEng: shortNameEngRef,
-    postalCode: postalCodeRef,
-    address: addressRef,
-    nationality: nationalityRef,
-    contactPerson: contactPersonRef,
-    phone: phoneRef,
-    mobile: mobileRef,
-    email: emailRef,
-    lineId: lineIdRef,
-    contractStartDate: contractStartDateRef,
-    contractEndDate: contractEndDateRef,
-    laborInsuranceNo: laborInsuranceNoRef,
-    healthInsuranceNo: healthInsuranceNoRef,
-    laborPensionSupervisionNo: laborPensionSupervisionNoRef,
-  }
-
-  // 欄位順序（用於 focus 第一個錯誤欄位）
-  const fieldOrder = [
-    'salesPersonId',
-    'dealerId',
-    'industryId',
-    'taxId',
-    'nameCht',
-    'nameEng',
-    'shortNameCht',
-    'shortNameEng',
-    'postalCode',
-    'address',
-    'nationality',
-    'contactPerson',
-    'phone',
-    'mobile',
-    'email',
-    'lineId',
-    'contractStartDate',
-    'contractEndDate',
-    'laborInsuranceNo',
-    'healthInsuranceNo',
-    'laborPensionSupervisionNo',
-  ]
-
-  // 記錄有錯誤的欄位
-  const fieldsWithErrors = new Set<string>()
-
-  // 設定錯誤訊息
-  fieldErrors.forEach((fieldError) => {
-    const field = fieldError.field as keyof typeof errors
-    if (field in errors) {
-      errors[field] = fieldError.message
-      fieldsWithErrors.add(fieldError.field)
-    }
-  })
-
-  // Focus 到第一個有錯誤的欄位
-  for (const field of fieldOrder) {
-    if (fieldsWithErrors.has(field)) {
-      const refToFocus = fieldRefMap[field]
-      if (refToFocus?.value?.focus) {
-        refToFocus.value.focus()
-      }
-      break
-    }
-  }
 }
 
 /**
@@ -623,7 +616,31 @@ function handleCancel() {
  * 確認儲存
  */
 async function handleConfirm() {
-  clearErrors()
+  // 清空所有錯誤訊息
+  errors.value = {
+    salesPersonId: '',
+    dealerId: '',
+    industryId: '',
+    taxId: '',
+    nameCht: '',
+    nameEng: '',
+    shortNameCht: '',
+    shortNameEng: '',
+    postalCode: '',
+    address: '',
+    nationality: '',
+    contactPerson: '',
+    phone: '',
+    mobile: '',
+    email: '',
+    lineId: '',
+    contractStartDate: '',
+    contractEndDate: '',
+    laborInsuranceNo: '',
+    healthInsuranceNo: '',
+    laborPensionSupervisionNo: '',
+  }
+
   isSubmitting.value = true
 
   try {

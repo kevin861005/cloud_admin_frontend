@@ -118,9 +118,7 @@
  */
 import { ref, computed, watch } from 'vue'
 import BaseDialog from '@/components/dialog/base-dialog.vue'
-import Badge from '@/components/common/badge.vue'
-import Loading from '@/components/common/loading.vue'
-import Alert from '@/components/common/alert.vue'
+import { Badge, Alert, Loading } from '@/components/common'
 import { environmentService } from '@/services/environment.service'
 import type { DockerImage } from '@/types/service'
 

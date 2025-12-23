@@ -98,18 +98,3 @@ const handleClick = () => {
   }
 }
 </script>
-
-<style scoped>
-/**
- * Loading Spinner 動畫
- */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-</style>

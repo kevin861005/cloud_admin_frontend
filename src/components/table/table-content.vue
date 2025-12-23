@@ -156,7 +156,7 @@
                   <a
                     :href="`https://${String(row[column.key])}`"
                     :target="column.linkConfig?.target || '_blank'"
-                    class="link"
+                    class="text-neutral-800 underline cursor-pointer transition-colors"
                     @click.stop
                   >
                     {{ row[column.key] }}
@@ -207,8 +207,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch, computed } from 'vue'
-import Loading from '@/components/common/loading.vue'
-import EmptyState from '@/components/common/empty-state.vue'
+import { Loading, EmptyState } from '@/components/common'
 import type { ColumnConfig, SortState } from '@/types/table'
 import TableTip from '@/components/table/table-tip.vue'
 import CheckboxOnIcon from '@/assets/icons/common/cm-checkbox-on.svg'
@@ -438,3 +437,21 @@ watch(
   },
 )
 </script>
+
+<style scoped>
+/* 表格欄位內的圖示按鈕樣式 */
+.btn-icon-cell {
+  @apply flex flex-1 h-full items-center justify-center cursor-pointer transition-all py-4;
+}
+
+.btn-icon-cell .icon {
+  @apply h-4 w-4;
+  filter: brightness(0) saturate(100%) invert(42%) sepia(9%) saturate(569%) hue-rotate(182deg)
+    brightness(94%) contrast(90%);
+}
+
+.btn-icon-cell:hover .icon {
+  filter: brightness(0) saturate(100%) invert(52%) sepia(52%) saturate(2758%) hue-rotate(196deg)
+    brightness(100%) contrast(96%);
+}
+</style>

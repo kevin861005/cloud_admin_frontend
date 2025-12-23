@@ -3,12 +3,7 @@
   <Teleport to="body">
     <!-- 背景遮罩 -->
     <Transition name="fade">
-      <div
-        v-if="isOpen"
-        class="fixed inset-0 z-[60]"
-        style="background: rgba(0, 0, 0, 0.2)"
-        @click="handleClose"
-      />
+      <div v-if="isOpen" class="fixed inset-0 z-[60] bg-black/20" @click="handleClose" />
     </Transition>
 
     <!-- Drawer 內容 -->
@@ -19,17 +14,11 @@
       >
         <!-- CloseSection: 固定高度 40px，關閉按鈕固定在最右側 -->
         <div class="flex items-center justify-end h-10">
-          <button
-            type="button"
-            class="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer transition-colors hover:bg-gray-100"
-            @click="handleClose"
-          >
-            <img :src="closeIcon" alt="關閉" class="w-4 h-4" />
-          </button>
+          <CloseButton aria-label="關閉對話框" @click="handleClose" />
         </div>
 
         <!-- Contents: 內容區域，佔據剩餘空間 -->
-        <div class="flex-1 overflow-y-auto">
+        <div class="flex flex-1 flex-col gap-3 overflow-y-auto overflow-x-hidden px-5 pb-10">
           <slot />
         </div>
 
@@ -44,7 +33,7 @@
 
 <script setup lang="ts">
 import { watch, onMounted, onUnmounted } from 'vue'
-import closeIcon from '@/assets/icons/common/close-icon.svg'
+import { CloseButton } from '@/components/common'
 
 /**
  * Drawer 元件的 Props

@@ -53,9 +53,7 @@
 <script setup lang="ts">
 import type { SystemLog } from '@/types/customer'
 import SystemIcon from '@/assets/icons/card/system.svg'
-import Badge from '@/components/common/badge.vue'
-import EmptyState from '@/components/common/empty-state.vue'
-import BadgeButton from '@/components/common/badge-button.vue'
+import { Badge, EmptyState, BadgeButton } from '@/components/common'
 
 interface Props {
   /**

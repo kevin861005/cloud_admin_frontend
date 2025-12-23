@@ -60,14 +60,14 @@ interface Props {
    * 主標題
    * @example 'Alan', '客戶資訊'
    */
-  title: string
+  title: string;
 
   /**
    * 副標題（可選）
    * @example 'alan12239', 'customer@example.com'
    */
-  subtitle?: string
+  subtitle?: string;
 }
 
-defineProps<Props>()
+defineProps<Props>();
 </script>

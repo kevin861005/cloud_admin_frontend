@@ -7,7 +7,7 @@
     <Alert v-else-if="error" type="error" title="載入失敗" :description="error" />
 
     <!-- 資料顯示或編輯 -->
-    <div v-else-if="industryDetail" class="drawer">
+    <template v-else-if="industryDetail">
       <!-- 標題區 -->
       <DrawerHeader :title="industryDetail.code" />
 
@@ -82,35 +82,29 @@
         <InfoField label="建立者" :value="createdByText" />
         <InfoField label="建立日" :value="industryDetail.createdDate" />
       </InfoSection>
-    </div>
+    </template>
 
     <!-- Toast 提示（固定在 Drawer 底部） -->
     <DrawerToast
       :is-visible="toast.isVisible"
       :type="toast.type"
       :message="toast.message"
-      @close="handleToastClose"
+      @close="hideToast"
     />
   </Drawer>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import Drawer from '@/components/drawer/drawer.vue'
-import DrawerHeader from '@/components/drawer/drawer-header.vue'
-import DrawerToast from '@/components/drawer/drawer-toast.vue'
-import InfoSection from '@/components/drawer/info-section.vue'
-import InfoField from '@/components/drawer/info-field.vue'
-import Alert from '@/components/common/alert.vue'
-import Loading from '@/components/common/loading.vue'
-import Divider from '@/components/common/divider.vue'
-import FormSection from '@/components/form/form-section.vue'
-import FormInput from '@/components/form/form-input.vue'
-import FormButtonGroup from '@/components/form/form-button-group.vue'
+import { Drawer, DrawerHeader, DrawerToast, InfoSection, InfoField } from '@/components/drawer'
+import { Alert, Divider, Loading } from '@/components/common'
+import { FormSection, FormInput, FormButtonGroup } from '@/components/form'
 import type { IndustryDetailInfo, UpdateIndustryRequest } from '@/types/industry'
 import type { FieldError } from '@/types/common'
 import { industryService } from '@/services/industry.service'
 import { ApiError } from '@/types/common'
+import { useDrawerToast } from '@/composables/useDrawerToast'
+import { processFieldErrors } from '@/utils/form'
 
 /**
  * 使用者詳細資訊 Drawer
@@ -176,15 +170,7 @@ const isEditMode = ref(false)
 const isSubmitting = ref(false)
 
 // ===== Toast 狀態 =====
-
-/**
- * Toast 顯示狀態
- */
-const toast = ref({
-  isVisible: false,
-  type: 'success' as 'success' | 'error',
-  message: '',
-})
+const { toast, showToast, hideToast, resetToast } = useDrawerToast()
 
 // ===== 表單資料 =====
 
@@ -264,24 +250,6 @@ const initFormData = () => {
 }
 
 /**
- * 顯示 Toast 提示
- */
-const showToast = (type: 'success' | 'error', message: string) => {
-  toast.value = {
-    isVisible: true,
-    type,
-    message,
-  }
-}
-
-/**
- * 關閉 Toast
- */
-const handleToastClose = () => {
-  toast.value.isVisible = false
-}
-
-/**
  * 處理關閉 Drawer
  */
 const handleClose = () => {
@@ -290,7 +258,7 @@ const handleClose = () => {
     isEditMode.value = false
   }
   // 關閉 Toast
-  handleToastClose()
+  resetToast()
   emit('close')
 }
 
@@ -322,64 +290,20 @@ const handleCancelEdit = () => {
  * @param fieldErrors - 後端回傳的欄位錯誤列表
  */
 const handleFieldErrors = (fieldErrors: FieldError[]) => {
-  // 清空現有錯誤
-  errors.value = {
-    name: '',
-    sqlFile: '',
-    description: '',
-  }
-
-  // 欄位名稱對應表 (後端 -> 前端)
-  const fieldMap: Record<string, keyof typeof errors.value> = {
-    name: 'name',
-    sqlFile: 'sqlFile',
-    description: 'description',
-  }
-
-  // Ref 對應表 (後端欄位名稱 -> Ref)
-  const fieldRefMap: Record<string, typeof nameInputRef> = {
-    name: nameInputRef,
-    sqlFile: sqlFileInputRef,
-    description: descriptionInputRef,
-  }
-
-  // 記錄哪些欄位有錯誤
-  const fieldsWithErrors = new Set<string>()
-
-  // 遍歷所有欄位錯誤
-  fieldErrors.forEach((fieldError) => {
-    const frontendField = fieldMap[fieldError.field]
-
-    if (frontendField) {
-      // 如果該欄位已經有錯誤訊息，用分號串接
-      if (errors.value[frontendField]) {
-        errors.value[frontendField] += `; ${fieldError.message}`
-      } else {
-        errors.value[frontendField] = fieldError.message
-      }
-
-      // 記錄有錯誤的欄位 (使用後端欄位名稱)
-      fieldsWithErrors.add(fieldError.field)
-    }
+  processFieldErrors(fieldErrors, {
+    errors,
+    fieldMap: {
+      name: 'name',
+      sqlFile: 'sqlFile',
+      description: 'description',
+    },
+    fieldRefMap: {
+      name: nameInputRef,
+      sqlFile: sqlFileInputRef,
+      description: descriptionInputRef,
+    },
+    fieldOrder: ['name', 'sqlFile', 'description'],
   })
-
-  // 根據畫面上的欄位順序，找到第一個有錯誤的欄位並 focus
-  const fieldOrder = ['name', 'sqlFile', 'description']
-
-  for (const field of fieldOrder) {
-    if (fieldsWithErrors.has(field)) {
-      const refToFocus = fieldRefMap[field]
-
-      if (refToFocus?.value?.focus && typeof refToFocus.value.focus === 'function') {
-        try {
-          refToFocus.value.focus()
-        } catch (focusError) {
-          console.error(`focus 到 ${field} 時發生錯誤:`, focusError)
-        }
-      }
-      break // 只 focus 第一個錯誤欄位
-    }
-  }
 }
 
 /**
@@ -465,7 +389,7 @@ watch(
       // 重置編輯模式
       isEditMode.value = false
       // 關閉 Toast
-      handleToastClose()
+      resetToast()
       // 載入資料
       loadIndustryDetail()
     }

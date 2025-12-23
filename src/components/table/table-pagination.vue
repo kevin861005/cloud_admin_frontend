@@ -11,9 +11,12 @@
       <!-- 頁碼控制 -->
       <div class="flex items-center gap-4">
         <!-- 上一頁按鈕 -->
-        <button :disabled="currentPage === 0" class="btn-pagination" @click="handlePreviousPage">
-          <img src="@/assets/icons/common/cm-arrow-left.svg" alt="上一頁" class="icon" />
-        </button>
+        <PaginationButton
+          :icon="PrevIcon"
+          alt="上一頁"
+          :disabled="currentPage === 0"
+          @click="handlePreviousPage"
+        />
 
         <!-- 頁碼資訊 -->
         <span class="typo-sm-medium text-neutral-500">
@@ -21,13 +24,12 @@
         </span>
 
         <!-- 下一頁按鈕 -->
-        <button
+        <PaginationButton
+          :icon="NextIcon"
+          alt="下一頁"
           :disabled="currentPage >= totalPages - 1"
-          class="btn-pagination"
           @click="handleNextPage"
-        >
-          <img src="@/assets/icons/common/cm-arrow-right.svg" alt="下一頁" class="icon" />
-        </button>
+        />
       </div>
 
       <!-- 每頁顯示筆數選擇 -->
@@ -48,6 +50,9 @@
 </template>
 
 <script setup lang="ts">
+import { PaginationButton } from '@/components/common'
+import PrevIcon from '@/assets/icons/common/cm-arrow-left.svg'
+import NextIcon from '@/assets/icons/common/cm-arrow-right.svg'
 /**
  * Table 分頁控制元件
  *

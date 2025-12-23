@@ -24,15 +24,11 @@
         >
           <!-- ========== Close Section ========== -->
           <div class="flex h-10 items-center justify-end">
-            <button
+            <CloseButton
               v-if="showCloseButton && !loading"
-              type="button"
-              class="flex h-10 w-10 items-center justify-center text-neutral-400 transition-colors hover:text-neutral-600"
               aria-label="關閉對話框"
               @click="handleClose"
-            >
-              <img :src="CloseIcon" alt="關閉" class="h-4 w-4" />
-            </button>
+            />
           </div>
 
           <!-- ========== Body ========== -->
@@ -93,7 +89,7 @@
  *   - 有 options 時上方顯示陰影
  */
 import { computed, useId, watch, onUnmounted } from 'vue'
-import CloseIcon from '@/assets/icons/common/cm-close.svg'
+import { CloseButton } from '@/components/common'
 
 // ========== Props 定義 ==========
 interface Props {

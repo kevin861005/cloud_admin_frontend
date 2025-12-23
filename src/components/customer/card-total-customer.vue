@@ -1,5 +1,5 @@
 <template>
-  <customer-card
+  <StatCard
     title="總客戶數"
     :icon="TotalCustomerIcon"
     :value="stats.total"
@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import CustomerCard from '../common/card.vue'
+import { StatCard } from '@/components/common'
 import TotalCustomerIcon from '@/assets/icons/card/card-c-user-total.svg'
 import { customerService } from '@/services/customer.service'
 import { ApiError } from '@/types/common'
@@ -64,5 +64,3 @@ onMounted(() => {
   loadCustomerTotalCount()
 })
 </script>
-
-<style scoped></style>
