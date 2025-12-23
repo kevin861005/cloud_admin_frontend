@@ -88,7 +88,9 @@ export interface CustomerDetailInfo {
   contactPerson: string // 聯絡人姓名
   phone: string // 聯絡電話
   email: string // 聯絡 E-mail
-  canDelete: boolean // 是否可刪除
+  applied: boolean // 是否申請過刪除
+  scheduledDeleteDate: string // 預定刪除日期（例如：2024.12.30），若無則為空白
+  canDelete: boolean // 是否可申請刪除
 
   /** 最新活動記錄（最多顯示 4 筆） */
   activities: ActivityRecord[]

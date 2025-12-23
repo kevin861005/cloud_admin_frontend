@@ -60,17 +60,50 @@
             </button>
           </div>
 
+          <!-- 刪除環境按鈕區塊 -->
+          <!-- 情境 1: applied=false，任何人都顯示「申請環境刪除」 -->
           <button
-            class="inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:text-semantic-warning transition-colors"
-            @click="openDeleteDialog"
+            v-if="!customerInfo.applied"
+            class="group inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:text-primary-500 transition-colors"
+            @click="openApplyDeleteDialog"
           >
             <img
-              :src="TrashIcon"
-              alt="刪除環境"
-              class="icon-neutral icon-neutral-hover-warning h-4 w-4"
+              :src="AppliedIcon"
+              alt="申請環境刪除"
+              class="icon-neutral icon-neutral-hover-primary h-4 w-4"
             />
-            <span>刪除環境</span>
+            <span>申請環境刪除</span>
           </button>
+
+          <!-- 情境 2: applied=true 且是管理者 -->
+          <template v-else-if="authStore.isAdmin">
+            <!-- 2-1: canDelete=true，可點擊的刪除環境按鈕 -->
+            <button
+              v-if="customerInfo.canDelete"
+              class="group inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:text-semantic-warning transition-colors"
+              @click="openDeleteDialog"
+            >
+              <img
+                :src="TrashIcon"
+                alt="刪除環境"
+                class="icon-neutral icon-neutral-hover-warning h-4 w-4"
+              />
+              <span>刪除環境</span>
+            </button>
+
+            <!-- 2-2: canDelete=false，disabled 的刪除環境按鈕 -->
+            <Tooltip v-else :text="`${customerInfo.scheduledDeleteDate} 可刪除`" position="bottom">
+              <button
+                class="inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-400 cursor-not-allowed"
+                disabled
+              >
+                <img :src="TrashIcon" alt="刪除環境" class="h-4 w-4 opacity-50" />
+                <span>刪除環境</span>
+              </button>
+            </Tooltip>
+          </template>
+
+          <!-- 情境 3: applied=true 且非管理者，不顯示任何按鈕 -->
         </div>
 
         <CardContainer :use-padding-top="true" :padding-top="20" :gap="12">
@@ -132,6 +165,13 @@
     v-model="showDeleteDialog"
     :customer-no="customerId"
   />
+
+  <!-- 申請環境刪除 Dialog -->
+  <ApplyDeleteDialog
+    v-model="showApplyDeleteDialog"
+    :customer-nos="[customerId]"
+    @success="handleApplyDeleteSuccess"
+  />
 </template>
 
 <script setup lang="ts">
@@ -154,8 +194,11 @@ import CardNGINX from '@/components/customer/detail/card-nginx.vue'
 import CardSystemRecords from '@/components/customer/detail/card-system-records.vue'
 import CardEfficacyMonitor from '@/components/customer/detail/card-efficacy-monitor.vue'
 import DeleteEnvironmentDialog from '@/components/environment/dialog-delete-environment.vue'
+import ApplyDeleteDialog from '@/components/customer/dialog-apply-delete.vue'
+import Tooltip from '@/components/common/tooltip.vue'
 import TrashIcon from '@/assets/icons/common/cm-trash.svg'
 import ArrowDownIcon from '@/assets/icons/common/cm-arrow-down.svg'
+import AppliedIcon from '@/assets/icons/card/card-e-applied.svg'
 import ArrowUpIcon from '@/assets/icons/common/cm-arrow-up.svg'
 import type { DockerServiceInfo } from '@/types/service'
 
@@ -189,6 +232,9 @@ const error = ref<string | null>(null)
  * 是否顯示刪除確認 Dialog
  */
 const showDeleteDialog = ref(false)
+
+/** 申請環境刪除 Dialog 顯示狀態 */
+const showApplyDeleteDialog = ref(false)
 
 /**
  * 客戶編號（從路由取得）
@@ -275,10 +321,20 @@ function handleDockerUpdateImageError(message: string) {
   console.error('Docker 更新映像失敗:', message)
 }
 
+/** 申請環境刪除成功後的處理 */
+function handleApplyDeleteSuccess() {
+  // 重新載入客戶詳細資料
+  loadCustomerDetail()
+}
+
 /**
  * 開啟刪除確認 Dialog
  */
 function openDeleteDialog() {
   showDeleteDialog.value = true
+}
+
+function openApplyDeleteDialog() {
+  showApplyDeleteDialog.value = true
 }
 </script>

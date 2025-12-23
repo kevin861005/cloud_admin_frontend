@@ -1,6 +1,6 @@
 <template>
   <!-- 只有傳入按鈕文字時才顯示 -->
-  <div v-if="buttonText" class="absolute left-5 right-5 bottom-5">
+  <div v-if="buttonText" class="px-5 pb-5 pt-3">
     <button
       type="button"
       class="flex h-9 w-full items-center justify-center rounded border typo-sm-bold transition-all"

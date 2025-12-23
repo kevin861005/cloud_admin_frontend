@@ -111,13 +111,15 @@
     />
 
     <!-- Button（固定在底部） -->
-    <DrawerButton
-      v-if="showDeleteButton"
-      :button-text="buttonText"
-      button-type="error"
-      :loading="isDeleting"
-      @click="handleOpenDeleteDialog"
-    />
+    <template #footer>
+      <DrawerButton
+        v-if="showDeleteButton"
+        :button-text="buttonText"
+        button-type="error"
+        :loading="isDeleting"
+        @click="handleOpenDeleteDialog"
+      />
+    </template>
   </Drawer>
 
   <!-- 刪除確認 Dialog -->

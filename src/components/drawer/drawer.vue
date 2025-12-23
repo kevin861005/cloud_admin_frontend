@@ -32,6 +32,11 @@
         <div class="flex-1 overflow-y-auto">
           <slot />
         </div>
+
+        <!-- Footer: 固定在底部的按鈕區域 -->
+        <div v-if="$slots.footer" class="flex-shrink-0">
+          <slot name="footer" />
+        </div>
       </div>
     </Transition>
   </Teleport>

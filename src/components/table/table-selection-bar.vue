@@ -12,7 +12,7 @@
 
       <!-- 批量操作按鈕 -->
       <template v-for="action in batchActions" :key="action.key">
-        <!-- 通知寄送狀態按鈕 -->
+        <!-- 申請環境刪除按鈕 -->
         <button
           v-if="action.type === 'applied'"
           class="flex h-8 items-center gap-1 rounded bg-neutral-50 px-2.5 py-1.5 typo-sm-medium text-primary-500 hover:bg-neutral-200"

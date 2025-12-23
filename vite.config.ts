@@ -46,7 +46,7 @@ export default defineConfig({
     proxy: {
       // API 請求代理到後端
       '/cloudadmin/api': {
-        // target: 'http://192.168.3.54:8080',  // roy
+        // target: 'http://192.168.3.54:8080', // roy
         target: 'http://192.168.3.28:8080',
         changeOrigin: true,
         secure: false,
