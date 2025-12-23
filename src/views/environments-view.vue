@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div>
     <PageTitle title="環境管理" subtitle="刪除作業" />
 
     <CardContainer>

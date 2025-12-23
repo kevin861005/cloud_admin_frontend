@@ -98,7 +98,7 @@
             :key="rowIndex"
             :class="[
               'last:border-b last:border-gray-200 transition-colors',
-              isRowSelected(row) ? 'bg-blue-50 hover:bg-blue-100' : 'hover-bg',
+              isRowSelected(row) ? 'bg-primary-50 hover:bg-primary-100' : 'hover-bg',
               enableRowClick && 'cursor-pointer', // 啟用整列點擊時顯示手指游標
             ]"
             @click="handleRowClick(row)"
@@ -166,7 +166,7 @@
 
               <!-- Actions 操作按鈕 -->
               <template v-else-if="column.customRender === 'actions'">
-                <div class="inline-flex items-center gap-3" @click.stop>
+                <div class="flex items-center justify-center gap-3 w-full h-full" @click.stop>
                   <!-- 編輯按鈕 -->
                   <button
                     v-if="showEditButton"

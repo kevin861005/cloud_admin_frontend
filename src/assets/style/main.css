@@ -196,11 +196,10 @@
       brightness(100%) contrast(96%);
   }
 
-  /* 圖示預設顏色（neutral-400: #9CA3AF） */
-  .icon-neutral-light {
-    @apply transition-all duration-200;
-    filter: brightness(0) saturate(100%) invert(70%) sepia(5%) saturate(500%) hue-rotate(180deg)
-      brightness(95%);
+  /* 搭配 group 使用：hover 時變成 semantic-warning (#FD5858) */
+  .group:hover .icon-neutral-hover-warning {
+    filter: brightness(0) saturate(100%) invert(48%) sepia(95%) saturate(2467%) hue-rotate(331deg)
+      brightness(101%) contrast(98%);
   }
 
   /* 圖示 disabled 狀態（降低透明度） */

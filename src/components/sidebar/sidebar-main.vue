@@ -106,8 +106,11 @@ function filterMenuByPermissions(menuItems: MenuItem[], permissions: string[]): 
         // 先過濾子選單
         const filteredChildren = filterMenuByPermissions(item.children, permissions)
 
-        // 如果沒有任何子選單有權限，則不顯示整個群組
-        if (filteredChildren.length === 0) {
+        // 檢查是否有任何「非 divider」的子選單項目
+        // 如果只剩下 divider，則不顯示整個群組
+        const hasVisibleChildren = filteredChildren.some((child) => child.type !== 'divider')
+
+        if (!hasVisibleChildren) {
           return null
         }
 

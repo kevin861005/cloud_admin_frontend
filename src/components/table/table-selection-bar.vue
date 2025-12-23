@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="visible"
-    class="flex h-14 items-center justify-between rounded-lg border border-[#E4E6EA] bg-[#F9FAFB] px-5 py-3"
+    class="flex h-14 items-center justify-between rounded-lg border border-[#E4E6EA] bg-neutral-50 px-5 py-3"
   >
     <!-- 左側：已選擇項目數 + 批量操作按鈕 -->
     <div class="flex items-center gap-3">
@@ -15,7 +15,7 @@
         <!-- 通知寄送狀態按鈕 -->
         <button
           v-if="action.type === 'applied'"
-          class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 typo-sm-medium text-primary-500 hover:bg-neutral-200"
+          class="flex h-8 items-center gap-1 rounded bg-neutral-50 px-2.5 py-1.5 typo-sm-medium text-primary-500 hover:bg-neutral-200"
           @click="handleBatchAction(action)"
         >
           <img :src="AppliedIcon" alt="" class="h-4 w-4 icon-primary" />
@@ -25,7 +25,7 @@
         <!-- 環境刪除按鈕 -->
         <button
           v-if="action.type === 'delete'"
-          class="flex h-8 items-center gap-1 rounded bg-white px-2.5 py-1.5 typo-sm-medium text-semantic-warning hover:bg-neutral-200"
+          class="flex h-8 items-center gap-1 rounded bg-neutral-50 px-2.5 py-1.5 typo-sm-medium text-semantic-warning hover:bg-neutral-200"
           @click="handleBatchAction(action)"
         >
           <img :src="DeleteIcon" alt="" class="h-4 w-4" />

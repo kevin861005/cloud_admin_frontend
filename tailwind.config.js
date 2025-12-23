@@ -27,6 +27,8 @@ export const theme = {
         900: '#111827',
       },
       primary: {
+        50: '#EFF6FF',
+        100: '#DBEAFE',
         500: '#398FF9',
       },
       semantic: {

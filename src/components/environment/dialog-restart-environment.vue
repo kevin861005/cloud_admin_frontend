@@ -2,7 +2,7 @@
   <BaseDialog
     v-model="isVisible"
     title="重啟環境"
-    :subtitle="`是否重啟「${customerName}」的環境嗎？`"
+    :subtitle="`是否重啟「${customerName}」的環境？`"
     :close-on-overlay="true"
   >
     <!-- 說明文字 -->

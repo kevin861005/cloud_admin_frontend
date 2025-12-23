@@ -142,7 +142,7 @@ const columns = ref<ColumnConfig[]>([
     key: 'actions',
     label: '操作',
     width: '120px',
-    align: 'right',
+    align: 'center',
     customRender: 'actions',
   },
 ])

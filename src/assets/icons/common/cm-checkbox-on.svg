@@ -1,22 +1,8 @@
-<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g filter="url(#filter0_d_896_6292)">
-<mask id="path-1-inside-1_896_6292" fill="white">
-<path d="M2 5C2 2.79086 3.79086 1 6 1H14C16.2091 1 18 2.79086 18 5V13C18 15.2091 16.2091 17 14 17H6C3.79086 17 2 15.2091 2 13V5Z"/>
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="path-1-inside-1_1179_9034" fill="white">
+<path d="M0 4C0 1.79086 1.79086 0 4 0H12C14.2091 0 16 1.79086 16 4V12C16 14.2091 14.2091 16 12 16H4C1.79086 16 0 14.2091 0 12V4Z"/>
 </mask>
-<path d="M2 5C2 2.79086 3.79086 1 6 1H14C16.2091 1 18 2.79086 18 5V13C18 15.2091 16.2091 17 14 17H6C3.79086 17 2 15.2091 2 13V5Z" fill="#398FF9" shape-rendering="crispEdges"/>
-<path d="M6 1V2H14V1V0H6V1ZM18 5H17V13H18H19V5H18ZM14 17V16H6V17V18H14V17ZM2 13H3V5H2H1V13H2ZM6 17V16C4.34315 16 3 14.6569 3 13H2H1C1 15.7614 3.23858 18 6 18V17ZM18 13H17C17 14.6569 15.6569 16 14 16V17V18C16.7614 18 19 15.7614 19 13H18ZM14 1V2C15.6569 2 17 3.34315 17 5H18H19C19 2.23858 16.7614 0 14 0V1ZM6 1V0C3.23858 0 1 2.23858 1 5H2H3C3 3.34315 4.34315 2 6 2V1Z" fill="#398FF9" mask="url(#path-1-inside-1_896_6292)"/>
-<path d="M14.6666 5.5L8.24992 11.9167L5.33325 9" stroke="white" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
-<defs>
-<filter id="filter0_d_896_6292" x="0" y="0" width="20" height="20" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="1"/>
-<feGaussianBlur stdDeviation="1"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_896_6292"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_896_6292" result="shape"/>
-</filter>
-</defs>
+<path d="M0 4C0 1.79086 1.79086 0 4 0H12C14.2091 0 16 1.79086 16 4V12C16 14.2091 14.2091 16 12 16H4C1.79086 16 0 14.2091 0 12V4Z" fill="#398FF9"/>
+<path d="M4 0V1H12V0V-1H4V0ZM16 4H15V12H16H17V4H16ZM12 16V15H4V16V17H12V16ZM0 12H1V4H0H-1V12H0ZM4 16V15C2.34315 15 1 13.6569 1 12H0H-1C-1 14.7614 1.23858 17 4 17V16ZM16 12H15C15 13.6569 13.6569 15 12 15V16V17C14.7614 17 17 14.7614 17 12H16ZM12 0V1C13.6569 1 15 2.34315 15 4H16H17C17 1.23858 14.7614 -1 12 -1V0ZM4 0V-1C1.23858 -1 -1 1.23858 -1 4H0H1C1 2.34315 2.34315 1 4 1V0Z" fill="#398FF9" mask="url(#path-1-inside-1_1179_9034)"/>
+<path d="M12.6666 4.5L6.24992 10.9167L3.33325 8" stroke="white" stroke-width="1.16667" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

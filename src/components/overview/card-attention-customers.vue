@@ -18,14 +18,20 @@
     :error="errorMessage"
     empty-title="目前沒有需要關注的客戶"
     empty-description="暫時沒有 4-7 天內使用的客戶"
+    @row-click="handleRowClick"
   />
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import CardList from '@/components/overview/card-list.vue'
 import { overviewService } from '@/services/overview.service'
 import type { AttentionCustomer, CardListColumn } from '@/types/overview'
+
+// ==================== Router ====================
+
+const router = useRouter()
 
 // ==================== 狀態管理 ====================
 
@@ -93,6 +99,15 @@ async function loadAttentionCustomers() {
   } finally {
     isLoading.value = false
   }
+}
+
+// ==================== 事件處理 ====================
+
+/**
+ * 處理行點擊事件，跳轉到客戶詳細頁面
+ */
+function handleRowClick(item: AttentionCustomer) {
+  router.push(`/customers/${item.id}/detail`)
 }
 
 // ==================== Lifecycle ====================

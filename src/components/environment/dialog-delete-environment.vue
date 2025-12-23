@@ -1,8 +1,8 @@
 <template>
   <!-- 刪除確認 Dialog -->
-  <BaseDialog v-model="isVisible" title="刪除環境" subtitle="請確認是否要刪除此環境">
+  <BaseDialog v-model="isVisible" title="刪除環境" subtitle="已選擇1個客戶，是否刪除？">
     <!-- 說明文字 -->
-    <p class="typo-sm-bold text-semantic-warning">此操作無法復原</p>
+    <p class="typo-sm-bold text-semantic-warning">此操作無法復原，請再次確認</p>
 
     <!-- 按鈕區域 -->
     <template #footer>

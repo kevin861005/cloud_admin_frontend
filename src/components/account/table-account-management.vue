@@ -170,7 +170,7 @@ const columns = ref<ColumnConfig[]>([
     key: 'actions',
     label: '操作',
     width: '15%',
-    align: 'right',
+    align: 'center',
     customRender: 'actions',
   },
 ])

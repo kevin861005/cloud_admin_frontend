@@ -61,13 +61,13 @@
           </div>
 
           <button
-            class="group inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:text-primary-500 transition-colors"
+            class="inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:text-semantic-warning transition-colors"
             @click="openDeleteDialog"
           >
             <img
               :src="TrashIcon"
               alt="刪除環境"
-              class="icon-neutral icon-neutral-hover-primary h-4 w-4"
+              class="icon-neutral icon-neutral-hover-warning h-4 w-4"
             />
             <span>刪除環境</span>
           </button>

@@ -83,7 +83,8 @@
             <div
               v-for="(item, index) in paginatedData"
               :key="index"
-              class="flex items-center gap-5 py-1 rounded hover-bg"
+              class="flex items-center gap-5 py-1 rounded hover-bg cursor-pointer"
+              @click="emit('rowClick', item)"
             >
               <div
                 v-for="column in columns"
@@ -175,6 +176,13 @@ const props = withDefaults(defineProps<Props>(), {
   emptyTitle: '目前沒有資料',
   emptyDescription: '暫時沒有可顯示的內容',
 })
+
+// ==================== Emits ====================
+
+const emit = defineEmits<{
+  /** 行點擊事件 */
+  rowClick: [item: T]
+}>()
 
 // ==================== 狀態管理 ====================
 
