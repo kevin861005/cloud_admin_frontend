@@ -24,6 +24,7 @@ export const userService = {
    * GET /api/users/me
    */
   async getCurrentUserInfo(): Promise<UserInfo> {
+    console.trace("getCurrentUserInfo 被呼叫");
     const response = await apiClient.get<ApiResponse<UserInfo | null>>("/users/me");
 
     if (!response.data.success || !response.data.data) {

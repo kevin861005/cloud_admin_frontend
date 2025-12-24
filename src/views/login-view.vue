@@ -31,7 +31,7 @@
             <h1 class="text-[32px] font-bold text-white min-[376px]:text-[40px] lg:text-[48px]">
               Welcome
             </h1>
-            <p class="text-base font-medium text-white min-[376px]:text-lg lg:text-xl">
+            <p class="typo-base-medium text-white min-[376px]:text-lg lg:text-xl">
               英特內軟體內部環境管理系統
             </p>
           </div>
@@ -56,7 +56,7 @@
             <div class="mb-5 flex flex-col gap-1">
               <p class="text-base font-normal text-neutral-900">
                 歡迎使用
-                <span class="font-bold text-blue-500">環境管理系統</span>
+                <span class="font-bold text-primary-500">環境管理系統</span>
               </p>
               <h2
                 class="text-[28px] font-bold leading-tight text-neutral-900 min-[376px]:text-[32px]"
@@ -78,19 +78,16 @@
                     autocomplete="username"
                     :disabled="isLoading || isSubmitting"
                     :class="[
-                      'w-full rounded-md border px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-1',
-                      formErrors.loginId || authStore.errorMessage
-                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                        : 'border-neutral-200 focus:border-blue-500 focus:ring-blue-500',
+                      'w-full rounded-md border px-3 py-2 text-sm transition-colors focus:outline-none',
+                      formErrors.loginId
+                        ? 'border-semantic-warning focus:border-semantic-warning'
+                        : 'border-neutral-200 focus:border-primary-500',
                     ]"
                     placeholder="請輸入帳號"
                   />
-                  <!-- 錯誤訊息 -->
-                  <p
-                    v-if="formErrors.loginId || authStore.errorMessage"
-                    class="text-xs font-bold text-red-500"
-                  >
-                    {{ formErrors.loginId || "輸入錯誤，請再試一次" }}
+                  <!-- 帳號專屬錯誤（只顯示「請輸入帳號」） -->
+                  <p v-if="formErrors.loginId" class="typo-xs-bold text-semantic-warning">
+                    {{ formErrors.loginId }}
                   </p>
                 </div>
 
@@ -99,16 +96,17 @@
                   <label for="password" class="text-base text-neutral-800">密碼</label>
                   <div class="relative">
                     <input
+                      ref="passwordInputRef"
                       id="password"
                       v-model="form.password"
                       :type="showPassword ? 'text' : 'password'"
                       autocomplete="current-password"
                       :disabled="isLoading || isSubmitting"
                       :class="[
-                        'w-full rounded-md border px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-1',
-                        formErrors.password
-                          ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                          : 'border-neutral-200 focus:border-blue-500 focus:ring-blue-500',
+                        'w-full rounded-md border px-3 py-2 text-sm transition-colors focus:outline-none',
+                        formErrors.password || authStore.errorMessage || sessionExpired
+                          ? 'border-semantic-warning focus:border-semantic-warning'
+                          : 'border-neutral-200 focus:border-primary-500',
                       ]"
                       placeholder="請輸入密碼"
                     />
@@ -121,21 +119,28 @@
                     >
                       <img
                         v-if="showPassword"
-                        src="@/assets/icons/login/show.svg"
+                        src="@/assets/icons/common/cm-eye-show.svg"
                         alt="顯示密碼"
                         class="h-5 w-5"
                       />
                       <img
                         v-else
-                        src="@/assets/icons/login/hide.svg"
+                        src="@/assets/icons/common/cm-eye-hide.svg"
                         alt="隱藏密碼"
                         class="h-5 w-5"
                       />
                     </button>
                   </div>
-                  <!-- 錯誤訊息 -->
-                  <p v-if="formErrors.password" class="text-xs font-bold text-red-500">
-                    {{ formErrors.password }}
+                  <!-- 錯誤訊息（密碼驗證 + 後端錯誤 + 登入失效都顯示在這） -->
+                  <p
+                    v-if="formErrors.password || authStore.errorMessage || sessionExpired"
+                    class="typo-xs-bold text-semantic-warning"
+                  >
+                    {{
+                      formErrors.password ||
+                      authStore.errorMessage ||
+                      (sessionExpired ? "您的登入已失效，請重新登入" : "")
+                    }}
                   </p>
                 </div>
               </div>
@@ -145,9 +150,9 @@
                 type="submit"
                 :disabled="!isFormValid || isLoading || isSubmitting"
                 :class="[
-                  'mt-4 w-full rounded-lg py-3 text-base font-medium transition-colors',
+                  'typo-base-medium mt-4 w-full rounded-lg py-3 transition-colors',
                   isFormValid && !isLoading && !isSubmitting
-                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                    ? 'bg-primary-500 text-white hover:bg-blue-600'
                     : 'cursor-not-allowed bg-neutral-200 text-neutral-400',
                 ]"
               >
@@ -187,12 +192,13 @@
 /**
  * 登入頁面
  */
-import { ref, computed, nextTick } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, nextTick, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
 
 // === Composables ===
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 
 // === State ===
@@ -223,6 +229,11 @@ const showPassword = ref(false);
  */
 const isSubmitting = ref(false);
 
+/**
+ * 密碼輸入框 ref
+ */
+const passwordInputRef = ref<HTMLInputElement | null>(null);
+
 // === Computed ===
 
 /**
@@ -249,6 +260,11 @@ const isLoading = computed(() => {
 
   return false;
 });
+
+/**
+ * 登入已失效（從 URL 參數讀取）
+ */
+const sessionExpired = ref(false);
 
 // === Methods ===
 
@@ -288,6 +304,8 @@ async function handleLogin(): Promise<void> {
     return;
   }
 
+  let shouldFocusPassword = false;
+
   try {
     isSubmitting.value = true;
 
@@ -299,11 +317,22 @@ async function handleLogin(): Promise<void> {
     if (success) {
       await nextTick();
       await router.replace("/overview");
+    } else {
+      // 登入失敗，標記需要 focus
+      shouldFocusPassword = true;
     }
   } catch (error) {
     console.error("登入錯誤:", error);
+    // 發生錯誤，標記需要 focus
+    shouldFocusPassword = true;
   } finally {
     isSubmitting.value = false;
+  }
+
+  // 在 isSubmitting 設為 false 後再 focus
+  if (shouldFocusPassword) {
+    await nextTick();
+    passwordInputRef.value?.focus();
   }
 }
 
@@ -313,4 +342,28 @@ async function handleLogin(): Promise<void> {
 function togglePasswordVisibility(): void {
   showPassword.value = !showPassword.value;
 }
+
+/**
+ * 檢查 URL 參數並設定對應狀態
+ */
+function checkUrlReason(): void {
+  const warning = route.query.warning as string | undefined;
+
+  if (warning) {
+    sessionExpired.value = true;
+
+    // 清除 URL 參數（避免重新整理時再次顯示）
+    router.replace({ path: route.path, query: {} });
+
+    // focus 到密碼欄位
+    nextTick(() => {
+      passwordInputRef.value?.focus();
+    });
+  }
+}
+
+// === Lifecycle ===
+onMounted(() => {
+  checkUrlReason();
+});
 </script>

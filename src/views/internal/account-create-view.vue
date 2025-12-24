@@ -8,7 +8,7 @@
       <!-- 填寫資料區域 -->
       <div class="flex w-full flex-col gap-3 rounded-xl bg-white px-5 py-6 shadow-md">
         <!-- 1. 帳號資訊區塊 -->
-        <FormSection title="帳號資訊" subtitle="*帳號建立後無法修改">
+        <FormSection title="帳號資訊" subtitle="*帳號建立後無法修改" :width="560">
           <FormInput
             ref="loginIdInputRef"
             v-model="formData.loginId"
@@ -40,7 +40,7 @@
         <Divider />
 
         <!-- 2. 個人資訊區塊 -->
-        <FormSection title="個人資訊">
+        <FormSection title="個人資訊" :width="560">
           <FormInput
             ref="nameInputRef"
             v-model="formData.name"
@@ -63,6 +63,7 @@
         <!-- 3. 按鈕群組 -->
         <FormButtonGroup
           confirm-text="送出"
+          :width="560"
           :disabled="isSubmitting"
           @cancel="handleCancel"
           @confirm="handleConfirm"

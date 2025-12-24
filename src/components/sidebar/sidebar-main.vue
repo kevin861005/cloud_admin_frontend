@@ -47,10 +47,9 @@
  * 3. 處理選單項目點擊事件並執行路由跳轉
  */
 
-import { ref, computed, onMounted } from "vue";
+import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth.store";
-import { userService } from "@/services/user.service";
 import { menuConfig } from "@/config/menu.config";
 import { Alert, Loading } from "@/components/common";
 import SidebarMenuItem from "./sidebar-menuitem.vue";
@@ -63,18 +62,28 @@ const router = useRouter();
 // ==================== Stores ====================
 const authStore = useAuthStore();
 
-// ==================== State ====================
-
-/** 使用者的權限清單 */
-const userPermissions = ref<string[]>([]);
-
-/** 載入狀態 */
-const isLoading = ref(false);
-
-/** 錯誤訊息 */
-const error = ref<string | null>(null);
-
 // ==================== Computed ====================
+
+/**
+ * 從 authStore 取得使用者權限（不再額外呼叫 API）
+ */
+const userPermissions = computed(() => authStore.userInfo?.permissions || []);
+
+/**
+ * 載入狀態（使用 authStore 的狀態）
+ */
+const isLoading = computed(() => authStore.loading);
+
+/**
+ * 錯誤訊息
+ */
+const error = computed(() => {
+  // 如果已登入但沒有權限資料，顯示錯誤
+  if (authStore.isAuthenticated && !authStore.userInfo) {
+    return "無法載入選單，請重新整理頁面";
+  }
+  return null;
+});
 
 /**
  * 根據使用者權限過濾後的選單
@@ -178,42 +187,4 @@ function handleMenuClick(key: string) {
 
   console.log(`選單項目被點擊: ${key}，跳轉到: ${routePath}`);
 }
-
-/**
- * 取得使用者權限
- */
-async function fetchUserPermissions() {
-  // 如果未登入，不執行
-  if (!authStore.isAuthenticated) {
-    error.value = "使用者未登入";
-    return;
-  }
-
-  isLoading.value = true;
-  error.value = null;
-
-  try {
-    // 直接拿回 UserInfo，若失敗會丟 ApiError
-    const userInfo = await userService.getCurrentUserInfo();
-
-    // 儲存權限清單
-    userPermissions.value = userInfo.permissions;
-
-    console.log("使用者權限:", userInfo.permissions);
-  } catch (err) {
-    console.error("取得使用者權限失敗:", err);
-    error.value = "無法載入選單，請重新整理頁面";
-  } finally {
-    isLoading.value = false;
-  }
-}
-
-// ==================== Lifecycle ====================
-
-/**
- * 元件掛載時取得使用者權限
- */
-onMounted(() => {
-  fetchUserPermissions();
-});
 </script>

@@ -5,8 +5,16 @@
     <input
       v-model="localValue"
       type="text"
+      name="table-search"
+      autocomplete="off"
       :placeholder="placeholder"
-      class="typo-sm h-8 w-full rounded-md border border-neutral-200 px-3 py-1 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none"
+      :disabled="disabled"
+      :class="[
+        'typo-sm h-8 w-full rounded-md border px-3 py-1 placeholder:text-neutral-400 focus:outline-none',
+        disabled
+          ? 'cursor-not-allowed border-neutral-100 bg-neutral-50 text-neutral-400'
+          : 'border-neutral-200 bg-white focus:border-primary-500',
+      ]"
       @input="handleInput"
     />
 
@@ -14,7 +22,7 @@
     <img
       :src="searchIcon"
       alt="搜尋"
-      class="pointer-events-none absolute right-3 h-5 w-5 text-neutral-400"
+      :class="['pointer-events-none absolute right-3 h-5 w-5', disabled ? 'opacity-40' : '']"
     />
   </div>
 </template>
@@ -30,11 +38,13 @@ import searchIcon from "@/assets/icons/table/search.svg";
  * 1. 即時搜尋（debounce 500ms）
  * 2. 搜尋圖示顯示在右側
  * 3. 支援 v-model 雙向綁定
+ * 4. 支援 disabled 狀態
  *
  * 使用範例：
  * <table-search
  *   v-model="searchKeyword"
  *   placeholder="搜尋客戶名稱、Email..."
+ *   :disabled="isDrawerOpen"
  * />
  */
 
@@ -42,10 +52,12 @@ import searchIcon from "@/assets/icons/table/search.svg";
 interface Props {
   modelValue: string; // 搜尋關鍵字
   placeholder?: string; // 提示文字
+  disabled?: boolean; // 是否停用
 }
 
 const props = withDefaults(defineProps<Props>(), {
   placeholder: "搜尋...",
+  disabled: false,
 });
 
 // ===== Emits 定義 =====

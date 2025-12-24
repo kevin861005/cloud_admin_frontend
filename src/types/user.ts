@@ -72,6 +72,8 @@ export interface UserDetailInfo {
 export interface UpdateUserRequest {
   /** 使用者姓名 */
   name: string;
+  /** 新密碼 */
+  password?: string | null;
   /** Email */
   email: string;
   /** 角色 ID 列表 */

@@ -21,6 +21,7 @@
       :show-checkbox="false"
       :show-border="false"
       :loading="isLoading"
+      :search-disabled="searchDisabled"
       empty-text="目前沒有帳號資料"
       @row-view="handleView"
       @add-click="handleAdd"
@@ -58,6 +59,15 @@ import { useAuthStore } from "@/stores/auth.store";
 import type { UserListItem } from "@/types/user";
 import type { ColumnConfig } from "@/types/table";
 import { formatDateDot } from "@/utils/time";
+
+// ===== Props 定義 =====
+interface Props {
+  searchDisabled?: boolean; // 搜尋框是否停用
+}
+
+withDefaults(defineProps<Props>(), {
+  searchDisabled: false,
+});
 
 // ===== Emits 定義 =====
 const emit = defineEmits<{

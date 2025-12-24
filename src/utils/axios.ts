@@ -56,10 +56,18 @@ function onTokenRefreshed(token: string) {
 
 /**
  * 清除登入狀態並跳轉到登入頁
+ *
+ * @param showSessionExpiredMessage - 是否顯示登入失效提示訊息
  */
-function clearAuthAndRedirect() {
+function clearAuthAndRedirect(showSessionExpiredMessage?: boolean) {
   localStorage.removeItem("accessToken");
-  window.location.href = "/cloudadmin/login";
+
+  // 根據參數決定跳轉 URL
+  const loginUrl = showSessionExpiredMessage
+    ? "/cloudadmin/login?warning=您的登入已失效，請重新登入"
+    : "/cloudadmin/login";
+
+  window.location.href = loginUrl;
 }
 
 /**
@@ -98,7 +106,14 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       // 避免無限循環：刷新 Token API 本身失敗時不再重試
       if (originalRequest.url?.includes("/auth/refresh")) {
-        clearAuthAndRedirect();
+        const errorCode = error.response?.data?.code;
+
+        if (errorCode === "AUTH_008" || errorCode === "AUTH_009") {
+          clearAuthAndRedirect(true);
+        } else {
+          clearAuthAndRedirect();
+        }
+
         return Promise.reject(error);
       }
 
@@ -131,7 +146,17 @@ apiClient.interceptors.response.use(
           }
         } catch (refreshError) {
           // Token 刷新失敗，清除登入狀態並跳轉到登入頁
-          clearAuthAndRedirect();
+          // 判斷是否為 AUTH_009（Refresh Token 已被撤銷）
+          const axiosError = refreshError as AxiosError<ApiResponse<null>>;
+          const errorCode = axiosError.response?.data?.code;
+
+          if (errorCode === "AUTH_008" || errorCode === "AUTH_009") {
+            // 密碼被修改或帳號被停用，顯示提示訊息
+            clearAuthAndRedirect(true);
+          } else {
+            clearAuthAndRedirect();
+          }
+
           return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;

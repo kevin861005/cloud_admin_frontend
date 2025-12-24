@@ -23,6 +23,7 @@
               v-if="showSearch"
               v-model="searchKeyword"
               :placeholder="searchPlaceholder"
+              :disabled="searchDisabled"
             />
           </div>
 
@@ -128,6 +129,7 @@ interface Props {
   enableRowClick?: boolean; // 是否啟用整列點擊（預設 false）
   isCheckboxDisabled?: (row: Record<string, unknown>) => boolean; // 判斷 checkbox 是否 disabled 的函數
   checkboxDisabledTooltip?: string | ((row: Record<string, unknown>) => string); // checkbox disabled 時的提示文字
+  searchDisabled?: boolean; // 搜尋框是否停用
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -150,6 +152,7 @@ const props = withDefaults(defineProps<Props>(), {
   enableRowClick: false, // 預設不啟用整列點擊
   isCheckboxDisabled: undefined,
   checkboxDisabledTooltip: "",
+  searchDisabled: false,
 });
 
 // ===== Emits 定義 =====

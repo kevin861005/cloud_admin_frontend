@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col" :style="{ width: `${width}px` }">
+  <div class="flex min-w-0 flex-col" :style="width ? { width: `${width}px` } : {}">
     <!-- 標題區域（主標題 + 副標題） -->
     <div class="flex flex-col">
       <!-- 主標題 -->
@@ -34,18 +34,14 @@ interface Props {
   /** 區塊副標題（選填，不傳則不顯示） */
   subtitle?: string;
 
-  /** 區塊寬度 */
+  /** 區塊寬度（選填，不傳則自適應容器寬度） */
   width?: number;
-
-  /** 區塊高度 */
-  height?: number;
 
   /** 內容區域的元素間距 */
   gap?: number;
 }
 
 withDefaults(defineProps<Props>(), {
-  width: 560,
   gap: 8,
 });
 </script>

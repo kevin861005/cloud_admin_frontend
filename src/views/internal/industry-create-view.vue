@@ -5,7 +5,7 @@
   <div class="flex gap-5 px-10">
     <!-- 填寫資料區域 -->
     <div class="flex w-full flex-col gap-3 rounded-xl bg-white px-5 py-6 shadow-md">
-      <FormSection>
+      <FormSection :width="560">
         <FormInput
           ref="codeInputRef"
           v-model="formData.code"
@@ -45,6 +45,7 @@
 
       <FormButtonGroup
         confirm-text="送出"
+        :width="560"
         :disabled="isSubmitting"
         @cancel="handleCancel"
         @confirm="handleConfirm"

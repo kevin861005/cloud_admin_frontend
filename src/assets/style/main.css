@@ -7,29 +7,29 @@
 @layer base {
   /* Noto Sans TC - Regular (400) */
   @font-face {
-    font-family: 'Noto Sans TC';
+    font-family: "Noto Sans TC";
     font-weight: 400;
     font-style: normal;
     font-display: swap;
-    src: url('@/assets/fonts/NotoSansTC-Regular.ttf') format('truetype');
+    src: url("@/assets/fonts/NotoSansTC-Regular.ttf") format("truetype");
   }
 
   /* Noto Sans TC - Medium (500) */
   @font-face {
-    font-family: 'Noto Sans TC';
+    font-family: "Noto Sans TC";
     font-weight: 500;
     font-style: normal;
     font-display: swap;
-    src: url('@/assets/fonts/NotoSansTC-Medium.ttf') format('truetype');
+    src: url("@/assets/fonts/NotoSansTC-Medium.ttf") format("truetype");
   }
 
   /* Noto Sans TC - Bold (700) */
   @font-face {
-    font-family: 'Noto Sans TC';
+    font-family: "Noto Sans TC";
     font-weight: 700;
     font-style: normal;
     font-display: swap;
-    src: url('@/assets/fonts/NotoSansTC-Bold.ttf') format('truetype');
+    src: url("@/assets/fonts/NotoSansTC-Bold.ttf") format("truetype");
   }
 }
 
@@ -61,6 +61,11 @@
   /* text-base: 16px/24px, regular, 0px */
   .typo-base {
     @apply text-base font-normal tracking-normal;
+  }
+
+  /* text-base: 16px/24px, regular, 0px */
+  .typo-base-medium {
+    @apply text-base font-medium tracking-normal;
   }
 
   /* text-base: 16px/24px, bold, 0px */

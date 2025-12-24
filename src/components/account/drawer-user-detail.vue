@@ -54,66 +54,67 @@
 
       <!-- 編輯模式 -->
       <template v-else>
-        <div class="flex flex-col gap-3 overflow-x-hidden">
-          <!-- 帳號資訊區塊（編輯） -->
-          <FormSection title="帳號資訊">
-            <!-- 密碼（唯讀） -->
-            <FormInput
-              v-model="formData.password"
-              label="密碼"
-              type="password"
-              placeholder="請輸入"
-              :disabled="true"
-              :error-message="errors.password"
-            />
-
-            <!-- 權限 -->
-            <FormCheckboxGroup
-              v-model="formData.roleIds"
-              label="權限"
-              :options="roleOptions"
-              :error-message="errors.roles"
-            />
-
-            <!-- 使用狀態 -->
-            <FormRadioGroup
-              v-model="formData.statusCode"
-              label="使用狀態"
-              :options="statusOptions"
-              :error-message="errors.status"
-            />
-          </FormSection>
-
-          <!-- 個人資訊區塊（編輯） -->
-          <FormSection title="個人資訊">
-            <!-- 姓名 -->
-            <FormInput
-              ref="nameInputRef"
-              v-model="formData.name"
-              label="姓名"
-              placeholder="請輸入"
-              :error-message="errors.name"
-            />
-
-            <!-- 電子信箱 -->
-            <FormInput
-              ref="emailInputRef"
-              v-model="formData.email"
-              label="電子信箱"
-              type="email"
-              placeholder="請輸入"
-              :error-message="errors.email"
-            />
-          </FormSection>
-
-          <!-- 按鈕群組 -->
-          <FormButtonGroup
-            confirm-text="儲存"
-            :disabled="isSubmitting"
-            @cancel="handleCancelEdit"
-            @confirm="handleConfirmEdit"
+        <!-- <div class="flex flex-col gap-3 overflow-x-hidden"> -->
+        <!-- 帳號資訊區塊（編輯） -->
+        <FormSection title="帳號資訊">
+          <!-- 密碼 -->
+          <FormInput
+            ref="passwordInputRef"
+            v-model="formData.password"
+            label="新密碼"
+            type="password"
+            placeholder="如需變更密碼時輸入，否則留空。"
+            :autocomplete="true"
+            :error-message="errors.password"
           />
-        </div>
+
+          <!-- 權限 -->
+          <FormCheckboxGroup
+            v-model="formData.roleIds"
+            label="權限"
+            :options="roleOptions"
+            :error-message="errors.roles"
+          />
+
+          <!-- 使用狀態 -->
+          <FormRadioGroup
+            v-model="formData.statusCode"
+            label="使用狀態"
+            :options="statusOptions"
+            :error-message="errors.status"
+          />
+        </FormSection>
+
+        <!-- 個人資訊區塊（編輯） -->
+        <FormSection title="個人資訊">
+          <!-- 姓名 -->
+          <FormInput
+            ref="nameInputRef"
+            v-model="formData.name"
+            label="姓名"
+            placeholder="請輸入"
+            :error-message="errors.name"
+          />
+
+          <!-- 電子信箱 -->
+          <FormInput
+            ref="emailInputRef"
+            v-model="formData.email"
+            label="電子信箱"
+            type="email"
+            placeholder="請輸入"
+            :error-message="errors.email"
+          />
+        </FormSection>
+
+        <!-- 按鈕群組 -->
+        <FormButtonGroup
+          confirm-text="儲存"
+          :disabled="isSubmitting"
+          @cancel="handleCancelEdit"
+          @confirm="handleConfirmEdit"
+        />
+        <!-- </div> -->
       </template>
 
       <!-- 分隔線 -->
@@ -249,6 +250,7 @@ const errors = ref({
 });
 
 // ===== Template Refs =====
+const passwordInputRef = ref<{ focus: () => void } | null>(null);
 const nameInputRef = ref<{ focus: () => void } | null>(null);
 const emailInputRef = ref<{ focus: () => void } | null>(null);
 
@@ -358,7 +360,7 @@ const initFormData = () => {
   if (!userDetail.value) return;
 
   formData.value = {
-    password: userDetail.value.password,
+    password: "",
     roleIds: userDetail.value.roleIds || [],
     statusCode: userDetail.value.statusCode,
     name: userDetail.value.userName,
@@ -429,10 +431,11 @@ const handleFieldErrors = (fieldErrors: FieldError[]) => {
       email: "email",
     },
     fieldRefMap: {
+      password: passwordInputRef,
       name: nameInputRef,
       email: emailInputRef,
     },
-    fieldOrder: ["name", "email"],
+    fieldOrder: ["password", "name", "email"],
   });
 };
 
@@ -471,6 +474,7 @@ const handleConfirmEdit = async () => {
     // 準備提交的資料
     const requestData: UpdateUserRequest = {
       name: formData.value.name,
+      password: formData.value.password?.trim() || null, // 空字串轉 null
       email: formData.value.email,
       roleIds: formData.value.roleIds,
       statusCode: formData.value.statusCode as "ACTIVE" | "INACTIVE",

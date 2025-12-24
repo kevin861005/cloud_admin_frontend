@@ -4,7 +4,12 @@
     <PageTitle title="帳號管理" subtitle="設定使用人員權限" />
 
     <TableContainer>
-      <AccountManagementTable ref="tableRef" @row-view="handleViewUser" @add="handleAdd" />
+      <AccountManagementTable
+        ref="tableRef"
+        :search-disabled="isDrawerOpen"
+        @row-view="handleViewUser"
+        @add="handleAdd"
+      />
     </TableContainer>
 
     <!-- 使用者詳細資料 Drawer -->

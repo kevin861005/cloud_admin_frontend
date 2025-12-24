@@ -2,7 +2,7 @@
   <div
     class="flex items-center justify-start"
     :style="{
-      width: `${width}px`,
+      ...(width ? { width: `${width}px` } : {}),
       height: `${height}px`,
       paddingTop: `${paddingTop}px`,
       gap: `${gap}px`,
@@ -48,6 +48,7 @@ interface Props {
   cancelText?: string;
   confirmText?: string;
   disabled?: boolean;
+  /** 容器寬度（選填，不傳則自適應容器寬度） */
   width?: number;
   height?: number;
   paddingTop?: number;
@@ -58,7 +59,6 @@ withDefaults(defineProps<Props>(), {
   cancelText: "取消",
   confirmText: "新增",
   disabled: false,
-  width: 560,
   height: 48,
   paddingTop: 12,
   gap: 12,
