@@ -14,7 +14,7 @@
     </div>
 
     <!-- 內容區域（與標題區域間隔 8px） -->
-    <div class="flex flex-1 flex-col mt-2" :style="{ gap: `${gap}px` }">
+    <div class="mt-2 flex flex-1 flex-col" :style="{ gap: `${gap}px` }">
       <slot />
     </div>
   </div>
@@ -29,23 +29,23 @@
 
 interface Props {
   /** 區塊主標題 */
-  title?: string
+  title?: string;
 
   /** 區塊副標題（選填，不傳則不顯示） */
-  subtitle?: string
+  subtitle?: string;
 
   /** 區塊寬度 */
-  width?: number
+  width?: number;
 
   /** 區塊高度 */
-  height?: number
+  height?: number;
 
   /** 內容區域的元素間距 */
-  gap?: number
+  gap?: number;
 }
 
 withDefaults(defineProps<Props>(), {
   width: 560,
   gap: 8,
-})
+});
 </script>

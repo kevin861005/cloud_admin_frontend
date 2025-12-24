@@ -15,17 +15,17 @@
         <!-- 申請環境刪除按鈕 -->
         <button
           v-if="action.type === 'applied'"
-          class="flex h-8 items-center gap-1 rounded bg-neutral-50 px-2.5 py-1.5 typo-sm-medium text-primary-500 hover:bg-neutral-200"
+          class="typo-sm-medium flex h-8 items-center gap-1 rounded bg-neutral-50 px-2.5 py-1.5 text-primary-500 hover:bg-neutral-200"
           @click="handleBatchAction(action)"
         >
-          <img :src="AppliedIcon" alt="" class="h-4 w-4 icon-primary" />
+          <img :src="AppliedIcon" alt="" class="icon-primary h-4 w-4" />
           <span>{{ action.label }}</span>
         </button>
 
         <!-- 環境刪除按鈕 -->
         <button
           v-if="action.type === 'delete'"
-          class="flex h-8 items-center gap-1 rounded bg-neutral-50 px-2.5 py-1.5 typo-sm-medium text-semantic-warning hover:bg-neutral-200"
+          class="typo-sm-medium flex h-8 items-center gap-1 rounded bg-neutral-50 px-2.5 py-1.5 text-semantic-warning hover:bg-neutral-200"
           @click="handleBatchAction(action)"
         >
           <img :src="DeleteIcon" alt="" class="h-4 w-4" />
@@ -37,7 +37,7 @@
     <!-- 右側：取消選擇 -->
     <div class="px-3">
       <button
-        class="flex h-8 items-center rounded px-2.5 typo-sm-medium text-neutral-500 hover:bg-neutral-200"
+        class="typo-sm-medium flex h-8 items-center rounded px-2.5 text-neutral-500 hover:bg-neutral-200"
         @click="handleCancelSelection"
       >
         取消選擇
@@ -47,10 +47,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { BatchActionConfig } from '@/types/table'
-import AppliedIcon from '@/assets/icons/card/card-e-applied.svg'
-import DeleteIcon from '@/assets/icons/table/delete.svg'
+import { computed } from "vue";
+import type { BatchActionConfig } from "@/types/table";
+import AppliedIcon from "@/assets/icons/card/card-e-applied.svg";
+import DeleteIcon from "@/assets/icons/table/delete.svg";
 
 /**
  * Table 選取狀態列元件
@@ -72,22 +72,22 @@ import DeleteIcon from '@/assets/icons/table/delete.svg'
 
 // ===== Props 定義 =====
 interface Props {
-  showCheckbox: boolean // 是否啟用選取功能
-  selectedCount: number // 已選擇的項目數量
-  itemName?: string // 項目名稱（例如：「客戶」、「訂單」），預設為「項目」
-  batchActions?: BatchActionConfig[] // 批量操作按鈕配置
+  showCheckbox: boolean; // 是否啟用選取功能
+  selectedCount: number; // 已選擇的項目數量
+  itemName?: string; // 項目名稱（例如：「客戶」、「訂單」），預設為「項目」
+  batchActions?: BatchActionConfig[]; // 批量操作按鈕配置
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  itemName: '項目',
+  itemName: "項目",
   batchActions: () => [],
-})
+});
 
 // ===== Emits 定義 =====
 const emit = defineEmits<{
-  'batch-action': [actionKey: string] // 批量操作按鈕點擊事件
-  'cancel-selection': [] // 取消選擇連結點擊事件
-}>()
+  "batch-action": [actionKey: string]; // 批量操作按鈕點擊事件
+  "cancel-selection": []; // 取消選擇連結點擊事件
+}>();
 
 // ===== 計算屬性 =====
 
@@ -95,7 +95,7 @@ const emit = defineEmits<{
  * 判斷選取狀態列是否顯示
  * 條件：showCheckbox === true 且 selectedCount > 0
  */
-const visible = computed(() => props.showCheckbox && props.selectedCount > 0)
+const visible = computed(() => props.showCheckbox && props.selectedCount > 0);
 
 // ===== 事件處理 =====
 
@@ -104,13 +104,13 @@ const visible = computed(() => props.showCheckbox && props.selectedCount > 0)
  * 目前先使用 alert 提示，未來可替換為自訂彈窗
  */
 const handleBatchAction = (action: BatchActionConfig) => {
-  emit('batch-action', action.key)
-}
+  emit("batch-action", action.key);
+};
 
 /**
  * 處理取消選擇連結點擊
  */
 const handleCancelSelection = () => {
-  emit('cancel-selection')
-}
+  emit("cancel-selection");
+};
 </script>

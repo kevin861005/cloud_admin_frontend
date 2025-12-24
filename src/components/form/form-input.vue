@@ -13,7 +13,7 @@
       :value="modelValue"
       :placeholder="placeholder"
       :disabled="disabled"
-      class="h-9 rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-sm text-neutral-900 placeholder-gray-400 disabled:bg-gray-100 disabled:text-neutral-500 w-full focus:outline-none"
+      class="h-9 w-full rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-sm text-neutral-900 placeholder-gray-400 focus:outline-none disabled:bg-gray-100 disabled:text-neutral-500"
       @input="handleInput"
     />
 
@@ -23,51 +23,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { FieldError } from '@/components/form'
+import { ref } from "vue";
+import { FieldError } from "@/components/form";
 
 /**
  * 表單輸入欄位元件
  */
 
 interface Props {
-  label: string
-  modelValue: string
-  type?: string
-  placeholder?: string
-  required?: boolean
-  disabled?: boolean
-  errorMessage?: string
+  label: string;
+  modelValue: string;
+  type?: string;
+  placeholder?: string;
+  required?: boolean;
+  disabled?: boolean;
+  errorMessage?: string;
 }
 
 withDefaults(defineProps<Props>(), {
-  type: 'text',
-  placeholder: '請輸入',
+  type: "text",
+  placeholder: "請輸入",
   required: false,
   disabled: false,
-})
+});
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string]
-}>()
+  "update:modelValue": [value: string];
+}>();
 
 const handleInput = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  emit('update:modelValue', target.value)
-}
+  const target = event.target as HTMLInputElement;
+  emit("update:modelValue", target.value);
+};
 
-const inputRef = ref<HTMLInputElement | null>(null)
+const inputRef = ref<HTMLInputElement | null>(null);
 
 /**
  * Focus 到輸入框
  * 供父元件呼叫
  */
 const focus = () => {
-  inputRef.value?.focus()
-}
+  inputRef.value?.focus();
+};
 
 // ===== Expose =====
 defineExpose({
   focus,
-})
+});
 </script>

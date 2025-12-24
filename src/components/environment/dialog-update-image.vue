@@ -80,7 +80,7 @@
       <button
         type="button"
         :disabled="isUpdating"
-        class="group relative rounded-lg bg-neutral-100 px-6 py-3 typo-sm-bold text-neutral-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+        class="typo-sm-bold group relative rounded-lg bg-neutral-100 px-6 py-3 text-neutral-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         @click="handleClose"
       >
         <span
@@ -93,7 +93,7 @@
       <button
         type="button"
         :disabled="!canConfirm"
-        class="group relative rounded-lg bg-primary-500 px-6 py-3 typo-sm-bold text-white transition-colors disabled:cursor-not-allowed disabled:bg-neutral-300"
+        class="typo-sm-bold group relative rounded-lg bg-primary-500 px-6 py-3 text-white transition-colors disabled:cursor-not-allowed disabled:bg-neutral-300"
         @click="handleConfirm"
       >
         <span
@@ -116,60 +116,60 @@
  * - 選擇映像並確認更新
  * - 運行中的映像不可選擇
  */
-import { ref, computed, watch } from 'vue'
-import BaseDialog from '@/components/dialog/base-dialog.vue'
-import { Badge, Alert, Loading } from '@/components/common'
-import { environmentService } from '@/services/environment.service'
-import type { DockerImage } from '@/types/service'
+import { ref, computed, watch } from "vue";
+import BaseDialog from "@/components/dialog/base-dialog.vue";
+import { Badge, Alert, Loading } from "@/components/common";
+import { environmentService } from "@/services/environment.service";
+import type { DockerImage } from "@/types/service";
 
 // ========== Props 定義 ==========
 interface Props {
   /** 控制 Dialog 顯示/隱藏 (v-model) */
-  modelValue: boolean
+  modelValue: boolean;
   /** 客戶編號（用於 API 呼叫） */
-  customerNo: string
+  customerNo: string;
   /** 目前運行的映像版本（用於顯示） */
-  currentVersion: string
+  currentVersion: string;
   /** 是否正在更新中 */
-  isUpdating?: boolean
+  isUpdating?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isUpdating: false,
-})
+});
 
 // ========== Emits 定義 ==========
 const emit = defineEmits<{
   /** 更新 v-model */
-  'update:modelValue': [value: boolean]
+  "update:modelValue": [value: boolean];
   /** 確認更新，回傳選中的映像 ID */
-  confirm: [imageId: string]
-}>()
+  confirm: [imageId: string];
+}>();
 
 // ========== 狀態 ==========
 /** 映像列表 */
-const images = ref<DockerImage[]>([])
+const images = ref<DockerImage[]>([]);
 
 /** 選中的映像 ID */
-const selectedImageId = ref<string | null>(null)
+const selectedImageId = ref<string | null>(null);
 
 /** 載入中狀態 */
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 /** 載入錯誤訊息 */
-const loadError = ref<string | null>(null)
+const loadError = ref<string | null>(null);
 
 // ========== Computed ==========
 /** 用 computed 來處理 v-model */
 const isVisible = computed({
   get: () => props.modelValue,
-  set: (value: boolean) => emit('update:modelValue', value),
-})
+  set: (value: boolean) => emit("update:modelValue", value),
+});
 
 /** 是否可以點擊確認按鈕 */
 const canConfirm = computed(() => {
-  return selectedImageId.value && !props.isUpdating && !isLoading.value && !loadError.value
-})
+  return selectedImageId.value && !props.isUpdating && !isLoading.value && !loadError.value;
+});
 
 // ========== Watch ==========
 /**
@@ -179,28 +179,28 @@ watch(
   () => props.modelValue,
   async (newValue) => {
     if (newValue) {
-      await fetchImages()
+      await fetchImages();
     }
-  },
-)
+  }
+);
 
 // ========== Methods ==========
 /**
  * 取得映像列表
  */
 async function fetchImages() {
-  isLoading.value = true
-  loadError.value = null
-  selectedImageId.value = null
-  images.value = []
+  isLoading.value = true;
+  loadError.value = null;
+  selectedImageId.value = null;
+  images.value = [];
 
   try {
-    images.value = await environmentService.getAllImages(props.customerNo)
+    images.value = await environmentService.getAllImages(props.customerNo);
   } catch (error) {
-    console.error('取得映像列表失敗:', error)
-    loadError.value = error instanceof Error ? error.message : '取得映像列表失敗'
+    console.error("取得映像列表失敗:", error);
+    loadError.value = error instanceof Error ? error.message : "取得映像列表失敗";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
 }
 
@@ -211,8 +211,8 @@ async function fetchImages() {
  */
 function handleSelectImage(imageId: string, isRunning: boolean) {
   // 運行中的映像不可選擇
-  if (isRunning) return
-  selectedImageId.value = imageId
+  if (isRunning) return;
+  selectedImageId.value = imageId;
 }
 
 /**
@@ -220,7 +220,7 @@ function handleSelectImage(imageId: string, isRunning: boolean) {
  */
 function handleDialogChange(value: boolean) {
   if (!value) {
-    resetState()
+    resetState();
   }
 }
 
@@ -229,7 +229,7 @@ function handleDialogChange(value: boolean) {
  */
 function handleClose() {
   if (!props.isUpdating) {
-    isVisible.value = false
+    isVisible.value = false;
   }
 }
 
@@ -238,7 +238,7 @@ function handleClose() {
  */
 function handleConfirm() {
   if (selectedImageId.value && canConfirm.value) {
-    emit('confirm', selectedImageId.value)
+    emit("confirm", selectedImageId.value);
   }
 }
 
@@ -246,9 +246,9 @@ function handleConfirm() {
  * 重置狀態
  */
 function resetState() {
-  selectedImageId.value = null
-  images.value = []
-  loadError.value = null
-  isLoading.value = false
+  selectedImageId.value = null;
+  images.value = [];
+  loadError.value = null;
+  isLoading.value = false;
 }
 </script>

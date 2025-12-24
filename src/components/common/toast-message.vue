@@ -11,7 +11,7 @@
     >
       <div
         v-if="isVisible"
-        class="fixed z-50 flex items-center justify-center gap-2 py-3 bg-white rounded-[20px] shadow-md"
+        class="fixed z-50 flex items-center justify-center gap-2 rounded-[20px] bg-white py-3 shadow-md"
         :style="{
           top: toastTopPosition,
           left: toastLeftPosition,
@@ -20,7 +20,7 @@
         }"
       >
         <!-- 左側 ICON（根據類型顯示不同圖示） -->
-        <img :src="iconSrc" :alt="type" class="w-5 h-5 rounded-full p-0.5" />
+        <img :src="iconSrc" :alt="type" class="h-5 w-5 rounded-full p-0.5" />
 
         <!-- 文字 -->
         <span class="typo-base text-gray-10">
@@ -173,7 +173,7 @@ watch(
       showToast(query.warning, "warning");
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 // ========== Lifecycle ==========

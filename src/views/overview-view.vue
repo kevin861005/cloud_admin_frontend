@@ -48,39 +48,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { PageTitle, CardContainer } from '@/components/common'
-import TableContainer from '@/components/table/table-container.vue'
-import CustomerDetailDrawer from '@/components/customer/drawer-customer-detail.vue'
+import { ref, onMounted } from "vue";
+import { PageTitle, CardContainer } from "@/components/common";
+import TableContainer from "@/components/table/table-container.vue";
+import CustomerDetailDrawer from "@/components/customer/drawer-customer-detail.vue";
 
 // 引入卡片元件
-import CustomerStatsCard from '@/components/overview/card-customer-stats.vue'
-import CustomerGrowthCard from '@/components/overview/card-customer-growth.vue'
-import AlertListCard from '@/components/overview/card-alert-list.vue'
-import AttentionCustomersCard from '@/components/overview/card-attention-customers.vue'
-import ModuleUsageChartCard from '@/components/overview/card-module-usage-chart.vue'
+import CustomerStatsCard from "@/components/overview/card-customer-stats.vue";
+import CustomerGrowthCard from "@/components/overview/card-customer-growth.vue";
+import AlertListCard from "@/components/overview/card-alert-list.vue";
+import AttentionCustomersCard from "@/components/overview/card-attention-customers.vue";
+import ModuleUsageChartCard from "@/components/overview/card-module-usage-chart.vue";
 
 // 引入客戶列表表格元件
-import CustomerTable from '@/components/customer/table-customer.vue'
+import CustomerTable from "@/components/customer/table-customer.vue";
 
 // ==================== Refs ====================
 
 /**
  * 客戶列表區域的參考
  */
-const customerTableRef = ref<InstanceType<typeof TableContainer> | null>(null)
+const customerTableRef = ref<InstanceType<typeof TableContainer> | null>(null);
 
 // ==================== 狀態管理 ====================
 
 /**
  * Drawer 開啟狀態
  */
-const isDrawerOpen = ref(false)
+const isDrawerOpen = ref(false);
 
 /**
  * 選中的客戶 ID
  */
-const selectedCustomerId = ref<string | null>(null)
+const selectedCustomerId = ref<string | null>(null);
 
 // ==================== 事件處理 ====================
 
@@ -89,10 +89,10 @@ const selectedCustomerId = ref<string | null>(null)
  */
 const scrollToCustomerTable = () => {
   customerTableRef.value?.$el.scrollIntoView({
-    behavior: 'smooth',
-    block: 'start',
-  })
-}
+    behavior: "smooth",
+    block: "start",
+  });
+};
 
 /**
  * 處理查看客戶詳情
@@ -102,24 +102,24 @@ const scrollToCustomerTable = () => {
  */
 const handleView = (row: Record<string, unknown>) => {
   // 安全的型別轉換
-  const customer = row as unknown as { id: string; name: string }
-  console.log('查看客戶:', customer)
+  const customer = row as unknown as { id: string; name: string };
+  console.log("查看客戶:", customer);
 
   // 設定選中的客戶 ID 並開啟 Drawer
-  selectedCustomerId.value = customer.id
-  isDrawerOpen.value = true
-}
+  selectedCustomerId.value = customer.id;
+  isDrawerOpen.value = true;
+};
 
 /**
  * 處理關閉 Drawer
  */
 const handleCloseDrawer = () => {
-  isDrawerOpen.value = false
+  isDrawerOpen.value = false;
   // 延遲清空 customerId，避免 Drawer 關閉動畫時資料消失
   setTimeout(() => {
-    selectedCustomerId.value = null
-  }, 300)
-}
+    selectedCustomerId.value = null;
+  }, 300);
+};
 
 // ==================== Lifecycle ====================
 
@@ -127,7 +127,7 @@ const handleCloseDrawer = () => {
  * 元件掛載時：可以在這裡呼叫 API 取得資料
  */
 onMounted(() => {
-  console.log('總覽頁面已載入')
+  console.log("總覽頁面已載入");
   // TODO: 呼叫其他統計資料的 API
-})
+});
 </script>

@@ -16,14 +16,14 @@
     - title: 主標題文字（必填）
     - subtitle: 副標題文字（選填）
   -->
-  <div class="pt-10 pb-10 pl-10">
+  <div class="pb-10 pl-10 pt-10">
     <!-- 主標題（使用自定義 CSS 類別 page-title-main） -->
     <h1 class="page-title-main typo-2xl-bold text-neutral-800">
       {{ title }}
     </h1>
 
     <!-- 副標題（使用自定義 CSS 類別 page-title-subtitle） -->
-    <p v-if="subtitle" class="page-title-subtitle mt-2 typo-sm text-neutral-600">
+    <p v-if="subtitle" class="page-title-subtitle typo-sm mt-2 text-neutral-600">
       {{ subtitle }}
     </p>
   </div>

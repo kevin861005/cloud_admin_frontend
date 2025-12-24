@@ -32,20 +32,20 @@
  * ```
  */
 
-import { ref } from 'vue'
+import { ref } from "vue";
 
 /**
  * Toast 類型
  */
-export type ToastType = 'success' | 'error'
+export type ToastType = "success" | "error";
 
 /**
  * Toast 狀態介面
  */
 export interface ToastState {
-  isVisible: boolean
-  type: ToastType
-  message: string
+  isVisible: boolean;
+  type: ToastType;
+  message: string;
 }
 
 /**
@@ -57,9 +57,9 @@ export function useDrawerToast() {
    */
   const toast = ref<ToastState>({
     isVisible: false,
-    type: 'success',
-    message: '',
-  })
+    type: "success",
+    message: "",
+  });
 
   /**
    * 顯示 Toast 訊息
@@ -71,15 +71,15 @@ export function useDrawerToast() {
       isVisible: true,
       type,
       message,
-    }
-  }
+    };
+  };
 
   /**
    * 隱藏 Toast（用於 @close 事件）
    */
   const hideToast = () => {
-    toast.value.isVisible = false
-  }
+    toast.value.isVisible = false;
+  };
 
   /**
    * 重置 Toast 狀態（用於 Drawer 關閉時）
@@ -87,26 +87,26 @@ export function useDrawerToast() {
   const resetToast = () => {
     toast.value = {
       isVisible: false,
-      type: 'success',
-      message: '',
-    }
-  }
+      type: "success",
+      message: "",
+    };
+  };
 
   /**
    * 顯示成功訊息的快捷方法
    * @param message - 訊息內容
    */
   const showSuccess = (message: string) => {
-    showToast('success', message)
-  }
+    showToast("success", message);
+  };
 
   /**
    * 顯示錯誤訊息的快捷方法
    * @param message - 訊息內容
    */
   const showError = (message: string) => {
-    showToast('error', message)
-  }
+    showToast("error", message);
+  };
 
   return {
     toast,
@@ -115,5 +115,5 @@ export function useDrawerToast() {
     resetToast,
     showSuccess,
     showError,
-  }
+  };
 }

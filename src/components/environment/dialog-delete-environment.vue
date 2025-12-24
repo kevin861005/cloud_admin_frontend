@@ -9,7 +9,7 @@
       <!-- 取消按鈕 -->
       <button
         type="button"
-        class="group relative rounded-lg bg-gray-100 px-6 py-3 typo-sm-bold text-neutral-600 transition-colors cursor-pointer"
+        class="typo-sm-bold group relative cursor-pointer rounded-lg bg-gray-100 px-6 py-3 text-neutral-600 transition-colors"
         @click="handleClose"
       >
         <!-- 黑色遮罩層（只影響背景） -->
@@ -23,7 +23,7 @@
       <!-- 確認刪除按鈕 -->
       <button
         type="button"
-        class="group relative flex items-center gap-2 rounded-lg bg-semantic-warning px-6 py-3 typo-sm-bold text-white transition-colors cursor-pointer"
+        class="typo-sm-bold group relative flex cursor-pointer items-center gap-2 rounded-lg bg-semantic-warning px-6 py-3 text-white transition-colors"
         @click="handleConfirm"
       >
         <!-- 黑色遮罩層（只影響背景） -->
@@ -53,55 +53,55 @@
  * - 刪除成功：導向客戶列表頁面
  * - 刪除失敗：留在當前頁面並顯示錯誤訊息
  */
-import { ref, computed, onUnmounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import BaseDialog from '@/components/dialog/base-dialog.vue'
-import TaskProgressDialog from '@/components/dialog/task-progress-dialog.vue'
-import { environmentService } from '@/services/environment.service'
-import { taskService } from '@/services/task.service'
-import { ApiError } from '@/types/common'
-import type { TaskProgressEvent } from '@/types/task'
+import { ref, computed, onUnmounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import BaseDialog from "@/components/dialog/base-dialog.vue";
+import TaskProgressDialog from "@/components/dialog/task-progress-dialog.vue";
+import { environmentService } from "@/services/environment.service";
+import { taskService } from "@/services/task.service";
+import { ApiError } from "@/types/common";
+import type { TaskProgressEvent } from "@/types/task";
 
 // ========== Props 定義 ==========
 interface Props {
   /** 控制 Dialog 顯示/隱藏 (v-model) */
-  modelValue: boolean
+  modelValue: boolean;
   /** 客戶編號（用於 API 呼叫） */
-  customerNo: string
+  customerNo: string;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 // ========== Emits 定義 ==========
 const emit = defineEmits<{
   /** 更新 v-model */
-  'update:modelValue': [value: boolean]
-}>()
+  "update:modelValue": [value: boolean];
+}>();
 
 // ========== Router ==========
-const router = useRouter()
-const route = useRoute()
+const router = useRouter();
+const route = useRoute();
 
 // ========== Computed ==========
 /** 用 computed 來處理 v-model，避免直接修改 prop */
 const isVisible = computed({
   get: () => props.modelValue,
-  set: (value: boolean) => emit('update:modelValue', value),
-})
+  set: (value: boolean) => emit("update:modelValue", value),
+});
 
 // ========== 進度條 Dialog 狀態 ==========
-const showProgressDialog = ref(false)
-const progressTitle = ref('')
-const progressDescription = ref('')
-const progressValue = ref(0)
+const showProgressDialog = ref(false);
+const progressTitle = ref("");
+const progressDescription = ref("");
+const progressValue = ref(0);
 
 // ========== 進度更新佇列 ==========
-const progressQueue: Array<{ message: string; progress: number }> = []
-let isProcessingQueue = false
-const PROGRESS_ANIMATION_DURATION = 350
+const progressQueue: Array<{ message: string; progress: number }> = [];
+let isProcessingQueue = false;
+const PROGRESS_ANIMATION_DURATION = 350;
 
 // ========== SSE 連線關閉函數 ==========
-let closeSSE: (() => void) | null = null
+let closeSSE: (() => void) | null = null;
 
 // ========== Methods ==========
 
@@ -109,7 +109,7 @@ let closeSSE: (() => void) | null = null
  * 關閉 Dialog
  */
 function handleClose() {
-  isVisible.value = false
+  isVisible.value = false;
 }
 
 /**
@@ -117,25 +117,25 @@ function handleClose() {
  */
 async function handleConfirm() {
   if (!props.customerNo) {
-    console.error('缺少客戶編號')
-    return
+    console.error("缺少客戶編號");
+    return;
   }
 
   // 1. 關閉確認 Dialog
-  isVisible.value = false
+  isVisible.value = false;
 
   // 2. 重置進度佇列
-  resetProgressQueue()
+  resetProgressQueue();
 
   // 3. 開啟進度條 Dialog
-  progressTitle.value = '刪除環境中...'
-  progressDescription.value = '正在準備...'
-  progressValue.value = 0
-  showProgressDialog.value = true
+  progressTitle.value = "刪除環境中...";
+  progressDescription.value = "正在準備...";
+  progressValue.value = 0;
+  showProgressDialog.value = true;
 
   try {
     // 4. 呼叫 API 取得 taskId
-    const { taskId } = await environmentService.deleteEnvironmentWithProgress(props.customerNo)
+    const { taskId } = await environmentService.deleteEnvironmentWithProgress(props.customerNo);
 
     // 5. 建立 SSE 連線
     closeSSE = taskService.subscribeProgress(taskId, {
@@ -143,14 +143,14 @@ async function handleConfirm() {
       onCompleted: handleCompleted,
       onError: handleError,
       onConnectionError: handleConnectionError,
-    })
+    });
   } catch (error) {
-    console.error('啟動刪除環境任務失敗:', error)
-    showProgressDialog.value = false
+    console.error("啟動刪除環境任務失敗:", error);
+    showProgressDialog.value = false;
 
     // 取得錯誤訊息
-    const errorMessage = getErrorMessage(error)
-    navigateWithWarning(errorMessage)
+    const errorMessage = getErrorMessage(error);
+    navigateWithWarning(errorMessage);
   }
 }
 
@@ -160,20 +160,20 @@ async function handleConfirm() {
 function getErrorMessage(error: unknown): string {
   // ApiError（自訂業務錯誤）
   if (error instanceof ApiError) {
-    return error.message
+    return error.message;
   }
 
   // AxiosError 或其他 Error
   if (error instanceof Error) {
     // 如果是 Axios 錯誤，嘗試取得後端回傳的訊息
-    const axiosError = error as { response?: { data?: { message?: string } } }
+    const axiosError = error as { response?: { data?: { message?: string } } };
     if (axiosError.response?.data?.message) {
-      return axiosError.response.data.message
+      return axiosError.response.data.message;
     }
-    return error.message
+    return error.message;
   }
 
-  return '刪除環境失敗，請稍後再試'
+  return "刪除環境失敗，請稍後再試";
 }
 
 /**
@@ -184,10 +184,10 @@ function handleProgress(event: TaskProgressEvent) {
   progressQueue.push({
     message: event.message,
     progress: event.progress,
-  })
+  });
 
   // 開始處理佇列
-  processProgressQueue()
+  processProgressQueue();
 }
 
 /**
@@ -196,31 +196,31 @@ function handleProgress(event: TaskProgressEvent) {
 function processProgressQueue() {
   // 如果正在處理中或佇列為空，則返回
   if (isProcessingQueue || progressQueue.length === 0) {
-    return
+    return;
   }
 
-  isProcessingQueue = true
+  isProcessingQueue = true;
 
   // 取出下一個進度
-  const next = progressQueue.shift()!
-  progressDescription.value = next.message
-  progressValue.value = next.progress
+  const next = progressQueue.shift()!;
+  progressDescription.value = next.message;
+  progressValue.value = next.progress;
 
   // 等待動畫完成後處理下一個
   setTimeout(() => {
-    isProcessingQueue = false
-    processProgressQueue()
-  }, PROGRESS_ANIMATION_DURATION)
+    isProcessingQueue = false;
+    processProgressQueue();
+  }, PROGRESS_ANIMATION_DURATION);
 }
 
 /**
  * 重置進度佇列
  */
 function resetProgressQueue() {
-  progressQueue.length = 0
-  isProcessingQueue = false
-  progressValue.value = 0
-  progressDescription.value = ''
+  progressQueue.length = 0;
+  isProcessingQueue = false;
+  progressValue.value = 0;
+  progressDescription.value = "";
 }
 
 /**
@@ -228,14 +228,14 @@ function resetProgressQueue() {
  */
 function handleCompleted(event: TaskProgressEvent) {
   // 更新進度到 100%
-  progressDescription.value = event.message
-  progressValue.value = 100
+  progressDescription.value = event.message;
+  progressValue.value = 100;
 
   // 短暫延遲後關閉進度條並導向客戶列表
   setTimeout(() => {
-    showProgressDialog.value = false
-    navigateToCustomerList('刪除環境成功')
-  }, 500)
+    showProgressDialog.value = false;
+    navigateToCustomerList("刪除環境成功");
+  }, 500);
 }
 
 /**
@@ -243,10 +243,10 @@ function handleCompleted(event: TaskProgressEvent) {
  */
 function handleError(event: TaskProgressEvent) {
   // 關閉進度條
-  showProgressDialog.value = false
+  showProgressDialog.value = false;
 
-  const errorMessage = event.message || '刪除環境失敗，請再試一次'
-  navigateWithWarning(errorMessage)
+  const errorMessage = event.message || "刪除環境失敗，請再試一次";
+  navigateWithWarning(errorMessage);
 }
 
 /**
@@ -254,9 +254,9 @@ function handleError(event: TaskProgressEvent) {
  */
 function handleConnectionError() {
   // 關閉進度條
-  showProgressDialog.value = false
+  showProgressDialog.value = false;
 
-  navigateWithWarning('連線中斷，請重新嘗試')
+  navigateWithWarning("連線中斷，請重新嘗試");
 }
 
 /**
@@ -269,7 +269,7 @@ function navigateWithWarning(message: string) {
       warning: message,
       t: Date.now(),
     },
-  })
+  });
 }
 
 /**
@@ -277,12 +277,12 @@ function navigateWithWarning(message: string) {
  */
 function navigateToCustomerList(message: string) {
   router.push({
-    path: '/customers',
+    path: "/customers",
     query: {
       success: message,
       t: Date.now(),
     },
-  })
+  });
 }
 
 /**
@@ -290,8 +290,8 @@ function navigateToCustomerList(message: string) {
  */
 onUnmounted(() => {
   if (closeSSE) {
-    closeSSE()
-    closeSSE = null
+    closeSSE();
+    closeSSE = null;
   }
-})
+});
 </script>

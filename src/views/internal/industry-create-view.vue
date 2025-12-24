@@ -4,7 +4,7 @@
   <!-- 主要容器 -->
   <div class="flex gap-5 px-10">
     <!-- 填寫資料區域 -->
-    <div class="flex flex-col w-full gap-3 px-5 py-6 rounded-xl bg-white shadow-md">
+    <div class="flex w-full flex-col gap-3 rounded-xl bg-white px-5 py-6 shadow-md">
       <FormSection>
         <FormInput
           ref="codeInputRef"
@@ -54,27 +54,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { PageTitle } from '@/components/common'
-import { FormSection, FormInput, FormButtonGroup } from '@/components/form'
-import type { CreateIndustryRequest } from '@/types/industry'
-import { industryService } from '@/services/industry.service'
-import { ApiError } from '@/types/common'
-import type { FieldError } from '@/types/common'
-import { processFieldErrors } from '@/utils/form'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { PageTitle } from "@/components/common";
+import { FormSection, FormInput, FormButtonGroup } from "@/components/form";
+import type { CreateIndustryRequest } from "@/types/industry";
+import { industryService } from "@/services/industry.service";
+import { ApiError } from "@/types/common";
+import type { FieldError } from "@/types/common";
+import { processFieldErrors } from "@/utils/form";
 
-const router = useRouter()
+const router = useRouter();
 
-const isSubmitting = ref(false)
+const isSubmitting = ref(false);
 
 // ===== 表單資料 =====
 const formData = ref({
-  code: '',
-  name: '',
-  sqlFile: '',
-  description: '',
-})
+  code: "",
+  name: "",
+  sqlFile: "",
+  description: "",
+});
 
 // ===== 欄位是否必填 =====
 const fieldRequired = {
@@ -82,20 +82,20 @@ const fieldRequired = {
   name: false,
   sqlFile: false,
   description: false,
-}
+};
 
 const errors = ref({
-  code: '',
-  name: '',
-  sqlFile: '',
-  description: '',
-})
+  code: "",
+  name: "",
+  sqlFile: "",
+  description: "",
+});
 
 // ===== Template Refs =====
-const codeInputRef = ref<{ focus: () => void } | null>(null)
-const nameInputRef = ref<{ focus: () => void } | null>(null)
-const sqlFileInputRef = ref<{ focus: () => void } | null>(null)
-const descriptionInputRef = ref<{ focus: () => void } | null>(null)
+const codeInputRef = ref<{ focus: () => void } | null>(null);
+const nameInputRef = ref<{ focus: () => void } | null>(null);
+const sqlFileInputRef = ref<{ focus: () => void } | null>(null);
+const descriptionInputRef = ref<{ focus: () => void } | null>(null);
 
 // ===== 事件處理 =====
 
@@ -109,10 +109,10 @@ const handleFieldErrors = (fieldErrors: FieldError[]) => {
   processFieldErrors(fieldErrors, {
     errors,
     fieldMap: {
-      code: 'code',
-      name: 'name',
-      sqlFile: 'sqlFile',
-      description: 'description',
+      code: "code",
+      name: "name",
+      sqlFile: "sqlFile",
+      description: "description",
     },
     fieldRefMap: {
       code: codeInputRef,
@@ -120,28 +120,28 @@ const handleFieldErrors = (fieldErrors: FieldError[]) => {
       sqlFile: sqlFileInputRef,
       description: descriptionInputRef,
     },
-    fieldOrder: ['code', 'name', 'sqlFile', 'description'],
-  })
-}
+    fieldOrder: ["code", "name", "sqlFile", "description"],
+  });
+};
 
 /**
  * 取消按鈕
  * 返回帳號管理列表
  */
 const handleCancel = () => {
-  router.push('/settings/industries')
-}
+  router.push("/settings/industries");
+};
 
 const handleConfirm = async () => {
   errors.value = {
-    code: '',
-    name: '',
-    sqlFile: '',
-    description: '',
-  }
+    code: "",
+    name: "",
+    sqlFile: "",
+    description: "",
+  };
 
   // 開始提交
-  isSubmitting.value = true
+  isSubmitting.value = true;
 
   try {
     // 準備提交的資料
@@ -150,39 +150,39 @@ const handleConfirm = async () => {
       name: formData.value.name,
       sqlFile: formData.value.sqlFile,
       description: formData.value.description,
-    }
+    };
 
     // 呼叫 API：成功不回資料，失敗會丟 ApiError
-    await industryService.createIndustry(requestData)
+    await industryService.createIndustry(requestData);
 
     // 成功：返回列表頁面
-    router.push('/settings/industries?success=新增成功')
+    router.push("/settings/industries?success=新增成功");
   } catch (err: unknown) {
-    console.error('新增產業別時發生錯誤:', err)
+    console.error("新增產業別時發生錯誤:", err);
 
     if (err instanceof ApiError) {
       // 後端欄位驗證錯誤
-      if (err.code === 'VALIDATION_ERROR' && err.data) {
-        const fieldErrors = err.data as FieldError[]
-        handleFieldErrors(fieldErrors)
-        return
+      if (err.code === "VALIDATION_ERROR" && err.data) {
+        const fieldErrors = err.data as FieldError[];
+        handleFieldErrors(fieldErrors);
+        return;
       }
 
       // 產業別已存在
-      if (err.code === 'INDUSTRY_002') {
-        errors.value.code = err.message
-        codeInputRef.value?.focus()
-        return
+      if (err.code === "INDUSTRY_002") {
+        errors.value.code = err.message;
+        codeInputRef.value?.focus();
+        return;
       }
 
       // 其他業務錯誤
-      alert(err.message || '新增產業別時發生錯誤,請稍後再試')
+      alert(err.message || "新增產業別時發生錯誤,請稍後再試");
     } else {
       // 非預期錯誤（例如網路問題）
-      alert('新增產業別時發生錯誤,請稍後再試')
+      alert("新增產業別時發生錯誤,請稍後再試");
     }
   } finally {
-    isSubmitting.value = false
+    isSubmitting.value = false;
   }
-}
+};
 </script>

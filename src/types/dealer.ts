@@ -9,100 +9,100 @@
  */
 export interface DealerListItem {
   /** 經銷商編號 */
-  code: string
+  code: string;
 
   /** 經銷商名稱 */
-  name: string
+  name: string;
 
   /** 業務窗口 */
-  sales: { id: string; name: string }
+  sales: { id: string; name: string };
   /** 聯絡人 */
-  contactPerson: string
+  contactPerson: string;
 
   /** 連絡電話 */
-  contactPhone: string
+  contactPhone: string;
 
   /** 電子信箱 */
-  email: string
+  email: string;
 }
 
 export interface DealerDetailInfo {
   /** 經銷商編號 */
-  code: string
+  code: string;
 
   /** 經銷商名稱 */
-  name: string
+  name: string;
 
   /** 業務窗口 */
-  sales: { id: string; name: string }
+  sales: { id: string; name: string };
 
   /** 聯絡人 */
-  contactPerson: string
+  contactPerson: string;
 
   /** 連絡電話 */
-  contactPhone: string
+  contactPhone: string;
 
   /** 電子信箱 */
-  email: string
+  email: string;
 
   /** 地址 */
-  address: string
+  address: string;
 
   /** 說明 */
-  description: string
+  description: string;
 
   /** 建立日期 */
-  createdDate: string
+  createdDate: string;
 
   /** 建立者 */
-  createdBy: { id: string; name: string } | null
+  createdBy: { id: string; name: string } | null;
 }
 
 export interface CreateDealerRequest {
   /** 經銷商編號 */
-  code: string
+  code: string;
 
   /** 經銷商名稱 */
-  name: string
+  name: string;
 
   /** 業務窗口 */
-  sales: string
+  sales: string;
 
   /** 聯絡人 */
-  contactPerson: string
+  contactPerson: string;
 
   /** 連絡電話 */
-  contactPhone: string
+  contactPhone: string;
 
   /** 電子信箱 */
-  email: string
+  email: string;
 
   /** 地址 */
-  address: string
+  address: string;
 
   /** 說明 */
-  description: string
+  description: string;
 }
 
 export interface UpdateDealerRequest {
   /** 經銷商名稱 */
-  name: string
+  name: string;
 
   /** 業務窗口 */
-  sales: string
+  sales: string;
 
   /** 聯絡人 */
-  contactPerson: string
+  contactPerson: string;
 
   /** 連絡電話 */
-  contactPhone: string
+  contactPhone: string;
 
   /** 電子信箱 */
-  email: string
+  email: string;
 
   /** 地址 */
-  address: string
+  address: string;
 
   /** 說明 */
-  description: string
+  description: string;
 }

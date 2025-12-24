@@ -10,18 +10,18 @@
 </template>
 
 <script setup lang="ts">
-import CloseIcon from '@/assets/icons/common/cm-close.svg'
+import CloseIcon from "@/assets/icons/common/cm-close.svg";
 
 interface Props {
   /** 無障礙標籤 */
-  ariaLabel?: string
+  ariaLabel?: string;
 }
 
 withDefaults(defineProps<Props>(), {
-  ariaLabel: '關閉',
-})
+  ariaLabel: "關閉",
+});
 
 defineEmits<{
-  click: []
-}>()
+  click: [];
+}>();
 </script>

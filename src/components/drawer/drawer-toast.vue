@@ -9,11 +9,11 @@
   >
     <div
       v-if="isVisible"
-      class="absolute left-5 right-5 flex h-12 items-center justify-center rounded border px-4 gap-2"
+      class="absolute left-5 right-5 flex h-12 items-center justify-center gap-2 rounded border px-4"
       :class="[toastClasses, positionClass]"
     >
       <!-- Icon -->
-      <img :src="iconSrc" :alt="iconAlt" class="w-5 h-5" />
+      <img :src="iconSrc" :alt="iconAlt" class="h-5 w-5" />
 
       <!-- Message -->
       <span class="typo-sm-medium" :class="textColorClass">
@@ -24,9 +24,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
-import successIcon from '@/assets/icons/common/cm-success.svg'
-import failedIcon from '@/assets/icons/common/cm-failed.svg'
+import { computed, watch } from "vue";
+import successIcon from "@/assets/icons/common/cm-success.svg";
+import failedIcon from "@/assets/icons/common/cm-failed.svg";
 
 /**
  * DrawerToast 元件
@@ -37,43 +37,43 @@ interface Props {
   /**
    * 是否顯示 Toast
    */
-  isVisible: boolean
+  isVisible: boolean;
 
   /**
    * Toast 類型
    */
-  type: 'success' | 'error'
+  type: "success" | "error";
 
   /**
    * 顯示訊息
    */
-  message: string
+  message: string;
 
   /**
    * 自動消失時間（毫秒）
    * @default 3000
    */
-  duration?: number
+  duration?: number;
 
   /**
    * 是否有底部按鈕
    * 當有按鈕時，Toast 會浮動在按鈕上方
    * @default false
    */
-  hasButton?: boolean
+  hasButton?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   duration: 3000,
   hasButton: false,
-})
+});
 
 const emit = defineEmits<{
   /**
    * Toast 關閉事件
    */
-  close: []
-}>()
+  close: [];
+}>();
 
 // ===== 計算屬性 =====
 
@@ -81,33 +81,33 @@ const emit = defineEmits<{
  * Icon 來源
  */
 const iconSrc = computed(() => {
-  return props.type === 'success' ? successIcon : failedIcon
-})
+  return props.type === "success" ? successIcon : failedIcon;
+});
 
 /**
  * Icon 替代文字
  */
 const iconAlt = computed(() => {
-  return props.type === 'success' ? '成功' : '失敗'
-})
+  return props.type === "success" ? "成功" : "失敗";
+});
 
 /**
  * Toast 樣式 class
  */
 const toastClasses = computed(() => {
-  if (props.type === 'success') {
-    return 'bg-white border-[#E4E6EA]'
+  if (props.type === "success") {
+    return "bg-white border-[#E4E6EA]";
   } else {
-    return 'bg-[#FD58580D] border-[#FD5858]'
+    return "bg-[#FD58580D] border-[#FD5858]";
   }
-})
+});
 
 /**
  * 文字顏色 class
  */
 const textColorClass = computed(() => {
-  return props.type === 'success' ? 'text-[#111827]' : 'text-[#FD5858]'
-})
+  return props.type === "success" ? "text-[#111827]" : "text-[#FD5858]";
+});
 
 /**
  * Toast 位置 class
@@ -115,8 +115,8 @@ const textColorClass = computed(() => {
  * 沒有按鈕時，Toast 在底部（bottom-5）
  */
 const positionClass = computed(() => {
-  return props.hasButton ? 'bottom-[96px]' : 'bottom-5'
-})
+  return props.hasButton ? "bottom-[96px]" : "bottom-5";
+});
 
 // ===== 自動關閉邏輯 =====
 
@@ -128,9 +128,9 @@ watch(
   (isVisible) => {
     if (isVisible && props.duration > 0) {
       setTimeout(() => {
-        emit('close')
-      }, props.duration)
+        emit("close");
+      }, props.duration);
     }
-  },
-)
+  }
+);
 </script>

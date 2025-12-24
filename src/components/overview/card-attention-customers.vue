@@ -23,26 +23,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import CardList from '@/components/overview/card-list.vue'
-import { overviewService } from '@/services/overview.service'
-import type { AttentionCustomer, CardListColumn } from '@/types/overview'
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import CardList from "@/components/overview/card-list.vue";
+import { overviewService } from "@/services/overview.service";
+import type { AttentionCustomer, CardListColumn } from "@/types/overview";
 
 // ==================== Router ====================
 
-const router = useRouter()
+const router = useRouter();
 
 // ==================== 狀態管理 ====================
 
 /** 所有需關注客戶資料 */
-const allCustomers = ref<AttentionCustomer[]>([])
+const allCustomers = ref<AttentionCustomer[]>([]);
 
 /** 載入狀態 */
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 /** 錯誤訊息 */
-const errorMessage = ref('')
+const errorMessage = ref("");
 
 // ==================== 欄位配置 ====================
 
@@ -56,28 +56,28 @@ const errorMessage = ref('')
  */
 const columns: CardListColumn[] = [
   {
-    key: 'customerName',
-    label: '客戶',
+    key: "customerName",
+    label: "客戶",
     flex: 2,
     sortable: true,
     showTooltip: true,
-    align: 'left',
+    align: "left",
   },
   {
-    key: 'lastUsedTime',
-    label: '使用時間',
+    key: "lastUsedTime",
+    label: "使用時間",
     flex: 1,
     sortable: true,
-    align: 'center',
+    align: "center",
   },
   {
-    key: 'salesPerson',
-    label: '負責業務',
+    key: "salesPerson",
+    label: "負責業務",
     flex: 1,
     sortable: true,
-    align: 'center',
+    align: "center",
   },
-]
+];
 
 // ==================== 方法 ====================
 
@@ -86,18 +86,18 @@ const columns: CardListColumn[] = [
  */
 async function loadAttentionCustomers() {
   try {
-    isLoading.value = true
-    errorMessage.value = ''
+    isLoading.value = true;
+    errorMessage.value = "";
 
     // TODO: 等後端 API 完成後，改用真實 API
-    const data = await overviewService.getAttentionCustomers()
+    const data = await overviewService.getAttentionCustomers();
 
-    allCustomers.value = data.customers
+    allCustomers.value = data.customers;
   } catch (error) {
-    console.error('載入需關注客戶失敗:', error)
-    errorMessage.value = error instanceof Error ? error.message : '載入失敗，請稍後再試'
+    console.error("載入需關注客戶失敗:", error);
+    errorMessage.value = error instanceof Error ? error.message : "載入失敗，請稍後再試";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
 }
 
@@ -107,7 +107,7 @@ async function loadAttentionCustomers() {
  * 處理行點擊事件，跳轉到客戶詳細頁面
  */
 function handleRowClick(item: AttentionCustomer) {
-  router.push(`/customers/${item.id}/detail`)
+  router.push(`/customers/${item.id}/detail`);
 }
 
 // ==================== Lifecycle ====================
@@ -116,6 +116,6 @@ function handleRowClick(item: AttentionCustomer) {
  * 元件掛載時載入資料
  */
 onMounted(() => {
-  loadAttentionCustomers()
-})
+  loadAttentionCustomers();
+});
 </script>

@@ -38,41 +38,41 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { Alert, EmptyState } from '@/components/common'
-import DataTable from '@/components/table/data-table.vue'
-import { useAuthStore } from '@/stores/auth.store'
-import { industryService } from '@/services/industry.service'
-import type { IndustryListItem } from '@/types/industry'
-import type { ColumnConfig } from '@/types/table'
+import { ref, onMounted, computed } from "vue";
+import { Alert, EmptyState } from "@/components/common";
+import DataTable from "@/components/table/data-table.vue";
+import { useAuthStore } from "@/stores/auth.store";
+import { industryService } from "@/services/industry.service";
+import type { IndustryListItem } from "@/types/industry";
+import type { ColumnConfig } from "@/types/table";
 
 // ===== Emits 定義 =====
 const emit = defineEmits<{
-  'row-view': [row: Record<string, unknown>] // 查看詳情事件
-  add: [] // 新增按鈕點擊事件
-}>()
+  "row-view": [row: Record<string, unknown>]; // 查看詳情事件
+  add: []; // 新增按鈕點擊事件
+}>();
 
 // ===== 狀態管理 =====
 
 /**
  * 載入狀態
  */
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 /**
  * 認證 Store（用於權限檢查）
  */
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 
 /**
  * 模組列表資料
  */
-const industries = ref<IndustryListItem[]>([])
+const industries = ref<IndustryListItem[]>([]);
 
 /**
  * 錯誤訊息
  */
-const errorMessage = ref<string | null>(null)
+const errorMessage = ref<string | null>(null);
 
 // ===== 權限檢查 =====
 
@@ -80,9 +80,9 @@ const errorMessage = ref<string | null>(null)
  * 檢查是否有 settings.accounts 權限
  */
 const hasPermission = computed(() => {
-  const permissions = authStore.userInfo?.permissions || []
-  return permissions.includes('settings.industries')
-})
+  const permissions = authStore.userInfo?.permissions || [];
+  return permissions.includes("settings.industries");
+});
 
 // ===== 欄位配置 =====
 
@@ -91,36 +91,36 @@ const hasPermission = computed(() => {
  */
 const columns = ref<ColumnConfig[]>([
   {
-    key: 'code',
-    label: '編號',
-    width: '15%',
+    key: "code",
+    label: "編號",
+    width: "15%",
     sortable: true,
   },
   {
-    key: 'name',
-    label: '中文名稱',
-    width: '25%',
+    key: "name",
+    label: "中文名稱",
+    width: "25%",
     sortable: false,
   },
   {
-    key: 'sqlFile',
-    label: 'SQL檔名',
-    width: '25%',
+    key: "sqlFile",
+    label: "SQL檔名",
+    width: "25%",
   },
   {
-    key: 'createdDate',
-    label: '建立日',
-    width: '20%',
+    key: "createdDate",
+    label: "建立日",
+    width: "20%",
     sortable: false,
   },
   {
-    key: 'actions',
-    label: '操作',
-    width: '15%',
-    align: 'center',
-    customRender: 'actions',
+    key: "actions",
+    label: "操作",
+    width: "15%",
+    align: "center",
+    customRender: "actions",
   },
-])
+]);
 
 // ===== 載入資料 =====
 
@@ -132,16 +132,16 @@ const columns = ref<ColumnConfig[]>([
  * 正式環境：使用 getAllIndustries() 呼叫後端 API
  */
 const loadIndustries = async () => {
-  isLoading.value = true
+  isLoading.value = true;
   try {
-    industries.value = await industryService.getAllIndustries()
+    industries.value = await industryService.getAllIndustries();
   } catch (error) {
-    console.error('載入產業別列表錯誤:', error)
+    console.error("載入產業別列表錯誤:", error);
     // TODO: 顯示錯誤訊息給使用者
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // ===== 事件處理 =====
 
@@ -150,16 +150,16 @@ const loadIndustries = async () => {
  * 發出 row-view 事件，由父元件處理
  */
 const handleView = (row: Record<string, unknown>) => {
-  emit('row-view', row)
-}
+  emit("row-view", row);
+};
 
 /**
  * 處理新增按鈕點擊
  * 發出 add 事件,由父元件處理
  */
 const handleAdd = () => {
-  emit('add')
-}
+  emit("add");
+};
 
 // ===== 初始化 =====
 
@@ -167,8 +167,8 @@ const handleAdd = () => {
  * 元件掛載時自動載入資料
  */
 onMounted(() => {
-  loadIndustries()
-})
+  loadIndustries();
+});
 
 /**
  * 對外暴露方法（供父元件呼叫）
@@ -179,5 +179,5 @@ defineExpose({
    * 用於新增、編輯、刪除後刷新列表
    */
   refresh: loadIndustries,
-})
+});
 </script>

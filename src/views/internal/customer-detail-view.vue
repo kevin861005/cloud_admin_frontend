@@ -14,7 +14,7 @@
       <!-- 內容區域 -->
       <div class="flex-1 overflow-y-auto bg-gray-50">
         <!-- 區塊標題（距離 Header 20px，距離卡片 24px） -->
-        <h2 class="px-10 pt-5 typo-xl-bold text-neutral-800">客戶資訊概覽</h2>
+        <h2 class="typo-xl-bold px-10 pt-5 text-neutral-800">客戶資訊概覽</h2>
 
         <!-- 三張卡片容器 -->
         <CardContainer :height="360" :use-padding-top="true">
@@ -48,7 +48,7 @@
 
             <button
               type="button"
-              class="flex items-center justify-center p-1 rounded hover:bg-gray-100 transition-colors cursor-pointer focus:outline-none"
+              class="flex cursor-pointer items-center justify-center rounded p-1 transition-colors hover:bg-gray-100 focus:outline-none"
               :aria-label="isSystemExpanded ? '收合' : '展開'"
               @click="toggleSystemExpanded"
             >
@@ -64,7 +64,7 @@
           <!-- 情境 1: applied=false，任何人都顯示「申請環境刪除」 -->
           <button
             v-if="!customerInfo.applied"
-            class="group inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:text-primary-500 transition-colors"
+            class="typo-xs-bold group inline-flex h-7 cursor-pointer items-center justify-center gap-1 rounded pl-2 pr-3 text-neutral-600 transition-colors hover:text-primary-500"
             @click="openApplyDeleteDialog"
           >
             <img
@@ -80,7 +80,7 @@
             <!-- 2-1: canDelete=true，可點擊的刪除環境按鈕 -->
             <button
               v-if="customerInfo.canDelete"
-              class="group inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-600 cursor-pointer hover:text-semantic-warning transition-colors"
+              class="typo-xs-bold group inline-flex h-7 cursor-pointer items-center justify-center gap-1 rounded pl-2 pr-3 text-neutral-600 transition-colors hover:text-semantic-warning"
               @click="openDeleteDialog"
             >
               <img
@@ -94,7 +94,7 @@
             <!-- 2-2: canDelete=false，disabled 的刪除環境按鈕 -->
             <Tooltip v-else :text="`${customerInfo.scheduledDeleteDate} 可刪除`" position="bottom">
               <button
-                class="inline-flex items-center justify-center gap-1 h-7 pr-3 pl-2 rounded typo-xs-bold text-neutral-400 cursor-not-allowed"
+                class="typo-xs-bold inline-flex h-7 cursor-not-allowed items-center justify-center gap-1 rounded pl-2 pr-3 text-neutral-400"
                 disabled
               >
                 <img :src="TrashIcon" alt="刪除環境" class="h-4 w-4 opacity-50" />
@@ -175,121 +175,121 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useAuthStore } from '@/stores/auth.store'
-import { useRoute } from 'vue-router'
-import { customerService } from '@/services/customer.service'
-import type { CustomerDetailInfo } from '@/types/customer'
-import { Alert, Loading } from '@/components/common'
-import HeaderCustomerInfo from '@/components/customer/detail/header-customer-info.vue'
-import CardContainer from '@/components/common/card-container.vue'
-import CardActivityRecords from '@/components/customer/detail/card-activity-records.vue'
-import CardEnvironmentInfo from '@/components/customer/detail/card-environment-info.vue'
-import CardContactInfo from '@/components/customer/detail/card-contact-info.vue'
-import CardDocker from '@/components/customer/detail/card-docker.vue'
-import CardDatabase from '@/components/customer/detail/card-database.vue'
-import CardDNS from '@/components/customer/detail/card-dns.vue'
-import CardNGINX from '@/components/customer/detail/card-nginx.vue'
-import CardSystemRecords from '@/components/customer/detail/card-system-records.vue'
-import CardEfficacyMonitor from '@/components/customer/detail/card-efficacy-monitor.vue'
-import DeleteEnvironmentDialog from '@/components/environment/dialog-delete-environment.vue'
-import ApplyDeleteDialog from '@/components/customer/dialog-apply-delete.vue'
-import Tooltip from '@/components/common/tooltip.vue'
-import TrashIcon from '@/assets/icons/common/cm-trash.svg'
-import ArrowDownIcon from '@/assets/icons/common/cm-arrow-down.svg'
-import AppliedIcon from '@/assets/icons/card/card-e-applied.svg'
-import ArrowUpIcon from '@/assets/icons/common/cm-arrow-up.svg'
-import type { DockerServiceInfo } from '@/types/service'
+import { ref, onMounted, computed } from "vue";
+import { useAuthStore } from "@/stores/auth.store";
+import { useRoute } from "vue-router";
+import { customerService } from "@/services/customer.service";
+import type { CustomerDetailInfo } from "@/types/customer";
+import { Alert, Loading } from "@/components/common";
+import HeaderCustomerInfo from "@/components/customer/detail/header-customer-info.vue";
+import CardContainer from "@/components/common/card-container.vue";
+import CardActivityRecords from "@/components/customer/detail/card-activity-records.vue";
+import CardEnvironmentInfo from "@/components/customer/detail/card-environment-info.vue";
+import CardContactInfo from "@/components/customer/detail/card-contact-info.vue";
+import CardDocker from "@/components/customer/detail/card-docker.vue";
+import CardDatabase from "@/components/customer/detail/card-database.vue";
+import CardDNS from "@/components/customer/detail/card-dns.vue";
+import CardNGINX from "@/components/customer/detail/card-nginx.vue";
+import CardSystemRecords from "@/components/customer/detail/card-system-records.vue";
+import CardEfficacyMonitor from "@/components/customer/detail/card-efficacy-monitor.vue";
+import DeleteEnvironmentDialog from "@/components/environment/dialog-delete-environment.vue";
+import ApplyDeleteDialog from "@/components/customer/dialog-apply-delete.vue";
+import Tooltip from "@/components/common/tooltip.vue";
+import TrashIcon from "@/assets/icons/common/cm-trash.svg";
+import ArrowDownIcon from "@/assets/icons/common/cm-arrow-down.svg";
+import AppliedIcon from "@/assets/icons/card/card-e-applied.svg";
+import ArrowUpIcon from "@/assets/icons/common/cm-arrow-up.svg";
+import type { DockerServiceInfo } from "@/types/service";
 
-const route = useRoute()
+const route = useRoute();
 
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 
 /**
  * 系統環境區塊是否展開
  * - true: 展開
  * - false: 收合（預設）
  */
-const isSystemExpanded = ref(false)
+const isSystemExpanded = ref(false);
 
 /**
  * 客戶詳細資訊
  */
-const customerInfo = ref<CustomerDetailInfo | null>(null)
+const customerInfo = ref<CustomerDetailInfo | null>(null);
 
 /**
  * 載入狀態
  */
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 /**
  * 錯誤訊息
  */
-const error = ref<string | null>(null)
+const error = ref<string | null>(null);
 
 /**
  * 是否顯示刪除確認 Dialog
  */
-const showDeleteDialog = ref(false)
+const showDeleteDialog = ref(false);
 
 /** 申請環境刪除 Dialog 顯示狀態 */
-const showApplyDeleteDialog = ref(false)
+const showApplyDeleteDialog = ref(false);
 
 /**
  * 客戶編號（從路由取得）
  */
 const customerId = computed(() => {
-  const idParam = route.params.id
-  return (Array.isArray(idParam) ? idParam[0] : idParam) || ''
-})
+  const idParam = route.params.id;
+  return (Array.isArray(idParam) ? idParam[0] : idParam) || "";
+});
 
 /**
  * 載入客戶詳細資料
  */
 const loadCustomerDetail = async () => {
   try {
-    isLoading.value = true
-    error.value = null
+    isLoading.value = true;
+    error.value = null;
 
-    const idParam = route.params.id
-    const customerId = Array.isArray(idParam) ? idParam[0] : idParam
+    const idParam = route.params.id;
+    const customerId = Array.isArray(idParam) ? idParam[0] : idParam;
 
     if (!customerId) {
-      throw new Error('無效的客戶 ID')
+      throw new Error("無效的客戶 ID");
     }
 
-    customerInfo.value = await customerService.getCustomerDetailById(customerId)
+    customerInfo.value = await customerService.getCustomerDetailById(customerId);
   } catch (err) {
-    console.error('載入客戶詳細資料失敗:', err)
-    error.value = err instanceof Error ? err.message : '載入失敗，請稍後再試'
+    console.error("載入客戶詳細資料失敗:", err);
+    error.value = err instanceof Error ? err.message : "載入失敗，請稍後再試";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 /**
  * 元件掛載時載入資料
  */
 onMounted(() => {
-  loadCustomerDetail()
-})
+  loadCustomerDetail();
+});
 
 /**
  * 切換系統環境區塊展開/收合狀態
  */
 function toggleSystemExpanded() {
-  isSystemExpanded.value = !isSystemExpanded.value
+  isSystemExpanded.value = !isSystemExpanded.value;
 }
 
 /**
  * Docker 重啟成功處理
  */
 function handleDockerRestartSuccess(dockerInfo: DockerServiceInfo) {
-  console.log('Docker 重啟成功')
+  console.log("Docker 重啟成功");
 
   // 更新 Docker 資訊
   if (customerInfo.value?.systemEnvironment) {
-    customerInfo.value.systemEnvironment.docker = dockerInfo
+    customerInfo.value.systemEnvironment.docker = dockerInfo;
   }
 }
 
@@ -297,7 +297,7 @@ function handleDockerRestartSuccess(dockerInfo: DockerServiceInfo) {
  * Docker 重啟失敗處理
  */
 function handleDockerRestartError(message: string) {
-  console.error('Docker 重啟失敗:', message)
+  console.error("Docker 重啟失敗:", message);
   // TODO: 顯示錯誤 Toast
 }
 
@@ -305,11 +305,11 @@ function handleDockerRestartError(message: string) {
  * Docker 更新映像成功處理
  */
 function handleDockerUpdateImageSuccess(dockerInfo: DockerServiceInfo) {
-  console.log('Docker 更新映像成功', dockerInfo)
+  console.log("Docker 更新映像成功", dockerInfo);
 
   // 更新 Docker 資訊
   if (customerInfo.value?.systemEnvironment) {
-    customerInfo.value.systemEnvironment.docker = dockerInfo
+    customerInfo.value.systemEnvironment.docker = dockerInfo;
   }
 }
 
@@ -317,23 +317,23 @@ function handleDockerUpdateImageSuccess(dockerInfo: DockerServiceInfo) {
  * Docker 更新映像失敗處理
  */
 function handleDockerUpdateImageError(message: string) {
-  console.error('Docker 更新映像失敗:', message)
+  console.error("Docker 更新映像失敗:", message);
 }
 
 /** 申請環境刪除成功後的處理 */
 function handleApplyDeleteSuccess() {
   // 重新載入客戶詳細資料
-  loadCustomerDetail()
+  loadCustomerDetail();
 }
 
 /**
  * 開啟刪除確認 Dialog
  */
 function openDeleteDialog() {
-  showDeleteDialog.value = true
+  showDeleteDialog.value = true;
 }
 
 function openApplyDeleteDialog() {
-  showApplyDeleteDialog.value = true
+  showApplyDeleteDialog.value = true;
 }
 </script>

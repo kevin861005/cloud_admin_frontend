@@ -1,15 +1,11 @@
 <template>
-  <span
-    v-if="message"
-    class="inline-block rounded py-1 typo-xs"
-    :class="colorClasses"
-  >
+  <span v-if="message" class="typo-xs inline-block rounded py-1" :class="colorClasses">
     {{ message }}
   </span>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed } from "vue";
 
 /**
  * 表單欄位錯誤提示元件
@@ -30,20 +26,20 @@ interface Props {
    * 錯誤訊息
    * 如果為空字串或 null，元件不會顯示
    */
-  message?: string | null
+  message?: string | null;
 
   /**
    * 錯誤類型
    * - error: 錯誤（紅色，預設）
    * - warning: 警告（黃色）
    */
-  type?: 'error' | 'warning'
+  type?: "error" | "warning";
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  message: '',
-  type: 'error',
-})
+  message: "",
+  type: "error",
+});
 
 // ===== 計算屬性 =====
 
@@ -52,9 +48,9 @@ const props = withDefaults(defineProps<Props>(), {
  */
 const colorClasses = computed(() => {
   const typeMap = {
-    error: 'text-red-500 bg-white', // #fd5858 接近 text-red-500
-    warning: 'text-yellow-600 bg-yellow-50',
-  }
-  return typeMap[props.type]
-})
+    error: "text-red-500 bg-white", // #fd5858 接近 text-red-500
+    warning: "text-yellow-600 bg-yellow-50",
+  };
+  return typeMap[props.type];
+});
 </script>

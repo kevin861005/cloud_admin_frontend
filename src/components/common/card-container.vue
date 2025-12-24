@@ -1,7 +1,7 @@
 <template>
   <div
     ref="containerRef"
-    class="flex items-stretch overflow-x-auto overflow-y-hidden px-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    class="flex items-stretch overflow-x-auto overflow-y-hidden px-10 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     :style="containerStyle"
   >
     <!-- 使用 slot 讓外部可以插入任意數量的卡片 -->
@@ -198,7 +198,7 @@ watch(
       calculateCardWidth();
     });
   },
-  { deep: true },
+  { deep: true }
 );
 
 /**
@@ -210,7 +210,7 @@ watch(
     nextTick(() => {
       calculateCardWidth();
     });
-  },
+  }
 );
 
 onMounted(() => {

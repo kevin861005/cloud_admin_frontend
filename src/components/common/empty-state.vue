@@ -24,7 +24,7 @@
       </h3>
 
       <!-- 描述 -->
-      <p class="mt-2 typo-sm text-neutral-500">
+      <p class="typo-sm mt-2 text-neutral-500">
         {{ description }}
       </p>
 
@@ -32,7 +32,7 @@
       <div v-if="showButton" class="mt-6">
         <button
           type="button"
-          class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 typo-sm-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          class="typo-sm-medium inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           @click="handleButtonClick"
         >
           {{ buttonText }}
@@ -138,7 +138,7 @@ const iconComponent = computed(() => {
             "stroke-width": "2",
             d: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
           }),
-        ],
+        ]
       ),
 
     // 無資料圖示（文件）
@@ -157,7 +157,7 @@ const iconComponent = computed(() => {
             "stroke-width": "2",
             d: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
           }),
-        ],
+        ]
       ),
 
     // 搜尋無結果圖示（搜尋）
@@ -176,7 +176,7 @@ const iconComponent = computed(() => {
             "stroke-width": "2",
             d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z",
           }),
-        ],
+        ]
       ),
   };
 

@@ -3,18 +3,18 @@
  * 提供環境管理相關的 API 呼叫
  */
 
-import apiClient from '@/utils/axios'
-import type { ApiResponse } from '@/types/common'
-import type { StartTaskResponse } from '@/types/task'
-import { ApiError } from '@/types/common'
+import apiClient from "@/utils/axios";
+import type { ApiResponse } from "@/types/common";
+import type { StartTaskResponse } from "@/types/task";
+import { ApiError } from "@/types/common";
 import type {
   EnvironmentListItem,
   EnvironmentDetailInfo,
   EnvironmentCountResponse,
   DeleteRecordListItem,
   DeleteRecordDetailInfo,
-} from '@/types/environment'
-import type { DockerImage } from '@/types/service'
+} from "@/types/environment";
+import type { DockerImage } from "@/types/service";
 
 /**
  * 環境服務
@@ -27,17 +27,17 @@ export const environmentService = {
    * @returns Promise<EnvironmentListItem[]> 環境列表
    */
   async getAllEnvironments(): Promise<EnvironmentListItem[]> {
-    const response = await apiClient.get<ApiResponse<EnvironmentListItem[]>>('/environments')
+    const response = await apiClient.get<ApiResponse<EnvironmentListItem[]>>("/environments");
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError<null>({
         code: response.data.code,
-        message: response.data.message || '取得環境列表失敗',
+        message: response.data.message || "取得環境列表失敗",
         data: null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -48,17 +48,17 @@ export const environmentService = {
    * @returns Promise<EnvironmentDetailInfo> 環境完整詳情
    */
   async getEnvironmentDetailById(id: string): Promise<EnvironmentDetailInfo> {
-    const response = await apiClient.get<ApiResponse<EnvironmentDetailInfo>>(`/environments/${id}`)
+    const response = await apiClient.get<ApiResponse<EnvironmentDetailInfo>>(`/environments/${id}`);
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError<null>({
         code: response.data.code,
-        message: response.data.message || '取得環境詳情失敗',
+        message: response.data.message || "取得環境詳情失敗",
         data: null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -69,18 +69,18 @@ export const environmentService = {
    */
   async restartEnvironmentWithProgress(customerNo: string): Promise<StartTaskResponse> {
     const response = await apiClient.post<ApiResponse<StartTaskResponse>>(
-      `/environments/${customerNo}/restart`,
-    )
+      `/environments/${customerNo}/restart`
+    );
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '啟動重啟任務失敗',
+        message: response.data.message || "啟動重啟任務失敗",
         data: response.data.data ?? null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -93,18 +93,18 @@ export const environmentService = {
   async updateImageWithProgress(customerNo: string, imageId: string): Promise<StartTaskResponse> {
     const response = await apiClient.post<ApiResponse<StartTaskResponse>>(
       `/environments/${customerNo}/update-image`,
-      { imageId },
-    )
+      { imageId }
+    );
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '啟動更新映像任務失敗',
+        message: response.data.message || "啟動更新映像任務失敗",
         data: response.data.data ?? null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -115,18 +115,18 @@ export const environmentService = {
    */
   async deleteEnvironmentWithProgress(customerNo: string): Promise<StartTaskResponse> {
     const response = await apiClient.delete<ApiResponse<StartTaskResponse>>(
-      `/environments/${customerNo}/delete`,
-    )
+      `/environments/${customerNo}/delete`
+    );
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '刪除環境任務失敗',
+        message: response.data.message || "刪除環境任務失敗",
         data: response.data.data ?? null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -137,19 +137,19 @@ export const environmentService = {
    */
   async batchDeleteEnvironmentsWithProgress(customerNos: string[]): Promise<StartTaskResponse> {
     const response = await apiClient.post<ApiResponse<StartTaskResponse>>(
-      '/environments/batch-delete',
-      { customerNos },
-    )
+      "/environments/batch-delete",
+      { customerNos }
+    );
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '批次刪除環境任務失敗',
+        message: response.data.message || "批次刪除環境任務失敗",
         data: response.data.data ?? null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -160,18 +160,18 @@ export const environmentService = {
    */
   async getAllImages(customerNo: string): Promise<DockerImage[]> {
     const response = await apiClient.get<ApiResponse<DockerImage[]>>(
-      `/environments/${customerNo}/images`,
-    )
+      `/environments/${customerNo}/images`
+    );
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '取得可更新的映像檔失敗',
+        message: response.data.message || "取得可更新的映像檔失敗",
         data: response.data.data ?? null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -180,18 +180,18 @@ export const environmentService = {
    */
   async getPendingCount(): Promise<EnvironmentCountResponse> {
     const response = await apiClient.get<ApiResponse<EnvironmentCountResponse>>(
-      '/environments/pending-count',
-    )
+      "/environments/pending-count"
+    );
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '取得申請中客戶數失敗',
+        message: response.data.message || "取得申請中客戶數失敗",
         data: null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -200,18 +200,18 @@ export const environmentService = {
    */
   async getPendingDeletionCount(): Promise<EnvironmentCountResponse> {
     const response = await apiClient.get<ApiResponse<EnvironmentCountResponse>>(
-      '/environments/pending-deletion-count',
-    )
+      "/environments/pending-deletion-count"
+    );
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '取得待刪除客戶數失敗',
+        message: response.data.message || "取得待刪除客戶數失敗",
         data: null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -221,16 +221,16 @@ export const environmentService = {
    * @param customerNos - 客戶編號清單
    */
   async applyDeletion(customerNos: string[]): Promise<void> {
-    const response = await apiClient.post<ApiResponse<null>>('/environments/apply-deletion', {
+    const response = await apiClient.post<ApiResponse<null>>("/environments/apply-deletion", {
       customerNos,
-    })
+    });
 
     if (!response.data.success) {
       throw new ApiError<null>({
         code: response.data.code,
-        message: response.data.message || '申請環境刪除失敗',
+        message: response.data.message || "申請環境刪除失敗",
         data: null,
-      })
+      });
     }
 
     // 成功時不需要回傳任何東西
@@ -244,18 +244,18 @@ export const environmentService = {
    */
   async getAllDeleteRecords(): Promise<DeleteRecordListItem[]> {
     const response = await apiClient.get<ApiResponse<DeleteRecordListItem[]>>(
-      '/environments/deletion-records',
-    )
+      "/environments/deletion-records"
+    );
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError<null>({
         code: response.data.code,
-        message: response.data.message || '取得刪除紀錄列表失敗',
+        message: response.data.message || "取得刪除紀錄列表失敗",
         data: null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -267,17 +267,17 @@ export const environmentService = {
    */
   async getDeleteRecordDetailById(id: string): Promise<DeleteRecordDetailInfo> {
     const response = await apiClient.get<ApiResponse<DeleteRecordDetailInfo>>(
-      `/environments/deletion-records/${id}`,
-    )
+      `/environments/deletion-records/${id}`
+    );
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError<null>({
         code: response.data.code,
-        message: response.data.message || '取得刪除紀錄詳情失敗',
+        message: response.data.message || "取得刪除紀錄詳情失敗",
         data: null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
-}
+};

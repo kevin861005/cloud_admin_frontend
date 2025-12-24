@@ -4,7 +4,7 @@
       v-for="tab in tabs"
       :key="tab.key"
       type="button"
-      class="h-9 px-4 py-[10px] rounded-md typo-sm-medium transition-colors gap-5"
+      class="typo-sm-medium h-9 gap-5 rounded-md px-4 py-[10px] transition-colors"
       :class="
         activeTab === tab.key
           ? 'bg-primary-500 text-white'
@@ -27,27 +27,27 @@
  */
 
 interface Tab {
-  key: string
-  label: string
+  key: string;
+  label: string;
 }
 
 interface Props {
   /** 當前選中的 Tab */
-  activeTab: string
+  activeTab: string;
   /** Tab 列表 */
-  tabs: Tab[]
+  tabs: Tab[];
 }
 
-defineProps<Props>()
+defineProps<Props>();
 
 const emit = defineEmits<{
-  'tab-click': [key: string]
-}>()
+  "tab-click": [key: string];
+}>();
 
 /**
  * Tab 點擊處理
  */
 function handleTabClick(key: string) {
-  emit('tab-click', key)
+  emit("tab-click", key);
 }
 </script>

@@ -42,41 +42,41 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { Badge, Alert, EmptyState } from '@/components/common'
-import DataTable from '@/components/table/data-table.vue'
-import { useAuthStore } from '@/stores/auth.store'
-import { moduleService } from '@/services/module.service'
-import type { ModuleListItem } from '@/types/module'
-import type { ColumnConfig } from '@/types/table'
+import { ref, onMounted, computed } from "vue";
+import { Badge, Alert, EmptyState } from "@/components/common";
+import DataTable from "@/components/table/data-table.vue";
+import { useAuthStore } from "@/stores/auth.store";
+import { moduleService } from "@/services/module.service";
+import type { ModuleListItem } from "@/types/module";
+import type { ColumnConfig } from "@/types/table";
 
 // ===== Emits 定義 =====
 const emit = defineEmits<{
-  'row-view': [row: Record<string, unknown>] // 查看詳情事件
-  add: [] // 新增按鈕點擊事件
-}>()
+  "row-view": [row: Record<string, unknown>]; // 查看詳情事件
+  add: []; // 新增按鈕點擊事件
+}>();
 
 // ===== 狀態管理 =====
 
 /**
  * 載入狀態
  */
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 /**
  * 認證 Store（用於權限檢查）
  */
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 
 /**
  * 模組列表資料
  */
-const modules = ref<ModuleListItem[]>([])
+const modules = ref<ModuleListItem[]>([]);
 
 /**
  * 錯誤訊息
  */
-const errorMessage = ref<string | null>(null)
+const errorMessage = ref<string | null>(null);
 
 // ===== 權限檢查 =====
 
@@ -84,67 +84,67 @@ const errorMessage = ref<string | null>(null)
  * 檢查是否有 settings.accounts 權限
  */
 const hasPermission = computed(() => {
-  const permissions = authStore.userInfo?.permissions || []
-  return permissions.includes('settings.modules')
-})
+  const permissions = authStore.userInfo?.permissions || [];
+  return permissions.includes("settings.modules");
+});
 
 // ===== 欄位配置 =====
 
 /**
  * 取得狀態 Badge 類型
  */
-const getStatusType = (row: Record<string, unknown>): 'success' | 'error' => {
-  return row.isActive === true ? 'success' : 'error'
-}
+const getStatusType = (row: Record<string, unknown>): "success" | "error" => {
+  return row.isActive === true ? "success" : "error";
+};
 
 /**
  * 取得狀態顯示文字
  */
 const getStatusText = (row: Record<string, unknown>): string => {
-  console.log('row.isActive:', row.isActive)
-  return row.isActive === true ? '啟用' : '停用'
-}
+  console.log("row.isActive:", row.isActive);
+  return row.isActive === true ? "啟用" : "停用";
+};
 
 /**
  * 表格欄位配置
  */
 const columns = ref<ColumnConfig[]>([
   {
-    key: 'code',
-    label: '代號',
-    width: '120px',
+    key: "code",
+    label: "代號",
+    width: "120px",
     sortable: true,
   },
   {
-    key: 'name',
-    label: '中文名稱',
-    width: '180px',
+    key: "name",
+    label: "中文名稱",
+    width: "180px",
     sortable: false,
   },
   {
-    key: 'statusDisplay',
-    label: '狀態',
-    width: '120px',
-    align: 'center',
+    key: "statusDisplay",
+    label: "狀態",
+    width: "120px",
+    align: "center",
     sortable: true,
-    customRender: 'slot',
-    slotName: 'statusDisplay',
-    sortKey: 'status',
+    customRender: "slot",
+    slotName: "statusDisplay",
+    sortKey: "status",
   },
   {
-    key: 'createdDate',
-    label: '建立日',
-    width: '150px',
+    key: "createdDate",
+    label: "建立日",
+    width: "150px",
     sortable: false,
   },
   {
-    key: 'actions',
-    label: '操作',
-    width: '120px',
-    align: 'center',
-    customRender: 'actions',
+    key: "actions",
+    label: "操作",
+    width: "120px",
+    align: "center",
+    customRender: "actions",
   },
-])
+]);
 
 // ===== 載入資料 =====
 
@@ -155,21 +155,21 @@ const columns = ref<ColumnConfig[]>([
  */
 const loadModules = async () => {
   if (!hasPermission.value) {
-    return
+    return;
   }
 
-  isLoading.value = true
-  errorMessage.value = null
+  isLoading.value = true;
+  errorMessage.value = null;
 
   try {
-    modules.value = await moduleService.getAllModules()
+    modules.value = await moduleService.getAllModules();
   } catch (error) {
-    console.error('載入模組列表錯誤:', error)
+    console.error("載入模組列表錯誤:", error);
     // TODO: 顯示錯誤訊息給使用者
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // ===== 事件處理 =====
 
@@ -178,16 +178,16 @@ const loadModules = async () => {
  * 發出 row-view 事件，由父元件處理
  */
 const handleView = (row: Record<string, unknown>) => {
-  emit('row-view', row)
-}
+  emit("row-view", row);
+};
 
 /**
  * 處理新增按鈕點擊
  * 發出 add 事件,由父元件處理
  */
 const handleAdd = () => {
-  emit('add')
-}
+  emit("add");
+};
 
 // ===== 初始化 =====
 
@@ -195,8 +195,8 @@ const handleAdd = () => {
  * 元件掛載時自動載入資料
  */
 onMounted(() => {
-  loadModules()
-})
+  loadModules();
+});
 
 /**
  * 對外暴露方法（供父元件呼叫）
@@ -207,5 +207,5 @@ defineExpose({
    * 用於新增、編輯、刪除後刷新列表
    */
   refresh: loadModules,
-})
+});
 </script>

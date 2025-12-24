@@ -19,8 +19,8 @@
       </div>
 
       <!-- 錯誤訊息 -->
-      <h1 class="mb-2 typo-4xl-bold text-neutral-900">403</h1>
-      <h2 class="mb-4 typo-xl-medium text-neutral-700">存取權限不足</h2>
+      <h1 class="typo-4xl-bold mb-2 text-neutral-900">403</h1>
+      <h2 class="typo-xl-medium mb-4 text-neutral-700">存取權限不足</h2>
       <p class="mb-8 text-neutral-500">
         抱歉，您沒有權限存取此頁面。<br />
         請聯繫系統管理員取得相關權限。

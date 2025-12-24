@@ -132,7 +132,7 @@
       <!-- 取消按鈕 -->
       <button
         type="button"
-        class="group relative rounded-lg bg-gray-100 px-6 py-3 typo-sm-bold text-neutral-600 transition-colors cursor-pointer"
+        class="typo-sm-bold group relative cursor-pointer rounded-lg bg-gray-100 px-6 py-3 text-neutral-600 transition-colors"
         @click="handleCloseDeleteDialog"
       >
         <span
@@ -144,7 +144,7 @@
       <!-- 確認刪除按鈕 -->
       <button
         type="button"
-        class="group relative flex items-center gap-2 rounded-lg bg-semantic-warning px-6 py-3 typo-sm-bold text-white transition-colors cursor-pointer"
+        class="typo-sm-bold group relative flex cursor-pointer items-center gap-2 rounded-lg bg-semantic-warning px-6 py-3 text-white transition-colors"
         @click="handleConfirmDelete"
       >
         <span
@@ -165,7 +165,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted } from 'vue'
+import { ref, computed, watch, onUnmounted } from "vue";
 import {
   Drawer,
   DrawerHeader,
@@ -173,19 +173,19 @@ import {
   DrawerButton,
   InfoSection,
   InfoField,
-} from '@/components/drawer'
-import { Badge, Alert, Divider, Loading } from '@/components/common'
-import BaseDialog from '@/components/dialog/base-dialog.vue'
-import TaskProgressDialog from '@/components/dialog/task-progress-dialog.vue'
-import { environmentService } from '@/services/environment.service'
-import { taskService } from '@/services/task.service'
-import { ApiError } from '@/types/common'
-import type { EnvironmentDetailInfo } from '@/types/environment'
-import type { TaskProgressEvent } from '@/types/task'
-import { useAuthStore } from '@/stores/auth.store'
-import { useDrawerToast } from '@/composables/useDrawerToast'
+} from "@/components/drawer";
+import { Badge, Alert, Divider, Loading } from "@/components/common";
+import BaseDialog from "@/components/dialog/base-dialog.vue";
+import TaskProgressDialog from "@/components/dialog/task-progress-dialog.vue";
+import { environmentService } from "@/services/environment.service";
+import { taskService } from "@/services/task.service";
+import { ApiError } from "@/types/common";
+import type { EnvironmentDetailInfo } from "@/types/environment";
+import type { TaskProgressEvent } from "@/types/task";
+import { useAuthStore } from "@/stores/auth.store";
+import { useDrawerToast } from "@/composables/useDrawerToast";
 
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 
 /**
  * 環境詳細資訊 Drawer
@@ -196,75 +196,75 @@ interface Props {
   /**
    * 控制 Drawer 開關狀態
    */
-  isOpen: boolean
+  isOpen: boolean;
 
   /**
    * 環境 ID（用於呼叫 API）
    */
-  environmentId: string | null
+  environmentId: string | null;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
   /**
    * 關閉 Drawer
    */
-  close: []
+  close: [];
   /**
    * 刪除成功（通知父元件刷新列表）
    */
-  'delete-success': []
-}>()
+  "delete-success": [];
+}>();
 
 // ===== 按鈕狀態 =====
-const buttonText = ref('刪除環境')
-const isDeleting = ref(false)
+const buttonText = ref("刪除環境");
+const isDeleting = ref(false);
 
 // ===== 狀態管理 =====
 
 /**
  * 環境詳細資料
  */
-const environmentDetail = ref<EnvironmentDetailInfo | null>(null)
+const environmentDetail = ref<EnvironmentDetailInfo | null>(null);
 
 /**
  * 載入狀態
  */
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 /**
  * 錯誤訊息
  */
-const error = ref<string | null>(null)
+const error = ref<string | null>(null);
 
 // ===== Toast 狀態 =====
-const { toast, showToast, hideToast, resetToast } = useDrawerToast()
+const { toast, showToast, hideToast, resetToast } = useDrawerToast();
 
 /**
  * 是否顯示刪除按鈕
  * 條件：管理員 且 狀態為待刪除（TO_BE_DELETED）
  */
 const showDeleteButton = computed(() => {
-  return authStore.isAdmin && environmentDetail.value?.status === 'TO_BE_DELETED'
-})
+  return authStore.isAdmin && environmentDetail.value?.status === "TO_BE_DELETED";
+});
 
 // ===== 刪除確認 Dialog 狀態 =====
-const showDeleteDialog = ref(false)
+const showDeleteDialog = ref(false);
 
 // ===== 進度條 Dialog 狀態 =====
-const showProgressDialog = ref(false)
-const progressTitle = ref('')
-const progressDescription = ref('')
-const progressValue = ref(0)
+const showProgressDialog = ref(false);
+const progressTitle = ref("");
+const progressDescription = ref("");
+const progressValue = ref(0);
 
 // ===== 進度更新佇列 =====
-const progressQueue: Array<{ message: string; progress: number }> = []
-let isProcessingQueue = false
-const PROGRESS_ANIMATION_DURATION = 350
+const progressQueue: Array<{ message: string; progress: number }> = [];
+let isProcessingQueue = false;
+const PROGRESS_ANIMATION_DURATION = 350;
 
 // ===== SSE 連線關閉函數 =====
-let closeSSE: (() => void) | null = null
+let closeSSE: (() => void) | null = null;
 
 // ===== 計算屬性 =====
 
@@ -272,29 +272,29 @@ let closeSSE: (() => void) | null = null
  * 狀態顯示文字
  */
 const statusText = computed(() => {
-  if (!environmentDetail.value) return ''
+  if (!environmentDetail.value) return "";
 
   const statusMap: Record<string, string> = {
-    TO_BE_DELETED: '待刪除',
-    PENDING: '申請中',
-  }
+    TO_BE_DELETED: "待刪除",
+    PENDING: "申請中",
+  };
 
-  return statusMap[environmentDetail.value.status] || environmentDetail.value.status
-})
+  return statusMap[environmentDetail.value.status] || environmentDetail.value.status;
+});
 
 /**
  * 狀態 Badge 類型
  */
 const statusBadgeType = computed(() => {
-  if (!environmentDetail.value) return 'default'
+  if (!environmentDetail.value) return "default";
 
-  const typeMap: Record<string, 'success' | 'error' | 'default'> = {
-    TO_BE_DELETED: 'error',
-    PENDING: 'default',
-  }
+  const typeMap: Record<string, "success" | "error" | "default"> = {
+    TO_BE_DELETED: "error",
+    PENDING: "default",
+  };
 
-  return typeMap[environmentDetail.value.status] || 'default'
-})
+  return typeMap[environmentDetail.value.status] || "default";
+});
 
 // ===== Toast 方法 =====
 
@@ -302,15 +302,15 @@ const statusBadgeType = computed(() => {
  * 處理複製成功
  */
 const handleCopySuccess = () => {
-  showToast('success', '已複製到剪貼簿')
-}
+  showToast("success", "已複製到剪貼簿");
+};
 
 /**
  * 處理複製失敗
  */
 const handleCopyError = (errorMsg: string) => {
-  showToast('error', errorMsg)
-}
+  showToast("error", errorMsg);
+};
 
 // ===== 載入資料 =====
 
@@ -318,22 +318,22 @@ const handleCopyError = (errorMsg: string) => {
  * 載入環境詳細資料
  */
 const loadEnvironmentDetail = async () => {
-  if (!props.environmentId) return
+  if (!props.environmentId) return;
 
-  isLoading.value = true
-  error.value = null
-  environmentDetail.value = null
+  isLoading.value = true;
+  error.value = null;
+  environmentDetail.value = null;
 
   try {
-    const response = await environmentService.getEnvironmentDetailById(props.environmentId)
-    environmentDetail.value = response
+    const response = await environmentService.getEnvironmentDetailById(props.environmentId);
+    environmentDetail.value = response;
   } catch (err) {
-    console.error('載入環境詳細資料錯誤:', err)
-    error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'
+    console.error("載入環境詳細資料錯誤:", err);
+    error.value = err instanceof Error ? err.message : "發生未知錯誤，請稍後再試";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // ===== Drawer 關閉 =====
 
@@ -341,9 +341,9 @@ const loadEnvironmentDetail = async () => {
  * 處理關閉 Drawer
  */
 const handleClose = () => {
-  resetToast()
-  emit('close')
-}
+  resetToast();
+  emit("close");
+};
 
 // ===== 刪除環境功能 =====
 
@@ -351,43 +351,43 @@ const handleClose = () => {
  * 開啟刪除確認 Dialog
  */
 const handleOpenDeleteDialog = () => {
-  showDeleteDialog.value = true
-}
+  showDeleteDialog.value = true;
+};
 
 /**
  * 關閉刪除確認 Dialog
  */
 const handleCloseDeleteDialog = () => {
-  showDeleteDialog.value = false
-}
+  showDeleteDialog.value = false;
+};
 
 /**
  * 確認刪除
  */
 const handleConfirmDelete = async () => {
   if (!props.environmentId) {
-    console.error('缺少環境 ID')
-    return
+    console.error("缺少環境 ID");
+    return;
   }
 
   // 1. 關閉確認 Dialog
-  showDeleteDialog.value = false
+  showDeleteDialog.value = false;
 
   // 2. 重置進度佇列
-  resetProgressQueue()
+  resetProgressQueue();
 
   // 3. 開啟進度條 Dialog
-  progressTitle.value = '刪除環境中...'
-  progressDescription.value = '正在準備...'
-  progressValue.value = 0
-  showProgressDialog.value = true
+  progressTitle.value = "刪除環境中...";
+  progressDescription.value = "正在準備...";
+  progressValue.value = 0;
+  showProgressDialog.value = true;
 
   // 4. 設定按鈕載入狀態
-  isDeleting.value = true
+  isDeleting.value = true;
 
   try {
     // 5. 呼叫 API 取得 taskId
-    const { taskId } = await environmentService.deleteEnvironmentWithProgress(props.environmentId)
+    const { taskId } = await environmentService.deleteEnvironmentWithProgress(props.environmentId);
 
     // 6. 建立 SSE 連線
     closeSSE = taskService.subscribeProgress(taskId, {
@@ -395,35 +395,35 @@ const handleConfirmDelete = async () => {
       onCompleted: handleCompleted,
       onError: handleError,
       onConnectionError: handleConnectionError,
-    })
+    });
   } catch (err) {
-    console.error('啟動刪除環境任務失敗:', err)
-    showProgressDialog.value = false
-    isDeleting.value = false
+    console.error("啟動刪除環境任務失敗:", err);
+    showProgressDialog.value = false;
+    isDeleting.value = false;
 
     // 顯示錯誤 Toast
-    const errorMessage = getErrorMessage(err)
-    showToast('error', errorMessage)
+    const errorMessage = getErrorMessage(err);
+    showToast("error", errorMessage);
   }
-}
+};
 
 /**
  * 從錯誤物件中取得錯誤訊息
  */
 function getErrorMessage(err: unknown): string {
   if (err instanceof ApiError) {
-    return err.message
+    return err.message;
   }
 
   if (err instanceof Error) {
-    const axiosError = err as { response?: { data?: { message?: string } } }
+    const axiosError = err as { response?: { data?: { message?: string } } };
     if (axiosError.response?.data?.message) {
-      return axiosError.response.data.message
+      return axiosError.response.data.message;
     }
-    return err.message
+    return err.message;
   }
 
-  return '刪除環境失敗，請稍後再試'
+  return "刪除環境失敗，請稍後再試";
 }
 
 // ===== 進度處理 =====
@@ -435,8 +435,8 @@ function handleProgress(event: TaskProgressEvent) {
   progressQueue.push({
     message: event.message,
     progress: event.progress,
-  })
-  processProgressQueue()
+  });
+  processProgressQueue();
 }
 
 /**
@@ -444,67 +444,67 @@ function handleProgress(event: TaskProgressEvent) {
  */
 function processProgressQueue() {
   if (isProcessingQueue || progressQueue.length === 0) {
-    return
+    return;
   }
 
-  isProcessingQueue = true
+  isProcessingQueue = true;
 
-  const next = progressQueue.shift()!
-  progressDescription.value = next.message
-  progressValue.value = next.progress
+  const next = progressQueue.shift()!;
+  progressDescription.value = next.message;
+  progressValue.value = next.progress;
 
   setTimeout(() => {
-    isProcessingQueue = false
-    processProgressQueue()
-  }, PROGRESS_ANIMATION_DURATION)
+    isProcessingQueue = false;
+    processProgressQueue();
+  }, PROGRESS_ANIMATION_DURATION);
 }
 
 /**
  * 重置進度佇列
  */
 function resetProgressQueue() {
-  progressQueue.length = 0
-  isProcessingQueue = false
-  progressValue.value = 0
-  progressDescription.value = ''
+  progressQueue.length = 0;
+  isProcessingQueue = false;
+  progressValue.value = 0;
+  progressDescription.value = "";
 }
 
 /**
  * 處理任務完成
  */
 function handleCompleted(event: TaskProgressEvent) {
-  progressDescription.value = event.message
-  progressValue.value = 100
+  progressDescription.value = event.message;
+  progressValue.value = 100;
 
   setTimeout(() => {
-    showProgressDialog.value = false
-    isDeleting.value = false
+    showProgressDialog.value = false;
+    isDeleting.value = false;
 
     // 關閉 Drawer 並通知父元件刷新列表
-    emit('delete-success')
-    emit('close')
-  }, 500)
+    emit("delete-success");
+    emit("close");
+  }, 500);
 }
 
 /**
  * 處理任務錯誤
  */
 function handleError(event: TaskProgressEvent) {
-  showProgressDialog.value = false
-  isDeleting.value = false
+  showProgressDialog.value = false;
+  isDeleting.value = false;
 
-  const errorMessage = event.message || '刪除環境失敗，請再試一次'
-  showToast('error', errorMessage)
+  const errorMessage = event.message || "刪除環境失敗，請再試一次";
+  showToast("error", errorMessage);
 }
 
 /**
  * 處理 SSE 連線錯誤
  */
 function handleConnectionError() {
-  showProgressDialog.value = false
-  isDeleting.value = false
+  showProgressDialog.value = false;
+  isDeleting.value = false;
 
-  showToast('error', '連線中斷，請重新嘗試')
+  showToast("error", "連線中斷，請重新嘗試");
 }
 
 // ===== 監聽 =====
@@ -516,12 +516,12 @@ watch(
   () => props.isOpen,
   (isOpen) => {
     if (isOpen && props.environmentId) {
-      resetToast()
-      loadEnvironmentDetail()
+      resetToast();
+      loadEnvironmentDetail();
     }
   },
-  { immediate: true },
-)
+  { immediate: true }
+);
 
 // ===== 生命週期 =====
 
@@ -530,8 +530,8 @@ watch(
  */
 onUnmounted(() => {
   if (closeSSE) {
-    closeSSE()
-    closeSSE = null
+    closeSSE();
+    closeSSE = null;
   }
-})
+});
 </script>

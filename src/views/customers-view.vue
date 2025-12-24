@@ -40,118 +40,118 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { PageTitle, CardContainer } from '@/components/common'
-import TableContainer from '@/components/table/table-container.vue'
-import CustomerDetailDrawer from '@/components/customer/drawer-customer-detail.vue'
-import ApplyDeleteDialog from '@/components/customer/dialog-apply-delete.vue'
+import { ref, onMounted, onUnmounted } from "vue";
+import { PageTitle, CardContainer } from "@/components/common";
+import TableContainer from "@/components/table/table-container.vue";
+import CustomerDetailDrawer from "@/components/customer/drawer-customer-detail.vue";
+import ApplyDeleteDialog from "@/components/customer/dialog-apply-delete.vue";
 
 // 客戶列表表格元件
-import CustomerTable from '@/components/customer/table-customer.vue'
+import CustomerTable from "@/components/customer/table-customer.vue";
 
 // 卡片元件
-import TotalCustomerCard from '@/components/customer/card-total-customer.vue'
-import ActiveCustomerCard from '@/components/customer/card-active-customer.vue'
-import AttentionCustomerCard from '@/components/customer/card-attention-customer.vue'
+import TotalCustomerCard from "@/components/customer/card-total-customer.vue";
+import ActiveCustomerCard from "@/components/customer/card-active-customer.vue";
+import AttentionCustomerCard from "@/components/customer/card-attention-customer.vue";
 
-const containerRef = ref<HTMLElement | null>(null)
+const containerRef = ref<HTMLElement | null>(null);
 
 /**
  * Drawer 開啟狀態
  */
-const isDrawerOpen = ref(false)
+const isDrawerOpen = ref(false);
 
 /**
  * 選中的客戶 ID
  */
-const selectedCustomerId = ref<string | null>(null)
+const selectedCustomerId = ref<string | null>(null);
 
 /**
  * CustomerTable 元件引用
  */
-const customerTableRef = ref<InstanceType<typeof CustomerTable> | null>(null)
+const customerTableRef = ref<InstanceType<typeof CustomerTable> | null>(null);
 
 /**
  * 申請刪除 Dialog 顯示狀態
  */
-const showApplyDeleteDialog = ref(false)
+const showApplyDeleteDialog = ref(false);
 
 /**
  * 選中要刪除的客戶編號清單
  */
-const selectedCustomerNos = ref<string[]>([])
+const selectedCustomerNos = ref<string[]>([]);
 
 const handleWheel = (event: WheelEvent) => {
-  if (!containerRef.value) return
-  const canScroll = containerRef.value.scrollWidth > containerRef.value.clientWidth
-  if (!canScroll) return
-  event.preventDefault()
-  containerRef.value.scrollLeft += event.deltaY
-}
+  if (!containerRef.value) return;
+  const canScroll = containerRef.value.scrollWidth > containerRef.value.clientWidth;
+  if (!canScroll) return;
+  event.preventDefault();
+  containerRef.value.scrollLeft += event.deltaY;
+};
 
 /**
  * 處理查看客戶
  */
 const handleView = (row: Record<string, unknown>) => {
-  const customer = row as unknown as { id: string; name: string }
-  console.log('查看客戶:', customer)
+  const customer = row as unknown as { id: string; name: string };
+  console.log("查看客戶:", customer);
 
-  selectedCustomerId.value = customer.id
-  isDrawerOpen.value = true
-}
+  selectedCustomerId.value = customer.id;
+  isDrawerOpen.value = true;
+};
 
 /**
  * 處理關閉 Drawer
  */
 const handleCloseDrawer = () => {
-  isDrawerOpen.value = false
+  isDrawerOpen.value = false;
   setTimeout(() => {
-    selectedCustomerId.value = null
-  }, 300)
-}
+    selectedCustomerId.value = null;
+  }, 300);
+};
 
 /**
  * 處理批量操作
  */
 const handleBatchAction = (actionKey: string, selectedRows: Record<string, unknown>[]) => {
-  console.log('========== 批量操作 ==========')
-  console.log('操作類型:', actionKey)
-  console.log('選中的項目:', selectedRows)
-  console.log('==============================')
+  console.log("========== 批量操作 ==========");
+  console.log("操作類型:", actionKey);
+  console.log("選中的項目:", selectedRows);
+  console.log("==============================");
 
-  if (actionKey === 'applied') {
+  if (actionKey === "applied") {
     // 取得選中的客戶編號
-    const customers = selectedRows as unknown as Array<{ id: string; name: string }>
-    selectedCustomerNos.value = customers.map((c) => String(c.id))
+    const customers = selectedRows as unknown as Array<{ id: string; name: string }>;
+    selectedCustomerNos.value = customers.map((c) => String(c.id));
 
     // 開啟申請刪除 Dialog
-    showApplyDeleteDialog.value = true
+    showApplyDeleteDialog.value = true;
   }
-}
+};
 
 /**
  * 申請刪除成功後的處理
  */
 const handleApplyDeleteSuccess = () => {
   // 清空選取狀態
-  customerTableRef.value?.clearSelection()
+  customerTableRef.value?.clearSelection();
 
   // 重新載入資料
-  customerTableRef.value?.refresh()
+  customerTableRef.value?.refresh();
 
   // 清空選中的客戶編號
-  selectedCustomerNos.value = []
-}
+  selectedCustomerNos.value = [];
+};
 
 onMounted(() => {
   if (containerRef.value) {
-    containerRef.value.addEventListener('wheel', handleWheel, { passive: false })
+    containerRef.value.addEventListener("wheel", handleWheel, { passive: false });
   }
-})
+});
 
 onUnmounted(() => {
   if (containerRef.value) {
-    containerRef.value.removeEventListener('wheel', handleWheel)
+    containerRef.value.removeEventListener("wheel", handleWheel);
   }
-})
+});
 </script>

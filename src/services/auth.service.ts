@@ -5,10 +5,10 @@
  * - Refresh Token：由後端設為 HttpOnly Cookie（前端無法存取）
  */
 
-import apiClient from '@/utils/axios'
-import { ApiError } from '@/types/common'
-import type { ApiResponse } from '@/types/common'
-import type { LoginRequest, LoginResponse } from '@/types/auth'
+import apiClient from "@/utils/axios";
+import { ApiError } from "@/types/common";
+import type { ApiResponse } from "@/types/common";
+import type { LoginRequest, LoginResponse } from "@/types/auth";
 
 export const authService = {
   /**
@@ -17,17 +17,17 @@ export const authService = {
    * 失敗：丟出 ApiError
    */
   async login(loginData: LoginRequest): Promise<LoginResponse> {
-    const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/login', loginData)
+    const response = await apiClient.post<ApiResponse<LoginResponse>>("/auth/login", loginData);
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '登入失敗',
+        message: response.data.message || "登入失敗",
         data: response.data.data || null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -36,17 +36,17 @@ export const authService = {
    * 失敗：丟出 ApiError
    */
   async refreshToken(): Promise<LoginResponse> {
-    const response = await apiClient.post<ApiResponse<LoginResponse>>('/auth/refresh')
+    const response = await apiClient.post<ApiResponse<LoginResponse>>("/auth/refresh");
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '刷新 Token 失敗',
+        message: response.data.message || "刷新 Token 失敗",
         data: response.data.data || null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -55,16 +55,16 @@ export const authService = {
    * 失敗：丟出 ApiError
    */
   async logout(): Promise<void> {
-    const response = await apiClient.post<ApiResponse<null>>('/auth/logout')
+    const response = await apiClient.post<ApiResponse<null>>("/auth/logout");
 
     if (!response.data.success) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '登出失敗',
+        message: response.data.message || "登出失敗",
         data: null,
-      })
+      });
     }
 
     // 無需回傳任何資料
   },
-}
+};

@@ -12,7 +12,7 @@
         ref="triggerRef"
         type="button"
         :disabled="disabled"
-        class="flex h-9 w-full items-center justify-between rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-left text-sm disabled:bg-gray-100 disabled:text-neutral-500 focus:outline-none"
+        class="flex h-9 w-full items-center justify-between rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-left text-sm focus:outline-none disabled:bg-gray-100 disabled:text-neutral-500"
         @click="toggleCalendar"
       >
         <span :class="displayValue ? 'text-neutral-900' : 'text-neutral-400'">
@@ -101,7 +101,7 @@
         <div class="mt-3 flex justify-between border-t border-slate-200 pt-3">
           <button
             type="button"
-            class="typo-xs text-primary-500 hover:text-primary-600"
+            class="typo-xs hover:text-primary-600 text-primary-500"
             @click="selectToday"
           >
             今天
@@ -123,8 +123,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { FieldError } from '@/components/form'
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { FieldError } from "@/components/form";
 
 /**
  * 日期選擇器元件
@@ -139,48 +139,48 @@ import { FieldError } from '@/components/form'
 
 // ===== 型別定義 =====
 interface CalendarDay {
-  date: number
-  month: number
-  year: number
-  isCurrentMonth: boolean
-  isToday: boolean
-  isSelected: boolean
+  date: number;
+  month: number;
+  year: number;
+  isCurrentMonth: boolean;
+  isToday: boolean;
+  isSelected: boolean;
 }
 
 interface Props {
   /** 欄位標籤 */
-  label: string
+  label: string;
   /** 綁定值 (格式: YYYY/MM/DD) */
-  modelValue: string
+  modelValue: string;
   /** 佔位提示文字 */
-  placeholder?: string
+  placeholder?: string;
   /** 是否必填 */
-  required?: boolean
+  required?: boolean;
   /** 是否禁用 */
-  disabled?: boolean
+  disabled?: boolean;
   /** 錯誤訊息 */
-  errorMessage?: string
+  errorMessage?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  placeholder: '請選擇日期',
+  placeholder: "請選擇日期",
   required: false,
   disabled: false,
-})
+});
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string]
-}>()
+  "update:modelValue": [value: string];
+}>();
 
 // ===== 常數 =====
-const weekDays = ['日', '一', '二', '三', '四', '五', '六']
+const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
 
 // ===== 狀態管理 =====
-const isOpen = ref(false)
-const currentYear = ref(new Date().getFullYear())
-const currentMonth = ref(new Date().getMonth())
-const containerRef = ref<HTMLDivElement | null>(null)
-const triggerRef = ref<HTMLButtonElement | null>(null)
+const isOpen = ref(false);
+const currentYear = ref(new Date().getFullYear());
+const currentMonth = ref(new Date().getMonth());
+const containerRef = ref<HTMLDivElement | null>(null);
+const triggerRef = ref<HTMLButtonElement | null>(null);
 
 // ===== 計算屬性 =====
 
@@ -188,55 +188,55 @@ const triggerRef = ref<HTMLButtonElement | null>(null)
  * 顯示的日期值
  */
 const displayValue = computed(() => {
-  return props.modelValue || ''
-})
+  return props.modelValue || "";
+});
 
 /**
  * 解析 modelValue 為日期物件
  */
 const selectedDate = computed(() => {
-  if (!props.modelValue) return null
-  const parts = props.modelValue.split('/')
-  if (parts.length !== 3) return null
+  if (!props.modelValue) return null;
+  const parts = props.modelValue.split("/");
+  if (parts.length !== 3) return null;
 
-  const yearStr = parts[0]
-  const monthStr = parts[1]
-  const dateStr = parts[2]
+  const yearStr = parts[0];
+  const monthStr = parts[1];
+  const dateStr = parts[2];
 
-  if (!yearStr || !monthStr || !dateStr) return null
+  if (!yearStr || !monthStr || !dateStr) return null;
 
   return {
     year: parseInt(yearStr, 10),
     month: parseInt(monthStr, 10) - 1,
     date: parseInt(dateStr, 10),
-  }
-})
+  };
+});
 
 /**
  * 產生日曆日期陣列
  */
 const calendarDays = computed((): CalendarDay[] => {
-  const days: CalendarDay[] = []
-  const today = new Date()
+  const days: CalendarDay[] = [];
+  const today = new Date();
 
   // 取得當月第一天
-  const firstDay = new Date(currentYear.value, currentMonth.value, 1)
-  const startDayOfWeek = firstDay.getDay()
+  const firstDay = new Date(currentYear.value, currentMonth.value, 1);
+  const startDayOfWeek = firstDay.getDay();
 
   // 取得當月最後一天
-  const lastDay = new Date(currentYear.value, currentMonth.value + 1, 0)
-  const daysInMonth = lastDay.getDate()
+  const lastDay = new Date(currentYear.value, currentMonth.value + 1, 0);
+  const daysInMonth = lastDay.getDate();
 
   // 取得上個月最後幾天
-  const prevMonthLastDay = new Date(currentYear.value, currentMonth.value, 0)
-  const daysInPrevMonth = prevMonthLastDay.getDate()
+  const prevMonthLastDay = new Date(currentYear.value, currentMonth.value, 0);
+  const daysInPrevMonth = prevMonthLastDay.getDate();
 
   // 填充上個月的日期
   for (let i = startDayOfWeek - 1; i >= 0; i--) {
-    const date = daysInPrevMonth - i
-    const month = currentMonth.value - 1
-    const year = month < 0 ? currentYear.value - 1 : currentYear.value
-    const actualMonth = month < 0 ? 11 : month
+    const date = daysInPrevMonth - i;
+    const month = currentMonth.value - 1;
+    const year = month < 0 ? currentYear.value - 1 : currentYear.value;
+    const actualMonth = month < 0 ? 11 : month;
 
     days.push({
       date,
@@ -245,7 +245,7 @@ const calendarDays = computed((): CalendarDay[] => {
       isCurrentMonth: false,
       isToday: false,
       isSelected: false,
-    })
+    });
   }
 
   // 填充當月的日期
@@ -253,13 +253,13 @@ const calendarDays = computed((): CalendarDay[] => {
     const isToday =
       date === today.getDate() &&
       currentMonth.value === today.getMonth() &&
-      currentYear.value === today.getFullYear()
+      currentYear.value === today.getFullYear();
 
     const isSelected =
       selectedDate.value !== null &&
       date === selectedDate.value.date &&
       currentMonth.value === selectedDate.value.month &&
-      currentYear.value === selectedDate.value.year
+      currentYear.value === selectedDate.value.year;
 
     days.push({
       date,
@@ -268,15 +268,15 @@ const calendarDays = computed((): CalendarDay[] => {
       isCurrentMonth: true,
       isToday,
       isSelected,
-    })
+    });
   }
 
   // 填充下個月的日期（補滿 6 行 = 42 天）
-  const remainingDays = 42 - days.length
+  const remainingDays = 42 - days.length;
   for (let date = 1; date <= remainingDays; date++) {
-    const month = currentMonth.value + 1
-    const year = month > 11 ? currentYear.value + 1 : currentYear.value
-    const actualMonth = month > 11 ? 0 : month
+    const month = currentMonth.value + 1;
+    const year = month > 11 ? currentYear.value + 1 : currentYear.value;
+    const actualMonth = month > 11 ? 0 : month;
 
     days.push({
       date,
@@ -285,11 +285,11 @@ const calendarDays = computed((): CalendarDay[] => {
       isCurrentMonth: false,
       isToday: false,
       isSelected: false,
-    })
+    });
   }
 
-  return days
-})
+  return days;
+});
 
 // ===== 方法 =====
 
@@ -297,135 +297,135 @@ const calendarDays = computed((): CalendarDay[] => {
  * 切換日曆顯示/隱藏
  */
 const toggleCalendar = () => {
-  if (props.disabled) return
-  isOpen.value = !isOpen.value
+  if (props.disabled) return;
+  isOpen.value = !isOpen.value;
 
   // 開啟時，如果有選中日期，跳轉到該月份
   if (isOpen.value && selectedDate.value) {
-    currentYear.value = selectedDate.value.year
-    currentMonth.value = selectedDate.value.month
+    currentYear.value = selectedDate.value.year;
+    currentMonth.value = selectedDate.value.month;
   }
-}
+};
 
 /**
  * 上個月
  */
 const prevMonth = () => {
   if (currentMonth.value === 0) {
-    currentMonth.value = 11
-    currentYear.value--
+    currentMonth.value = 11;
+    currentYear.value--;
   } else {
-    currentMonth.value--
+    currentMonth.value--;
   }
-}
+};
 
 /**
  * 下個月
  */
 const nextMonth = () => {
   if (currentMonth.value === 11) {
-    currentMonth.value = 0
-    currentYear.value++
+    currentMonth.value = 0;
+    currentYear.value++;
   } else {
-    currentMonth.value++
+    currentMonth.value++;
   }
-}
+};
 
 /**
  * 選擇日期
  */
 const selectDate = (day: CalendarDay) => {
-  if (!day.isCurrentMonth) return
+  if (!day.isCurrentMonth) return;
 
-  const year = day.year
-  const month = String(day.month + 1).padStart(2, '0')
-  const date = String(day.date).padStart(2, '0')
-  const dateString = `${year}/${month}/${date}`
+  const year = day.year;
+  const month = String(day.month + 1).padStart(2, "0");
+  const date = String(day.date).padStart(2, "0");
+  const dateString = `${year}/${month}/${date}`;
 
-  emit('update:modelValue', dateString)
-  isOpen.value = false
-}
+  emit("update:modelValue", dateString);
+  isOpen.value = false;
+};
 
 /**
  * 選擇今天
  */
 const selectToday = () => {
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = String(today.getMonth() + 1).padStart(2, '0')
-  const date = String(today.getDate()).padStart(2, '0')
-  const dateString = `${year}/${month}/${date}`
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const date = String(today.getDate()).padStart(2, "0");
+  const dateString = `${year}/${month}/${date}`;
 
-  emit('update:modelValue', dateString)
-  isOpen.value = false
-}
+  emit("update:modelValue", dateString);
+  isOpen.value = false;
+};
 
 /**
  * 清除日期
  */
 const clearDate = () => {
-  emit('update:modelValue', '')
-  isOpen.value = false
-}
+  emit("update:modelValue", "");
+  isOpen.value = false;
+};
 
 /**
  * 取得日期格子的樣式
  */
 const getDayClasses = (day: CalendarDay): string => {
-  const classes: string[] = []
+  const classes: string[] = [];
 
   if (!day.isCurrentMonth) {
-    classes.push('text-neutral-300 cursor-default')
+    classes.push("text-neutral-300 cursor-default");
   } else if (day.isSelected) {
-    classes.push('bg-primary-500 text-white hover:bg-primary-600')
+    classes.push("bg-primary-500 text-white hover:bg-primary-600");
   } else if (day.isToday) {
-    classes.push('border border-primary-500 text-primary-500 hover:bg-primary-50')
+    classes.push("border border-primary-500 text-primary-500 hover:bg-primary-50");
   } else {
-    classes.push('text-neutral-700 hover:bg-gray-100 cursor-pointer')
+    classes.push("text-neutral-700 hover:bg-gray-100 cursor-pointer");
   }
 
-  return classes.join(' ')
-}
+  return classes.join(" ");
+};
 
 /**
  * 關閉日曆
  */
 const closeCalendar = () => {
-  isOpen.value = false
-}
+  isOpen.value = false;
+};
 
 /**
  * 處理點擊外部事件
  */
 const handleClickOutside = (event: MouseEvent) => {
-  if (!containerRef.value) return
+  if (!containerRef.value) return;
 
-  const target = event.target as Node
+  const target = event.target as Node;
   if (!containerRef.value.contains(target)) {
-    closeCalendar()
+    closeCalendar();
   }
-}
+};
 
 /**
  * Focus 到觸發按鈕
  * 供父元件呼叫
  */
 const focus = () => {
-  triggerRef.value?.focus()
-}
+  triggerRef.value?.focus();
+};
 
 // ===== 生命週期 =====
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
+  document.addEventListener("click", handleClickOutside);
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+  document.removeEventListener("click", handleClickOutside);
+});
 
 // ===== Expose =====
 defineExpose({
   focus,
-})
+});
 </script>

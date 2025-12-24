@@ -16,9 +16,9 @@
  * ```
  */
 
-export { default as Drawer } from './drawer.vue'
-export { default as DrawerHeader } from './drawer-header.vue'
-export { default as DrawerToast } from './drawer-toast.vue'
-export { default as InfoSection } from './info-section.vue'
-export { default as InfoField } from './info-field.vue'
-export { default as DrawerButton } from './drawer-button.vue'
+export { default as Drawer } from "./drawer.vue";
+export { default as DrawerHeader } from "./drawer-header.vue";
+export { default as DrawerToast } from "./drawer-toast.vue";
+export { default as InfoSection } from "./info-section.vue";
+export { default as InfoField } from "./info-field.vue";
+export { default as DrawerButton } from "./drawer-button.vue";

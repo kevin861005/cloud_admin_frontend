@@ -39,7 +39,7 @@
             >
               <div class="flex items-center gap-2">
                 <span
-                  class="inline-flex h-6 items-center justify-center whitespace-nowrap rounded border px-3 typo-xs-bold"
+                  class="typo-xs-bold inline-flex h-6 items-center justify-center whitespace-nowrap rounded border px-3"
                   :style="{
                     backgroundColor: getAlertStyle(alert.type).bgColor,
                     borderColor: getAlertStyle(alert.type).borderColor,
@@ -49,7 +49,7 @@
                   {{ getAlertStyle(alert.type).label }}
                 </span>
 
-                <span class="text-right typo-sm-medium text-neutral-700">
+                <span class="typo-sm-medium text-right text-neutral-700">
                   {{ alert.occurredAt }}
                 </span>
               </div>
@@ -87,10 +87,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { overviewService } from '@/services/overview.service'
-import type { AlertListData, AlertType } from '@/types/overview'
-import { BadgeButton, EmptyState } from '@/components/common'
+import { ref, onMounted } from "vue";
+import { overviewService } from "@/services/overview.service";
+import type { AlertListData, AlertType } from "@/types/overview";
+import { BadgeButton, EmptyState } from "@/components/common";
 
 /**
  * 異常警示資料
@@ -98,12 +98,12 @@ import { BadgeButton, EmptyState } from '@/components/common'
 const alertData = ref<AlertListData>({
   alerts: [],
   totalCount: 0,
-})
+});
 
 /**
  * 更新時間
  */
-const updateTime = ref<string>('--:--')
+const updateTime = ref<string>("--:--");
 
 /**
  * 根據異常類型返回對應的標籤樣式和文字
@@ -111,46 +111,46 @@ const updateTime = ref<string>('--:--')
 const getAlertStyle = (type: AlertType) => {
   const config = {
     CREATE_FAILED: {
-      label: '建立失敗',
-      bgColor: '#FD58580D',
-      borderColor: '#FD58581A',
-      textColor: '#FD5858',
+      label: "建立失敗",
+      bgColor: "#FD58580D",
+      borderColor: "#FD58581A",
+      textColor: "#FD5858",
     },
     RUNTIME_ERROR: {
-      label: '運行異常',
-      bgColor: '#F3F4F6',
-      borderColor: '#E4E6EA',
-      textColor: '#6B7280',
+      label: "運行異常",
+      bgColor: "#F3F4F6",
+      borderColor: "#E4E6EA",
+      textColor: "#6B7280",
     },
-  }
+  };
 
-  return config[type] || config.RUNTIME_ERROR
-}
+  return config[type] || config.RUNTIME_ERROR;
+};
 
 /**
  * 格式化時間
  */
 const formatUpdateTime = (isoString: string): string => {
   try {
-    const date = new Date(isoString)
-    const hours = date.getHours().toString().padStart(2, '0')
-    const minutes = date.getMinutes().toString().padStart(2, '0')
-    return `${hours}:${minutes}`
+    const date = new Date(isoString);
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
   } catch (error) {
-    console.error('時間格式化失敗:', error)
-    return '--:--'
+    console.error("時間格式化失敗:", error);
+    return "--:--";
   }
-}
+};
 
 /**
  * 點擊「更多」按鈕
  */
 const handleMoreClick = () => {
-  alert('跳轉到完整異常警示列表（尚未實作）')
-}
+  alert("跳轉到完整異常警示列表（尚未實作）");
+};
 
 onMounted(async () => {
-  alertData.value = await overviewService.getRecentAlerts()
-  updateTime.value = formatUpdateTime(new Date().toISOString())
-})
+  alertData.value = await overviewService.getRecentAlerts();
+  updateTime.value = formatUpdateTime(new Date().toISOString());
+});
 </script>

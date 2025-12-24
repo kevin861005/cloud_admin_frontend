@@ -2,14 +2,14 @@
  * 表單相關工具函數
  */
 
-import type { FieldError } from '@/types/common'
-import type { Ref } from 'vue'
+import type { FieldError } from "@/types/common";
+import type { Ref } from "vue";
 
 /**
  * 可 Focus 的元素介面
  */
 interface Focusable {
-  focus: () => void
+  focus: () => void;
 }
 
 /**
@@ -17,13 +17,13 @@ interface Focusable {
  */
 export interface FieldErrorConfig<T extends Record<string, string>> {
   /** 錯誤狀態物件 */
-  errors: Ref<T>
+  errors: Ref<T>;
   /** 後端欄位名 -> 前端欄位名 對應 */
-  fieldMap: Record<string, keyof T>
+  fieldMap: Record<string, keyof T>;
   /** 後端欄位名 -> Input Ref 對應（用於 focus） */
-  fieldRefMap?: Record<string, Ref<Focusable | null | undefined>>
+  fieldRefMap?: Record<string, Ref<Focusable | null | undefined>>;
   /** 欄位順序（用於決定 focus 哪個欄位） */
-  fieldOrder?: string[]
+  fieldOrder?: string[];
 }
 
 /**
@@ -49,47 +49,47 @@ export interface FieldErrorConfig<T extends Record<string, string>> {
  */
 export function processFieldErrors<T extends Record<string, string>>(
   fieldErrors: FieldError[],
-  config: FieldErrorConfig<T>,
+  config: FieldErrorConfig<T>
 ): void {
-  const { errors, fieldMap, fieldRefMap, fieldOrder } = config
+  const { errors, fieldMap, fieldRefMap, fieldOrder } = config;
 
   // 1. 清空現有錯誤
   for (const key in errors.value) {
-    errors.value[key] = '' as T[typeof key]
+    errors.value[key] = "" as T[typeof key];
   }
 
   // 2. 記錄哪些欄位有錯誤
-  const fieldsWithErrors = new Set<string>()
+  const fieldsWithErrors = new Set<string>();
 
   // 3. 遍歷所有欄位錯誤
   fieldErrors.forEach((fieldError) => {
-    const frontendField = fieldMap[fieldError.field]
+    const frontendField = fieldMap[fieldError.field];
     if (frontendField) {
-      const currentError = errors.value[frontendField]
+      const currentError = errors.value[frontendField];
       // 如果該欄位已經有錯誤訊息，用分號串接
       if (currentError) {
         errors.value[frontendField] =
-          `${currentError}; ${fieldError.message}` as T[typeof frontendField]
+          `${currentError}; ${fieldError.message}` as T[typeof frontendField];
       } else {
-        errors.value[frontendField] = fieldError.message as T[typeof frontendField]
+        errors.value[frontendField] = fieldError.message as T[typeof frontendField];
       }
       // 記錄有錯誤的欄位
-      fieldsWithErrors.add(fieldError.field)
+      fieldsWithErrors.add(fieldError.field);
     }
-  })
+  });
 
   // 4. 根據欄位順序，focus 到第一個有錯誤的欄位
   if (fieldRefMap && fieldOrder) {
     for (const field of fieldOrder) {
       if (fieldsWithErrors.has(field)) {
-        const refToFocus = fieldRefMap[field]
-        if (refToFocus?.value?.focus && typeof refToFocus.value.focus === 'function') {
+        const refToFocus = fieldRefMap[field];
+        if (refToFocus?.value?.focus && typeof refToFocus.value.focus === "function") {
           try {
-            refToFocus.value.focus()
+            refToFocus.value.focus();
           } catch (e) {
-            console.warn(`無法 focus 欄位 ${field}:`, e)
+            console.warn(`無法 focus 欄位 ${field}:`, e);
           }
-          break
+          break;
         }
       }
     }
@@ -111,11 +111,11 @@ export function processFieldErrors<T extends Record<string, string>>(
 export function createEmptyErrors<T extends string>(fields: T[]): Record<T, string> {
   return fields.reduce(
     (acc, field) => {
-      acc[field] = ''
-      return acc
+      acc[field] = "";
+      return acc;
     },
-    {} as Record<T, string>,
-  )
+    {} as Record<T, string>
+  );
 }
 
 /**
@@ -125,7 +125,7 @@ export function createEmptyErrors<T extends string>(fields: T[]): Record<T, stri
  * @returns 是否有錯誤
  */
 export function hasAnyError(errors: Record<string, string>): boolean {
-  return Object.values(errors).some((error) => error !== '')
+  return Object.values(errors).some((error) => error !== "");
 }
 
 /**
@@ -135,6 +135,6 @@ export function hasAnyError(errors: Record<string, string>): boolean {
  */
 export function clearErrors<T extends Record<string, string>>(errors: Ref<T>): void {
   for (const key in errors.value) {
-    errors.value[key] = '' as T[typeof key]
+    errors.value[key] = "" as T[typeof key];
   }
 }

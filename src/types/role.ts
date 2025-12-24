@@ -7,16 +7,16 @@
  */
 export interface Role {
   /** 角色 ID */
-  id: number
+  id: number;
   /** 角色名稱 (例如: "ADMIN", "USER") */
-  name: string
+  name: string;
   /** 角色描述 (例如: "系統管理員") */
-  description: string
+  description: string;
 }
 
 /**
  * 角色列表回應
  */
 export interface RoleListResponse {
-  roles: Role[]
+  roles: Role[];
 }

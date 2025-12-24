@@ -20,7 +20,7 @@
       >
         <div
           v-if="showTip && text"
-          class="fixed z-[9999] whitespace-nowrap rounded bg-neutral-600/80 px-2 py-1 typo-xs-bold text-white"
+          class="typo-xs-bold fixed z-[9999] whitespace-nowrap rounded bg-neutral-600/80 px-2 py-1 text-white"
           :style="tooltipStyle"
         >
           <!-- 左側箭頭（指向左側） -->
@@ -50,49 +50,49 @@
  * - background: neutral-600/80
  * - text: white, typo-xs-bold
  */
-import { ref, reactive } from 'vue'
+import { ref, reactive } from "vue";
 
 // ========== Props 定義 ==========
 interface Props {
   /** 提示文字 */
-  text: string
+  text: string;
 }
 
-defineProps<Props>()
+defineProps<Props>();
 
 // ========== 狀態 ==========
 /** 是否顯示提示 */
-const showTip = ref(false)
+const showTip = ref(false);
 
 /** 觸發元素的參考 */
-const triggerRef = ref<HTMLElement | null>(null)
+const triggerRef = ref<HTMLElement | null>(null);
 
 /** tooltip 的位置樣式 */
 const tooltipStyle = reactive({
-  top: '0px',
-  left: '0px',
-})
+  top: "0px",
+  left: "0px",
+});
 
 // ========== 事件處理 ==========
 /**
  * 滑鼠進入時計算 tooltip 位置
  */
 const handleMouseEnter = () => {
-  if (!triggerRef.value) return
+  if (!triggerRef.value) return;
 
-  const rect = triggerRef.value.getBoundingClientRect()
+  const rect = triggerRef.value.getBoundingClientRect();
 
   // tooltip 顯示在觸發元素的右下方
-  tooltipStyle.top = `${rect.bottom - 12}px`
-  tooltipStyle.left = `${rect.right + 4}px`
+  tooltipStyle.top = `${rect.bottom - 12}px`;
+  tooltipStyle.left = `${rect.right + 4}px`;
 
-  showTip.value = true
-}
+  showTip.value = true;
+};
 
 /**
  * 滑鼠離開時隱藏 tooltip
  */
 const handleMouseLeave = () => {
-  showTip.value = false
-}
+  showTip.value = false;
+};
 </script>

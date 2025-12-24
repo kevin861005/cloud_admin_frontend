@@ -102,26 +102,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { Drawer, DrawerHeader, DrawerToast, InfoSection, InfoField } from '@/components/drawer'
-import { Badge, Alert, Divider, Loading } from '@/components/common'
-import { customerService } from '@/services/customer.service'
-import type { CustomerDrawerInfo } from '@/types/customer'
-import { useDrawerToast } from '@/composables/useDrawerToast'
+import { ref, computed, watch } from "vue";
+import { Drawer, DrawerHeader, DrawerToast, InfoSection, InfoField } from "@/components/drawer";
+import { Badge, Alert, Divider, Loading } from "@/components/common";
+import { customerService } from "@/services/customer.service";
+import type { CustomerDrawerInfo } from "@/types/customer";
+import { useDrawerToast } from "@/composables/useDrawerToast";
 
 /**
  * 處理複製成功
  */
 const handleCopySuccess = () => {
-  showToast('success', '已複製到剪貼簿')
-}
+  showToast("success", "已複製到剪貼簿");
+};
 
 /**
  * 處理複製失敗
  */
 const handleCopyError = (error: string) => {
-  showToast('error', error)
-}
+  showToast("error", error);
+};
 
 /**
  * 客戶詳細資訊 Drawer
@@ -132,42 +132,42 @@ interface Props {
   /**
    * 控制 Drawer 開關狀態
    */
-  isOpen: boolean
+  isOpen: boolean;
 
   /**
    * 客戶 ID（用於呼叫 API）
    */
-  customerId: string | null
+  customerId: string | null;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
   /**
    * 關閉 Drawer
    */
-  close: []
-}>()
+  close: [];
+}>();
 
 // ===== 狀態管理 =====
 
 /**
  * 客戶詳細資料
  */
-const customerDetail = ref<CustomerDrawerInfo | null>(null)
+const customerDetail = ref<CustomerDrawerInfo | null>(null);
 
 /**
  * 載入狀態
  */
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 /**
  * 錯誤訊息
  */
-const error = ref<string | null>(null)
+const error = ref<string | null>(null);
 
 // ===== Toast 狀態 =====
-const { toast, showToast, hideToast, resetToast } = useDrawerToast()
+const { toast, showToast, hideToast, resetToast } = useDrawerToast();
 
 // ===== 計算屬性 =====
 
@@ -175,31 +175,31 @@ const { toast, showToast, hideToast, resetToast } = useDrawerToast()
  * 狀態顯示文字
  */
 const statusText = computed(() => {
-  if (!customerDetail.value) return ''
+  if (!customerDetail.value) return "";
 
   const statusMap = {
-    ACTIVE: '活躍',
-    INACTIVE: '低活躍',
-    UNUSED: '未使用',
-  }
+    ACTIVE: "活躍",
+    INACTIVE: "低活躍",
+    UNUSED: "未使用",
+  };
 
-  return statusMap[customerDetail.value.status] || customerDetail.value.status
-})
+  return statusMap[customerDetail.value.status] || customerDetail.value.status;
+});
 
 /**
  * 狀態 Badge 類型
  */
 const statusBadgeType = computed(() => {
-  if (!customerDetail.value) return 'default'
+  if (!customerDetail.value) return "default";
 
   const typeMap = {
-    ACTIVE: 'success',
-    INACTIVE: 'default',
-    UNUSED: 'error',
-  }
+    ACTIVE: "success",
+    INACTIVE: "default",
+    UNUSED: "error",
+  };
 
-  return typeMap[customerDetail.value.status] as 'success' | 'error' | 'default'
-})
+  return typeMap[customerDetail.value.status] as "success" | "error" | "default";
+});
 
 // ===== 方法 =====
 
@@ -207,31 +207,31 @@ const statusBadgeType = computed(() => {
  * 載入客戶詳細資料
  */
 const loadCustomerDetail = async () => {
-  if (!props.customerId) return
+  if (!props.customerId) return;
 
-  isLoading.value = true
-  error.value = null
-  customerDetail.value = null
+  isLoading.value = true;
+  error.value = null;
+  customerDetail.value = null;
 
   try {
     // TODO: 上線前切換為實際 API
-    customerDetail.value = await customerService.getCustomerById(props.customerId)
+    customerDetail.value = await customerService.getCustomerById(props.customerId);
   } catch (err) {
-    console.error('載入客戶詳細資料錯誤:', err)
-    error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'
+    console.error("載入客戶詳細資料錯誤:", err);
+    error.value = err instanceof Error ? err.message : "發生未知錯誤，請稍後再試";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 /**
  * 處理關閉 Drawer
  */
 const handleClose = () => {
   // 關閉 Toast
-  resetToast()
-  emit('close')
-}
+  resetToast();
+  emit("close");
+};
 
 // ===== 監聽 =====
 
@@ -244,11 +244,11 @@ watch(
   (isOpen) => {
     if (isOpen && props.customerId) {
       // 關閉 Toast
-      resetToast()
+      resetToast();
       // 載入資料
-      loadCustomerDetail()
+      loadCustomerDetail();
     }
   },
-  { immediate: true },
-)
+  { immediate: true }
+);
 </script>

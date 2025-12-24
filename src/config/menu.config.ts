@@ -5,7 +5,7 @@
  * 前端會根據使用者的權限清單動態過濾這些選單項目
  */
 
-import type { MenuItem } from '@/types/menu'
+import type { MenuItem } from "@/types/menu";
 
 /**
  * 完整的選單配置
@@ -19,51 +19,51 @@ import type { MenuItem } from '@/types/menu'
 export const menuConfig: MenuItem[] = [
   // ==================== 主功能 ====================
   {
-    key: 'overview',
-    label: '總覽',
-    type: 'item',
-    icon: 'menu-dashboard',
-    requiredPermissions: ['overview'],
+    key: "overview",
+    label: "總覽",
+    type: "item",
+    icon: "menu-dashboard",
+    requiredPermissions: ["overview"],
   },
   {
-    key: 'customers',
-    label: '客戶管理',
-    type: 'item',
-    icon: 'menu-customer',
-    requiredPermissions: ['customers'],
+    key: "customers",
+    label: "客戶管理",
+    type: "item",
+    icon: "menu-customer",
+    requiredPermissions: ["customers"],
   },
   {
-    key: 'environments',
-    label: '環境管理',
-    type: 'item',
-    icon: 'menu-environment',
-    requiredPermissions: ['environments'],
+    key: "environments",
+    label: "環境管理",
+    type: "item",
+    icon: "menu-environment",
+    requiredPermissions: ["environments"],
   },
 
   // ==================== 設定群組 ====================
   {
-    key: 'settings',
-    label: '設定',
-    type: 'group',
-    icon: 'menu-setting',
+    key: "settings",
+    label: "設定",
+    type: "group",
+    icon: "menu-setting",
     // 只要有 settings 權限就顯示整個群組
-    requiredPermissions: ['settings'],
+    requiredPermissions: ["settings"],
     // 預設收合
     defaultExpanded: false,
     children: [
       // 帳號管理
       {
-        key: 'settings.accounts',
-        label: '帳號管理',
-        type: 'item',
-        icon: 'menu-account',
-        requiredPermissions: ['settings.accounts'],
+        key: "settings.accounts",
+        label: "帳號管理",
+        type: "item",
+        icon: "menu-account",
+        requiredPermissions: ["settings.accounts"],
       },
       // 設定檔（分隔線，不可點擊，不需要權限）
       {
-        key: 'settings.divider',
-        label: '設定檔',
-        type: 'divider',
+        key: "settings.divider",
+        label: "設定檔",
+        type: "divider",
         // 分隔線不需要權限檢查
         requiredPermissions: [],
       },
@@ -77,28 +77,28 @@ export const menuConfig: MenuItem[] = [
       // },
       // 模組設定
       {
-        key: 'settings.modules',
-        label: '模組設定',
-        type: 'item',
-        icon: 'modules',
-        requiredPermissions: ['settings.modules'],
+        key: "settings.modules",
+        label: "模組設定",
+        type: "item",
+        icon: "modules",
+        requiredPermissions: ["settings.modules"],
       },
       // 產業別設定
       {
-        key: 'settings.industries',
-        label: '產業別設定',
-        type: 'item',
-        icon: 'industries',
-        requiredPermissions: ['settings.industries'],
+        key: "settings.industries",
+        label: "產業別設定",
+        type: "item",
+        icon: "industries",
+        requiredPermissions: ["settings.industries"],
       },
       // 經銷商設定
       {
-        key: 'settings.dealers',
-        label: '經銷商設定',
-        type: 'item',
-        icon: 'dealers',
-        requiredPermissions: ['settings.dealers'],
+        key: "settings.dealers",
+        label: "經銷商設定",
+        type: "item",
+        icon: "dealers",
+        requiredPermissions: ["settings.dealers"],
       },
     ],
   },
-]
+];

@@ -2,7 +2,7 @@
   <span
     :class="[
       'inline-flex items-center justify-center',
-      'min-w-[54px] min-h-6 py-1 px-3 rounded border',
+      'min-h-6 min-w-[54px] rounded border px-3 py-1',
       'break-all',
       fontClass,
     ]"

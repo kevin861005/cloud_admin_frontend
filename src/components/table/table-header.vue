@@ -5,7 +5,7 @@
     <div class="flex items-center gap-3">
       <h2 class="typo-base-bold text-neutral-700">{{ title }}</h2>
       <span
-        class="flex h-6 items-center justify-center rounded border border-primary-500/30 bg-primary-500/5 px-2 typo-xs-bold text-primary-500"
+        class="typo-xs-bold flex h-6 items-center justify-center rounded border border-primary-500/30 bg-primary-500/5 px-2 text-primary-500"
       >
         {{ totalCount }}
       </span>
@@ -23,9 +23,9 @@
 
 // ===== Props 定義 =====
 interface Props {
-  title: string // 標題文字（例如：「客戶列表」）
-  totalCount: number // 總資料數（例如：16）
+  title: string; // 標題文字（例如：「客戶列表」）
+  totalCount: number; // 總資料數（例如：16）
 }
 
-defineProps<Props>()
+defineProps<Props>();
 </script>

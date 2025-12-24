@@ -2,7 +2,7 @@
   <!-- 新增按鈕 -->
   <button
     v-if="showAddButton"
-    class="group relative rounded-lg bg-primary-500 px-4 py-2 typo-sm-medium text-white transition-colors focus:outline-none"
+    class="typo-sm-medium group relative rounded-lg bg-primary-500 px-4 py-2 text-white transition-colors focus:outline-none"
     @click="handleAddClick"
   >
     <!-- 黑色遮罩層（只影響背景） -->
@@ -32,25 +32,25 @@
 
 interface Props {
   /** 是否顯示新增按鈕 */
-  showAddButton?: boolean
+  showAddButton?: boolean;
   /** 新增按鈕文字 */
-  addButtonText?: string
+  addButtonText?: string;
 }
 
 withDefaults(defineProps<Props>(), {
   showAddButton: false,
-  addButtonText: '新增',
-})
+  addButtonText: "新增",
+});
 
 const emit = defineEmits<{
   /** 新增按鈕點擊 */
-  'add-click': []
-}>()
+  "add-click": [];
+}>();
 
 /**
  * 處理新增按鈕點擊
  */
 const handleAddClick = () => {
-  emit('add-click')
-}
+  emit("add-click");
+};
 </script>

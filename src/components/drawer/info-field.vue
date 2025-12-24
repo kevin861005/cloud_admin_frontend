@@ -2,7 +2,7 @@
   <!-- 水平排列（預設） -->
   <div v-if="!vertical" class="flex items-center">
     <!-- 左側：標題框（最大寬度 80px） -->
-    <div class="w-[80px] text-left typo-sm text-neutral-600">
+    <div class="typo-sm w-[80px] text-left text-neutral-600">
       {{ label }}
     </div>
 
@@ -12,7 +12,7 @@
     <!-- 右側：內容區（佔據剩餘空間） -->
     <div class="flex flex-1 items-center justify-end gap-2">
       <!-- 如果有傳入 value，顯示文字 -->
-      <span v-if="value !== undefined" class="typo-sm-medium text-neutral-500 whitespace-nowrap">
+      <span v-if="value !== undefined" class="typo-sm-medium whitespace-nowrap text-neutral-500">
         {{ value }}
       </span>
 
@@ -30,7 +30,7 @@
   <!-- 垂直排列 -->
   <div v-else class="flex flex-col">
     <!-- 標題（不限制寬度） -->
-    <div class="text-left typo-sm text-neutral-600">
+    <div class="typo-sm text-left text-neutral-600">
       {{ label }}
     </div>
 
@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { CopyButton } from '@/components/common'
+import { CopyButton } from "@/components/common";
 
 /**
  * InfoField 元件
@@ -119,7 +119,7 @@ interface Props {
    * 欄位標題（左側顯示）
    * @example '姓名', '使用狀態', '權限'
    */
-  label: string
+  label: string;
 
   /**
    * 欄位值（右側顯示）
@@ -127,14 +127,14 @@ interface Props {
    * 如果需要顯示 Badge 等複雜內容，請使用 slot
    * @example 'Alan', 'Alan@interinfo.com'
    */
-  value?: string
+  value?: string;
 
   /**
    * 是否顯示複製圖示
    * 僅在有 value 時生效（使用 slot 時不會顯示）
    * @default false
    */
-  showCopy?: boolean
+  showCopy?: boolean;
 
   /**
    * 是否使用垂直排列
@@ -142,11 +142,11 @@ interface Props {
    * false: 標題在左側，內容在右側（預設）
    * @default false
    */
-  vertical?: boolean
+  vertical?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
   showCopy: false,
   vertical: false,
-})
+});
 </script>

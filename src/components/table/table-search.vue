@@ -6,7 +6,7 @@
       v-model="localValue"
       type="text"
       :placeholder="placeholder"
-      class="h-8 w-full rounded-md border border-neutral-200 py-1 px-3 typo-sm placeholder:text-neutral-400 focus:outline-none focus:border-primary-500"
+      class="typo-sm h-8 w-full rounded-md border border-neutral-200 px-3 py-1 placeholder:text-neutral-400 focus:border-primary-500 focus:outline-none"
       @input="handleInput"
     />
 
@@ -20,8 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import searchIcon from '@/assets/icons/table/search.svg'
+import { ref, watch } from "vue";
+import searchIcon from "@/assets/icons/table/search.svg";
 
 /**
  * Table 搜尋框元件
@@ -40,30 +40,30 @@ import searchIcon from '@/assets/icons/table/search.svg'
 
 // ===== Props 定義 =====
 interface Props {
-  modelValue: string // 搜尋關鍵字
-  placeholder?: string // 提示文字
+  modelValue: string; // 搜尋關鍵字
+  placeholder?: string; // 提示文字
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  placeholder: '搜尋...',
-})
+  placeholder: "搜尋...",
+});
 
 // ===== Emits 定義 =====
 const emit = defineEmits<{
-  'update:modelValue': [value: string] // 搜尋關鍵字改變事件
-}>()
+  "update:modelValue": [value: string]; // 搜尋關鍵字改變事件
+}>();
 
 // ===== 內部狀態 =====
 
 /**
  * 本地輸入值（即時更新，用於顯示）
  */
-const localValue = ref(props.modelValue)
+const localValue = ref(props.modelValue);
 
 /**
  * Debounce 定時器
  */
-let debounceTimer: ReturnType<typeof setTimeout> | null = null
+let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 // ===== 監聽外部變化 =====
 
@@ -75,10 +75,10 @@ watch(
   () => props.modelValue,
   (newValue) => {
     if (newValue !== localValue.value) {
-      localValue.value = newValue
+      localValue.value = newValue;
     }
-  },
-)
+  }
+);
 
 // ===== 事件處理 =====
 
@@ -92,12 +92,12 @@ watch(
 const handleInput = () => {
   // 清除之前的定時器
   if (debounceTimer) {
-    clearTimeout(debounceTimer)
+    clearTimeout(debounceTimer);
   }
 
   // 設定新的定時器
   debounceTimer = setTimeout(() => {
-    emit('update:modelValue', localValue.value.trim())
-  }, 500)
-}
+    emit("update:modelValue", localValue.value.trim());
+  }, 500);
+};
 </script>

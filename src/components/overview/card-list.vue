@@ -1,14 +1,14 @@
 <template>
-  <div class="bg-white rounded-lg shadow-md py-6 px-5 flex flex-col" :style="{ height: height }">
-    <div class="flex flex-col h-full">
+  <div class="flex flex-col rounded-lg bg-white px-5 py-6 shadow-md" :style="{ height: height }">
+    <div class="flex h-full flex-col">
       <!-- 標題列 -->
-      <div class="flex items-center h-6 mb-6">
+      <div class="mb-6 flex h-6 items-center">
         <div class="flex items-center gap-3">
           <h3 class="typo-base-bold text-neutral-700">{{ title }}</h3>
 
           <!-- 總筆數標籤 -->
           <span
-            class="inline-flex items-center justify-center min-w-[24px] h-6 px-2 py-1 typo-xs-bold rounded text-[#398ff9] border border-[#398ff91a] bg-[#398ff90d]"
+            class="typo-xs-bold inline-flex h-6 min-w-[24px] items-center justify-center rounded border border-[#398ff91a] bg-[#398ff90d] px-2 py-1 text-[#398ff9]"
           >
             {{ totalCount }}
           </span>
@@ -16,17 +16,17 @@
       </div>
 
       <!-- 表格區域 -->
-      <div class="flex flex-col h-[248px]">
+      <div class="flex h-[248px] flex-col">
         <!-- 表頭 -->
-        <div class="flex items-center h-5 gap-5 pb-3 mb-3 border-b border-black/10">
+        <div class="mb-3 flex h-5 items-center gap-5 border-b border-black/10 pb-3">
           <div
             v-for="column in columns"
             :key="column.key"
             :style="{ flex: column.flex || 1 }"
             :class="[
-              'flex items-center h-5 gap-1 typo-sm-medium text-neutral-700 whitespace-nowrap',
+              'typo-sm-medium flex h-5 items-center gap-1 whitespace-nowrap text-neutral-700',
               column.sortable &&
-                'cursor-pointer select-none hover:text-neutral-800 transition-colors',
+                'cursor-pointer select-none transition-colors hover:text-neutral-800',
               getAlignClass(column.align),
             ]"
             @click="column.sortable && handleSort(column.key)"
@@ -48,7 +48,7 @@
                 v-else-if="sortState.order === 'asc'"
                 src="@/assets/icons/common/cm-arrow-up.svg"
                 alt="升冪"
-                class="h-4 w-4 icon-primary"
+                class="icon-primary h-4 w-4"
               />
 
               <!-- 降冪排序 -->
@@ -56,14 +56,14 @@
                 v-else
                 src="@/assets/icons/common/cm-arrow-down.svg"
                 alt="降冪"
-                class="h-4 w-4 icon-primary"
+                class="icon-primary h-4 w-4"
               />
             </span>
           </div>
         </div>
 
         <!-- 內容區域 -->
-        <div class="flex-1 min-h-0">
+        <div class="min-h-0 flex-1">
           <!-- Loading 狀態 -->
           <Loading v-if="loading" message="載入資料中..." :show-spinner="true" />
 
@@ -79,11 +79,11 @@
           />
 
           <!-- 資料列表 -->
-          <div v-else class="space-y-3 pb-3 border-b border-black/10">
+          <div v-else class="space-y-3 border-b border-black/10 pb-3">
             <div
               v-for="(item, index) in paginatedData"
               :key="index"
-              class="flex items-center gap-5 py-1 rounded hover-bg cursor-pointer"
+              class="hover-bg flex cursor-pointer items-center gap-5 rounded py-1"
               @click="emit('rowClick', item)"
             >
               <div
@@ -105,7 +105,7 @@
       </div>
 
       <!-- 分頁控制（即使只有一頁也顯示） -->
-      <div v-if="!loading && !error" class="flex items-center justify-between h-8 mt-auto pt-6">
+      <div v-if="!loading && !error" class="mt-auto flex h-8 items-center justify-between pt-6">
         <div class="typo-sm-medium text-neutral-600">
           第{{ currentPage }}頁，共{{ totalPages }}頁
         </div>
@@ -133,83 +133,83 @@
 </template>
 
 <script setup lang="ts" generic="T extends Record<string, any>">
-import { ref, computed, reactive, watch } from 'vue'
-import { Alert, Loading, EmptyState, PaginationButton } from '@/components/common'
-import type { CardListColumn, CardListSortState } from '@/types/overview'
-import PrevIcon from '@/assets/icons/common/cm-arrow-left.svg'
-import NextIcon from '@/assets/icons/common/cm-arrow-right.svg'
+import { ref, computed, reactive, watch } from "vue";
+import { Alert, Loading, EmptyState, PaginationButton } from "@/components/common";
+import type { CardListColumn, CardListSortState } from "@/types/overview";
+import PrevIcon from "@/assets/icons/common/cm-arrow-left.svg";
+import NextIcon from "@/assets/icons/common/cm-arrow-right.svg";
 
 // ==================== Props ====================
 
 interface Props {
   /** 卡片標題 */
-  title: string
+  title: string;
 
   /** 資料陣列 */
-  data: T[]
+  data: T[];
 
   /** 欄位定義 */
-  columns: CardListColumn[]
+  columns: CardListColumn[];
 
   /** 每頁顯示筆數（預設 6） */
-  pageSize?: number
+  pageSize?: number;
 
   /** 卡片高度（預設 '396px'） */
-  height?: string
+  height?: string;
 
   /** 載入狀態（預設 false） */
-  loading?: boolean
+  loading?: boolean;
 
   /** 錯誤訊息 */
-  error?: string
+  error?: string;
 
   /** 空資料標題 */
-  emptyTitle?: string
+  emptyTitle?: string;
 
   /** 空資料描述 */
-  emptyDescription?: string
+  emptyDescription?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   pageSize: 6,
-  height: '396px',
+  height: "396px",
   loading: false,
-  error: '',
-  emptyTitle: '目前沒有資料',
-  emptyDescription: '暫時沒有可顯示的內容',
-})
+  error: "",
+  emptyTitle: "目前沒有資料",
+  emptyDescription: "暫時沒有可顯示的內容",
+});
 
 // ==================== Emits ====================
 
 const emit = defineEmits<{
   /** 行點擊事件 */
-  rowClick: [item: T]
-}>()
+  rowClick: [item: T];
+}>();
 
 // ==================== 狀態管理 ====================
 
 /** 當前頁碼(從 1 開始) */
-const currentPage = ref(1)
+const currentPage = ref(1);
 
 /** 排序狀態 */
 const sortState = reactive<CardListSortState>({
   key: null,
   order: null,
-})
+});
 
 // ==================== 計算屬性 ====================
 
 /**
  * 總筆數
  */
-const totalCount = computed(() => props.data.length)
+const totalCount = computed(() => props.data.length);
 
 /**
  * 計算總頁數
  */
 const totalPages = computed(() => {
-  return Math.max(1, Math.ceil(totalCount.value / props.pageSize))
-})
+  return Math.max(1, Math.ceil(totalCount.value / props.pageSize));
+});
 
 /**
  * 已排序的資料
@@ -218,64 +218,64 @@ const totalPages = computed(() => {
 const sortedData = computed(() => {
   // 如果沒有排序，直接返回原始資料
   if (!sortState.key || !sortState.order) {
-    return props.data
+    return props.data;
   }
 
   // 複製陣列以避免修改原始資料
-  const sorted = [...props.data]
+  const sorted = [...props.data];
 
   // 根據排序欄位和方向進行排序
   sorted.sort((a, b) => {
-    const aValue = a[sortState.key as keyof T]
-    const bValue = b[sortState.key as keyof T]
+    const aValue = a[sortState.key as keyof T];
+    const bValue = b[sortState.key as keyof T];
 
     // 處理 null/undefined
-    if (aValue == null && bValue == null) return 0
-    if (aValue == null) return sortState.order === 'asc' ? 1 : -1
-    if (bValue == null) return sortState.order === 'asc' ? -1 : 1
+    if (aValue == null && bValue == null) return 0;
+    if (aValue == null) return sortState.order === "asc" ? 1 : -1;
+    if (bValue == null) return sortState.order === "asc" ? -1 : 1;
 
     // 字串比較
-    if (typeof aValue === 'string' && typeof bValue === 'string') {
-      const comparison = aValue.localeCompare(bValue, 'zh-TW')
-      return sortState.order === 'asc' ? comparison : -comparison
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      const comparison = aValue.localeCompare(bValue, "zh-TW");
+      return sortState.order === "asc" ? comparison : -comparison;
     }
 
     // 數字比較
-    if (typeof aValue === 'number' && typeof bValue === 'number') {
-      return sortState.order === 'asc' ? aValue - bValue : bValue - aValue
+    if (typeof aValue === "number" && typeof bValue === "number") {
+      return sortState.order === "asc" ? aValue - bValue : bValue - aValue;
     }
 
     // 其他型別轉字串比較
-    const comparison = String(aValue).localeCompare(String(bValue), 'zh-TW')
-    return sortState.order === 'asc' ? comparison : -comparison
-  })
+    const comparison = String(aValue).localeCompare(String(bValue), "zh-TW");
+    return sortState.order === "asc" ? comparison : -comparison;
+  });
 
-  return sorted
-})
+  return sorted;
+});
 
 /**
  * 計算當前頁要顯示的資料(前端分頁)
  * 使用已排序的資料進行分頁
  */
 const paginatedData = computed(() => {
-  const startIndex = (currentPage.value - 1) * props.pageSize
-  const endIndex = startIndex + props.pageSize
-  return sortedData.value.slice(startIndex, endIndex)
-})
+  const startIndex = (currentPage.value - 1) * props.pageSize;
+  const endIndex = startIndex + props.pageSize;
+  return sortedData.value.slice(startIndex, endIndex);
+});
 
 // ==================== 方法 ====================
 
 /**
  * 取得對齊方式的 CSS class
  */
-function getAlignClass(align?: 'left' | 'center' | 'right'): string {
+function getAlignClass(align?: "left" | "center" | "right"): string {
   switch (align) {
-    case 'center':
-      return 'text-center justify-center'
-    case 'right':
-      return 'text-right justify-end'
+    case "center":
+      return "text-center justify-center";
+    case "right":
+      return "text-right justify-end";
     default:
-      return 'text-left justify-start'
+      return "text-left justify-start";
   }
 }
 
@@ -292,23 +292,23 @@ function getAlignClass(align?: 'left' | 'center' | 'right'): string {
 function handleSort(key: string) {
   if (sortState.key !== key) {
     // 切換到新欄位，預設升冪
-    sortState.key = key
-    sortState.order = 'asc'
+    sortState.key = key;
+    sortState.order = "asc";
   } else {
     // 同一欄位，切換排序方向
-    if (sortState.order === 'asc') {
-      sortState.order = 'desc'
-    } else if (sortState.order === 'desc') {
+    if (sortState.order === "asc") {
+      sortState.order = "desc";
+    } else if (sortState.order === "desc") {
       // 降冪後取消排序
-      sortState.key = null
-      sortState.order = null
+      sortState.key = null;
+      sortState.order = null;
     } else {
-      sortState.order = 'asc'
+      sortState.order = "asc";
     }
   }
 
   // 排序後重置到第一頁
-  currentPage.value = 1
+  currentPage.value = 1;
 }
 
 /**
@@ -316,7 +316,7 @@ function handleSort(key: string) {
  */
 function previousPage() {
   if (currentPage.value > 1) {
-    currentPage.value--
+    currentPage.value--;
   }
 }
 
@@ -325,7 +325,7 @@ function previousPage() {
  */
 function nextPage() {
   if (currentPage.value < totalPages.value) {
-    currentPage.value++
+    currentPage.value++;
   }
 }
 
@@ -338,8 +338,8 @@ watch(
   () => props.data,
   () => {
     if (currentPage.value > totalPages.value) {
-      currentPage.value = 1
+      currentPage.value = 1;
     }
-  },
-)
+  }
+);
 </script>

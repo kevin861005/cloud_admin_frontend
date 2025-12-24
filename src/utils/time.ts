@@ -14,17 +14,17 @@
  * // "2025/10/13 14:30:45"
  */
 export function formatTimestamp(isoString: string): string {
-  const date = new Date(isoString)
+  const date = new Date(isoString);
 
   // 格式化為本地時間
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  const seconds = String(date.getSeconds()).padStart(2, '0')
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
 
-  return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`
+  return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
 }
 
 /**
@@ -39,24 +39,24 @@ export function formatTimestamp(isoString: string): string {
  * // "3 分鐘前"
  */
 export function formatRelativeTime(isoString: string): string {
-  const date = new Date(isoString)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffSec = Math.floor(diffMs / 1000)
-  const diffMin = Math.floor(diffSec / 60)
-  const diffHour = Math.floor(diffMin / 60)
-  const diffDay = Math.floor(diffHour / 24)
+  const date = new Date(isoString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHour = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHour / 24);
 
   if (diffSec < 60) {
-    return '剛剛'
+    return "剛剛";
   } else if (diffMin < 60) {
-    return `${diffMin} 分鐘前`
+    return `${diffMin} 分鐘前`;
   } else if (diffHour < 24) {
-    return `${diffHour} 小時前`
+    return `${diffHour} 小時前`;
   } else if (diffDay < 7) {
-    return `${diffDay} 天前`
+    return `${diffDay} 天前`;
   } else {
-    return formatTimestamp(isoString)
+    return formatTimestamp(isoString);
   }
 }
 
@@ -72,13 +72,13 @@ export function formatRelativeTime(isoString: string): string {
  * // "10/13 14:30"
  */
 export function formatShortDateTime(isoString: string): string {
-  const date = new Date(isoString)
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const date = new Date(isoString);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
 
-  return `${month}/${day} ${hours}:${minutes}`
+  return `${month}/${day} ${hours}:${minutes}`;
 }
 
 /**
@@ -97,11 +97,11 @@ export function formatShortDateTime(isoString: string): string {
  * // "09:05"
  */
 export function formatTimeOnly(isoString: string): string {
-  const date = new Date(isoString)
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const date = new Date(isoString);
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
 
-  return `${hours}:${minutes}`
+  return `${hours}:${minutes}`;
 }
 
 /**
@@ -120,13 +120,13 @@ export function formatTimeOnly(isoString: string): string {
  * // "2025.07.25"
  */
 export function formatDateDot(dateString: string): string {
-  const date = new Date(dateString)
+  const date = new Date(dateString);
 
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
 
-  return `${year}.${month}.${day}`
+  return `${year}.${month}.${day}`;
 }
 
 /**
@@ -145,22 +145,22 @@ export function formatDateDot(dateString: string): string {
  * // "2025.12.12下午02:20"
  */
 export function formatDateTimeWithPeriod(dateString: string): string {
-  const date = new Date(dateString)
+  const date = new Date(dateString);
 
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = date.getHours()
-  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, "0");
 
   // 判斷上午/下午
-  const period = hours < 12 ? '上午' : '下午'
+  const period = hours < 12 ? "上午" : "下午";
 
   // 轉換為 12 小時制
-  const hours12 = hours % 12 || 12
-  const hoursStr = String(hours12).padStart(2, '0')
+  const hours12 = hours % 12 || 12;
+  const hoursStr = String(hours12).padStart(2, "0");
 
-  return `${year}.${month}.${day}${period}${hoursStr}:${minutes}`
+  return `${year}.${month}.${day}${period}${hoursStr}:${minutes}`;
 }
 
 /**
@@ -180,12 +180,12 @@ export function formatDateTimeWithPeriod(dateString: string): string {
  */
 export function formatDateFromCompact(dateString: string): string {
   if (!dateString || dateString.length !== 8) {
-    return dateString
+    return dateString;
   }
 
-  const year = dateString.substring(0, 4)
-  const month = dateString.substring(4, 6)
-  const day = dateString.substring(6, 8)
+  const year = dateString.substring(0, 4);
+  const month = dateString.substring(4, 6);
+  const day = dateString.substring(6, 8);
 
-  return `${year}.${month}.${day}`
+  return `${year}.${month}.${day}`;
 }

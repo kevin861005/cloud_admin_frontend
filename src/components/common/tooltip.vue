@@ -20,7 +20,7 @@
       >
         <div
           v-if="showTip && text"
-          class="fixed z-[9999] whitespace-nowrap rounded bg-neutral-600/80 px-2 py-1 typo-xs-bold text-white"
+          class="typo-xs-bold fixed z-[9999] whitespace-nowrap rounded bg-neutral-600/80 px-2 py-1 text-white"
           :style="tooltipStyle"
         >
           <!-- 箭頭 -->

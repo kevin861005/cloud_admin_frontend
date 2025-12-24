@@ -14,7 +14,7 @@
     <Transition name="fade">
       <span
         v-if="showToast"
-        class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-1 -translate-x-1/2 whitespace-nowrap rounded-lg bg-neutral-300/60 px-3 py-1 typo-xs-bold text-neutral-800"
+        class="typo-xs-bold pointer-events-none absolute bottom-full left-1/2 z-50 mb-1 -translate-x-1/2 whitespace-nowrap rounded-lg bg-neutral-300/60 px-3 py-1 text-neutral-800"
       >
         {{ toastMessage }}
       </span>
@@ -23,8 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import copyIcon from '@/assets/icons/common/cm-copy.svg'
+import { ref } from "vue";
+import copyIcon from "@/assets/icons/common/cm-copy.svg";
 
 /**
  * CopyButton 元件
@@ -37,25 +37,25 @@ import copyIcon from '@/assets/icons/common/cm-copy.svg'
 
 interface Props {
   /** 要複製的值 */
-  value: string
+  value: string;
   /** 滑鼠懸停時的提示文字 */
-  title?: string
+  title?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: '複製',
-})
+  title: "複製",
+});
 
 // ========== State ==========
 
 /** 是否顯示提示框 */
-const showToast = ref(false)
+const showToast = ref(false);
 
 /** 提示框訊息 */
-const toastMessage = ref('')
+const toastMessage = ref("");
 
 /** 提示框計時器 */
-let toastTimer: number | null = null
+let toastTimer: number | null = null;
 
 // ========== Methods ==========
 
@@ -66,17 +66,17 @@ let toastTimer: number | null = null
 function showToastMessage(message: string) {
   // 清除之前的計時器
   if (toastTimer !== null) {
-    clearTimeout(toastTimer)
+    clearTimeout(toastTimer);
   }
 
-  toastMessage.value = message
-  showToast.value = true
+  toastMessage.value = message;
+  showToast.value = true;
 
   // 1.5 秒後自動隱藏
   toastTimer = window.setTimeout(() => {
-    showToast.value = false
-    toastTimer = null
-  }, 1500)
+    showToast.value = false;
+    toastTimer = null;
+  }, 1500);
 }
 
 /**
@@ -84,11 +84,11 @@ function showToastMessage(message: string) {
  */
 async function handleCopy() {
   try {
-    await navigator.clipboard.writeText(props.value)
-    showToastMessage('複製成功')
+    await navigator.clipboard.writeText(props.value);
+    showToastMessage("複製成功");
   } catch (error) {
-    console.error('複製失敗:', error)
-    showToastMessage('複製失敗')
+    console.error("複製失敗:", error);
+    showToastMessage("複製失敗");
   }
 }
 </script>

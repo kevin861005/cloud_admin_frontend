@@ -90,7 +90,7 @@
                     v-if="formErrors.loginId || authStore.errorMessage"
                     class="text-xs font-bold text-red-500"
                   >
-                    {{ formErrors.loginId || '輸入錯誤，請再試一次' }}
+                    {{ formErrors.loginId || "輸入錯誤，請再試一次" }}
                   </p>
                 </div>
 
@@ -187,13 +187,13 @@
 /**
  * 登入頁面
  */
-import { ref, computed, nextTick } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth.store'
+import { ref, computed, nextTick } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth.store";
 
 // === Composables ===
-const router = useRouter()
-const authStore = useAuthStore()
+const router = useRouter();
+const authStore = useAuthStore();
 
 // === State ===
 
@@ -201,27 +201,27 @@ const authStore = useAuthStore()
  * 表單資料
  */
 const form = ref({
-  loginId: '',
-  password: '',
-})
+  loginId: "",
+  password: "",
+});
 
 /**
  * 表單驗證錯誤
  */
 const formErrors = ref({
-  loginId: '',
-  password: '',
-})
+  loginId: "",
+  password: "",
+});
 
 /**
  * 是否顯示密碼
  */
-const showPassword = ref(false)
+const showPassword = ref(false);
 
 /**
  * 防止重複提交
  */
-const isSubmitting = ref(false)
+const isSubmitting = ref(false);
 
 // === Computed ===
 
@@ -229,26 +229,26 @@ const isSubmitting = ref(false)
  * 表單是否有效（帳號密碼都有值才可按登入）
  */
 const isFormValid = computed(() => {
-  return form.value.loginId.trim() !== '' && form.value.password.trim() !== ''
-})
+  return form.value.loginId.trim() !== "" && form.value.password.trim() !== "";
+});
 
 /**
  * 是否正在載入
  */
 const isLoading = computed(() => {
-  const hasIsLoading = 'isLoading' in authStore
-  const hasLoading = 'loading' in authStore
+  const hasIsLoading = "isLoading" in authStore;
+  const hasLoading = "loading" in authStore;
 
   if (hasIsLoading) {
-    return Boolean((authStore as unknown as Record<string, unknown>).isLoading)
+    return Boolean((authStore as unknown as Record<string, unknown>).isLoading);
   }
 
   if (hasLoading) {
-    return Boolean((authStore as unknown as Record<string, unknown>).loading)
+    return Boolean((authStore as unknown as Record<string, unknown>).loading);
   }
 
-  return false
-})
+  return false;
+});
 
 // === Methods ===
 
@@ -256,24 +256,24 @@ const isLoading = computed(() => {
  * 驗證表單
  */
 function validateForm(): boolean {
-  let isValid = true
+  let isValid = true;
 
   formErrors.value = {
-    loginId: '',
-    password: '',
-  }
+    loginId: "",
+    password: "",
+  };
 
   if (!form.value.loginId.trim()) {
-    formErrors.value.loginId = '請輸入帳號'
-    isValid = false
+    formErrors.value.loginId = "請輸入帳號";
+    isValid = false;
   }
 
   if (!form.value.password.trim()) {
-    formErrors.value.password = '請輸入密碼'
-    isValid = false
+    formErrors.value.password = "請輸入密碼";
+    isValid = false;
   }
 
-  return isValid
+  return isValid;
 }
 
 /**
@@ -281,29 +281,29 @@ function validateForm(): boolean {
  */
 async function handleLogin(): Promise<void> {
   if (isSubmitting.value) {
-    return
+    return;
   }
 
   if (!validateForm()) {
-    return
+    return;
   }
 
   try {
-    isSubmitting.value = true
+    isSubmitting.value = true;
 
     const success = await authStore.login({
       loginId: form.value.loginId,
       password: form.value.password,
-    })
+    });
 
     if (success) {
-      await nextTick()
-      await router.replace('/overview')
+      await nextTick();
+      await router.replace("/overview");
     }
   } catch (error) {
-    console.error('登入錯誤:', error)
+    console.error("登入錯誤:", error);
   } finally {
-    isSubmitting.value = false
+    isSubmitting.value = false;
   }
 }
 
@@ -311,6 +311,6 @@ async function handleLogin(): Promise<void> {
  * 切換密碼顯示/隱藏
  */
 function togglePasswordVisibility(): void {
-  showPassword.value = !showPassword.value
+  showPassword.value = !showPassword.value;
 }
 </script>

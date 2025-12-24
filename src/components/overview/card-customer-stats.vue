@@ -6,7 +6,7 @@
     - gap: 20px (使用 space-y-5)
     - flex: 1 0 0 (使用 flex-1)
   -->
-  <div class="h-[256px] bg-white rounded-lg shadow-md p-6 flex flex-col gap-5">
+  <div class="flex h-[256px] flex-col gap-5 rounded-lg bg-white p-6 shadow-md">
     <!--
       Contents-Text: 文字內容區域
       - gap: 48px (使用 space-y-12)
@@ -17,7 +17,7 @@
         - justify-content: space-between
         - align-items: center
       -->
-      <div class="flex justify-between items-center">
+      <div class="flex items-center justify-between">
         <!--
           Card-top-Title: 左側標題區 (Icon + 文字)
           - gap: 12px
@@ -28,11 +28,11 @@
             - 尺寸: 32x32px
             - padding: 8px 8px 0 8px
           -->
-          <div class="flex flex-col items-start w-8 h-8 rounded-md">
+          <div class="flex h-8 w-8 flex-col items-start rounded-md">
             <img
               src="@/assets/icons/card/card-d-customer-filled.svg"
               alt="客戶統計"
-              class="w-full h-full"
+              class="h-full w-full"
             />
           </div>
 
@@ -48,25 +48,25 @@
       -->
       <div class="flex flex-col gap-2">
         <!-- 活躍客戶 -->
-        <div class="flex justify-between items-center">
+        <div class="flex items-center justify-between">
           <span class="typo-sm-medium text-neutral-700"> 活躍 </span>
-          <span class="typo-sm-medium text-neutral-700 text-right">
+          <span class="typo-sm-medium text-right text-neutral-700">
             {{ stats.activeCount }}間（{{ stats.activePercentage }}%）
           </span>
         </div>
 
         <!-- 低活躍客戶 -->
-        <div class="flex justify-between items-center">
+        <div class="flex items-center justify-between">
           <span class="typo-sm-medium text-neutral-700"> 低活躍 </span>
-          <span class="typo-sm-medium text-neutral-700 text-right">
+          <span class="typo-sm-medium text-right text-neutral-700">
             {{ stats.lowActiveCount }}間（{{ stats.lowActivePercentage }}%）
           </span>
         </div>
 
         <!-- 未使用客戶 -->
-        <div class="flex justify-between items-center">
+        <div class="flex items-center justify-between">
           <span class="typo-sm-medium text-neutral-700"> 未使用 </span>
-          <span class="typo-sm-medium text-neutral-700 text-right">
+          <span class="typo-sm-medium text-right text-neutral-700">
             {{ stats.inactiveCount }}間（{{ stats.inactivePercentage }}%）
           </span>
         </div>
@@ -86,7 +86,7 @@
 
         使用 normalizedPercentages 確保三個區段加總為 100%
       -->
-      <div class="flex h-2 rounded-full overflow-hidden bg-slate-200">
+      <div class="flex h-2 overflow-hidden rounded-full bg-slate-200">
         <!-- 3天內使用 (#334155 - slate-700) -->
         <div
           class="h-full bg-slate-700"
@@ -117,24 +117,24 @@
         - padding: 0 4px
         - justify-content: space-between
       -->
-      <div class="flex justify-between items-center px-1">
+      <div class="flex items-center justify-between px-1">
         <!-- Chart-note: 3天內使用 -->
-        <div class="flex items-center gap-1 h-4">
+        <div class="flex h-4 items-center gap-1">
           <!-- Container: 圓點 -->
-          <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+          <div class="h-2 w-2 rounded-full bg-slate-700"></div>
           <!-- Text: 標籤文字 -->
           <span class="typo-xs-medium text-neutral-600"> 3天內使用 </span>
         </div>
 
         <!-- Chart-note: 4-7天內使用 -->
-        <div class="flex items-center gap-1 h-4">
-          <div class="w-2 h-2 rounded-full bg-slate-500"></div>
+        <div class="flex h-4 items-center gap-1">
+          <div class="h-2 w-2 rounded-full bg-slate-500"></div>
           <span class="typo-xs-medium text-neutral-600"> 4-7天內使用 </span>
         </div>
 
         <!-- Chart-note: 7天以上未使用 -->
-        <div class="flex items-center gap-1 h-4">
-          <div class="w-2 h-2 rounded-full bg-slate-400"></div>
+        <div class="flex h-4 items-center gap-1">
+          <div class="h-2 w-2 rounded-full bg-slate-400"></div>
           <span class="typo-xs-medium text-neutral-600"> 7天以上未使用 </span>
         </div>
       </div>
@@ -143,15 +143,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { overviewService } from '@/services/overview.service'
-import type { CustomerStats } from '@/types/overview'
+import { ref, onMounted, computed } from "vue";
+import { overviewService } from "@/services/overview.service";
+import type { CustomerStats } from "@/types/overview";
 
 /** 載入狀態 */
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 /** 錯誤訊息 */
-const errorMessage = ref('')
+const errorMessage = ref("");
 
 /**
  * 客戶統計資料
@@ -165,7 +165,7 @@ const stats = ref<CustomerStats>({
   lowActivePercentage: 0,
   inactiveCount: 0,
   inactivePercentage: 0,
-})
+});
 
 /**
  * 計算正規化後的百分比（確保總和為 100%）
@@ -174,7 +174,7 @@ const stats = ref<CustomerStats>({
  */
 const normalizedPercentages = computed(() => {
   const total =
-    stats.value.activePercentage + stats.value.lowActivePercentage + stats.value.inactivePercentage
+    stats.value.activePercentage + stats.value.lowActivePercentage + stats.value.inactivePercentage;
 
   // 如果總和已經是 100%，直接使用原始數據
   if (Math.abs(total - 100) < 0.01) {
@@ -182,33 +182,33 @@ const normalizedPercentages = computed(() => {
       active: stats.value.activePercentage,
       lowActive: stats.value.lowActivePercentage,
       inactive: stats.value.inactivePercentage,
-    }
+    };
   }
 
   // 如果總和不是 100%，按比例調整
   // 例如：如果總和是 112.5%，每個值都乘以 (100/112.5)
-  const ratio = 100 / total
+  const ratio = 100 / total;
   return {
     active: stats.value.activePercentage * ratio,
     lowActive: stats.value.lowActivePercentage * ratio,
     inactive: stats.value.inactivePercentage * ratio,
-  }
-})
+  };
+});
 
 /**
  * 載入客戶統計資料
  */
 async function loadCustomerStats() {
   try {
-    isLoading.value = true
-    errorMessage.value = ''
+    isLoading.value = true;
+    errorMessage.value = "";
 
-    stats.value = await overviewService.getCustomerStats()
+    stats.value = await overviewService.getCustomerStats();
   } catch (error) {
-    console.error('載入月度成長失敗:', error)
-    errorMessage.value = error instanceof Error ? error.message : '載入失敗，請稍後再試'
+    console.error("載入月度成長失敗:", error);
+    errorMessage.value = error instanceof Error ? error.message : "載入失敗，請稍後再試";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
 }
 
@@ -216,8 +216,8 @@ async function loadCustomerStats() {
  * 元件掛載時載入資料
  */
 onMounted(() => {
-  loadCustomerStats()
-})
+  loadCustomerStats();
+});
 </script>
 
 <style scoped>

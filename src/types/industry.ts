@@ -9,59 +9,59 @@
  */
 export interface IndustryListItem {
   /** 代號 */
-  code: string
+  code: string;
 
   /** 名稱 */
-  name: string
+  name: string;
 
   /** SQL 檔名 */
-  sqlFile: string
+  sqlFile: string;
 
   /** 建立日期 */
-  createdDate: string
+  createdDate: string;
 }
 
 export interface IndustryDetailInfo {
   /** 代號 */
-  code: string
+  code: string;
 
   /** 名稱 */
-  name: string
+  name: string;
 
   /** SQL 檔名 */
-  sqlFile: string
+  sqlFile: string;
 
   /** 建立日期 */
-  createdDate: string
+  createdDate: string;
 
   /** 建立者 */
-  createdBy: { id: string; name: string } | null
+  createdBy: { id: string; name: string } | null;
 
   /** 說明 */
-  description: string
+  description: string;
 }
 
 export interface CreateIndustryRequest {
   /** 代號 */
-  code: string
+  code: string;
 
   /** 名稱 */
-  name: string
+  name: string;
 
   /** SQL 檔名 */
-  sqlFile: string
+  sqlFile: string;
 
   /** 說明 */
-  description: string
+  description: string;
 }
 
 export interface UpdateIndustryRequest {
   /** 名稱 */
-  name: string
+  name: string;
 
   /** SQL 檔名 */
-  sqlFile: string
+  sqlFile: string;
 
   /** 說明 */
-  description: string
+  description: string;
 }

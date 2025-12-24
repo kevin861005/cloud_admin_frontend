@@ -13,7 +13,7 @@
       <!-- 取消按鈕 -->
       <button
         type="button"
-        class="group relative rounded-lg bg-neutral-100 px-6 py-3 typo-sm-bold text-neutral-600 transition-colors"
+        class="typo-sm-bold group relative rounded-lg bg-neutral-100 px-6 py-3 text-neutral-600 transition-colors"
         @click="handleClose"
       >
         <!-- 黑色遮罩層（只影響背景） -->
@@ -27,7 +27,7 @@
       <!-- 確認重啟按鈕 -->
       <button
         type="button"
-        class="group relative rounded-lg bg-primary-500 px-6 py-3 typo-sm-bold text-white transition-colors"
+        class="typo-sm-bold group relative rounded-lg bg-primary-500 px-6 py-3 text-white transition-colors"
         @click="handleConfirm"
       >
         <!-- 黑色遮罩層（只影響背景） -->
@@ -48,48 +48,48 @@
  * 用於確認是否重啟指定客戶的環境
  * 點擊確認後會 emit confirm 事件，由父元件處理後續流程
  */
-import { computed } from 'vue'
-import BaseDialog from '@/components/dialog/base-dialog.vue'
+import { computed } from "vue";
+import BaseDialog from "@/components/dialog/base-dialog.vue";
 
 // ========== Props 定義 ==========
 interface Props {
   /** 控制 Dialog 顯示/隱藏 (v-model) */
-  modelValue: boolean
+  modelValue: boolean;
   /** 客戶名稱（顯示用） */
-  customerName: string
+  customerName: string;
   /** 客戶編號（API 用） */
-  customerNo: string
+  customerNo: string;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 // ========== Emits 定義 ==========
 const emit = defineEmits<{
   /** 更新 v-model */
-  'update:modelValue': [value: boolean]
+  "update:modelValue": [value: boolean];
   /** 使用者確認重啟 */
-  confirm: []
-}>()
+  confirm: [];
+}>();
 
 // ========== Computed ==========
 /** 用 computed 來處理 v-model，避免直接修改 prop */
 const isVisible = computed({
   get: () => props.modelValue,
-  set: (value: boolean) => emit('update:modelValue', value),
-})
+  set: (value: boolean) => emit("update:modelValue", value),
+});
 
 // ========== Methods ==========
 /**
  * 關閉 Dialog
  */
 function handleClose() {
-  isVisible.value = false
+  isVisible.value = false;
 }
 
 /**
  * 確認重啟
  */
 function handleConfirm() {
-  emit('confirm')
+  emit("confirm");
 }
 </script>

@@ -4,16 +4,16 @@
  * 負責處理所有使用者相關的 API 請求
  */
 
-import apiClient from '@/utils/axios'
-import { ApiError } from '@/types/common'
-import type { ApiResponse, FieldError } from '@/types/common'
+import apiClient from "@/utils/axios";
+import { ApiError } from "@/types/common";
+import type { ApiResponse, FieldError } from "@/types/common";
 import type {
   UserInfo,
   UserListItem,
   CreateUserRequest,
   UserDetailInfo,
   UpdateUserRequest,
-} from '@/types/user'
+} from "@/types/user";
 
 /**
  * 使用者服務
@@ -24,17 +24,17 @@ export const userService = {
    * GET /api/users/me
    */
   async getCurrentUserInfo(): Promise<UserInfo> {
-    const response = await apiClient.get<ApiResponse<UserInfo | null>>('/users/me')
+    const response = await apiClient.get<ApiResponse<UserInfo | null>>("/users/me");
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '取得目前使用者資訊失敗',
+        message: response.data.message || "取得目前使用者資訊失敗",
         data: response.data.data ?? null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -42,17 +42,17 @@ export const userService = {
    * GET /api/users
    */
   async getAllUsers(): Promise<UserListItem[]> {
-    const response = await apiClient.get<ApiResponse<UserListItem[] | null>>('/users')
+    const response = await apiClient.get<ApiResponse<UserListItem[] | null>>("/users");
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '取得使用者列表失敗',
+        message: response.data.message || "取得使用者列表失敗",
         data: response.data.data ?? null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -61,18 +61,18 @@ export const userService = {
    */
   async getUserDetail(loginId: string): Promise<UserDetailInfo> {
     const response = await apiClient.get<ApiResponse<UserDetailInfo | null>>(
-      `/users/${loginId}/detail`,
-    )
+      `/users/${loginId}/detail`
+    );
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '取得使用者詳細資訊失敗',
+        message: response.data.message || "取得使用者詳細資訊失敗",
         data: response.data.data ?? null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -80,14 +80,14 @@ export const userService = {
    * POST /api/users
    */
   async createUser(userData: CreateUserRequest): Promise<void> {
-    const response = await apiClient.post<ApiResponse<FieldError[] | null>>('/users', userData)
+    const response = await apiClient.post<ApiResponse<FieldError[] | null>>("/users", userData);
 
     if (!response.data.success) {
       throw new ApiError<FieldError[] | null>({
         code: response.data.code,
-        message: response.data.message || '新增使用者失敗',
+        message: response.data.message || "新增使用者失敗",
         data: response.data.data ?? null,
-      })
+      });
     }
   },
 
@@ -98,17 +98,17 @@ export const userService = {
   async updateUser(loginId: string, data: UpdateUserRequest): Promise<UserDetailInfo> {
     const response = await apiClient.put<ApiResponse<UserDetailInfo | FieldError[] | null>>(
       `/users/${loginId}`,
-      data,
-    )
+      data
+    );
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError<FieldError[] | null>({
         code: response.data.code,
-        message: response.data.message || '更新使用者資料失敗',
+        message: response.data.message || "更新使用者資料失敗",
         data: (response.data.data ?? null) as FieldError[] | null,
-      })
+      });
     }
 
-    return response.data.data as UserDetailInfo
+    return response.data.data as UserDetailInfo;
   },
-}
+};

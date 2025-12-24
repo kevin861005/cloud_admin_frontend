@@ -13,7 +13,7 @@
         <div
           v-for="(systemLog, index) in systemLogs"
           :key="index"
-          class="flex h-9 items-center gap-3 py-[1px] typo-sm-medium text-neutral-700"
+          class="typo-sm-medium flex h-9 items-center gap-3 py-[1px] text-neutral-700"
         >
           <!-- 左側 frame（日期時間 + 模組標籤） -->
           <div class="flex flex-shrink-0 items-center gap-3">
@@ -51,18 +51,18 @@
 </template>
 
 <script setup lang="ts">
-import type { SystemLog } from '@/types/customer'
-import SystemIcon from '@/assets/icons/card/system.svg'
-import { Badge, EmptyState, BadgeButton } from '@/components/common'
+import type { SystemLog } from "@/types/customer";
+import SystemIcon from "@/assets/icons/card/system.svg";
+import { Badge, EmptyState, BadgeButton } from "@/components/common";
 
 interface Props {
   /**
    * 活動記錄陣列
    */
-  systemLogs: SystemLog[]
+  systemLogs: SystemLog[];
 }
 
-defineProps<Props>()
+defineProps<Props>();
 
 /**
  * Emits 定義
@@ -71,21 +71,21 @@ const emit = defineEmits<{
   /**
    * 更多按鈕點擊事件
    */
-  moreClick: []
-}>()
+  moreClick: [];
+}>();
 
 /**
  * 模組 Badge 類型（根據模組類型映射顏色）
  */
-const getModuleType = (): 'default' => {
-  return 'default'
-}
+const getModuleType = (): "default" => {
+  return "default";
+};
 
 /**
  * 處理更多按鈕點擊
  * 將事件向上傳遞給父元件
  */
 const handleMoreClick = () => {
-  emit('moreClick')
-}
+  emit("moreClick");
+};
 </script>

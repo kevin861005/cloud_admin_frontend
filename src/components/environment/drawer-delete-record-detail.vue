@@ -42,11 +42,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { Drawer, DrawerHeader, InfoSection, InfoField } from '@/components/drawer'
-import { Alert, Divider, Loading } from '@/components/common'
-import { environmentService } from '@/services/environment.service'
-import type { DeleteRecordDetailInfo } from '@/types/environment'
+import { ref, watch } from "vue";
+import { Drawer, DrawerHeader, InfoSection, InfoField } from "@/components/drawer";
+import { Alert, Divider, Loading } from "@/components/common";
+import { environmentService } from "@/services/environment.service";
+import type { DeleteRecordDetailInfo } from "@/types/environment";
 
 /**
  * 刪除紀錄詳細資訊 Drawer
@@ -57,39 +57,39 @@ interface Props {
   /**
    * 控制 Drawer 開關狀態
    */
-  isOpen: boolean
+  isOpen: boolean;
 
   /**
    * 刪除紀錄 ID（用於呼叫 API）
    */
-  deleteRecordId: string | null
+  deleteRecordId: string | null;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
   /**
    * 關閉 Drawer
    */
-  close: []
-}>()
+  close: [];
+}>();
 
 // ===== 狀態管理 =====
 
 /**
  * 刪除紀錄詳細資料
  */
-const deleteRecordDetail = ref<DeleteRecordDetailInfo | null>(null)
+const deleteRecordDetail = ref<DeleteRecordDetailInfo | null>(null);
 
 /**
  * 載入狀態
  */
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 /**
  * 錯誤訊息
  */
-const error = ref<string | null>(null)
+const error = ref<string | null>(null);
 
 // ===== 方法 =====
 
@@ -97,29 +97,29 @@ const error = ref<string | null>(null)
  * 載入刪除紀錄詳細資料
  */
 const loadDeleteRecordDetail = async () => {
-  if (!props.deleteRecordId) return
+  if (!props.deleteRecordId) return;
 
-  isLoading.value = true
-  error.value = null
-  deleteRecordDetail.value = null
+  isLoading.value = true;
+  error.value = null;
+  deleteRecordDetail.value = null;
 
   try {
-    const response = await environmentService.getDeleteRecordDetailById(props.deleteRecordId)
-    deleteRecordDetail.value = response
+    const response = await environmentService.getDeleteRecordDetailById(props.deleteRecordId);
+    deleteRecordDetail.value = response;
   } catch (err) {
-    console.error('載入刪除紀錄詳細資料錯誤:', err)
-    error.value = err instanceof Error ? err.message : '發生未知錯誤，請稍後再試'
+    console.error("載入刪除紀錄詳細資料錯誤:", err);
+    error.value = err instanceof Error ? err.message : "發生未知錯誤，請稍後再試";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 /**
  * 處理關閉 Drawer
  */
 const handleClose = () => {
-  emit('close')
-}
+  emit("close");
+};
 
 // ===== 監聽 =====
 
@@ -131,9 +131,9 @@ watch(
   () => props.isOpen,
   (isOpen) => {
     if (isOpen && props.deleteRecordId) {
-      loadDeleteRecordDetail()
+      loadDeleteRecordDetail();
     }
   },
-  { immediate: true },
-)
+  { immediate: true }
+);
 </script>

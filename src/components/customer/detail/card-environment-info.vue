@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full flex-col rounded-xl bg-white py-6 px-5 shadow-md gap-8">
+  <div class="flex h-full flex-col gap-8 rounded-xl bg-white px-5 py-6 shadow-md">
     <div class="flex flex-col gap-8">
       <!-- 卡片標題 -->
       <div class="flex items-center gap-2">
@@ -54,9 +54,9 @@
 </template>
 
 <script setup lang="ts">
-import EnvironmentIcon from '@/assets/icons/card/environment.svg'
-import linkIcon from '@/assets/icons/common/cm-link.svg'
-import { BadgeButton, CopyButton } from '@/components/common'
+import EnvironmentIcon from "@/assets/icons/card/environment.svg";
+import linkIcon from "@/assets/icons/common/cm-link.svg";
+import { BadgeButton, CopyButton } from "@/components/common";
 
 /**
  * 環境設定資訊卡片
@@ -74,20 +74,20 @@ import { BadgeButton, CopyButton } from '@/components/common'
 
 interface Props {
   environmentInfo: {
-    frontendUrl: string
-    backendUrl: string
-    autoUrl: string
-    pinCode: string
-    domainName: string
-  }
+    frontendUrl: string;
+    backendUrl: string;
+    autoUrl: string;
+    pinCode: string;
+    domainName: string;
+  };
 }
 
-defineProps<Props>()
+defineProps<Props>();
 
 /**
  * 在新分頁開啟 URL
  */
 const openUrl = (url: string) => {
-  window.open(url, '_blank', 'noopener,noreferrer')
-}
+  window.open(url, "_blank", "noopener,noreferrer");
+};
 </script>

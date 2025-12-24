@@ -27,17 +27,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import PageHeader from '@/components/layout/page-header.vue'
-import Sidebar from '@/components/sidebar/sidebar-main.vue'
-import { ToastMessage } from '@/components/common'
-import { useMenuStore } from '@/stores/menu.store'
-import { useAuthStore } from '@/stores/auth.store'
+import { onMounted } from "vue";
+import PageHeader from "@/components/layout/page-header.vue";
+import Sidebar from "@/components/sidebar/sidebar-main.vue";
+import { ToastMessage } from "@/components/common";
+import { useMenuStore } from "@/stores/menu.store";
+import { useAuthStore } from "@/stores/auth.store";
 
 // ==================== Composables ====================
 
-const menuStore = useMenuStore()
-const authStore = useAuthStore()
+const menuStore = useMenuStore();
+const authStore = useAuthStore();
 
 // ==================== Lifecycle ====================
 
@@ -46,8 +46,8 @@ const authStore = useAuthStore()
  * 如果 localStorage 有 Token 但沒有 userInfo，則嘗試恢復使用者資訊
  */
 onMounted(async () => {
-  if (!authStore.isAuthenticated && localStorage.getItem('accessToken')) {
-    await authStore.restoreUserInfo()
+  if (!authStore.isAuthenticated && localStorage.getItem("accessToken")) {
+    await authStore.restoreUserInfo();
   }
-})
+});
 </script>

@@ -27,7 +27,7 @@
             </div>
 
             <!-- 百分比文字 -->
-            <span class="w-10 text-right typo-sm-bold text-primary-500">
+            <span class="typo-sm-bold w-10 text-right text-primary-500">
               {{ clampedProgress }}%
             </span>
           </div>
@@ -38,29 +38,29 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed } from "vue";
 
 /**
  * TaskProgressDialog 元件 Props
  */
 interface Props {
   /** 控制 Dialog 顯示/隱藏 (v-model) */
-  modelValue: boolean
+  modelValue: boolean;
   /** 主標題（如：映像檔更新中...） */
-  title: string
+  title: string;
   /** 副標題（如：此列顯示正在運行的操作） */
-  description: string
+  description: string;
   /** 進度百分比 (0-100) */
-  progress: number
+  progress: number;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 /**
  * 確保進度值在 0-100 之間，並取整數
  */
 const clampedProgress = computed(() => {
-  const value = Math.round(props.progress)
-  return Math.max(0, Math.min(100, value))
-})
+  const value = Math.round(props.progress);
+  return Math.max(0, Math.min(100, value));
+});
 </script>

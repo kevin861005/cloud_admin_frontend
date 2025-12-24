@@ -50,43 +50,43 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { Badge, EmptyState, Alert } from '@/components/common'
-import DataTable from '@/components/table/data-table.vue'
-import { userService } from '@/services/user.service'
-import { useAuthStore } from '@/stores/auth.store'
-import type { UserListItem } from '@/types/user'
-import type { ColumnConfig } from '@/types/table'
-import { formatDateDot } from '@/utils/time'
+import { ref, computed, onMounted } from "vue";
+import { Badge, EmptyState, Alert } from "@/components/common";
+import DataTable from "@/components/table/data-table.vue";
+import { userService } from "@/services/user.service";
+import { useAuthStore } from "@/stores/auth.store";
+import type { UserListItem } from "@/types/user";
+import type { ColumnConfig } from "@/types/table";
+import { formatDateDot } from "@/utils/time";
 
 // ===== Emits 定義 =====
 const emit = defineEmits<{
-  'row-view': [row: Record<string, unknown>] // 查看按鈕點擊事件
-  add: [] // 新增按鈕點擊事件
-}>()
+  "row-view": [row: Record<string, unknown>]; // 查看按鈕點擊事件
+  add: []; // 新增按鈕點擊事件
+}>();
 
 // ===== 狀態管理 =====
 
 /**
  * 認證 Store（用於權限檢查）
  */
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 
 /**
  * 載入狀態
  */
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 /**
  * 錯誤訊息
  */
-const errorMessage = ref<string | null>(null)
+const errorMessage = ref<string | null>(null);
 
 /**
  * 帳號列表資料
  * 注意：資料會被格式化，新增 createdAtFormatted 欄位
  */
-const users = ref<Array<UserListItem & { createdAtFormatted: string }>>([])
+const users = ref<Array<UserListItem & { createdAtFormatted: string }>>([]);
 
 // ===== 權限檢查 =====
 
@@ -94,23 +94,23 @@ const users = ref<Array<UserListItem & { createdAtFormatted: string }>>([])
  * 檢查是否有 settings.accounts 權限
  */
 const hasPermission = computed(() => {
-  const permissions = authStore.userInfo?.permissions || []
-  return permissions.includes('settings.accounts')
-})
+  const permissions = authStore.userInfo?.permissions || [];
+  return permissions.includes("settings.accounts");
+});
 
 /**
  * 取得狀態 Badge 類型（型別安全）
  */
-const getStatusType = (row: Record<string, unknown>): 'success' | 'default' => {
-  return row.statusCode === 'ACTIVE' ? 'success' : 'default'
-}
+const getStatusType = (row: Record<string, unknown>): "success" | "default" => {
+  return row.statusCode === "ACTIVE" ? "success" : "default";
+};
 
 /**
  * 取得狀態文字（型別安全）
  */
 const getStatusText = (row: Record<string, unknown>): string => {
-  return row.statusCode === 'ACTIVE' ? '啟用' : '停用'
-}
+  return row.statusCode === "ACTIVE" ? "啟用" : "停用";
+};
 
 // ===== 欄位配置 =====
 
@@ -126,52 +126,52 @@ const getStatusText = (row: Record<string, unknown>): string => {
  */
 const columns = ref<ColumnConfig[]>([
   {
-    key: 'name',
-    label: '姓名',
-    width: '15%',
-    align: 'left',
+    key: "name",
+    label: "姓名",
+    width: "15%",
+    align: "left",
     sortable: true,
   },
   {
-    key: 'loginId',
-    label: '帳號',
-    width: '15%',
-    align: 'left',
+    key: "loginId",
+    label: "帳號",
+    width: "15%",
+    align: "left",
     sortable: false,
   },
   {
-    key: 'rolesDisplay',
-    label: '權限',
-    width: '25%',
-    align: 'center',
+    key: "rolesDisplay",
+    label: "權限",
+    width: "25%",
+    align: "center",
     sortable: false,
-    customRender: 'slot',
-    slotName: 'rolesDisplay',
+    customRender: "slot",
+    slotName: "rolesDisplay",
   },
   {
-    key: 'statusDisplay',
-    label: '狀態',
-    width: '15%',
-    align: 'center',
+    key: "statusDisplay",
+    label: "狀態",
+    width: "15%",
+    align: "center",
     sortable: true,
-    customRender: 'slot',
-    slotName: 'statusDisplay',
+    customRender: "slot",
+    slotName: "statusDisplay",
   },
   {
-    key: 'createdAtFormatted',
-    label: '建立日',
-    width: '15%',
-    align: 'left',
+    key: "createdAtFormatted",
+    label: "建立日",
+    width: "15%",
+    align: "left",
     sortable: false,
   },
   {
-    key: 'actions',
-    label: '操作',
-    width: '15%',
-    align: 'center',
-    customRender: 'actions',
+    key: "actions",
+    label: "操作",
+    width: "15%",
+    align: "center",
+    customRender: "actions",
   },
-])
+]);
 
 // ===== 載入資料 =====
 
@@ -189,35 +189,35 @@ const columns = ref<ColumnConfig[]>([
 const loadUsers = async () => {
   // 如果沒有權限，不呼叫 API
   if (!hasPermission.value) {
-    return
+    return;
   }
 
-  isLoading.value = true
-  errorMessage.value = null
+  isLoading.value = true;
+  errorMessage.value = null;
 
   try {
     // 成功直接回陣列，失敗丟 ApiError
-    const userList = await userService.getAllUsers()
+    const userList = await userService.getAllUsers();
 
-    console.log('getAllUsers result:', userList)
+    console.log("getAllUsers result:", userList);
 
     // 格式化日期後放入 users
     users.value = userList.map((user) => ({
       ...user,
       createdAtFormatted: formatDateDot(user.createdAt),
-    }))
+    }));
   } catch (err) {
-    console.error('載入帳號列表錯誤:', err)
+    console.error("載入帳號列表錯誤:", err);
 
     if (err instanceof Error) {
-      errorMessage.value = err.message
+      errorMessage.value = err.message;
     } else {
-      errorMessage.value = '發生未知錯誤，請稍後再試'
+      errorMessage.value = "發生未知錯誤，請稍後再試";
     }
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // ===== 事件處理 =====
 
@@ -228,16 +228,16 @@ const loadUsers = async () => {
  * @param row 帳號資料
  */
 const handleView = (row: Record<string, unknown>) => {
-  emit('row-view', row)
-}
+  emit("row-view", row);
+};
 
 /**
  * 處理新增按鈕點擊
  * 發出 add 事件,由父元件處理
  */
 const handleAdd = () => {
-  emit('add')
-}
+  emit("add");
+};
 
 // ===== 初始化 =====
 
@@ -245,8 +245,8 @@ const handleAdd = () => {
  * 元件掛載時自動載入資料
  */
 onMounted(() => {
-  loadUsers()
-})
+  loadUsers();
+});
 
 /**
  * 對外暴露方法（供父元件呼叫）
@@ -257,5 +257,5 @@ defineExpose({
    * 用於新增、編輯、刪除後刷新列表
    */
   refresh: loadUsers,
-})
+});
 </script>

@@ -1,30 +1,30 @@
 /**
  * 服務運行狀態
  */
-export type ServiceStatus = 'RUNNING' | 'NORMAL' | 'ERROR' | 'EXITED'
+export type ServiceStatus = "RUNNING" | "NORMAL" | "ERROR" | "EXITED";
 
 /**
  * Docker 服務資訊
  */
 export interface DockerServiceInfo {
   /** 運行狀態 */
-  status: ServiceStatus
+  status: ServiceStatus;
   /** 狀態描述（例如：運行中） */
-  statusText: string
+  statusText: string;
   /** 名稱（例如：/admiring_diffie） */
-  name: string
+  name: string;
   /** 容器 ID（例如：C1923hC3e） */
-  containerId: string
+  containerId: string;
   /** 映像名稱（例如：interinfo/interinfo-all-solution） */
-  imageName: string
+  imageName: string;
   /** 映像名稱（例如：3.4） */
-  imageVersion: string
+  imageVersion: string;
   /** Port 對射（例如：8080 → 80） */
-  portMapping: string
+  portMapping: string;
   /** 可否更新映像檔 */
-  canUpdateImage: boolean
+  canUpdateImage: boolean;
   /** 可否重啟環境 */
-  canRestart: boolean
+  canRestart: boolean;
 }
 
 /**
@@ -32,15 +32,15 @@ export interface DockerServiceInfo {
  */
 export interface DatabaseServiceInfo {
   /** 運行狀態 */
-  status: ServiceStatus
+  status: ServiceStatus;
   /** 狀態描述（例如：正常） */
-  statusText: string
+  statusText: string;
   /** 名稱（例如：Twfood_production） */
-  name: string
+  name: string;
   /** 伺服器 ID（例如：192.168.1100） */
-  serverId: string
+  serverId: string;
   /** 資料庫容量（例如：2.4GB） */
-  capacity: string
+  capacity: string;
 }
 
 /**
@@ -48,17 +48,17 @@ export interface DatabaseServiceInfo {
  */
 export interface DnsServiceInfo {
   /** 運行狀態 */
-  status: ServiceStatus
+  status: ServiceStatus;
   /** 狀態描述（例如：DNS紀錄有效） */
-  statusText: string
+  statusText: string;
   /** 完整域名（例如：demo.twfood.com） */
-  domainName: string
+  domainName: string;
   /** 紀錄類型（A、CNAME、TXT 等） */
-  recordType: string
+  recordType: string;
   /** 紀錄值（IP 位址或域名） */
-  recordValue: string
+  recordValue: string;
   /** TTL 存活時間（秒） */
-  ttl: number
+  ttl: number;
 }
 
 /**
@@ -66,17 +66,17 @@ export interface DnsServiceInfo {
  */
 export interface NginxServiceInfo {
   /** 運行狀態 */
-  status: ServiceStatus
+  status: ServiceStatus;
   /** 狀態描述（例如：運行中） */
-  statusText: string
+  statusText: string;
   /** 主要域名（例如：demo.twfood.com） */
-  primaryDomain: string
+  primaryDomain: string;
   /** 轉發目標 IP 或域名（例如：192.168.1.100） */
-  forwardHost: string
+  forwardHost: string;
   /** 轉發 Port（例如：8080） */
-  forwardPort: number
+  forwardPort: number;
   /** SSL 是否啟用 */
-  sslEnabled: boolean
+  sslEnabled: boolean;
 }
 
 /**
@@ -84,17 +84,17 @@ export interface NginxServiceInfo {
  */
 export interface DockerImage {
   /** 映像 ID */
-  id: string
+  id: string;
   /** 映像檔名 */
-  name: string
+  name: string;
   /** 建立時間 */
-  createdAt: string
+  createdAt: string;
   /** 容量（已格式化，如 "2.21GB"） */
-  size: string
+  size: string;
   /** 是否為最新版本 */
-  isLatest: boolean
+  isLatest: boolean;
   /** 版本號 */
-  version: string
+  version: string;
   /** 是否為目前運行的版本 */
-  isRunning: boolean
+  isRunning: boolean;
 }

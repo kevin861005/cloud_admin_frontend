@@ -3,7 +3,7 @@
   <div v-if="buttonText" class="px-5 pb-5 pt-3">
     <button
       type="button"
-      class="flex h-9 w-full items-center justify-center rounded border typo-sm-bold transition-all"
+      class="typo-sm-bold flex h-9 w-full items-center justify-center rounded border transition-all"
       :class="buttonClasses"
       :disabled="disabled || loading"
       @click="handleClick"
@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed } from "vue";
 
 /**
  * DrawerButton 元件
@@ -32,39 +32,39 @@ interface Props {
   /**
    * 按鈕文字（選填，沒有文字則不顯示按鈕）
    */
-  buttonText?: string
+  buttonText?: string;
 
   /**
    * 按鈕類型
    * @default 'error'
    */
-  buttonType?: 'success' | 'error'
+  buttonType?: "success" | "error";
 
   /**
    * 是否顯示載入中狀態
    * @default false
    */
-  loading?: boolean
+  loading?: boolean;
 
   /**
    * 是否禁用按鈕
    * @default false
    */
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  buttonType: 'error',
+  buttonType: "error",
   loading: false,
   disabled: false,
-})
+});
 
 const emit = defineEmits<{
   /**
    * 按鈕點擊事件
    */
-  click: []
-}>()
+  click: [];
+}>();
 
 // ===== 計算屬性 =====
 
@@ -74,17 +74,17 @@ const emit = defineEmits<{
 const buttonClasses = computed(() => {
   // 禁用或載入中的樣式
   if (props.disabled || props.loading) {
-    return 'cursor-not-allowed opacity-50 bg-gray-100 border-gray-300 text-neutral-500'
+    return "cursor-not-allowed opacity-50 bg-gray-100 border-gray-300 text-neutral-500";
   }
 
   // Success 類型（綠色）
-  if (props.buttonType === 'success') {
-    return 'bg-[#10B9811A] border-[#10B98180] text-[#10B981] hover:bg-[#10B98133] active:bg-[#10B9814D]'
+  if (props.buttonType === "success") {
+    return "bg-[#10B9811A] border-[#10B98180] text-[#10B981] hover:bg-[#10B98133] active:bg-[#10B9814D]";
   }
 
   // Error 類型（紅色）
-  return 'bg-[#FD58581A] border-[#FD585880] text-[#FD5858] hover:bg-[#FD585833] active:bg-[#FD58584D]'
-})
+  return "bg-[#FD58581A] border-[#FD585880] text-[#FD5858] hover:bg-[#FD585833] active:bg-[#FD58584D]";
+});
 
 // ===== 事件處理 =====
 
@@ -94,7 +94,7 @@ const buttonClasses = computed(() => {
  */
 const handleClick = () => {
   if (!props.disabled && !props.loading) {
-    emit('click')
+    emit("click");
   }
-}
+};
 </script>

@@ -8,21 +8,21 @@
  */
 export interface ApiResponse<T> {
   /** 請求是否成功 */
-  success: boolean
+  success: boolean;
 
   /** 回應訊息 */
-  message: string
+  message: string;
 
   /** 錯誤代碼（選填） */
-  code?: string
+  code?: string;
 
   /** 回應資料（泛型） */
-  data: T | null
+  data: T | null;
 
   /** 伺服器回應時間戳記（ISO 8601 格式，UTC 時區）
    * 範例：2025-10-13T06:30:45.123Z
    */
-  timestamp: string
+  timestamp: string;
 }
 
 /**
@@ -30,23 +30,23 @@ export interface ApiResponse<T> {
  */
 export interface FieldError {
   /** 欄位名稱 */
-  field: string
+  field: string;
   /** 錯誤訊息 */
-  message: string
+  message: string;
 }
 
 export class ApiError<T = unknown> extends Error {
-  code?: string
-  data?: T
+  code?: string;
+  data?: T;
 
   constructor(options: { code?: string; message: string; data?: T }) {
-    super(options.message)
-    this.code = options.code
-    this.data = options.data
+    super(options.message);
+    this.code = options.code;
+    this.data = options.data;
   }
 }
 
 export interface SelectOption {
-  label: string
-  value: string | number
+  label: string;
+  value: string | number;
 }

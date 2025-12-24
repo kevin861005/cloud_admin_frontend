@@ -38,7 +38,7 @@
           <!-- 按鈕（選填） -->
           <button
             v-if="props.buttonText"
-            class="rounded px-2 typo-sm text-neutral-600 hover:text-primary-500"
+            class="typo-sm rounded px-2 text-neutral-600 hover:text-primary-500"
             @click="emit('button-click')"
           >
             {{ props.buttonText }}

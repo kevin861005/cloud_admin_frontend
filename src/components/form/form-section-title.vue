@@ -20,12 +20,12 @@
 
 interface Props {
   /** 標題文字 */
-  title: string
+  title: string;
   /** 是否高亮顯示 */
-  isHighlighted?: boolean
+  isHighlighted?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {
   isHighlighted: false,
-})
+});
 </script>

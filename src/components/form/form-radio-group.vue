@@ -11,7 +11,7 @@
       <label
         v-for="(option, index) in options"
         :key="option.value"
-        class="flex h-9 cursor-pointer items-center gap-1 rounded border bg-slate-500/5 px-3 py-2 typo-sm-medium"
+        class="typo-sm-medium flex h-9 cursor-pointer items-center gap-1 rounded border bg-slate-500/5 px-3 py-2"
       >
         <button
           :ref="index === 0 ? 'firstRadioRef' : undefined"
@@ -35,10 +35,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { FieldError } from '@/components/form'
-import RadioOnIcon from '@/assets/icons/common/cm-radio-on.svg'
-import RadioOffIcon from '@/assets/icons/common/cm-radio.svg'
+import { ref } from "vue";
+import { FieldError } from "@/components/form";
+import RadioOnIcon from "@/assets/icons/common/cm-radio-on.svg";
+import RadioOffIcon from "@/assets/icons/common/cm-radio.svg";
 
 /**
  * FormRadioGroup 元件
@@ -50,70 +50,70 @@ interface Props {
   /**
    * 欄位標籤
    */
-  label: string
+  label: string;
 
   /**
    * 雙向綁定的值
    */
-  modelValue: string | number | null
+  modelValue: string | number | null;
 
   /**
    * 選項列表
    */
-  options: Array<{ label: string; value: string | number }>
+  options: Array<{ label: string; value: string | number }>;
 
   /**
    * 是否必填
    */
-  required?: boolean
+  required?: boolean;
 
   /**
    * 錯誤訊息
    */
-  errorMessage?: string
+  errorMessage?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   required: false,
-  errorMessage: '',
-})
+  errorMessage: "",
+});
 
 const emit = defineEmits<{
   /**
    * 值變更事件
    */
-  'update:modelValue': [value: string | number]
-}>()
+  "update:modelValue": [value: string | number];
+}>();
 
 /**
  * 第一個 radio input 元素的 ref（用於 focus）
  */
-const firstRadioRef = ref<HTMLInputElement | null>(null)
+const firstRadioRef = ref<HTMLInputElement | null>(null);
 
 /**
  * 檢查選項是否被選中
  */
 const isChecked = (value: string | number) => {
-  return props.modelValue === value
-}
+  return props.modelValue === value;
+};
 
 /**
  * 處理選項變更
  */
 const handleChange = (value: string | number) => {
-  emit('update:modelValue', value)
-}
+  emit("update:modelValue", value);
+};
 
 /**
  * 提供給父元件呼叫的 focus 方法
  * 聚焦到第一個 radio button
  */
 const focus = () => {
-  firstRadioRef.value?.focus()
-}
+  firstRadioRef.value?.focus();
+};
 
 // 暴露 focus 方法給父元件
 defineExpose({
   focus,
-})
+});
 </script>

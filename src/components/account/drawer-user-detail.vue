@@ -23,7 +23,7 @@
             <img
               src="@/assets/icons/common/cm-edit.svg"
               alt="編輯"
-              class="w-4 h-4 cursor-pointer"
+              class="h-4 w-4 cursor-pointer"
               @click="handleEdit"
             />
           </template>
@@ -540,6 +540,6 @@ watch(
       loadUserDetail();
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 </script>

@@ -10,10 +10,10 @@
     <Transition name="slide">
       <div
         v-if="isOpen"
-        class="fixed right-0 top-0 bottom-0 z-[70] flex w-[355px] flex-col bg-white shadow-lg"
+        class="fixed bottom-0 right-0 top-0 z-[70] flex w-[355px] flex-col bg-white shadow-lg"
       >
         <!-- CloseSection: 固定高度 40px，關閉按鈕固定在最右側 -->
-        <div class="flex items-center justify-end h-10">
+        <div class="flex h-10 items-center justify-end">
           <CloseButton aria-label="關閉對話框" @click="handleClose" />
         </div>
 
@@ -32,8 +32,8 @@
 </template>
 
 <script setup lang="ts">
-import { watch, onMounted, onUnmounted } from 'vue'
-import { CloseButton } from '@/components/common'
+import { watch, onMounted, onUnmounted } from "vue";
+import { CloseButton } from "@/components/common";
 
 /**
  * Drawer 元件的 Props
@@ -42,10 +42,10 @@ interface Props {
   /**
    * 控制 Drawer 開關狀態
    */
-  isOpen: boolean
+  isOpen: boolean;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 /**
  * Drawer 元件的 Emits
@@ -54,26 +54,26 @@ const emit = defineEmits<{
   /**
    * 當 Drawer 需要關閉時觸發
    */
-  close: []
-}>()
+  close: [];
+}>();
 
 /**
  * 處理關閉 Drawer
  * 會觸發 close 事件通知父元件
  */
 const handleClose = () => {
-  emit('close')
-}
+  emit("close");
+};
 
 /**
  * 處理 ESC 鍵關閉
  * 當 Drawer 開啟時，按下 ESC 鍵會關閉 Drawer
  */
 const handleEscKey = (event: KeyboardEvent) => {
-  if (event.key === 'Escape' && props.isOpen) {
-    handleClose()
+  if (event.key === "Escape" && props.isOpen) {
+    handleClose();
   }
-}
+};
 
 /**
  * 監聽 isOpen 狀態變化
@@ -84,27 +84,27 @@ watch(
   () => props.isOpen,
   (isOpen) => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden'
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = ''
+      document.body.style.overflow = "";
     }
-  },
-)
+  }
+);
 
 /**
  * 元件掛載時註冊 ESC 鍵監聽
  */
 onMounted(() => {
-  document.addEventListener('keydown', handleEscKey)
-})
+  document.addEventListener("keydown", handleEscKey);
+});
 
 /**
  * 元件卸載時移除 ESC 鍵監聽並恢復 body 滾動
  */
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleEscKey)
-  document.body.style.overflow = ''
-})
+  document.removeEventListener("keydown", handleEscKey);
+  document.body.style.overflow = "";
+});
 </script>
 
 <style scoped>

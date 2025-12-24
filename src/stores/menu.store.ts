@@ -7,27 +7,27 @@
  * 3. 儲存群組展開狀態到 localStorage
  */
 
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
 /**
  * 選單 Store
  */
-export const useMenuStore = defineStore('menu', () => {
+export const useMenuStore = defineStore("menu", () => {
   // ==================== State ====================
 
   /**
    * 展開的群組選單 key 列表
    * 例如：['settings'] 表示設定群組已展開
    */
-  const expandedGroups = ref<string[]>(JSON.parse(localStorage.getItem('expandedGroups') || '[]'))
+  const expandedGroups = ref<string[]>(JSON.parse(localStorage.getItem("expandedGroups") || "[]"));
 
   /**
    * 左側選單是否收合
    * true: 選單完全隱藏
    * false: 選單顯示
    */
-  const isCollapsed = ref<boolean>(localStorage.getItem('menuCollapsed') !== 'false')
+  const isCollapsed = ref<boolean>(localStorage.getItem("menuCollapsed") !== "false");
 
   // ==================== Actions ====================
 
@@ -37,15 +37,15 @@ export const useMenuStore = defineStore('menu', () => {
    * @param groupKey 群組選單的 key（例如：'settings'）
    */
   function toggleGroup(groupKey: string) {
-    const index = expandedGroups.value.indexOf(groupKey)
+    const index = expandedGroups.value.indexOf(groupKey);
 
     if (index > -1) {
-      expandedGroups.value.splice(index, 1)
+      expandedGroups.value.splice(index, 1);
     } else {
-      expandedGroups.value.push(groupKey)
+      expandedGroups.value.push(groupKey);
     }
 
-    localStorage.setItem('expandedGroups', JSON.stringify(expandedGroups.value))
+    localStorage.setItem("expandedGroups", JSON.stringify(expandedGroups.value));
   }
 
   /**
@@ -55,15 +55,15 @@ export const useMenuStore = defineStore('menu', () => {
    * @returns true 表示已展開，false 表示已收合
    */
   function isGroupExpanded(groupKey: string): boolean {
-    return expandedGroups.value.includes(groupKey)
+    return expandedGroups.value.includes(groupKey);
   }
 
   /**
    * 切換選單收合/展開狀態
    */
   function toggleCollapsed() {
-    isCollapsed.value = !isCollapsed.value
-    localStorage.setItem('menuCollapsed', JSON.stringify(isCollapsed.value))
+    isCollapsed.value = !isCollapsed.value;
+    localStorage.setItem("menuCollapsed", JSON.stringify(isCollapsed.value));
   }
 
   /**
@@ -72,10 +72,10 @@ export const useMenuStore = defineStore('menu', () => {
    * 用途：登出時呼叫，清除所有選單狀態
    */
   function resetMenuState() {
-    expandedGroups.value = []
-    isCollapsed.value = true // 預設收合
-    localStorage.removeItem('expandedGroups')
-    localStorage.removeItem('menuCollapsed')
+    expandedGroups.value = [];
+    isCollapsed.value = true; // 預設收合
+    localStorage.removeItem("expandedGroups");
+    localStorage.removeItem("menuCollapsed");
   }
 
   // ==================== Return ====================
@@ -90,5 +90,5 @@ export const useMenuStore = defineStore('menu', () => {
     isGroupExpanded,
     toggleCollapsed,
     resetMenuState,
-  }
-})
+  };
+});

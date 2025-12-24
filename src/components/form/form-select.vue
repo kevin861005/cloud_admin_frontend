@@ -13,7 +13,7 @@
         ref="triggerRef"
         type="button"
         :disabled="disabled"
-        class="flex h-9 w-full items-center justify-between rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-left text-sm disabled:bg-gray-100 disabled:text-neutral-500 focus:outline-none"
+        class="flex h-9 w-full items-center justify-between rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-left text-sm focus:outline-none disabled:bg-gray-100 disabled:text-neutral-500"
         @click="toggleDropdown"
       >
         <span :class="selectedLabel ? 'text-neutral-900' : 'text-neutral-400'">
@@ -60,7 +60,7 @@
               v-for="option in filteredOptions"
               :key="option.value"
               type="button"
-              class="flex w-full items-center px-3 py-2 text-left typo-sm-medium hover:bg-blue-50"
+              class="typo-sm-medium flex w-full items-center px-3 py-2 text-left hover:bg-blue-50"
               :class="{
                 'bg-blue-100 text-blue-700': isSelected(option.value),
                 'text-neutral-900': !isSelected(option.value),
@@ -83,8 +83,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
-import { FieldError } from '@/components/form'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
+import { FieldError } from "@/components/form";
 
 /**
  * 下拉選單元件（單選）
@@ -98,53 +98,53 @@ import { FieldError } from '@/components/form'
 
 // ===== 型別定義 =====
 interface SelectOption {
-  label: string
-  value: string | number
+  label: string;
+  value: string | number;
 }
 
 interface Props {
   /** 欄位標籤 */
-  label: string
+  label: string;
   /** 綁定值 */
-  modelValue: string | number | null
+  modelValue: string | number | null;
   /** 選項列表 */
-  options: SelectOption[]
+  options: SelectOption[];
   /** 佔位提示文字 */
-  placeholder?: string
+  placeholder?: string;
   /** 是否必填 */
-  required?: boolean
+  required?: boolean;
   /** 是否禁用 */
-  disabled?: boolean
+  disabled?: boolean;
   /** 錯誤訊息 */
-  errorMessage?: string
+  errorMessage?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  placeholder: '請選擇',
+  placeholder: "請選擇",
   required: false,
   disabled: false,
-})
+});
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string | number | null]
-}>()
+  "update:modelValue": [value: string | number | null];
+}>();
 
 // ===== 狀態管理 =====
 
 /** 是否展開下拉選單 */
-const isOpen = ref(false)
+const isOpen = ref(false);
 
 /** 搜尋關鍵字 */
-const searchQuery = ref('')
+const searchQuery = ref("");
 
 /** 下拉容器 ref */
-const selectContainerRef = ref<HTMLDivElement | null>(null)
+const selectContainerRef = ref<HTMLDivElement | null>(null);
 
 /** 觸發按鈕 ref */
-const triggerRef = ref<HTMLButtonElement | null>(null)
+const triggerRef = ref<HTMLButtonElement | null>(null);
 
 /** 搜尋輸入框 ref */
-const searchInputRef = ref<HTMLInputElement | null>(null)
+const searchInputRef = ref<HTMLInputElement | null>(null);
 
 // ===== 計算屬性 =====
 
@@ -153,23 +153,23 @@ const searchInputRef = ref<HTMLInputElement | null>(null)
  */
 const selectedLabel = computed(() => {
   if (props.modelValue === null || props.modelValue === undefined) {
-    return ''
+    return "";
   }
-  const selected = props.options.find((opt) => opt.value === props.modelValue)
-  return selected?.label || ''
-})
+  const selected = props.options.find((opt) => opt.value === props.modelValue);
+  return selected?.label || "";
+});
 
 /**
  * 過濾後的選項列表
  */
 const filteredOptions = computed(() => {
   if (!searchQuery.value.trim()) {
-    return props.options
+    return props.options;
   }
 
-  const query = searchQuery.value.toLowerCase().trim()
-  return props.options.filter((option) => option.label.toLowerCase().includes(query))
-})
+  const query = searchQuery.value.toLowerCase().trim();
+  return props.options.filter((option) => option.label.toLowerCase().includes(query));
+});
 
 // ===== 方法 =====
 
@@ -177,88 +177,88 @@ const filteredOptions = computed(() => {
  * 切換下拉選單顯示/隱藏
  */
 const toggleDropdown = () => {
-  if (props.disabled) return
+  if (props.disabled) return;
 
-  isOpen.value = !isOpen.value
+  isOpen.value = !isOpen.value;
 
   // 展開時清空搜尋並 focus 搜尋框
   if (isOpen.value) {
-    searchQuery.value = ''
+    searchQuery.value = "";
     // 使用 nextTick 確保 DOM 更新後再 focus
     setTimeout(() => {
-      searchInputRef.value?.focus()
-    }, 50)
+      searchInputRef.value?.focus();
+    }, 50);
   }
-}
+};
 
 /**
  * 選擇選項
  */
 const selectOption = (option: SelectOption) => {
-  emit('update:modelValue', option.value)
-  isOpen.value = false // 選擇後自動關閉
-  searchQuery.value = '' // 清空搜尋
-}
+  emit("update:modelValue", option.value);
+  isOpen.value = false; // 選擇後自動關閉
+  searchQuery.value = ""; // 清空搜尋
+};
 
 /**
  * 判斷選項是否被選中
  */
 const isSelected = (value: string | number) => {
-  return props.modelValue === value
-}
+  return props.modelValue === value;
+};
 
 /**
  * 關閉下拉選單
  */
 const closeDropdown = () => {
-  isOpen.value = false
-  searchQuery.value = ''
-}
+  isOpen.value = false;
+  searchQuery.value = "";
+};
 
 /**
  * 處理點擊外部事件
  */
 const handleClickOutside = (event: MouseEvent) => {
-  if (!selectContainerRef.value) return
+  if (!selectContainerRef.value) return;
 
-  const target = event.target as Node
+  const target = event.target as Node;
   if (!selectContainerRef.value.contains(target)) {
-    closeDropdown()
+    closeDropdown();
   }
-}
+};
 
 /**
  * Focus 到觸發按鈕
  * 供父元件呼叫
  */
 const focus = () => {
-  triggerRef.value?.focus()
-}
+  triggerRef.value?.focus();
+};
 
 // ===== 生命週期 =====
 
 onMounted(() => {
   // 監聽全域點擊事件
-  document.addEventListener('click', handleClickOutside)
-})
+  document.addEventListener("click", handleClickOutside);
+});
 
 onBeforeUnmount(() => {
   // 移除全域點擊事件監聽
-  document.removeEventListener('click', handleClickOutside)
-})
+  document.removeEventListener("click", handleClickOutside);
+});
 
 // 當 disabled 變為 true 時，關閉下拉選單
 watch(
   () => props.disabled,
   (newValue) => {
     if (newValue) {
-      closeDropdown()
+      closeDropdown();
     }
-  },
-)
+  }
+);
 
 // ===== Expose =====
 defineExpose({
   focus,
-})
+});
 </script>

@@ -9,47 +9,47 @@
  */
 export interface ModuleListItem {
   /** 模組代號 */
-  code: string
+  code: string;
 
   /** 模組名稱 */
-  name: string
+  name: string;
 
   /** 狀態 */
-  isActive: boolean
+  isActive: boolean;
 
   /** 建立日期 */
-  createdDate: string
+  createdDate: string;
 }
 
 export interface ModuleDetailInfo {
   /** 模組代號 */
-  code: string
+  code: string;
 
   /** 模組名稱 */
-  name: string
+  name: string;
 
   /** 狀態 */
-  isActive: boolean
+  isActive: boolean;
 
   /** 建立日期 */
-  createdDate: string
+  createdDate: string;
 
   /** 建立者 */
-  createdBy: { id: string; name: string } | null
+  createdBy: { id: string; name: string } | null;
 }
 
 export interface CreateModuleRequest {
   /** 代號 */
-  code: string
+  code: string;
 
   /** 名稱 */
-  name: string
+  name: string;
 }
 
 export interface UpdateModuleRequest {
   /** 名稱 */
-  name: string
+  name: string;
 
   /** 狀態 */
-  isActive: boolean
+  isActive: boolean;
 }

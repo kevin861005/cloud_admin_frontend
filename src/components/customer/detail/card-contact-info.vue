@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full flex-col rounded-xl bg-white py-6 px-5 shadow-md gap-8">
+  <div class="flex h-full flex-col gap-8 rounded-xl bg-white px-5 py-6 shadow-md">
     <div class="flex flex-col gap-8">
       <!-- 卡片標題 -->
       <div class="flex items-center gap-2">
@@ -49,9 +49,9 @@
 </template>
 
 <script setup lang="ts">
-import ContactIcon from '@/assets/icons/card/contact.svg'
+import ContactIcon from "@/assets/icons/card/contact.svg";
 // import BadgeButton from '@/components/common/badge-button.vue'
-import { CopyButton } from '@/components/common'
+import { CopyButton } from "@/components/common";
 
 /**
  * 聯絡資訊卡片
@@ -67,13 +67,13 @@ import { CopyButton } from '@/components/common'
 
 interface Props {
   contactInfo: {
-    contactPerson: string
-    phone: string
-    email: string
-  }
+    contactPerson: string;
+    phone: string;
+    email: string;
+  };
 }
 
-defineProps<Props>()
+defineProps<Props>();
 
 /**
  * Emits 定義

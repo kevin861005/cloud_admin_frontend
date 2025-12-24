@@ -88,77 +88,77 @@
  * - Button List: padding 20px (左右), 8px (上下), gap 8px
  *   - 有 options 時上方顯示陰影
  */
-import { computed, useId, watch, onUnmounted } from 'vue'
-import { CloseButton } from '@/components/common'
+import { computed, useId, watch, onUnmounted } from "vue";
+import { CloseButton } from "@/components/common";
 
 // ========== Props 定義 ==========
 interface Props {
   /** 控制對話框顯示/隱藏 (v-model) */
-  modelValue: boolean
+  modelValue: boolean;
   /** 對話框標題 */
-  title?: string
+  title?: string;
   /** 對話框副標題 */
-  subtitle?: string
+  subtitle?: string;
   /** 對話框寬度 */
-  width?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+  width?: "sm" | "md" | "lg" | "xl" | "2xl";
   /** 是否顯示關閉按鈕 */
-  showCloseButton?: boolean
+  showCloseButton?: boolean;
   /** 點擊遮罩是否關閉 */
-  closeOnOverlay?: boolean
+  closeOnOverlay?: boolean;
   /** 是否為 Loading 狀態（Loading 時禁止關閉） */
-  loading?: boolean
+  loading?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: '',
-  subtitle: '',
-  width: '2xl',
+  title: "",
+  subtitle: "",
+  width: "2xl",
   showCloseButton: true,
   closeOnOverlay: true,
   loading: false,
-})
+});
 
 // ========== Emits 定義 ==========
 const emit = defineEmits<{
-  'update:modelValue': [value: boolean]
-  close: []
-}>()
+  "update:modelValue": [value: boolean];
+  close: [];
+}>();
 
 // ========== Computed ==========
 /** 產生唯一的標題 ID（無障礙用途） */
-const titleId = useId()
+const titleId = useId();
 
 /** 寬度 class 對應 */
 const widthClass = computed(() => {
   const widthMap: Record<string, string> = {
-    sm: 'max-w-sm',
-    md: 'max-w-md',
-    lg: 'max-w-lg',
-    xl: 'max-w-xl',
-    '2xl': 'max-w-2xl',
-  }
-  return widthMap[props.width]
-})
+    sm: "max-w-sm",
+    md: "max-w-md",
+    lg: "max-w-lg",
+    xl: "max-w-xl",
+    "2xl": "max-w-2xl",
+  };
+  return widthMap[props.width];
+});
 
 // ========== Methods ==========
 /** 關閉對話框 */
 function handleClose() {
-  if (props.loading) return
-  emit('update:modelValue', false)
-  emit('close')
+  if (props.loading) return;
+  emit("update:modelValue", false);
+  emit("close");
 }
 
 /** 點擊遮罩處理 */
 function handleOverlayClick() {
   if (props.closeOnOverlay && !props.loading) {
-    handleClose()
+    handleClose();
   }
 }
 
 /** 監聽 ESC 鍵關閉 Dialog */
 function handleEscape(event: KeyboardEvent) {
-  if (event.key === 'Escape' && !props.loading) {
-    handleClose()
+  if (event.key === "Escape" && !props.loading) {
+    handleClose();
   }
 }
 
@@ -168,23 +168,23 @@ watch(
   () => props.modelValue,
   (isOpen) => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden'
-      document.addEventListener('keydown', handleEscape)
+      document.body.style.overflow = "hidden";
+      document.addEventListener("keydown", handleEscape);
     } else {
-      document.body.style.overflow = ''
-      document.removeEventListener('keydown', handleEscape)
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", handleEscape);
     }
-  },
-)
+  }
+);
 
 /** 元件卸載時清理 */
 onUnmounted(() => {
-  document.body.style.overflow = ''
-  document.removeEventListener('keydown', handleEscape)
-})
+  document.body.style.overflow = "";
+  document.removeEventListener("keydown", handleEscape);
+});
 
 // ========== Expose ==========
 defineExpose({
   close: handleClose,
-})
+});
 </script>

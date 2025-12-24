@@ -45,71 +45,71 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { PerformanceMetrics } from '@/types/customer'
-import { getPerformanceLevel } from '@/types/customer'
-import { Alert, Loading } from '@/components/common'
-import EfficacyIcon from '@/assets/icons/card/efficacy.svg'
+import { computed } from "vue";
+import type { PerformanceMetrics } from "@/types/customer";
+import { getPerformanceLevel } from "@/types/customer";
+import { Alert, Loading } from "@/components/common";
+import EfficacyIcon from "@/assets/icons/card/efficacy.svg";
 
 /**
  * Props 定義
  */
 interface Props {
   /** 效能監控資料 */
-  performance: PerformanceMetrics | null
+  performance: PerformanceMetrics | null;
   /** 載入狀態 */
-  loading?: boolean
+  loading?: boolean;
   /** 錯誤訊息 */
-  error?: string | null
+  error?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
   error: null,
-})
+});
 
 /**
  * 進度條項目資料
  */
 interface ProgressItem {
-  label: string
-  value: number
+  label: string;
+  value: number;
 }
 
 /**
  * 進度條列表
  */
 const progressItems = computed<ProgressItem[]>(() => {
-  if (!props.performance) return []
+  if (!props.performance) return [];
 
   return [
-    { label: 'CPU 使用率', value: props.performance.cpu },
-    { label: '記憶體使用', value: props.performance.memory },
-    { label: '磁碟使用', value: props.performance.disk },
-  ]
-})
+    { label: "CPU 使用率", value: props.performance.cpu },
+    { label: "記憶體使用", value: props.performance.memory },
+    { label: "磁碟使用", value: props.performance.disk },
+  ];
+});
 
 /**
  * 根據百分比取得顏色類別
  */
 function getColorClasses(percentage: number) {
-  const level = getPerformanceLevel(percentage)
+  const level = getPerformanceLevel(percentage);
 
   const colorMap = {
     GOOD: {
-      text: 'text-green-600',
-      progressBg: 'bg-blue-500',
+      text: "text-green-600",
+      progressBg: "bg-blue-500",
     },
     WARNING: {
-      text: 'text-yellow-600',
-      progressBg: 'bg-yellow-500',
+      text: "text-yellow-600",
+      progressBg: "bg-yellow-500",
     },
     CRITICAL: {
-      text: 'text-red-600',
-      progressBg: 'bg-red-500',
+      text: "text-red-600",
+      progressBg: "bg-red-500",
     },
-  }
+  };
 
-  return colorMap[level]
+  return colorMap[level];
 }
 </script>

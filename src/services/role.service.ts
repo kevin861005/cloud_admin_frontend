@@ -3,18 +3,18 @@
  * 提供角色相關的 API 呼叫
  */
 
-import apiClient from '@/utils/axios'
-import { ApiError } from '@/types/common'
-import type { ApiResponse } from '@/types/common'
-import type { Role } from '@/types/role'
+import apiClient from "@/utils/axios";
+import { ApiError } from "@/types/common";
+import type { ApiResponse } from "@/types/common";
+import type { Role } from "@/types/role";
 
 /**
  * 角色選項介面
  * 用於表單的下拉選單或 checkbox 選項
  */
 export interface RoleOption {
-  label: string // 顯示文字（角色描述）
-  value: number // 角色 ID
+  label: string; // 顯示文字（角色描述）
+  value: number; // 角色 ID
 }
 
 /**
@@ -32,17 +32,17 @@ export const roleService = {
    * @returns Promise<Role[]> 角色列表
    */
   async getAllRoles(): Promise<Role[]> {
-    const response = await apiClient.get<ApiResponse<Role[]>>('/roles')
+    const response = await apiClient.get<ApiResponse<Role[]>>("/roles");
 
     if (!response.data.success || !response.data.data) {
       throw new ApiError({
         code: response.data.code,
-        message: response.data.message || '取得角色列表失敗',
+        message: response.data.message || "取得角色列表失敗",
         data: response.data.data ?? null,
-      })
+      });
     }
 
-    return response.data.data
+    return response.data.data;
   },
 
   /**
@@ -58,13 +58,13 @@ export const roleService = {
    */
   async getRoleOptions(): Promise<RoleOption[]> {
     // 直接沿用 getAllRoles()，失敗會丟 ApiError
-    const roles = await this.getAllRoles()
+    const roles = await this.getAllRoles();
 
     const options: RoleOption[] = roles.map((role: Role) => ({
       label: role.description,
       value: role.id,
-    }))
+    }));
 
-    return options
+    return options;
   },
-}
+};

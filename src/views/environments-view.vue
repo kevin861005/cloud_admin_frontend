@@ -25,32 +25,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { PageTitle, CardContainer } from '@/components/common'
-import CardPending from '@/components/environment/card-pending.vue'
-import CardToDelete from '@/components/environment/card-to-delete.vue'
-import TableContainer from '@/components/table/table-container.vue'
-import EnvironmentTable from '@/components/environment/table-environment.vue'
-import EnvironmentDetailDrawer from '@/components/environment/drawer-environment-detail.vue'
+import { ref } from "vue";
+import { PageTitle, CardContainer } from "@/components/common";
+import CardPending from "@/components/environment/card-pending.vue";
+import CardToDelete from "@/components/environment/card-to-delete.vue";
+import TableContainer from "@/components/table/table-container.vue";
+import EnvironmentTable from "@/components/environment/table-environment.vue";
+import EnvironmentDetailDrawer from "@/components/environment/drawer-environment-detail.vue";
 
 // ===== 元件參照 =====
 
 /**
  * 表格元件參照（用於呼叫 refresh 等方法）
  */
-const tableRef = ref<InstanceType<typeof EnvironmentTable> | null>(null)
+const tableRef = ref<InstanceType<typeof EnvironmentTable> | null>(null);
 
 // ===== Drawer 狀態 =====
 
 /**
  * 選中的環境 ID
  */
-const selectedEnvironmentId = ref<string | null>(null)
+const selectedEnvironmentId = ref<string | null>(null);
 
 /**
  * Drawer 開啟狀態
  */
-const isDrawerOpen = ref(false)
+const isDrawerOpen = ref(false);
 
 // ===== 事件處理 =====
 
@@ -59,26 +59,26 @@ const isDrawerOpen = ref(false)
  * 開啟 Drawer 顯示環境詳情
  */
 const handleView = (row: Record<string, unknown>) => {
-  selectedEnvironmentId.value = String(row.id)
-  isDrawerOpen.value = true
-}
+  selectedEnvironmentId.value = String(row.id);
+  isDrawerOpen.value = true;
+};
 
 /**
  * 處理關閉 Drawer
  */
 const handleCloseDrawer = () => {
-  isDrawerOpen.value = false
+  isDrawerOpen.value = false;
   // 延遲清空 ID，避免 Drawer 關閉動畫時資料消失
   setTimeout(() => {
-    selectedEnvironmentId.value = null
-  }, 300)
-}
+    selectedEnvironmentId.value = null;
+  }, 300);
+};
 
 /**
  * 處理刪除成功
  * 刷新表格資料
  */
 const handleDeleteSuccess = () => {
-  tableRef.value?.refresh()
-}
+  tableRef.value?.refresh();
+};
 </script>
