@@ -13,7 +13,7 @@
         <select
           :value="modelValue[filter.key] ?? getDefaultValue(filter)"
           @change="handleFilterChange(filter.key, ($event.target as HTMLSelectElement).value)"
-          class="typo-sm h-8 w-full appearance-none rounded-md border border-neutral-200 px-3 py-1 pr-10 text-neutral-700 focus:border-primary-500 focus:outline-none"
+          class="typo-sm h-8 w-full appearance-none rounded-md border border-neutral-200 px-3 py-1 pr-10 text-neutral-700 focus:border-primary-500"
         >
           <option v-for="option in filter.options" :key="option.value" :value="option.value">
             {{ option.label }}

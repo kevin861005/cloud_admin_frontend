@@ -8,7 +8,7 @@
     @update:model-value="handleDialogChange"
   >
     <!-- 提醒語 -->
-    <p class="typo-sm-bold text-semantic-warning">更新大約1-2分鐘，操作期間服務暫時無法使用</p>
+    <p class="typo-sm-bold text-semantic-error">更新大約1-2分鐘，操作期間服務暫時無法使用</p>
 
     <!-- 選項列表 -->
     <template #options>

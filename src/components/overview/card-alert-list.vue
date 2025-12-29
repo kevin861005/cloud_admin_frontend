@@ -91,6 +91,7 @@ import { ref, onMounted } from "vue";
 import { overviewService } from "@/services/overview.service";
 import type { AlertListData, AlertType } from "@/types/overview";
 import { BadgeButton, EmptyState } from "@/components/common";
+import { formatTimeWithPeriod } from "@/utils/time";
 
 /**
  * 異常警示資料
@@ -128,21 +129,6 @@ const getAlertStyle = (type: AlertType) => {
 };
 
 /**
- * 格式化時間
- */
-const formatUpdateTime = (isoString: string): string => {
-  try {
-    const date = new Date(isoString);
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  } catch (error) {
-    console.error("時間格式化失敗:", error);
-    return "--:--";
-  }
-};
-
-/**
  * 點擊「更多」按鈕
  */
 const handleMoreClick = () => {
@@ -150,7 +136,8 @@ const handleMoreClick = () => {
 };
 
 onMounted(async () => {
-  alertData.value = await overviewService.getRecentAlerts();
-  updateTime.value = formatUpdateTime(new Date().toISOString());
+  const response = await overviewService.getRecentAlerts();
+  alertData.value = response.data;
+  updateTime.value = formatTimeWithPeriod(response.timestamp);
 });
 </script>

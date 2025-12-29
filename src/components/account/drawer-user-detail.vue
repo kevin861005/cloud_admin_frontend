@@ -123,9 +123,9 @@
       <!-- 異動資訊區塊（始終顯示） -->
       <InfoSection title="異動資訊">
         <InfoField label="建立者" :value="createdByText" />
-        <InfoField label="建立日" :value="createdAtText" />
+        <InfoField label="建立日" :value="userDetail?.createdAt || '-'" />
         <InfoField label="最後異動者" :value="updatedByText" />
-        <InfoField label="最後異動時間" :value="updatedAtText" />
+        <InfoField label="最後異動時間" :value="userDetail?.updatedAt || '-'" />
       </InfoSection>
     </template>
 
@@ -152,7 +152,6 @@ import {
 } from "@/components/form";
 import { userService } from "@/services/user.service";
 import { roleService } from "@/services/role.service";
-import { formatDateDot, formatDateTimeWithPeriod } from "@/utils/time";
 import type { UserDetailInfo, UpdateUserRequest } from "@/types/user";
 import type { FieldError } from "@/types/common";
 import { ApiError } from "@/types/common";
@@ -296,27 +295,11 @@ const createdByText = computed(() => {
 });
 
 /**
- * 建立日顯示文字
- */
-const createdAtText = computed(() => {
-  if (!userDetail.value) return "-";
-  return formatDateDot(userDetail.value.createdAt);
-});
-
-/**
  * 最後異動者顯示文字
  */
 const updatedByText = computed(() => {
   if (!userDetail.value || !userDetail.value.updatedBy) return "-";
   return userDetail.value.updatedBy.name;
-});
-
-/**
- * 最後異動時間顯示文字
- */
-const updatedAtText = computed(() => {
-  if (!userDetail.value || !userDetail.value.updatedAt) return "-";
-  return formatDateTimeWithPeriod(userDetail.value.updatedAt);
 });
 
 // ===== 方法 =====

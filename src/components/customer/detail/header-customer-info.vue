@@ -3,7 +3,7 @@
     class="relative z-10 border-b border-gray-200 bg-white px-10 pb-10 pt-8 shadow-[1px_3px_4px_0_rgba(0,0,0,0.10)]"
   >
     <!-- 第一行：客戶名稱 + 狀態標籤 + 修改資料按鈕 -->
-    <div class="mb-3 flex items-center justify-between">
+    <div class="mb-1 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <h1 class="typo-2xl-bold text-neutral-800">
           {{ customerInfo.customerName }}

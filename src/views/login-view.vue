@@ -78,15 +78,15 @@
                     autocomplete="username"
                     :disabled="isLoading || isSubmitting"
                     :class="[
-                      'w-full rounded-md border px-3 py-2 text-sm transition-colors focus:outline-none',
+                      'w-full rounded-md border px-3 py-2 text-sm transition-colors',
                       formErrors.loginId
-                        ? 'border-semantic-warning focus:border-semantic-warning'
+                        ? 'border-semantic-error focus:border-semantic-error'
                         : 'border-neutral-200 focus:border-primary-500',
                     ]"
                     placeholder="請輸入帳號"
                   />
                   <!-- 帳號專屬錯誤（只顯示「請輸入帳號」） -->
-                  <p v-if="formErrors.loginId" class="typo-xs-bold text-semantic-warning">
+                  <p v-if="formErrors.loginId" class="typo-xs-bold text-semantic-error">
                     {{ formErrors.loginId }}
                   </p>
                 </div>
@@ -103,9 +103,9 @@
                       autocomplete="current-password"
                       :disabled="isLoading || isSubmitting"
                       :class="[
-                        'w-full rounded-md border px-3 py-2 text-sm transition-colors focus:outline-none',
+                        'w-full rounded-md border px-3 py-2 text-sm transition-colors',
                         formErrors.password || authStore.errorMessage || sessionExpired
-                          ? 'border-semantic-warning focus:border-semantic-warning'
+                          ? 'border-semantic-error focus:border-semantic-error'
                           : 'border-neutral-200 focus:border-primary-500',
                       ]"
                       placeholder="請輸入密碼"
@@ -134,7 +134,7 @@
                   <!-- 錯誤訊息（密碼驗證 + 後端錯誤 + 登入失效都顯示在這） -->
                   <p
                     v-if="formErrors.password || authStore.errorMessage || sessionExpired"
-                    class="typo-xs-bold text-semantic-warning"
+                    class="typo-xs-bold text-semantic-error"
                   >
                     {{
                       formErrors.password ||

@@ -1,7 +1,10 @@
 <template>
   <!-- 背景遮罩 -->
   <Teleport to="body">
-    <div v-if="modelValue" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div
+      v-if="modelValue"
+      class="fixed inset-0 z-[80] flex items-center justify-center bg-black/50"
+    >
       <!-- 主框框 -->
       <div
         class="w-[400px] rounded-lg bg-white px-[25px] py-5"
@@ -10,7 +13,7 @@
         <!-- 內容區域 (gap=5px) -->
         <div class="flex flex-col gap-[5px]">
           <!-- 主標題 -->
-          <h2 class="typo-xl-medium text-[#000000]">{{ title }}</h2>
+          <h2 class="typo-xl-medium text-black">{{ title }}</h2>
 
           <!-- 副標題 -->
           <p class="typo-sm text-neutral-400">{{ description }}</p>

@@ -2,7 +2,7 @@
   <!-- 新增按鈕 -->
   <button
     v-if="showAddButton"
-    class="typo-sm-medium group relative rounded-lg bg-primary-500 px-4 py-2 text-white transition-colors focus:outline-none"
+    class="typo-sm-medium group relative rounded-lg bg-primary-500 px-4 py-2 text-white transition-colors"
     @click="handleAddClick"
   >
     <!-- 黑色遮罩層（只影響背景） -->

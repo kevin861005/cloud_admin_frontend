@@ -6,7 +6,10 @@
     <!-- Card 容器（外部傳入卡片元件） -->
     <CardContainer>
       <!-- 客戶統計卡片 -->
-      <CustomerStatsCard @click="scrollToCustomerTable" class="cursor-pointer" />
+      <CustomerStatsCard
+        @click="scrollToCustomerTable"
+        class="cursor-pointer hover:bg-neutral-100"
+      />
 
       <!-- 月度成長卡片 -->
       <CustomerGrowthCard />

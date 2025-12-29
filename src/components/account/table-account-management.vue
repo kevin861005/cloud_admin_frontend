@@ -58,7 +58,6 @@ import { userService } from "@/services/user.service";
 import { useAuthStore } from "@/stores/auth.store";
 import type { UserListItem } from "@/types/user";
 import type { ColumnConfig } from "@/types/table";
-import { formatDateDot } from "@/utils/time";
 
 // ===== Props 定義 =====
 interface Props {
@@ -94,9 +93,8 @@ const errorMessage = ref<string | null>(null);
 
 /**
  * 帳號列表資料
- * 注意：資料會被格式化，新增 createdAtFormatted 欄位
  */
-const users = ref<Array<UserListItem & { createdAtFormatted: string }>>([]);
+const users = ref<UserListItem[]>([]);
 
 // ===== 權限檢查 =====
 
@@ -168,7 +166,7 @@ const columns = ref<ColumnConfig[]>([
     slotName: "statusDisplay",
   },
   {
-    key: "createdAtFormatted",
+    key: "createdAt",
     label: "建立日",
     width: "15%",
     align: "left",
@@ -211,11 +209,7 @@ const loadUsers = async () => {
 
     console.log("getAllUsers result:", userList);
 
-    // 格式化日期後放入 users
-    users.value = userList.map((user) => ({
-      ...user,
-      createdAtFormatted: formatDateDot(user.createdAt),
-    }));
+    users.value = userList;
   } catch (err) {
     console.error("載入帳號列表錯誤:", err);
 

@@ -10,7 +10,7 @@
       :placeholder="placeholder"
       :disabled="disabled"
       :class="[
-        'typo-sm h-8 w-full rounded-md border px-3 py-1 placeholder:text-neutral-400 focus:outline-none',
+        'typo-sm h-8 w-full rounded-md border px-3 py-1 placeholder:text-neutral-400',
         disabled
           ? 'cursor-not-allowed border-neutral-100 bg-neutral-50 text-neutral-400'
           : 'border-neutral-200 bg-white focus:border-primary-500',

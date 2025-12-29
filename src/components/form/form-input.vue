@@ -3,7 +3,7 @@
     <!-- 標籤 -->
     <label class="typo-sm-medium text-neutral-500">
       {{ label }}
-      <span v-if="required" class="text-semantic-warning">*</span>
+      <span v-if="required" class="text-semantic-error">*</span>
     </label>
 
     <!-- 輸入框容器 -->
@@ -15,7 +15,7 @@
         :placeholder="placeholder"
         :disabled="disabled"
         :autocomplete="autocomplete ? 'on' : 'new-password'"
-        class="h-9 w-full rounded border border-neutral-500/10 bg-neutral-500/5 px-3 py-2 text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none disabled:bg-neutral-100 disabled:text-neutral-500"
+        class="h-9 w-full rounded border border-neutral-500/10 bg-neutral-500/5 px-3 py-2 text-sm text-neutral-900 placeholder-neutral-400 disabled:bg-neutral-100 disabled:text-neutral-500"
         :class="{ 'pr-10': isPasswordType && !disabled }"
         @input="handleInput"
       />

@@ -48,7 +48,7 @@
 
             <button
               type="button"
-              class="flex cursor-pointer items-center justify-center rounded p-1 transition-colors hover:bg-gray-100 focus:outline-none"
+              class="flex cursor-pointer items-center justify-center rounded p-1 transition-colors hover:bg-neutral-100"
               :aria-label="isSystemExpanded ? '收合' : '展開'"
               @click="toggleSystemExpanded"
             >
@@ -80,7 +80,7 @@
             <!-- 2-1: canDelete=true，可點擊的刪除環境按鈕 -->
             <button
               v-if="customerInfo.canDelete"
-              class="typo-xs-bold group inline-flex h-7 cursor-pointer items-center justify-center gap-1 rounded pl-2 pr-3 text-neutral-600 transition-colors hover:text-semantic-warning"
+              class="typo-xs-bold hover:text-semantic-error group inline-flex h-7 cursor-pointer items-center justify-center gap-1 rounded pl-2 pr-3 text-neutral-600 transition-colors"
               @click="openDeleteDialog"
             >
               <img
@@ -160,10 +160,13 @@
   </div>
 
   <!-- 刪除環境確認 Dialog -->
-  <delete-environment-dialog
+  <DeleteEnvironmentDialog
     v-if="authStore.isAdmin"
     v-model="showDeleteDialog"
     :customer-no="customerId"
+    :customer-name="customerInfo?.customerName ?? ''"
+    @delete-success="handleDeleteSuccess"
+    @delete-error="handleDeleteError"
   />
 
   <!-- 申請環境刪除 Dialog -->
@@ -177,7 +180,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { customerService } from "@/services/customer.service";
 import type { CustomerDetailInfo } from "@/types/customer";
 import { Alert, Loading } from "@/components/common";
@@ -192,7 +195,7 @@ import CardDNS from "@/components/customer/detail/card-dns.vue";
 import CardNGINX from "@/components/customer/detail/card-nginx.vue";
 import CardSystemRecords from "@/components/customer/detail/card-system-records.vue";
 import CardEfficacyMonitor from "@/components/customer/detail/card-efficacy-monitor.vue";
-import DeleteEnvironmentDialog from "@/components/environment/dialog-delete-environment.vue";
+import DeleteEnvironmentDialog from "@/components/environment/dialog-single-delete-environment.vue";
 import ApplyDeleteDialog from "@/components/customer/dialog-apply-delete.vue";
 import Tooltip from "@/components/common/tooltip.vue";
 import TrashIcon from "@/assets/icons/common/cm-trash.svg";
@@ -202,6 +205,7 @@ import ArrowUpIcon from "@/assets/icons/common/cm-arrow-up.svg";
 import type { DockerServiceInfo } from "@/types/service";
 
 const route = useRoute();
+const router = useRouter();
 
 const authStore = useAuthStore();
 
@@ -333,7 +337,38 @@ function openDeleteDialog() {
   showDeleteDialog.value = true;
 }
 
+/**
+ * 開啟申請環境刪除 Dialog
+ */
 function openApplyDeleteDialog() {
   showApplyDeleteDialog.value = true;
+}
+
+/**
+ * 刪除環境成功處理
+ * 導向客戶列表頁面並顯示成功訊息
+ */
+function handleDeleteSuccess() {
+  router.push({
+    path: "/customers",
+    query: {
+      success: "刪除環境成功",
+      t: Date.now(),
+    },
+  });
+}
+
+/**
+ * 刪除環境失敗處理
+ * 留在當前頁面並顯示警告訊息
+ */
+function handleDeleteError(message: string) {
+  router.replace({
+    path: route.path,
+    query: {
+      warning: message,
+      t: Date.now(),
+    },
+  });
 }
 </script>

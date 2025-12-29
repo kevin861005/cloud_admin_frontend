@@ -6,7 +6,7 @@
     :close-on-overlay="true"
   >
     <!-- 說明文字 -->
-    <p class="typo-sm-bold text-semantic-warning">更新大約1-2分鐘，操作期間服務暫時無法使用</p>
+    <p class="typo-sm-bold text-semantic-error">更新大約1-2分鐘，操作期間服務暫時無法使用</p>
 
     <!-- 按鈕區域 -->
     <template #footer>

@@ -13,7 +13,7 @@
         <button
           :disabled="!dockerInfo.canUpdateImage"
           :class="[
-            'typo-xs-medium inline-flex h-8 items-center gap-1 rounded border px-3 transition-colors focus:outline-none',
+            'typo-xs-medium inline-flex h-8 items-center gap-1 rounded border px-3 transition-colors',
             dockerInfo.canUpdateImage
               ? 'cursor-pointer border-neutral-200 bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
               : 'cursor-not-allowed border-neutral-100 bg-neutral-50 text-neutral-300',
@@ -32,7 +32,7 @@
         <button
           :disabled="!dockerInfo.canRestart"
           :class="[
-            'typo-xs-medium inline-flex h-8 items-center gap-1 rounded border px-3 transition-colors focus:outline-none',
+            'typo-xs-medium inline-flex h-8 items-center gap-1 rounded border px-3 transition-colors',
             dockerInfo.canRestart
               ? 'cursor-pointer border-neutral-200 bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
               : 'cursor-not-allowed border-neutral-100 bg-neutral-50 text-neutral-300',

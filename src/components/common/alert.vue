@@ -170,13 +170,12 @@ const descriptionClasses = computed(() => {
  * 按鈕樣式（根據類型）
  */
 const buttonClasses = computed(() => {
-  const baseClasses =
-    "inline-flex items-center rounded-md px-3 py-2 typo-sm-medium focus:outline-none focus:ring-2 focus:ring-offset-2";
+  const baseClasses = "inline-flex items-center rounded-md px-3 py-2 typo-sm-medium";
   const typeClasses = {
-    error: "bg-red-100 text-red-800 hover:bg-red-200 focus:ring-red-500",
-    warning: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 focus:ring-yellow-500",
-    success: "bg-green-100 text-green-800 hover:bg-green-200 focus:ring-green-500",
-    info: "bg-blue-100 text-blue-800 hover:bg-blue-200 focus:ring-blue-500",
+    error: "bg-red-100 text-red-800 hover:bg-red-200",
+    warning: "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 ",
+    success: "bg-green-100 text-green-800 hover:bg-green-200",
+    info: "bg-blue-100 text-blue-800 hover:bg-blue-200",
   };
   return `${baseClasses} ${typeClasses[props.type]}`;
 });
@@ -185,13 +184,12 @@ const buttonClasses = computed(() => {
  * 關閉按鈕樣式（根據類型）
  */
 const closeButtonClasses = computed(() => {
-  const baseClasses =
-    "inline-flex rounded-md p-1.5 focus:outline-none focus:ring-2 focus:ring-offset-2";
+  const baseClasses = "inline-flex rounded-md p-1.5";
   const typeClasses = {
-    error: "text-red-500 hover:bg-red-100 focus:ring-red-500",
-    warning: "text-yellow-500 hover:bg-yellow-100 focus:ring-yellow-500",
-    success: "text-green-500 hover:bg-green-100 focus:ring-green-500",
-    info: "text-blue-500 hover:bg-blue-100 focus:ring-blue-500",
+    error: "text-red-500 hover:bg-red-100",
+    warning: "text-yellow-500 hover:bg-yellow-100",
+    success: "text-green-500 hover:bg-green-100",
+    info: "text-blue-500 hover:bg-blue-100",
   };
   return `${baseClasses} ${typeClasses[props.type]}`;
 });

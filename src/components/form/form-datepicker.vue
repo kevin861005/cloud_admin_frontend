@@ -12,7 +12,7 @@
         ref="triggerRef"
         type="button"
         :disabled="disabled"
-        class="flex h-9 w-full items-center justify-between rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-left text-sm focus:outline-none disabled:bg-gray-100 disabled:text-neutral-500"
+        class="flex h-9 w-full items-center justify-between rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-left text-sm disabled:bg-neutral-100 disabled:text-neutral-500"
         @click="toggleCalendar"
       >
         <span :class="displayValue ? 'text-neutral-900' : 'text-neutral-400'">

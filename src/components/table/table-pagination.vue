@@ -37,7 +37,7 @@
         <span class="typo-sm-medium text-neutral-500">顯示筆數:</span>
         <select
           :value="pageSize"
-          class="typo-sm rounded border border-neutral-300 bg-white px-3 py-1 text-neutral-700 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+          class="typo-sm rounded border border-neutral-300 bg-white px-3 py-1 text-neutral-700 focus:border-primary-500"
           @change="handlePageSizeChange"
         >
           <option v-for="size in pageSizeOptions" :key="size" :value="size">

@@ -25,7 +25,7 @@
         <!-- 環境刪除按鈕 -->
         <button
           v-if="action.type === 'delete'"
-          class="typo-sm-medium flex h-8 items-center gap-1 rounded bg-neutral-50 px-2.5 py-1.5 text-semantic-warning hover:bg-neutral-200"
+          class="typo-sm-medium text-semantic-error flex h-8 items-center gap-1 rounded bg-neutral-50 px-2.5 py-1.5 hover:bg-neutral-200"
           @click="handleBatchAction(action)"
         >
           <img :src="DeleteIcon" alt="" class="h-4 w-4" />

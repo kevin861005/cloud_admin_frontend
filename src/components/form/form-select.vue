@@ -13,7 +13,7 @@
         ref="triggerRef"
         type="button"
         :disabled="disabled"
-        class="flex h-9 w-full items-center justify-between rounded border border-slate-500/10 bg-slate-500/5 px-3 py-2 text-left text-sm focus:outline-none disabled:bg-gray-100 disabled:text-neutral-500"
+        class="flex h-9 w-full items-center justify-between rounded border border-neutral-500/10 bg-neutral-500/5 px-3 py-2 text-left text-sm disabled:bg-neutral-100 disabled:text-neutral-500"
         @click="toggleDropdown"
       >
         <span :class="selectedLabel ? 'text-neutral-900' : 'text-neutral-400'">
@@ -39,16 +39,16 @@
       <!-- 下拉選單 -->
       <div
         v-show="isOpen"
-        class="absolute z-50 mt-1 w-full rounded border border-slate-200 bg-white shadow-lg"
+        class="absolute z-50 mt-1 w-full rounded border border-neutral-200 bg-white shadow-lg"
       >
         <!-- 搜尋框 -->
-        <div class="border-b border-slate-200 p-2">
+        <div class="border-b border-neutral-200 p-2">
           <input
             ref="searchInputRef"
             v-model="searchQuery"
             type="text"
             placeholder="搜尋..."
-            class="h-8 w-full rounded border border-slate-300 px-2 text-sm focus:border-blue-500 focus:outline-none"
+            class="h-8 w-full rounded border border-neutral-300 px-2 text-sm focus:border-primary-500"
             @click.stop
           />
         </div>

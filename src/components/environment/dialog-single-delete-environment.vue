@@ -1,15 +1,15 @@
 <template>
   <!-- 刪除確認 Dialog -->
-  <BaseDialog v-model="isVisible" title="刪除環境" subtitle="已選擇1個客戶，是否刪除？">
+  <BaseDialog v-model="isVisible" title="刪除環境" :subtitle="subtitle">
     <!-- 說明文字 -->
-    <p class="typo-sm-bold text-semantic-warning">此操作無法復原，請再次確認</p>
+    <p class="typo-sm-bold text-semantic-error">此操作無法復原，請再次確認</p>
 
     <!-- 按鈕區域 -->
     <template #footer>
       <!-- 取消按鈕 -->
       <button
         type="button"
-        class="typo-sm-bold group relative cursor-pointer rounded-lg bg-gray-100 px-6 py-3 text-neutral-600 transition-colors"
+        class="typo-sm-bold group relative cursor-pointer rounded-lg bg-neutral-100 px-6 py-3 text-neutral-600 transition-colors"
         @click="handleClose"
       >
         <!-- 黑色遮罩層（只影響背景） -->
@@ -23,7 +23,7 @@
       <!-- 確認刪除按鈕 -->
       <button
         type="button"
-        class="typo-sm-bold group relative flex cursor-pointer items-center gap-2 rounded-lg bg-semantic-warning px-6 py-3 text-white transition-colors"
+        class="typo-sm-bold bg-semantic-error group relative flex cursor-pointer items-center gap-2 rounded-lg px-6 py-3 text-white transition-colors"
         @click="handleConfirm"
       >
         <!-- 黑色遮罩層（只影響背景） -->
@@ -47,14 +47,13 @@
 
 <script setup lang="ts">
 /**
- * DeleteEnvironmentDialog - 刪除環境確認對話框
+ * DialogSingleDeleteEnvironment - 單一環境刪除確認對話框
  *
  * 用於確認是否刪除指定客戶的環境，並追蹤刪除進度
- * - 刪除成功：導向客戶列表頁面
- * - 刪除失敗：留在當前頁面並顯示錯誤訊息
+ * - 刪除成功：emit delete-success，由父元件處理後續邏輯
+ * - 刪除失敗：emit delete-error，由父元件處理錯誤顯示
  */
 import { ref, computed, onUnmounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
 import BaseDialog from "@/components/dialog/base-dialog.vue";
 import TaskProgressDialog from "@/components/dialog/task-progress-dialog.vue";
 import { environmentService } from "@/services/environment.service";
@@ -68,6 +67,8 @@ interface Props {
   modelValue: boolean;
   /** 客戶編號（用於 API 呼叫） */
   customerNo: string;
+  /** 客戶名稱（用於顯示） */
+  customerName: string;
 }
 
 const props = defineProps<Props>();
@@ -76,11 +77,11 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
   /** 更新 v-model */
   "update:modelValue": [value: boolean];
+  /** 刪除成功 */
+  "delete-success": [];
+  /** 刪除失敗 */
+  "delete-error": [message: string];
 }>();
-
-// ========== Router ==========
-const router = useRouter();
-const route = useRoute();
 
 // ========== Computed ==========
 /** 用 computed 來處理 v-model，避免直接修改 prop */
@@ -88,6 +89,9 @@ const isVisible = computed({
   get: () => props.modelValue,
   set: (value: boolean) => emit("update:modelValue", value),
 });
+
+/** Dialog 副標題 */
+const subtitle = computed(() => `確定要刪除「${props.customerName}」的環境嗎？`);
 
 // ========== 進度條 Dialog 狀態 ==========
 const showProgressDialog = ref(false);
@@ -148,9 +152,9 @@ async function handleConfirm() {
     console.error("啟動刪除環境任務失敗:", error);
     showProgressDialog.value = false;
 
-    // 取得錯誤訊息
+    // 取得錯誤訊息並 emit
     const errorMessage = getErrorMessage(error);
-    navigateWithWarning(errorMessage);
+    emit("delete-error", errorMessage);
   }
 }
 
@@ -231,10 +235,10 @@ function handleCompleted(event: TaskProgressEvent) {
   progressDescription.value = event.message;
   progressValue.value = 100;
 
-  // 短暫延遲後關閉進度條並導向客戶列表
+  // 短暫延遲後關閉進度條並 emit 成功
   setTimeout(() => {
     showProgressDialog.value = false;
-    navigateToCustomerList("刪除環境成功");
+    emit("delete-success");
   }, 500);
 }
 
@@ -246,7 +250,7 @@ function handleError(event: TaskProgressEvent) {
   showProgressDialog.value = false;
 
   const errorMessage = event.message || "刪除環境失敗，請再試一次";
-  navigateWithWarning(errorMessage);
+  emit("delete-error", errorMessage);
 }
 
 /**
@@ -256,33 +260,7 @@ function handleConnectionError() {
   // 關閉進度條
   showProgressDialog.value = false;
 
-  navigateWithWarning("連線中斷，請重新嘗試");
-}
-
-/**
- * 留在當前頁面並顯示警告訊息
- */
-function navigateWithWarning(message: string) {
-  router.replace({
-    path: route.path,
-    query: {
-      warning: message,
-      t: Date.now(),
-    },
-  });
-}
-
-/**
- * 導向客戶列表頁面並顯示成功訊息
- */
-function navigateToCustomerList(message: string) {
-  router.push({
-    path: "/customers",
-    query: {
-      success: message,
-      t: Date.now(),
-    },
-  });
+  emit("delete-error", "連線中斷，請重新嘗試");
 }
 
 /**

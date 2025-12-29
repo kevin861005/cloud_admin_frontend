@@ -97,16 +97,16 @@ function getColorClasses(percentage: number) {
 
   const colorMap = {
     GOOD: {
-      text: "text-green-600",
-      progressBg: "bg-blue-500",
+      text: "text-semantic-positive",
+      progressBg: "bg-semantic-positive",
     },
     WARNING: {
-      text: "text-yellow-600",
-      progressBg: "bg-yellow-500",
+      text: "text-semantic-warning",
+      progressBg: "bg-semantic-warning",
     },
     CRITICAL: {
-      text: "text-red-600",
-      progressBg: "bg-red-500",
+      text: "text-semantic-critical",
+      progressBg: "bg-semantic-critical",
     },
   };
 

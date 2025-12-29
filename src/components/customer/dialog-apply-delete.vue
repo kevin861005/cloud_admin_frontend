@@ -8,7 +8,7 @@
     @update:model-value="handleDialogChange"
   >
     <!-- 提示文字 -->
-    <p class="typo-xs-bold text-semantic-warning">「環境管理」可查看申請進度</p>
+    <p class="typo-xs-bold text-semantic-error">「環境管理」可查看申請進度</p>
 
     <!-- 按鈕區域 -->
     <template #footer>

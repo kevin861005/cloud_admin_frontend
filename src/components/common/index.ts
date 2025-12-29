@@ -40,3 +40,6 @@ export { default as EmptyState } from "./empty-state.vue";
 // 佈局元件
 export { default as Divider } from "./divider.vue";
 export { default as PageTitle } from "./page-title.vue";
+
+// 錯誤畫面
+export { default as ErrorPage } from "./error-page.vue";

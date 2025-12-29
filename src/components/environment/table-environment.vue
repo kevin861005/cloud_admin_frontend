@@ -7,7 +7,7 @@
     :show-search="true"
     :show-add-button="false"
     :loading="isLoading"
-    :show-checkbox="true"
+    :show-checkbox="authStore.isAdmin"
     :show-edit-button="false"
     :show-border="true"
     :batch-actions="batchActions"
@@ -29,11 +29,16 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
+import { useAuthStore } from "@/stores/auth.store";
 import { Badge } from "@/components/common";
 import DataTable from "@/components/table/data-table.vue";
 import { environmentService } from "@/services/environment.service";
 import type { EnvironmentListItem } from "@/types/environment";
 import type { ColumnConfig, FilterConfig, BatchActionConfig } from "@/types/table";
+
+// ===== 權限判斷 =====
+
+const authStore = useAuthStore();
 
 // ===== Emits 定義 =====
 const emit = defineEmits<{

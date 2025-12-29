@@ -5,6 +5,11 @@
 
 /* 自訂字體定義 */
 @layer base {
+  /* 移除預設的 focus outline */
+  *:focus {
+    outline: none;
+  }
+
   /* Noto Sans TC - Regular (400) */
   @font-face {
     font-family: "Noto Sans TC";

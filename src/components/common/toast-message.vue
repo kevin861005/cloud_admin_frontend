@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useMenuStore } from "@/stores/menu.store";
 
 // ICON 匯入
@@ -57,6 +57,7 @@ type ToastType = "success" | "warning";
  * - 相對於內容區域置中（考慮 Sidebar 寬度）
  * - 可自訂寬度
  * - 支援成功/警告兩種類型
+ * - 顯示後自動清除 URL query 參數，避免重新整理時重複顯示
  */
 
 // ========== Props 定義 ==========
@@ -74,6 +75,7 @@ const menuStore = useMenuStore();
 
 // ========== State ==========
 const route = useRoute();
+const router = useRouter();
 const isVisible = ref(false);
 const message = ref("");
 const type = ref<ToastType>("success");
@@ -137,6 +139,26 @@ const updatePageHeaderHeight = () => {
 };
 
 /**
+ * 清除 URL 中的 Toast 相關 query 參數
+ * 使用 replace 避免產生歷史記錄
+ */
+const clearToastQuery = () => {
+  // 複製現有的 query，移除 toast 相關參數
+  const newQuery = { ...route.query };
+  delete newQuery.success;
+  delete newQuery.warning;
+  delete newQuery.t;
+
+  // 如果還有其他 query 參數，保留它們；否則清空
+  const hasOtherParams = Object.keys(newQuery).length > 0;
+
+  router.replace({
+    path: route.path,
+    query: hasOtherParams ? newQuery : undefined,
+  });
+};
+
+/**
  * 顯示 Toast 訊息
  * @param msg - 訊息內容
  * @param toastType - 訊息類型（success/warning）
@@ -149,6 +171,9 @@ const showToast = (msg: string, toastType: ToastType = "success") => {
   message.value = msg;
   type.value = toastType;
   isVisible.value = true;
+
+  // 顯示後立即清除 URL query 參數
+  clearToastQuery();
 
   hideTimer = setTimeout(() => {
     isVisible.value = false;

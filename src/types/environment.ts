@@ -93,6 +93,7 @@ export interface EnvironmentCountResponse {
 }
 
 export interface EnvironmentDetailInfo {
+  customerNo: string; // 客戶代號
   customerName: string; // 客戶名稱（例如：橘色測測屋）
   industry: string; // 行業類別（例如：餐飲）
   status: EnvironmentStatus; // 環境狀態（申請中、已通知、待刪除）

@@ -43,17 +43,6 @@ const routes: RouteRecordRaw[] = [
     },
   },
 
-  // ===== 無權限畫面 =====
-  {
-    path: "/403",
-    name: "Forbidden",
-    component: () => import("@/views/error/forbidden-view.vue"),
-    meta: {
-      title: "存取權限不足",
-      requiresAuth: false, // 不需要認證也能看到此頁面
-    },
-  },
-
   // ===== 主頁佈局 =====
   {
     path: "/",
@@ -67,6 +56,28 @@ const routes: RouteRecordRaw[] = [
       {
         path: "",
         redirect: "/overview",
+      },
+
+      // ----- 錯誤頁面 -----
+      {
+        path: "403",
+        name: "Forbidden",
+        component: () => import("@/views/error/forbidden-view.vue"),
+        meta: {
+          requiresAuth: false,
+          title: "存取權限不足",
+        },
+      },
+
+      // ----- 測試頁面 -----
+      {
+        path: "alert-test",
+        name: "AlertTest",
+        component: () => import("@/views/alert-test-view.vue"),
+        meta: {
+          requiresAuth: false,
+          title: "Alert 測試",
+        },
       },
 
       // ----- 總覽 -----
@@ -250,6 +261,12 @@ router.beforeEach(
     // 設定頁面標題
     if (to.meta.title) {
       document.title = `${to.meta.title} - Cloud Admin`;
+    }
+
+    // ===== 錯誤頁面允許通過 =====
+    if (to.name === "Forbidden") {
+      next();
+      return;
     }
 
     // 檢查是否需要登入

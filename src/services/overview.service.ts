@@ -61,13 +61,12 @@ export const overviewService = {
   },
 
   /**
-   * 取得最近的警示列表
+   * 取得最近的警示列表（含時間戳記）
    * GET /cloudAdmin/api/dashboard/alerts/recent
    *
-   * @param limit 要取得的筆數（預設 3 筆）
-   * @returns Promise<AlertListData> 警示列表資料
+   * @returns Promise<{ data: AlertListData; timestamp: string }> 警示列表資料與時間戳記
    */
-  async getRecentAlerts(): Promise<AlertListData> {
+  async getRecentAlerts(): Promise<{ data: AlertListData; timestamp: string }> {
     const response = await apiClient.get<ApiResponse<AlertListData>>("/dashboard/alerts/recent");
 
     if (!response.data.success || !response.data.data) {
@@ -78,7 +77,10 @@ export const overviewService = {
       });
     }
 
-    return response.data.data;
+    return {
+      data: response.data.data,
+      timestamp: response.data.timestamp,
+    };
   },
 
   /**

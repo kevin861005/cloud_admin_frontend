@@ -11,7 +11,7 @@
     </CardContainer>
 
     <TableContainer>
-      <EnvironmentTable ref="tableRef" @row-view="handleView" />
+      <EnvironmentTable ref="tableRef" @row-view="handleView" @batch-action="handleBatchAction" />
     </TableContainer>
 
     <!-- 環境詳細資訊 Drawer -->
@@ -20,6 +20,13 @@
       :environment-id="selectedEnvironmentId"
       @close="handleCloseDrawer"
       @delete-success="handleDeleteSuccess"
+    />
+
+    <!-- 批次刪除 Dialog -->
+    <DialogBatchDeleteEnvironment
+      v-model="showBatchDeleteDialog"
+      :customer-nos="selectedCustomerNos"
+      @delete-success="handleBatchDeleteSuccess"
     />
   </div>
 </template>
@@ -32,6 +39,7 @@ import CardToDelete from "@/components/environment/card-to-delete.vue";
 import TableContainer from "@/components/table/table-container.vue";
 import EnvironmentTable from "@/components/environment/table-environment.vue";
 import EnvironmentDetailDrawer from "@/components/environment/drawer-environment-detail.vue";
+import DialogBatchDeleteEnvironment from "@/components/environment/dialog-batch-delete-environment.vue";
 
 // ===== 元件參照 =====
 
@@ -51,6 +59,18 @@ const selectedEnvironmentId = ref<string | null>(null);
  * Drawer 開啟狀態
  */
 const isDrawerOpen = ref(false);
+
+// ===== 批次刪除 Dialog 狀態 =====
+
+/**
+ * 批次刪除 Dialog 開啟狀態
+ */
+const showBatchDeleteDialog = ref(false);
+
+/**
+ * 選中要刪除的客戶編號陣列
+ */
+const selectedCustomerNos = ref<string[]>([]);
 
 // ===== 事件處理 =====
 
@@ -75,10 +95,34 @@ const handleCloseDrawer = () => {
 };
 
 /**
- * 處理刪除成功
- * 刷新表格資料
+ * 處理單一刪除成功（從 Drawer 觸發）
+ * 刷新表格資料（Toast 由 Drawer 內部透過 URL query 處理）
  */
 const handleDeleteSuccess = () => {
+  tableRef.value?.refresh();
+};
+
+/**
+ * 處理批量操作
+ * 根據 actionKey 執行對應操作
+ */
+const handleBatchAction = (actionKey: string, selectedRows: Record<string, unknown>[]) => {
+  if (actionKey === "delete") {
+    // 取得選中的客戶編號
+    selectedCustomerNos.value = selectedRows.map((row) => String(row.customerNo));
+    // 開啟批次刪除 Dialog
+    showBatchDeleteDialog.value = true;
+  }
+};
+
+/**
+ * 處理批次刪除成功
+ * 清空選取狀態並刷新表格（Toast 由 Dialog 內部透過 URL query 處理）
+ */
+const handleBatchDeleteSuccess = () => {
+  // 清空選取狀態
+  tableRef.value?.clearSelection();
+  // 刷新表格
   tableRef.value?.refresh();
 };
 </script>
