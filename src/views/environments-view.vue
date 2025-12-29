@@ -109,7 +109,7 @@ const handleDeleteSuccess = () => {
 const handleBatchAction = (actionKey: string, selectedRows: Record<string, unknown>[]) => {
   if (actionKey === "delete") {
     // 取得選中的客戶編號
-    selectedCustomerNos.value = selectedRows.map((row) => String(row.customerNo));
+    selectedCustomerNos.value = selectedRows.map((row) => String(row.id));
     // 開啟批次刪除 Dialog
     showBatchDeleteDialog.value = true;
   }
