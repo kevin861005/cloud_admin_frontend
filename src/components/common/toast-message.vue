@@ -1,6 +1,5 @@
 <template>
   <Teleport to="body">
-    <!-- 將原本 name="fade" 改為 Tailwind 過場 class -->
     <Transition
       enter-active-class="transition-opacity duration-300 ease-out"
       enter-from-class="opacity-0"
@@ -11,16 +10,17 @@
     >
       <div
         v-if="isVisible"
-        class="fixed z-50 flex items-center justify-center gap-2 rounded-[20px] bg-white py-3 shadow-md"
+        class="fixed z-50 flex items-center justify-center gap-2 rounded-[20px] bg-white px-4 py-3 shadow-md"
         :style="{
           top: toastTopPosition,
           left: toastLeftPosition,
           transform: 'translateX(-50%)',
-          width: widthValue,
+          minWidth: minWidthValue,
+          maxWidth: maxWidthValue,
         }"
       >
         <!-- 左側 ICON（根據類型顯示不同圖示） -->
-        <img :src="iconSrc" :alt="type" class="h-5 w-5 rounded-full p-0.5" />
+        <img :src="iconSrc" :alt="type" class="h-5 w-5 flex-shrink-0 rounded-full p-0.5" />
 
         <!-- 文字 -->
         <span class="typo-base text-gray-10">
@@ -55,19 +55,22 @@ type ToastType = "success" | "warning";
  * 特點:
  * - 使用 Teleport 掛載到 body
  * - 相對於內容區域置中（考慮 Sidebar 寬度）
- * - 可自訂寬度
+ * - 寬度根據內容自動調整（有最小/最大寬度限制）
  * - 支援成功/警告兩種類型
  * - 顯示後自動清除 URL query 參數，避免重新整理時重複顯示
  */
 
 // ========== Props 定義 ==========
 interface Props {
-  /** Toast 寬度 */
-  width?: string;
+  /** Toast 最小寬度 */
+  minWidth?: string;
+  /** Toast 最大寬度 */
+  maxWidth?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  width: "141px",
+  minWidth: "141px",
+  maxWidth: "400px",
 });
 
 // ========== Stores ==========
@@ -96,10 +99,17 @@ const iconSrc = computed(() => {
 });
 
 /**
- * 計算 Toast 的寬度值
+ * 計算 Toast 的最小寬度值
  */
-const widthValue = computed(() => {
-  return props.width;
+const minWidthValue = computed(() => {
+  return props.minWidth;
+});
+
+/**
+ * 計算 Toast 的最大寬度值
+ */
+const maxWidthValue = computed(() => {
+  return props.maxWidth;
 });
 
 /**
